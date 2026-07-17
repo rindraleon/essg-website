@@ -1,0 +1,132 @@
+import React from 'react';
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  Button,
+  Collapse,
+  Box,
+  IconButton,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import RestoreIcon from '@mui/icons-material/Restore';
+import type { PartenaireFilterOptions } from '../../types/partenaire.types';
+import { PARTENAIRE_TYPES } from '../../constants/partenaire.constants';
+
+interface PartenaireFiltersProps {
+  filters: PartenaireFilterOptions;
+  onUpdateFilter: (key: keyof PartenaireFilterOptions, value: string) => void;
+  onResetFilters: () => void;
+  activeFilterCount: number;
+  open: boolean;
+  onToggle: () => void;
+}
+
+const PartenaireFilters: React.FC<PartenaireFiltersProps> = ({
+  filters,
+  onUpdateFilter,
+  onResetFilters,
+  activeFilterCount,
+  open,
+  onToggle,
+}) => {
+  return (
+    <div>
+      <Collapse in={open}>
+        <Box className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-semibold text-gray-700">Filtres avancés</span>
+            <IconButton size="small" onClick={onToggle}>
+              <CloseIcon />
+            </IconButton>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <FormControl size="small" fullWidth>
+              <InputLabel>Type</InputLabel>
+              <Select
+                value={filters.type}
+                label="Type"
+                onChange={(e) => onUpdateFilter('type', e.target.value)}
+                sx={{ borderRadius: '8px', backgroundColor: 'white' }}
+              >
+                <MenuItem value="">
+                  <em>Tous</em>
+                </MenuItem>
+                {PARTENAIRE_TYPES.map((typeItem) => (
+                  <MenuItem key={typeItem.value} value={typeItem.value}>
+                    {typeItem.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <TextField
+              size="small"
+              label="Secteur"
+              value={filters.secteur}
+              onChange={(e) => onUpdateFilter('secteur', e.target.value)}
+              fullWidth
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                  backgroundColor: 'white',
+                },
+              }}
+            />
+
+            <TextField
+              size="small"
+              type="date"
+              label="Date début"
+              value={filters.dateDebut}
+              onChange={(e) => onUpdateFilter('dateDebut', e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              fullWidth
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                  backgroundColor: 'white',
+                },
+              }}
+            />
+
+            <TextField
+              size="small"
+              type="date"
+              label="Date fin"
+              value={filters.dateFin}
+              onChange={(e) => onUpdateFilter('dateFin', e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              fullWidth
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                  backgroundColor: 'white',
+                },
+              }}
+            />
+          </div>
+
+          {activeFilterCount > 0 && (
+            <div className="mt-3 flex justify-end">
+              <Button
+                size="small"
+                color="error"
+                startIcon={<RestoreIcon fontSize="small" />}
+                onClick={onResetFilters}
+                sx={{ textTransform: 'none', fontSize: 12 }}
+              >
+                Réinitialiser tout
+              </Button>
+            </div>
+          )}
+        </Box>
+      </Collapse>
+    </div>
+  );
+};
+
+export default PartenaireFilters;

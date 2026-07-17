@@ -1,0 +1,27 @@
+export type ProjetType = 'International' | 'Service public' | 'Recherche' | 'Partenariat';
+
+export interface Projet {
+  id: number;
+  titre: string;
+  slug?: string;
+  type: ProjetType;
+  date: string;
+  description: string;
+  partenaires: string[];
+  image: string;
+  latitude?: number;
+  longitude?: number;
+  ville?: string;
+  pays?: string;
+  adresse?: string;
+  creeLe: Date;
+  misAJourLe: Date;
+}
+
+export type ProjetFormData = Omit<Projet, 'id' | 'creeLe' | 'misAJourLe'>;
+
+export interface ProjetFilterOptions {
+  type: string;
+  dateDebut: string;
+  dateFin: string;
+}

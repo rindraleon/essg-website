@@ -1,0 +1,9 @@
+export { getNews, getNewsBySlug } from './news.service';
+export { login, verifyToken, logout } from './auth.service';
+export { getAllFormations, getFormationById, searchFormations, createFormation, updateFormation, deleteFormation } from './formations.service';
+export { getAllActualites, getActualiteById, createActualite, updateActualite, deleteActualite } from './actualites.service';
+export { getAllRessourcesHumaines, getRessourceHumaineById, createRessourceHumaine, updateRessourceHumaine, deleteRessourceHumaine } from './ressources-humaines.service';
+export { getAllProjets, getProjetById, createProjet, updateProjet, deleteProjet, uploadImage } from './projets.service';
+export { getAllPartenaires, getPartenaireById, createPartenaire, updatePartenaire, deletePartenaire } from './partenaires.service';
+export { getDashboardStats, getRecentActivities, getDashboardOverview} from './dashboard.service';
+export { getAllUsers, searchUsers, getUserById, createUser, updateUser, deleteUser, uploadAvatar } from './users.service';

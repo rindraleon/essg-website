@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@hiqaody/create-backend-pg": "^1.1.9",
+    "@scrat1313/vite-tsx-react": "^1.1.4"
+  }
+}
