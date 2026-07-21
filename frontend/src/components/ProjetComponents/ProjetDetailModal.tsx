@@ -29,12 +29,10 @@ const getUnsplashUrl = (id: string): string => {
 };
 
 const getStatutColor = (statut: string): string => {
-    switch (statut) {
-        case "En cours":
-            return GREEN[500];
-        default:
-            return "#6b7280";
+    if (statut === "En cours") {
+        return GREEN[800];
     }
+    return "#6b7280";
 };
 
 const ProjetDetailModal: React.FC<ProjetDetailModalProps> = (
@@ -52,11 +50,13 @@ const ProjetDetailModal: React.FC<ProjetDetailModalProps> = (
             onClose={onClose}
             maxWidth="md"
             fullWidth
-            PaperProps={{
-                sx: {
-                    borderRadius: "1rem",
-                    overflow: "hidden",
-                    maxHeight: "90vh",
+            slotProps={{
+                paper: {
+                    sx: {
+                        borderRadius: "1rem",
+                        overflow: "hidden",
+                        maxHeight: "90vh",
+                    },
                 },
             }}
         >

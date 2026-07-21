@@ -35,7 +35,7 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (
                 ]}
             />
 
-            <AdmissionTimeline />
+            {/* <AdmissionTimeline /> */}
 
             <section className="py-12">
                 <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
@@ -47,7 +47,7 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (
                                 <HelpOutlineRoundedIcon
                                     sx={{
                                         fontSize: 28,
-                                        color: GREEN[600],
+                                        color: GREEN[900],
                                     }}
                                 />
                             }
@@ -65,7 +65,7 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (
             <CtaSection
                 icon={
                     <SchoolRoundedIcon
-                        sx={{ fontSize: 48, color: GREEN[400] }}
+                        sx={{ fontSize: 48, color: GREEN[900] }}
                     />
                 }
                 title="Découvrez nos formations"

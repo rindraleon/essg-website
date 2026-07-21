@@ -7,3 +7,4 @@ export { getAllProjets, getProjetById, createProjet, updateProjet, deleteProjet,
 export { getAllPartenaires, getPartenaireById, createPartenaire, updatePartenaire, deletePartenaire } from './partenaires.service';
 export { getDashboardStats, getRecentActivities, getDashboardOverview} from './dashboard.service';
 export { getAllUsers, searchUsers, getUserById, createUser, updateUser, deleteUser, uploadAvatar } from './users.service';
+export { getAllMessages, searchMessages, getMessageById, updateMessage, deleteMessage, type Message, type PaginationResponse, type PaginationQuery } from './messages.service';

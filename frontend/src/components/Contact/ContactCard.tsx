@@ -37,7 +37,7 @@ const ContactCard: React.FC<ContactCardProps> = (
                     >
                         {icon ?? (
                             <HelpOutlineRoundedIcon
-                                sx={{ fontSize: 28, color: GREEN[600] }}
+                                sx={{ fontSize: 28, color: GREEN[900] }}
                             />
                         )}
                     </div>
@@ -61,7 +61,7 @@ const ContactCard: React.FC<ContactCardProps> = (
                                     borderRadius: "0.75rem",
                                     textTransform: "none",
                                     fontWeight: 600,
-                                    backgroundColor: GREEN[600],
+                                    backgroundColor: GREEN[900],
                                     boxShadow: "none",
                                     "&:hover": {
                                         backgroundColor: GREEN[700],
@@ -80,7 +80,7 @@ const ContactCard: React.FC<ContactCardProps> = (
                                     borderRadius: "0.75rem",
                                     textTransform: "none",
                                     fontWeight: 600,
-                                    borderColor: GREEN[600],
+                                    borderColor: GREEN[900],
                                     color: GREEN[600],
                                     backgroundColor: "#ffffff",
                                     "&:hover": {

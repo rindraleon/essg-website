@@ -139,12 +139,12 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                     border: "1px solid #e5e7eb",
                 }}
             >
-                <div
+                {/* <div
                     className="h-2 w-full"
                     style={{
                         background: `linear-gradient(90deg, ${GREEN[500]}, ${GREEN[400]})`,
                     }}
-                />
+                /> */}
 
                 <CardContent className="p-6 sm:p-8">
                     <h2 className="mb-2 text-2xl font-bold text-gray-900">
@@ -240,7 +240,7 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                                         id="niveau-label"
                                         sx={{
                                             "&.Mui-focused": {
-                                                color: GREEN[600],
+                                                color: GREEN[900],
                                             },
                                         }}
                                     >
@@ -270,7 +270,7 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                                         id="formation-label"
                                         sx={{
                                             "&.Mui-focused": {
-                                                color: GREEN[600],
+                                                color: GREEN[900],
                                             },
                                         }}
                                     >
@@ -336,7 +336,7 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                                             justifyContent: "flex-start",
                                             py: 1.25,
                                             "&:hover": {
-                                                borderColor: GREEN[600],
+                                                borderColor: GREEN[900],
                                                 backgroundColor: GREEN[50],
                                             },
                                         }}
@@ -372,14 +372,13 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                                             justifyContent: "flex-start",
                                             py: 1.25,
                                             "&:hover": {
-                                                borderColor: GREEN[600],
+                                                borderColor: GREEN[900],
                                                 backgroundColor: GREEN[50],
                                             },
                                         }}
                                     >
                                         Choisir un fichier
-                                        <input
-                                            id="lettre"
+                                        <input id="lettre"
                                             type="file"
                                             accept=".pdf"
                                             hidden
@@ -404,7 +403,7 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                                         checked={formData.accepteConditions}
                                         onChange={handleCheckboxChange}
                                         sx={{
-                                            color: GREEN[600],
+                                            color: GREEN[900],
                                             "&.Mui-checked": {
                                                 color: GREEN[600],
                                             },
@@ -439,8 +438,8 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                                 sx={{
                                     borderRadius: "0.75rem",
                                     textTransform: "none",
-                                    fontWeight: 600,
-                                    backgroundColor: GREEN[600],
+                                    fontWeight: 800,
+                                    backgroundColor: GREEN[900],
                                     boxShadow: "none",
                                     "&:hover": {
                                         backgroundColor: GREEN[700],
@@ -460,9 +459,9 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                                 sx={{
                                     borderRadius: "0.75rem",
                                     textTransform: "none",
-                                    fontWeight: 600,
-                                    borderColor: GREEN[600],
-                                    color: GREEN[600],
+                                    fontWeight: 800,
+                                    borderColor: GREEN[900],
+                                    color: GREEN[900],
                                     "&:hover": {
                                         borderColor: GREEN[700],
                                         backgroundColor: GREEN[50],

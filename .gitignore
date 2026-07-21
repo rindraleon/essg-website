@@ -29,3 +29,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Backend (separate repository)
+backend-essg/

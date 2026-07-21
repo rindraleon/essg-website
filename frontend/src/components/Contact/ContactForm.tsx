@@ -6,7 +6,6 @@ import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import SubjectRoundedIcon from "@mui/icons-material/SubjectRounded";
-import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -16,14 +15,15 @@ import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import Snackbar from "@mui/material/Snackbar";
 import TextField from "@mui/material/TextField";
 import type { SelectChangeEvent } from "@mui/material/Select";
+import { toast } from "react-hot-toast";
 import { GREEN } from "../../constants/colors";
 import type {
     ContactFormData,
     ContactFormProps,
 } from "../../types/contact.types";
+import { createContactMessage } from "../../services/contact.service";
 
 const INITIAL_FORM_DATA: ContactFormData = {
     nom: "",
@@ -80,15 +80,7 @@ const ContactForm: React.FC<ContactFormProps> = (
 
     const [formData, setFormData] =
         useState<ContactFormData>(INITIAL_FORM_DATA);
-    const [snackbar, setSnackbar] = useState<{
-        open: boolean;
-        message: string;
-        severity: "success" | "error";
-    }>({
-        open: false,
-        message: "",
-        severity: "success",
-    });
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -106,30 +98,36 @@ const ContactForm: React.FC<ContactFormProps> = (
         }));
     };
 
-    const handleCloseSnackbar = () => {
-        setSnackbar((prev) => ({ ...prev, open: false }));
-    };
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (onSubmit) {
-            onSubmit(formData);
+        try {
+            setLoading(true);
+            await createContactMessage(formData);
+
+            if (onSubmit) {
+                onSubmit(formData);
+            }
+
+            toast.success("Message envoyé avec succès ! Nous vous répondrons sous 48h.", {
+                duration: 5000,
+                position: "bottom-center",
+            });
+
+            setFormData(INITIAL_FORM_DATA);
+        } catch (error) {
+            console.error("Erreur lors de l'envoi du message:", error);
+            toast.error("Une erreur est survenue lors de l'envoi du message. Veuillez réessayer.", {
+                duration: 5000,
+                position: "bottom-center",
+            });
+        } finally {
+            setLoading(false);
         }
-
-        setSnackbar({
-            open: true,
-            message:
-                "Message envoyé avec succès ! Nous vous répondrons sous 48h.",
-            severity: "success",
-        });
-
-        setFormData(INITIAL_FORM_DATA);
     };
 
     return (
-        <>
-            <Card
+        <Card
                 elevation={0}
                 sx={{
                     borderRadius: "1.25rem",
@@ -147,47 +145,43 @@ const ContactForm: React.FC<ContactFormProps> = (
                     }}
                 />
 
-                <CardContent className="p-6 sm:p-8">
-                    <div className="mb-8">
-                        <h2 className="mb-2 text-2xl font-bold text-gray-900">
+                <CardContent className="p-4 sm:p-6">
+                    <div className="mb-4">
+                        <h2 className="mb-1 text-xl font-bold text-gray-900">
                             Envoyez-nous un message
                         </h2>
-                        <p className="max-w-2xl text-sm leading-6 text-gray-600">
+                        <p className="text-xs text-gray-600">
                             Remplissez le formulaire ci-dessous et notre équipe
                             vous répondra dans les plus brefs délais.
                         </p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-8">
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         {/* Section 1 — Informations */}
                         <div
                             className="rounded-2xl border border-gray-100 p-5 sm:p-6"
                             style={{ backgroundColor: "#fafafa" }}
                         >
-                            <div className="mb-5 flex items-center gap-2">
+                            <div className="mb-3 flex items-center gap-2">
                                 <div
-                                    className="flex h-8 w-8 items-center justify-center rounded-lg"
+                                    className="flex h-7 w-7 items-center justify-center rounded-md"
                                     style={{ backgroundColor: GREEN[50] }}
                                 >
                                     <PersonRoundedIcon
                                         sx={{
-                                            fontSize: 18,
+                                            fontSize: 16,
                                             color: GREEN[600],
                                         }}
                                     />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-semibold text-gray-900">
+                                    <h3 className="text-base font-semibold text-gray-900">
                                         Vos informations
                                     </h3>
-                                    <p className="text-xs text-gray-500">
-                                        Indiquez vos coordonnées pour que nous
-                                        puissions vous recontacter.
-                                    </p>
                                 </div>
                             </div>
 
-                            <div className="grid gap-4 sm:grid-cols-2">
+                            <div className="grid gap-3 sm:grid-cols-2">
                                 <TextField
                                     label="Nom"
                                     name="nom"
@@ -197,12 +191,14 @@ const ContactForm: React.FC<ContactFormProps> = (
                                     fullWidth
                                     size="small"
                                     sx={inputSx}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <BadgeRoundedIcon sx={iconSx} />
-                                            </InputAdornment>
-                                        ),
+                                    slotProps={{
+                                        input: {
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <BadgeRoundedIcon sx={iconSx} />
+                                                </InputAdornment>
+                                            ),
+                                        },
                                     }}
                                 />
 
@@ -215,14 +211,16 @@ const ContactForm: React.FC<ContactFormProps> = (
                                     fullWidth
                                     size="small"
                                     sx={inputSx}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <PersonRoundedIcon
-                                                    sx={iconSx}
-                                                />
-                                            </InputAdornment>
-                                        ),
+                                    slotProps={{
+                                        input: {
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <PersonRoundedIcon
+                                                        sx={iconSx}
+                                                    />
+                                                </InputAdornment>
+                                            ),
+                                        },
                                     }}
                                 />
 
@@ -236,14 +234,16 @@ const ContactForm: React.FC<ContactFormProps> = (
                                     fullWidth
                                     size="small"
                                     sx={inputSx}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <EmailRoundedIcon
-                                                    sx={iconSx}
-                                                />
-                                            </InputAdornment>
-                                        ),
+                                    slotProps={{
+                                        input: {
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <EmailRoundedIcon
+                                                        sx={iconSx}
+                                                    />
+                                                </InputAdornment>
+                                            ),
+                                        },
                                     }}
                                 />
 
@@ -256,14 +256,16 @@ const ContactForm: React.FC<ContactFormProps> = (
                                     fullWidth
                                     size="small"
                                     sx={inputSx}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <PhoneRoundedIcon
-                                                    sx={iconSx}
-                                                />
-                                            </InputAdornment>
-                                        ),
+                                    slotProps={{
+                                        input: {
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <PhoneRoundedIcon
+                                                        sx={iconSx}
+                                                    />
+                                                </InputAdornment>
+                                            ),
+                                        },
                                     }}
                                 />
                             </div>
@@ -273,33 +275,29 @@ const ContactForm: React.FC<ContactFormProps> = (
 
                         {/* Section 2 — Demande */}
                         <div
-                            className="rounded-2xl border border-gray-100 p-5 sm:p-6"
+                            className="rounded-2xl border border-gray-100 p-4 sm:p-5"
                             style={{ backgroundColor: "#fafafa" }}
                         >
-                            <div className="mb-5 flex items-center gap-2">
+                            <div className="mb-3 flex items-center gap-2">
                                 <div
-                                    className="flex h-8 w-8 items-center justify-center rounded-lg"
+                                    className="flex h-7 w-7 items-center justify-center rounded-md"
                                     style={{ backgroundColor: GREEN[50] }}
                                 >
                                     <MessageRoundedIcon
                                         sx={{
-                                            fontSize: 18,
+                                            fontSize: 16,
                                             color: GREEN[600],
                                         }}
                                     />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-semibold text-gray-900">
+                                    <h3 className="text-base font-semibold text-gray-900">
                                         Votre demande
                                     </h3>
-                                    <p className="text-xs text-gray-500">
-                                        Précisez l&apos;objet de votre message
-                                        et décrivez votre besoin.
-                                    </p>
                                 </div>
                             </div>
 
-                            <div className="space-y-6">
+                            <div className="space-y-4">
                                 <FormControl fullWidth size="small" required>
                                     <InputLabel
                                         id="sujet-label"
@@ -345,78 +343,67 @@ const ContactForm: React.FC<ContactFormProps> = (
                                     required
                                     fullWidth
                                     multiline
-                                    rows={7}
+                                    rows={4}
                                     size="small"
                                     placeholder="Décrivez votre demande avec le plus de précision possible..."
                                     sx={inputSx}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment
-                                                position="start"
-                                                sx={{
-                                                    alignSelf: "flex-start",
-                                                    mt: 1.5,
-                                                }}
-                                            >
-                                                <MessageRoundedIcon
-                                                    sx={iconSx}
-                                                />
-                                            </InputAdornment>
-                                        ),
+                                    slotProps={{
+                                        input: {
+                                            startAdornment: (
+                                                <InputAdornment
+                                                    position="start"
+                                                    sx={{
+                                                        alignSelf: "flex-start",
+                                                        mt: 0.5,
+                                                    }}
+                                                >
+                                                    <MessageRoundedIcon
+                                                        sx={iconSx}
+                                                    />
+                                                </InputAdornment>
+                                            ),
+                                        },
                                     }}
                                 />
                             </div>
                         </div>
 
                         {/* Bouton */}
-                        <div className="flex justify-end pt-2">
+                        <div className="flex justify-end pt-1">
                             <Button
                                 type="submit"
                                 variant="contained"
-                                size="large"
-                                endIcon={<SendRoundedIcon />}
+                                size="medium"
+                                disabled={loading}
+                                endIcon={!loading ? <SendRoundedIcon /> : undefined}
                                 sx={{
                                     minWidth: {
                                         xs: "100%",
-                                        sm: 240,
+                                        sm: 220,
                                     },
                                     borderRadius: "0.9rem",
-                                    px: 4,
-                                    py: 1.4,
+                                    px: 3,
+                                    py: 1.2,
                                     textTransform: "none",
                                     fontWeight: 700,
-                                    fontSize: "0.95rem",
+                                    fontSize: "0.9rem",
                                     backgroundColor: GREEN[600],
                                     boxShadow: "none",
                                     "&:hover": {
                                         backgroundColor: GREEN[700],
                                         boxShadow: "none",
                                     },
+                                    "&.Mui-disabled": {
+                                        backgroundColor: GREEN[400],
+                                    },
                                 }}
                             >
-                                Envoyer le message
+                                {loading ? "Envoi en cours..." : "Envoyer le message"}
                             </Button>
                         </div>
                     </form>
                 </CardContent>
             </Card>
-
-            <Snackbar
-                open={snackbar.open}
-                autoHideDuration={5000}
-                onClose={handleCloseSnackbar}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            >
-                <Alert
-                    onClose={handleCloseSnackbar}
-                    severity={snackbar.severity}
-                    variant="filled"
-                    sx={{ borderRadius: "0.75rem" }}
-                >
-                    {snackbar.message}
-                </Alert>
-            </Snackbar>
-        </>
     );
 };
 

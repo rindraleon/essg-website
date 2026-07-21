@@ -5,6 +5,8 @@ import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
 import RoomRoundedIcon from "@mui/icons-material/RoomRounded";
 import ContactIcon from "@mui/icons-material/ContactMailRounded";
 
+import { Toaster } from "react-hot-toast";
+
 import PageHero from "../../components/common/PageHero";
 import { GREEN } from "../../constants/colors";
 import type { ContactPageProps } from "../../types/contact.types";
@@ -72,6 +74,31 @@ const ContactPage: React.FC<ContactPageProps> = (
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <Toaster
+                position="bottom-center"
+                toastOptions={{
+                    duration: 5000,
+                    style: {
+                        background: "#363636",
+                        color: "#fff",
+                        borderRadius: "0.75rem",
+                        padding: "12px 16px",
+                    },
+                    success: {
+                        iconTheme: {
+                            primary: GREEN[600],
+                            secondary: "#fff",
+                        },
+                    },
+                    error: {
+                        iconTheme: {
+                            primary: "#ef4444",
+                            secondary: "#fff",
+                        },
+                    },
+                }}
+            />
+
             <PageHero
                 image={HERO_IMAGE}
                 imageAlt="Contact ESSG"
