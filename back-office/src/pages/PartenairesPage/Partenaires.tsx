@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { Card, CardContent, Typography, Box, Button } from '@mui/material';
+import {Button } from '@mui/material';
 import { toast, Toaster } from 'sonner';
 import {
   PartenaireFilters,
@@ -8,18 +8,14 @@ import {
   PartenaireViewDialog,
   ConfirmDialog,
   SearchInput,
-  StatsCard,
 } from '../../components';
 import { usePagination, usePartenaireFilter } from '../../hooks';
 import type { PartenaireFormData, Partenaire } from '../../types';
 import { getAllPartenaires, createPartenaire, updatePartenaire, deletePartenaire } from '../../services';
 
 const Partenaires: React.FC = () => {
-  // Data state
   const [data, setData] = useState<Partenaire[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-
-  // UI state
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
@@ -28,7 +24,6 @@ const Partenaires: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [partenaireToDelete, setPartenaireToDelete] = useState<Partenaire | null>(null);
 
-  // Hooks
   const { filters, filteredData, updateFilter, resetFilters, activeFilterCount } = usePartenaireFilter({
     data,
     searchTerm,
@@ -43,7 +38,6 @@ const Partenaires: React.FC = () => {
     resetPage,
   } = usePagination({ data: filteredData, initialRowsPerPage: 5 });
 
-  // Load data from backend
   useEffect(() => {
     const loadPartenaires = async () => {
       try {
@@ -58,7 +52,6 @@ const Partenaires: React.FC = () => {
     loadPartenaires();
   }, []);
 
-  // Handlers
   const handleSearchChange = useCallback(
     (value: string) => {
       setSearchTerm(value);
@@ -137,7 +130,6 @@ const Partenaires: React.FC = () => {
     setFiltersOpen((prev) => !prev);
   }, []);
 
-  // Stats - Memoized
   const stats = useMemo(() => {
     const totalCount = data.length;
     const entrepriseCount = data.filter((p) => p.type === 'Entreprise').length;
@@ -152,96 +144,75 @@ const Partenaires: React.FC = () => {
     <div className="space-y-2 p-2 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       <Toaster position="top-right" richColors />
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <StatsCard title="Total partenaires" value={stats.totalCount} color="gray" />
-        <StatsCard title="Entreprises" value={stats.entrepriseCount} color="blue" />
-        <StatsCard title="Institutions" value={stats.institutionCount} color="green" />
-        <StatsCard title="Organisations" value={stats.organisationCount} color="amber" />
-        <StatsCard title="Autres" value={stats.autreCount} color="gray" />
+        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+          <div className="text-3xl font-bold text-gray-900">{stats.totalCount}</div>
+          <div className="text-sm text-gray-500">Total</div>
+        </div>
+        <div className="bg-blue-50 rounded-lg border border-blue-200 p-4 text-center">
+          <div className="text-3xl font-bold text-blue-900">{stats.entrepriseCount}</div>
+          <div className="text-sm text-blue-700">Entreprises</div>
+        </div>
+        <div className="bg-green-50 rounded-lg border border-green-200 p-4 text-center">
+          <div className="text-3xl font-bold text-green-900">{stats.institutionCount}</div>
+          <div className="text-sm text-green-700">Institutions</div>
+        </div>
+        <div className="bg-amber-50 rounded-lg border border-amber-200 p-4 text-center">
+          <div className="text-3xl font-bold text-amber-900">{stats.organisationCount}</div>
+          <div className="text-sm text-amber-700">Organisations</div>
+        </div>
+        <div className="bg-gray-50 rounded-lg border border-gray-200 p-4 text-center">
+          <div className="text-3xl font-bold text-gray-900">{stats.autreCount}</div>
+          <div className="text-sm text-gray-500">Autres</div>
+        </div>
       </div>
 
-      {/* Search + Add Button */}
-      <Card
-        variant="outlined"
-        sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-      >
-        <CardContent>
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-              <Typography variant="h6" className="font-bold text-gray-800 whitespace-nowrap">
-                Liste des partenaires
-                <Box
-                  component="span"
-                  className="ml-2 text-sm font-normal text-gray-500"
-                >
-                  ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
-                </Box>
-              </Typography>
-              <SearchInput
-                value={searchTerm}
-                onChange={handleSearchChange}
-                placeholder="Rechercher par nom, description, secteur..."
-              />
-            </div>
-            <div className="flex items-center gap-3 w-full lg:w-auto">
-              <Button
-                variant="outlined"
-                onClick={handleToggleFilters}
-                sx={{
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  whiteSpace: 'nowrap',
-                  borderColor: '#e5e7eb',
-                  color: '#374151',
-                  '&:hover': {
-                    borderColor: '#d1d5db',
-                    backgroundColor: '#f9fafb'
-                  }
-                }}
-              >
-                {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleOpenCreate}
-                sx={{
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  whiteSpace: 'nowrap',
-                  backgroundColor: '#2563eb',
-                  '&:hover': {
-                    backgroundColor: '#1d4ed8',
-                  }
-                }}
-              >
-                + Nouveau partenaire
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Filters - Full Width Below */}
-      {filtersOpen && (
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
-          <CardContent>
-            <PartenaireFilters
-              filters={filters}
-              onUpdateFilter={updateFilter}
-              onResetFilters={handleResetFilters}
-              activeFilterCount={activeFilterCount}
-              open={filtersOpen}
-              onToggle={handleToggleFilters}
+      <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
+            <h2 className="text-lg font-bold text-gray-800 whitespace-nowrap">
+              Liste des partenaires
+              <span className="ml-2 text-sm font-normal text-gray-500">
+                ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
+              </span>
+            </h2>
+            <SearchInput
+              value={searchTerm}
+              onChange={handleSearchChange}
+              placeholder="Rechercher par nom, description, secteur..."
             />
-          </CardContent>
-        </Card>
+          </div>
+          <div className="flex items-center gap-3 w-full lg:w-auto">
+            <Button
+              variant="outlined"
+              onClick={handleToggleFilters}
+              className="rounded-lg"
+            >
+              {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
+            </Button>
+            <Button
+              onClick={handleOpenCreate}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              + Nouveau partenaire
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {filtersOpen && (
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <PartenaireFilters
+            filters={filters}
+            onUpdateFilter={updateFilter}
+            onResetFilters={handleResetFilters}
+            activeFilterCount={activeFilterCount}
+            open={filtersOpen}
+            onToggle={handleToggleFilters}
+          />
+        </div>
       )}
 
-      {/* Table */}
       <PartenaireTable
         data={paginatedData}
         totalCount={filteredData.length}
@@ -254,7 +225,6 @@ const Partenaires: React.FC = () => {
         onDelete={handleDeleteRequest}
       />
 
-      {/* Form Dialog (Create / Edit) */}
       <PartenaireForm
         open={formOpen}
         onClose={() => setFormOpen(false)}
@@ -263,14 +233,12 @@ const Partenaires: React.FC = () => {
         mode={formMode}
       />
 
-      {/* View Dialog */}
       <PartenaireViewDialog
         open={viewDialogOpen}
         onClose={() => setViewDialogOpen(false)}
         partenaire={selectedPartenaire}
       />
 
-      {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         open={deleteDialogOpen}
         title="Supprimer le partenaire"

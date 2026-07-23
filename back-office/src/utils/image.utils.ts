@@ -18,8 +18,10 @@ export const getImageUrl = (imagePath: string): string => {
   // Get API base URL from environment or use default
   const apiBaseUrl = import.meta.env.VITE_APP_URL || 'http://localhost:3000';
   
-  // Remove /api suffix if present to get the base server URL
-  const baseUrl = apiBaseUrl.replace(/\/api\/?$/, '');
+  // Ensure the base URL has a protocol
+  const baseUrl = apiBaseUrl.startsWith('http') 
+    ? apiBaseUrl.replace(/\/api\/?$/, '')
+    : `http://${apiBaseUrl}`.replace(/\/api\/?$/, '');
   
   // Return complete URL
   return `${baseUrl}${imagePath}`;

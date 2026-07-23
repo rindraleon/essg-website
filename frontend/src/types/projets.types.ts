@@ -45,3 +45,25 @@ export type ProjetsPageProps = {
     pageDescription?: string;
     projets?: ProjetItem[];
 };
+
+export type FeaturedProjetItem = {
+    id: string;
+    titre: string;
+    statut: string;
+    type: string;
+    annee: string;
+    description: string;
+    partenaires: string[];
+    image?: string;
+    budget?: string;
+    objectifs?: string[];
+    location?: ProjetLocation;
+};
+
+export type FeaturedProjetsSectionProps = {
+    title?: string;
+    description?: string;
+    ctaLabel?: string;
+    ctaLink?: string;
+    featuredProjets?: FeaturedProjetItem[];
+};

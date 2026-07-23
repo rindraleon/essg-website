@@ -2,7 +2,7 @@ import React from "react";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import Button from "@mui/material/Button";
 import { Link as RouterLink } from "react-router-dom";
-import type { AdmissionCtaSectionProps } from "../../types";
+import type { AdmissionCtaSectionProps } from "../../types/admission.types";
 
 const AdmissionSection: React.FC<AdmissionCtaSectionProps> = (
     props: Readonly<AdmissionCtaSectionProps>,

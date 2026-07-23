@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Grid,
-  Typography,
-  CircularProgress,
-  Alert,
-  Button,
-} from "@mui/material";
-import { Refresh } from "@mui/icons-material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import NewsCard from "./NewsCard";
 import {  type Actualite } from "../../types/news.types";
 import { getNews } from "../../services/news.service";
+import { Button } from "@/components/ui/button";
 
 const NewsList: React.FC = () => {
   const [news, setNews] = useState<Actualite[]>([]);
@@ -37,54 +30,44 @@ const NewsList: React.FC = () => {
 
   if (loading) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: 300,
-        }}
-      >
-        <CircularProgress />
-      </Box>
+      <div className="flex justify-center items-center min-h-[300px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Box sx={{ textAlign: "center", py: 4 }}>
-        <Alert severity="error" sx={{ mb: 2 }}>
+      <div className="text-center py-4">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
           {error}
-        </Alert>
-        <Button
-          variant="contained"
-          startIcon={<Refresh />}
-          onClick={fetchNews}
-        >
+        </div>
+          <Button onClick={fetchNews}>
+          <RefreshIcon className="mr-2" />
           Réessayer
         </Button>
-      </Box>
+      </div>
     );
   }
 
   if (news.length === 0) {
     return (
-      <Box sx={{ textAlign: "center", py: 8 }}>
-        <Typography variant="h6" color="text.secondary">
+      <div className="text-center py-8">
+        <h6 className="text-gray-500 text-lg">
           Aucune actualité disponible pour le moment
-        </Typography>
-      </Box>
+        </h6>
+      </div>
     );
   }
 
   return (
-    <Grid container spacing={3}>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {news.map((actualite) => (
-        <Grid size={{ xs: 12, md: 6 }} key={actualite.id}>
+        <div key={actualite.id}>
           <NewsCard actualite={actualite} />
-        </Grid>
+        </div>
       ))}
-    </Grid>
+    </div>
   );
 };
 

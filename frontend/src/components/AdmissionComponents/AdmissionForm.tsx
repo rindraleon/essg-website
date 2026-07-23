@@ -1,22 +1,24 @@
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import CloudUploadRoundedIcon from "@mui/icons-material/CloudUploadRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
-import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Checkbox from "@mui/material/Checkbox";
+import CircularProgress from "@mui/material/CircularProgress";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import Snackbar from "@mui/material/Snackbar";
 import TextField from "@mui/material/TextField";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import { GREEN } from "../../constants/colors";
-import type { AdmissionFormData, AdmissionFormProps } from "../../types/admission.types";
+import type { AdmissionFormData, AdmissionFormProps } from "../../types";
+import { admissionService } from "../../services";
+
 
 const INITIAL_FORM_DATA: AdmissionFormData = {
     nom: "",
@@ -71,15 +73,9 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
     } = props;
 
     const [formData, setFormData] = useState<AdmissionFormData>(INITIAL_FORM_DATA);
-    const [snackbar, setSnackbar] = useState<{
-        open: boolean;
-        message: string;
-        severity: "success" | "error";
-    }>({
-        open: false,
-        message: "",
-        severity: "success",
-    });
+    const [cvFile, setCvFile] = useState<File | null>(null);
+    const [lettreFile, setLettreFile] = useState<File | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData((prev) => ({
@@ -102,33 +98,65 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
         }));
     };
 
-    const handleCloseSnackbar = () => {
-        setSnackbar((prev) => ({ ...prev, open: false }));
+    const handleCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setCvFile(file);
+        }
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleLettreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setLettreFile(file);
+        }
+    };
+
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (!formData.accepteConditions) {
-            setSnackbar({
-                open: true,
-                message: "Veuillez accepter les conditions générales.",
-                severity: "error",
-            });
+            toast.error("Veuillez accepter les conditions générales.");
             return;
         }
 
-        if (onSubmit) {
-            onSubmit(formData);
+        if (!cvFile || !lettreFile) {
+            toast.error("Veuillez joindre le CV et la lettre de motivation.");
+            return;
         }
 
-        setSnackbar({
-            open: true,
-            message: "Candidature soumise avec succès ! Vous recevrez un email de confirmation.",
-            severity: "success",
-        });
+        setLoading(true);
+        try {
+            const formDataToSend = new FormData();
+            formDataToSend.append("nom", formData.nom);
+            formDataToSend.append("prenom", formData.prenom);
+            formDataToSend.append("email", formData.email);
+            formDataToSend.append("telephone", formData.telephone);
+            formDataToSend.append("dateNaissance", formData.dateNaissance);
+            formDataToSend.append("niveau", formData.niveau);
+            formDataToSend.append("formation", formData.formation);
+            formDataToSend.append("diplomePrecedent", formData.diplomePrecedent);
+            formDataToSend.append("cv", cvFile);
+            formDataToSend.append("lettreMotivation", lettreFile);
 
-        setFormData(INITIAL_FORM_DATA);
+            await admissionService.createAdmission(formDataToSend);
+
+            if (onSubmit) {
+                onSubmit(formData);
+            }
+
+            toast.success("Candidature soumise avec succès ! Vous recevrez un email de confirmation.");
+
+            setFormData(INITIAL_FORM_DATA);
+            setCvFile(null);
+            setLettreFile(null);
+        } catch (error) {
+            console.error("Erreur lors de la soumission du formulaire d'admission:", error);
+            toast.error("Une erreur est survenue lors de la soumission. Veuillez réessayer.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -136,7 +164,7 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
             <Card
                 sx={{
                     borderRadius: "1rem",
-                    border: "1px solid #e5e7eb",
+                    border: "2px solid #e5e7eb",
                 }}
             >
                 {/* <div
@@ -219,7 +247,7 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                                     required
                                     fullWidth
                                     size="small"
-                                    InputLabelProps={{ shrink: true }}
+                                    slotProps={{ inputLabel: { shrink: true } }}
                                     sx={{
                                         ...inputSx,
                                         gridColumn: "1 / -1",
@@ -341,13 +369,13 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                                             },
                                         }}
                                     >
-                                        Choisir un fichier
-                                        <input
-                                            id="cv"
+                                        {cvFile ? cvFile.name : "Choisir un fichier"}
+                                        <input id="cv"
                                             type="file"
                                             accept=".pdf"
                                             hidden
                                             required
+                                            onChange={handleCvChange}
                                         />
                                     </Button>
                                 </div>
@@ -377,12 +405,13 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                                             },
                                         }}
                                     >
-                                        Choisir un fichier
+                                        {lettreFile ? lettreFile.name : "Choisir un fichier"}
                                         <input id="lettre"
                                             type="file"
                                             accept=".pdf"
                                             hidden
                                             required
+                                            onChange={handleLettreChange}
                                         />
                                     </Button>
                                 </div>
@@ -434,7 +463,8 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                                 variant="contained"
                                 fullWidth
                                 size="large"
-                                endIcon={<ArrowForwardRoundedIcon />}
+                                endIcon={loading ? <CircularProgress size={20} color="inherit" /> : <ArrowForwardRoundedIcon />}
+                                disabled={loading}
                                 sx={{
                                     borderRadius: "0.75rem",
                                     textTransform: "none",
@@ -447,7 +477,7 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                                     },
                                 }}
                             >
-                                Soumettre ma candidature
+                                {loading ? "Soumission en cours..." : "Soumettre ma candidature"}
                             </Button>
 
                             <Button
@@ -475,21 +505,6 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (
                 </CardContent>
             </Card>
 
-            <Snackbar
-                open={snackbar.open}
-                autoHideDuration={5000}
-                onClose={handleCloseSnackbar}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            >
-                <Alert
-                    onClose={handleCloseSnackbar}
-                    severity={snackbar.severity}
-                    variant="filled"
-                    sx={{ borderRadius: "0.75rem" }}
-                >
-                    {snackbar.message}
-                </Alert>
-            </Snackbar>
         </>
     );
 };

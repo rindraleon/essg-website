@@ -1,4 +1,5 @@
-import type { Actualite, PaginationResponse } from '../types/actualite.types';
+import type { Actualite } from '../types/actualite.types';
+import type { PaginationResponse } from '../types/formations.types';
 
 const API_BASE_URL = import.meta.env.VITE_APP_URL || 'http://localhost:3000';
 const BASE_URL = `${API_BASE_URL.replace(/\/api\/?$/, '')}/news`;

@@ -70,3 +70,11 @@ export type FormationsPageProps = {
 export type FormationDetailPageProps = {
     formations?: Formation[];
 };
+
+export type FeaturedFormationsSectionProps = {
+    title?: string;
+    description?: string;
+    ctaLabel?: string;
+    ctaLink?: string;
+    featuredFormations?: Formation[];
+};

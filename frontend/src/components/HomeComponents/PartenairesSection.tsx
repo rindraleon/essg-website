@@ -4,8 +4,8 @@ import Button from "@mui/material/Button";
 import { Link as RouterLink } from "react-router-dom";
 import partenaireService from "../../services/partenaire.service";
 import { getImageUrl } from "../../utils/image.utils";
-import type { PartenairesSectionProps } from "../../types";
-import type { PartenaireItem } from "../../types/partenaire.types";
+import type { PartenaireItem, PartenairesSectionProps } from "../../types";
+
 
 const PartenairesSection: React.FC<PartenairesSectionProps> = (
     props: Readonly<PartenairesSectionProps>,

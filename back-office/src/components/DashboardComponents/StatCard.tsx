@@ -1,11 +1,10 @@
 import React from "react";
-import type { SvgIconProps } from "@mui/material/SvgIcon";
 
 interface StatCardProps {
     title: string;
     value: string | number;
     change?: string;
-    icon?: React.ReactElement<SvgIconProps>;
+    icon?: React.ReactElement;
     loading?: boolean;
 }
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import Button from "@mui/material/Button";
 import { Link as RouterLink } from "react-router-dom";
-import type { FeaturedProjetsSectionProps, FeaturedProjetItem } from "../../types";
+import type { FeaturedProjetsSectionProps, FeaturedProjetItem } from "../../types/projets.types";
 import { projetService } from "../../services";
 import { getImageUrl } from "../../utils/image.utils";
 import {

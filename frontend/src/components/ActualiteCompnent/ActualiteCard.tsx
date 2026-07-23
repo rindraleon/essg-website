@@ -17,7 +17,7 @@ const ActualiteCard: React.FC<Props> = ({ actualite }) => {
   const imageUrl = actualite.image ? getImageUrl(actualite.image) : "https://images.unsplash.com/photo-1768117173988-5ebfdde4fdd3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800";
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col bg-white">
+    <div className="rounded-2xl overflow-hidden border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col bg-white">
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
         <img

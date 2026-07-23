@@ -1,6 +1,5 @@
 // src/components/FormationComponents/FormationTable.tsx
 import React from 'react';
-import { IconButton, Tooltip, Chip } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,6 +7,8 @@ import StarIcon from '@mui/icons-material/Star';
 import type { Formation } from '../../types/formation.types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface FormationTableProps {
   data: Formation[];
@@ -49,18 +50,15 @@ const FormationTable: React.FC<FormationTableProps> = ({
       label: 'Niveau',
       minWidth: 110,
       render: (row) => {
-        const colorMap: Record<string, 'primary' | 'secondary' | 'success'> = {
-          'Licence': 'primary',
+        const variantMap: Record<string, 'default' | 'secondary' | 'outline'> = {
+          'Licence': 'default',
           'Master': 'secondary',
-          'Doctorat': 'success',
+          'Doctorat': 'outline',
         };
         return (
-          <Chip
-            label={row.niveau}
-            size="small"
-            color={colorMap[row.niveau] || 'default'}
-            sx={{ borderRadius: '6px', fontWeight: 500 }}
-          />
+          <Badge variant={variantMap[row.niveau] || 'outline'} className="text-xs">
+            {row.niveau}
+          </Badge>
         );
       },
     },
@@ -98,21 +96,30 @@ const FormationTable: React.FC<FormationTableProps> = ({
       align: 'right',
       render: (row) => (
         <div className="flex justify-end gap-1">
-          <Tooltip title="Voir">
-            <IconButton size="small" onClick={() => onView(row)} color="info">
-              <VisibilityIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Modifier">
-            <IconButton size="small" onClick={() => onEdit(row)} color="primary">
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Supprimer">
-            <IconButton size="small" onClick={() => onDelete(row)} color="error">
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => onView(row)}
+            className="h-8 w-8"
+          >
+            <VisibilityIcon fontSize="small" className="h-4 w-4" />
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => onEdit(row)}
+            className="h-8 w-8"
+          >
+            <EditIcon fontSize="small" className="h-4 w-4" />
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => onDelete(row)}
+            className="h-8 w-8 text-red-600 hover:text-red-700"
+          >
+            <DeleteIcon fontSize="small" className="h-4 w-4" />
+          </Button>
         </div>
       ),
     },

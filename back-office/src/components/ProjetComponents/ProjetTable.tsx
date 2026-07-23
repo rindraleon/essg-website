@@ -1,6 +1,5 @@
 // src/components/ProjetComponents/ProjetTable.tsx
 import React, { useMemo } from 'react';
-import { IconButton, Tooltip, Chip } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,6 +7,14 @@ import type { Projet } from '../../types/projet.types';
 import { getTypeColor, formatDate } from '../../utils/projet.utils';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface ProjetTableProps {
   data: Projet[];
@@ -48,14 +55,20 @@ const ProjetTable: React.FC<ProjetTableProps> = ({
       id: 'type',
       label: 'Type',
       minWidth: 120,
-      render: (row) => (
-        <Chip
-          label={row.type}
-          size="small"
-          color={getTypeColor(row.type)}
-          sx={{ borderRadius: '6px', fontWeight: 500 }}
-        />
-      ),
+      render: (row) => {
+        const colorMap: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+          'primary': 'default',
+          'secondary': 'secondary',
+          'success': 'default',
+          'warning': 'secondary',
+          'info': 'outline',
+        };
+        return (
+          <Badge variant={colorMap[getTypeColor(row.type)] || 'outline'}>
+            {row.type}
+          </Badge>
+        );
+      },
     },
     {
       id: 'partenaires',
@@ -64,22 +77,14 @@ const ProjetTable: React.FC<ProjetTableProps> = ({
       render: (row) => (
         <div className="flex flex-wrap gap-1">
           {row.partenaires.slice(0, 2).map((partenaire, index) => (
-            <Chip
-              key={`${row.id}-${index}`}
-              label={partenaire}
-              size="small"
-              variant="outlined"
-              sx={{ borderRadius: '4px', fontSize: '0.75rem' }}
-            />
+            <Badge key={`${row.id}-${index}`} variant="outline" className="text-xs">
+              {partenaire}
+            </Badge>
           ))}
           {row.partenaires.length > 2 && (
-            <Chip
-              key={`${row.id}-more`}
-              label={`+${row.partenaires.length - 2}`}
-              size="small"
-              variant="outlined"
-              sx={{ borderRadius: '4px', fontSize: '0.75rem' }}
-            />
+            <Badge key={`${row.id}-more`} variant="outline" className="text-xs">
+              +{row.partenaires.length - 2}
+            </Badge>
           )}
         </div>
       ),
@@ -111,23 +116,49 @@ const ProjetTable: React.FC<ProjetTableProps> = ({
       minWidth: 120,
       align: 'right',
       render: (row) => (
-        <div className="flex justify-end gap-1">
-          <Tooltip title="Voir">
-            <IconButton size="small" onClick={() => onView(row)} color="info">
-              <VisibilityIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Modifier">
-            <IconButton size="small" onClick={() => onEdit(row)} color="primary">
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Supprimer">
-            <IconButton size="small" onClick={() => onDelete(row)} color="error">
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </div>
+        <TooltipProvider>
+          <div className="flex justify-end gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => onView(row)}
+                  className="h-8 w-8"
+                >
+                  <VisibilityIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Voir</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => onEdit(row)}
+                  className="h-8 w-8"
+                >
+                  <EditIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Modifier</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => onDelete(row)}
+                  className="h-8 w-8 text-red-600 hover:text-red-700"
+                >
+                  <DeleteIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Supprimer</TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       ),
     },
   ], [onView, onEdit, onDelete]);

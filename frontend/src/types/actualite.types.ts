@@ -14,25 +14,25 @@ export interface Actualite {
   misAJourLe: string;
 }
 
-export interface PaginationResponse<T> {
-  data: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
-
-export interface RecentActualitesSectionProps {
-  title?: string;
-  description?: string;
-  ctaLabel?: string;
-  ctaLink?: string;
-  recentActualites?: Actualite[];
-}
-
 export interface ActualitesPageProps {
   pageTitle?: string;
   pageSubtitle?: string;
   pageDescription?: string;
   actualites?: Actualite[];
 }
+
+export type ActualiteItem = {
+    id: string;
+    titre: string;
+    categorie: string;
+    date: string;
+    resume: string;
+};
+
+export type RecentActualitesSectionProps = {
+    title?: string;
+    description?: string;
+    ctaLabel?: string;
+    ctaLink?: string;
+    recentActualites?: ActualiteItem[];
+};

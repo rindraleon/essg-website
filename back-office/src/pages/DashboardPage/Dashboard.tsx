@@ -1,14 +1,13 @@
 import { useScrollToTop } from "../../hooks/";
 import { useTitle } from "../../hooks/useTitle";
-import { Typography, Container, Paper, Grid } from "@mui/material";
 import { StatCard, RecentActivity, QuickActions, NewsList } from "../../components";
 import { useEffect, useState } from "react";
 import { getDashboardStats, getRecentActivities } from "../../services/dashboard.service";
 import type { Activity, DashboardStats } from "../../types";
-import People from "@mui/icons-material/People";
-import School from "@mui/icons-material/School";
-import Article from "@mui/icons-material/Article";
-import RocketLaunch from "@mui/icons-material/RocketLaunch";
+import PeopleIcon from "@mui/icons-material/People";
+import SchoolIcon from "@mui/icons-material/School";
+import ArticleIcon from "@mui/icons-material/Article";
+import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 
 
 const Dashboard = () => {
@@ -18,7 +17,6 @@ const Dashboard = () => {
     const [stats, setStats] = useState<DashboardStats | null>(null);
     const [activities, setActivities] = useState<Activity[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         loadDashboardData();
@@ -27,7 +25,6 @@ const Dashboard = () => {
     const loadDashboardData = async () => {
         try {
             setLoading(true);
-            setError(null);
             const [statsData, activitiesData] = await Promise.all([
                 getDashboardStats(),
                 getRecentActivities(),
@@ -35,8 +32,7 @@ const Dashboard = () => {
             setStats(statsData);
             setActivities(activitiesData);
         } catch (err) {
-            setError("Erreur lors du chargement des données du dashboard");
-            console.error(err);
+            console.error("Erreur lors du chargement des données du dashboard:", err);
         } finally {
             setLoading(false);
         }
@@ -47,87 +43,62 @@ const Dashboard = () => {
             title: "Utilisateurs", 
             value: stats.totalUsers.toLocaleString(), 
             change: stats.usersChange, 
-            icon: <People />, 
+            icon: <PeopleIcon />, 
             color: "primary" as const 
         },
         { 
             title: "Formations", 
             value: stats.totalFormations.toLocaleString(), 
             change: stats.formationsChange, 
-            icon: <School />, 
+            icon: <SchoolIcon />, 
             color: "secondary" as const 
         },
         { 
             title: "Actualités", 
             value: stats.totalNews.toLocaleString(), 
             change: stats.newsChange, 
-            icon: <Article />, 
+            icon: <ArticleIcon />, 
             color: "success" as const 
         },
         { 
             title: "Projets", 
             value: stats.totalProjects.toLocaleString(), 
             change: stats.projectsChange, 
-            icon: <RocketLaunch />, 
+            icon: <RocketLaunchIcon />, 
             color: "info" as const 
         },
     ] : [];
 
     return (
-        <Container maxWidth="xl" sx={{ py: 4 }}>
+        <div className="max-w-7xl mx-auto py-6">
             
-            {/* <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Button
-                    variant="outlined"
-                    startIcon={<Refresh />}
-                    onClick={loadDashboardData}
-                    disabled={loading}
-                >
-                    Actualiser
-                </Button>
-            </Box>
-
-            {error && (
-                <Alert severity="error" sx={{ mb: 3 }}>
-                    {error}
-                </Alert>
-            )} */}
-
             {/* Statistics Cards */}
-            <Grid container spacing={3} sx={{ mb: 4 }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 {loading && !stats ? (
                     ['users', 'formations', 'news', 'projects'].map((id) => (
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }} key={`skeleton-${id}`}>
-                            <StatCard title="" value="" loading={true} />
-                        </Grid>
+                        <StatCard key={`skeleton-${id}`} title="" value="" loading={true} />
                     ))
                 ) : (
                     statCards.map((stat) => (
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }} key={stat.title}>
-                            <StatCard {...stat} />
-                        </Grid>
+                        <StatCard key={stat.title} {...stat} />
                     ))
                 )}
-            </Grid>
+            </div>
 
             {/* Quick Actions and Recent Activity */}
-            <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                    <QuickActions />
-                </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
-                    <RecentActivity activities={activities} loading={loading} />
-                </Grid>
-            </Grid>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <QuickActions />
+                <RecentActivity activities={activities} loading={loading} />
+            </div>
 
             {/* News Section */}
-            <Paper elevation={0} sx={{ p: 3, bgcolor: "background.default" }}>
-                <Typography variant="h4" component="h2" fontWeight="600" gutterBottom sx={{ mb: 3 }}>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">
                     Actualités
-                </Typography>
+                </h2>
                 <NewsList />
-            </Paper>
-        </Container>
+            </div>
+        </div>
     );
 };
 

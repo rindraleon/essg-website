@@ -1,6 +1,7 @@
 import React from 'react';
-import { TextField, InputAdornment } from '@mui/material';
-import { Search } from 'lucide-react';
+import SearchIcon from '@mui/icons-material/Search';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 
 interface SearchInputProps {
@@ -17,28 +18,16 @@ const SearchInput: React.FC<SearchInputProps> = ({
   className = '',
 }) => {
   return (
-    <TextField
-      size="small"
-      variant="outlined"
-      placeholder={placeholder}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className={className}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <Search className="h-4 w-4 text-gray-400" />
-          </InputAdornment>
-        ),
-      }}
-      sx={{
-        minWidth: 250,
-        '& .MuiOutlinedInput-root': {
-          borderRadius: '8px',
-          backgroundColor: 'white',
-        },
-      }}
-    />
+    <div className={cn("relative", className)}>
+      <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+      <Input
+        type="text"
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="pl-9 min-w-[250px]"
+      />
+    </div>
   );
 };
 

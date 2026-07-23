@@ -6,7 +6,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import type { LocalisationSectionProps } from "../../types";
+import type { LocalisationSectionProps } from "../../types/sectionone.types";
 
 // Fix pour l'icône par défaut de Leaflet
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;

@@ -2,10 +2,11 @@ import React from "react";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 
+import { Toaster } from "react-hot-toast";
 
 import { GREEN } from "../../constants/colors";
 import type { AdmissionPageProps } from "../../types/admission.types";
-import { AdmissionForm, AdmissionTimeline, ContactCard, CtaSection, PageHero } from "../../components";
+import { AdmissionForm, ContactCard, CtaSection, PageHero } from "../../components";
 
 const HERO_IMAGE =
     "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920";
@@ -21,6 +22,31 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <Toaster
+                position="top-right"
+                toastOptions={{
+                    duration: 5000,
+                    style: {
+                        background: "#363636",
+                        color: "#fff",
+                        borderRadius: "0.75rem",
+                        padding: "12px 16px",
+                    },
+                    success: {
+                        iconTheme: {
+                            primary: GREEN[600],
+                            secondary: "#fff",
+                        },
+                    },
+                    error: {
+                        iconTheme: {
+                            primary: "#ef4444",
+                            secondary: "#fff",
+                        },
+                    },
+                }}
+            />
+
             <PageHero
                 image={HERO_IMAGE}
                 imageAlt="Admission ESSG"

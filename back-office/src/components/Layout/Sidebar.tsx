@@ -2,7 +2,17 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { routesStatic } from "../../routes";
 import EssG from "../../assets/files/images/logo/EssG.png";
-import { Article, Close, Dashboard, Logout, Menu, Folder, School, Handshake, Mail, HowToReg, People } from "@mui/icons-material";
+import ArticleIcon from "@mui/icons-material/Article";
+import CloseIcon from "@mui/icons-material/Close";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import LogoutIcon from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
+import FolderIcon from "@mui/icons-material/Folder";
+import SchoolIcon from "@mui/icons-material/School";
+import HandshakeIcon from "@mui/icons-material/Handshake";
+import MailIcon from "@mui/icons-material/Mail";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import PeopleIcon from "@mui/icons-material/People";
 
 const Sidebar: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -12,47 +22,47 @@ const Sidebar: React.FC = () => {
     {
       name: "Tableau de bord",
       href: routesStatic.dashboard,
-      icon: Dashboard,
+      icon: DashboardIcon,
     },
     {
       name: "Actualités",
       href: routesStatic.actualites,
-      icon: Article,
+      icon: ArticleIcon,
     },
     {
       name: "Formations",
       href: routesStatic.formations,
-      icon: School,
+      icon: SchoolIcon,
     },
     {
       name: "Projets",
       href: routesStatic.projets,
-      icon: Folder,
+      icon: FolderIcon,
     },
     {
       name: "Partenaires",
       href: routesStatic.partenaires,
-      icon: Handshake,
+      icon: HandshakeIcon,
     },
     {
       name: "Contacts",
       href: routesStatic.contacts,
-      icon: Mail,
+      icon: MailIcon,
     },
     {
       name: "Admissions",
       href: routesStatic.admissions,
-      icon: HowToReg,
+      icon: HowToRegIcon,
     },
     {
       name: "Ressources Humaines",
       href: routesStatic.ressourcesHumaines,
-      icon: People,
+      icon: PeopleIcon,
     },
     {
       name: "Utilisateurs",
       href: routesStatic.utilisateurs,
-      icon: People,
+      icon: PeopleIcon,
     },
   ];
 
@@ -82,9 +92,9 @@ const Sidebar: React.FC = () => {
           aria-label="Ouvrir le menu"
         >
           {sidebarOpen ? (
-            <Close className="h-6 w-6" />
+            <CloseIcon className="h-6 w-6" />
           ) : (
-            <Menu className="h-6 w-6" />
+            <MenuIcon className="h-6 w-6" />
           )}
         </button>
       </div>
@@ -146,14 +156,14 @@ const Sidebar: React.FC = () => {
 
           {/* Bottom Actions */}
           <div className="border-t border-gray-200 p-4">
-            <Link
-              to={routesStatic.login}
-              onClick={() => setSidebarOpen(false)}
-              className="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <Logout className="h-4 w-4" />
-              Retour au site
-            </Link>
+          <Link
+            to={routesStatic.login}
+            onClick={() => setSidebarOpen(false)}
+            className="flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <LogoutIcon className="h-4 w-4" />
+            Retour au site
+          </Link>
           </div>
         </div>
       </aside>

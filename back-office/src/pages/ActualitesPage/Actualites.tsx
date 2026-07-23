@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Card, CardContent, Typography, Box, Button } from '@mui/material';
 import { toast, Toaster } from 'sonner';
 import { ActualiteFilters, ActualiteForm, ActualiteTable, ActualiteViewDialog, ConfirmDialog, SearchInput } from '../../components';
 import { useFilter } from '../../hooks/useFilter';
@@ -7,6 +6,7 @@ import { usePagination } from '../../hooks';
 import type { ActualiteFormData, ActualiteItem} from '../../types';
 import { initialActualites } from '../../data/mockData';
 import { getAllActualites, createActualite, updateActualite, deleteActualite } from '../../services';
+import { Button } from '@/components/ui/button';
 
 
 const Actualites: React.FC = () => {
@@ -144,128 +144,69 @@ const Actualites: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
-          <CardContent className="flex flex-col items-center py-4">
-            <Typography variant="h4" className="font-bold text-gray-900">
-              {totalCount}
-            </Typography>
-            <Typography variant="body2" className="text-gray-500">
-              Total
-            </Typography>
-          </CardContent>
-        </Card>
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
-          <CardContent className="flex flex-col items-center py-4">
-            <Typography variant="h4" className="font-bold text-green-600">
-              {publishedCount}
-            </Typography>
-            <Typography variant="body2" className="text-gray-500">
-              Publiées
-            </Typography>
-          </CardContent>
-        </Card>
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
-          <CardContent className="flex flex-col items-center py-4">
-            <Typography variant="h4" className="font-bold text-amber-500">
-              {draftCount}
-            </Typography>
-            <Typography variant="body2" className="text-gray-500">
-              Brouillons
-            </Typography>
-          </CardContent>
-        </Card>
+        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+          <div className="text-3xl font-bold text-gray-900">{totalCount}</div>
+          <div className="text-sm text-gray-500">Total</div>
+        </div>
+        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+          <div className="text-3xl font-bold text-green-600">{publishedCount}</div>
+          <div className="text-sm text-gray-500">Publiées</div>
+        </div>
+        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+          <div className="text-3xl font-bold text-amber-500">{draftCount}</div>
+          <div className="text-sm text-gray-500">Brouillons</div>
+        </div>
       </div>
 
       {/* Search + Add Button */}
-      <Card
-        variant="outlined"
-        sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-      >
-        <CardContent>
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-              <Typography variant="h6" className="font-bold text-gray-800 whitespace-nowrap">
-                Liste des actualités
-                <Box
-                  component="span"
-                  className="ml-2 text-sm font-normal text-gray-500"
-                >
-                  ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
-                </Box>
-              </Typography>
-              <SearchInput
-                value={searchTerm}
-                onChange={handleSearchChange}
-                placeholder="Rechercher par titre, auteur..."
-              />
-            </div>
-            <div className="flex items-center gap-3 w-full lg:w-auto">
-              <Button
-                variant="outlined"
-                onClick={handleToggleFilters}
-                sx={{ 
-                  borderRadius: '8px', 
-                  textTransform: 'none',
-                  whiteSpace: 'nowrap',
-                  borderColor: '#e5e7eb',
-                  color: '#374151',
-                  '&:hover': {
-                    borderColor: '#d1d5db',
-                    backgroundColor: '#f9fafb'
-                  }
-                }}
-              >
-                {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleOpenCreate}
-                sx={{ 
-                  borderRadius: '8px', 
-                  textTransform: 'none',
-                  whiteSpace: 'nowrap',
-                  backgroundColor: '#2563eb',
-                  '&:hover': {
-                    backgroundColor: '#1d4ed8',
-                  }
-                }}
-              >
-                + Nouvelle actualité
-              </Button>
-            </div>
+      <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
+            <h2 className="text-lg font-bold text-gray-800 whitespace-nowrap">
+              Liste des actualités
+              <span className="ml-2 text-sm font-normal text-gray-500">
+                ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
+              </span>
+            </h2>
+            <SearchInput
+              value={searchTerm}
+              onChange={handleSearchChange}
+              placeholder="Rechercher par titre, auteur..."
+            />
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex items-center gap-3 w-full lg:w-auto">
+            <Button
+              variant="outline"
+              onClick={handleToggleFilters}
+              className="rounded-lg"
+            >
+              {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
+            </Button>
+            <Button
+              onClick={handleOpenCreate}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              + Nouvelle actualité
+            </Button>
+          </div>
+        </div>
+      </div>
 
       {/* Filters - Full Width Below */}
       {filtersOpen && (
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
-          <CardContent>
-            <ActualiteFilters
-              filters={filters}
-              onUpdateFilter={(key, value) => {
-                updateFilter(key, value);
-                resetPage();
-              }}
-              onResetFilters={handleResetFilters}
-              activeFilterCount={activeFilterCount}
-              open={filtersOpen}
-              onToggle={handleToggleFilters}
-            />
-          </CardContent>
-        </Card>
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <ActualiteFilters
+            filters={filters}
+            onUpdateFilter={(key, value) => {
+              updateFilter(key, value);
+              resetPage();
+            }}
+            onResetFilters={handleResetFilters}
+            activeFilterCount={activeFilterCount}
+            open={filtersOpen}
+            onToggle={handleToggleFilters}
+          />
+        </div>
       )}
 
       {/* Table */}

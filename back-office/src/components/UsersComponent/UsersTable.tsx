@@ -1,5 +1,4 @@
 import React from 'react';
-import { IconButton, Tooltip, Chip, Avatar } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -7,6 +6,8 @@ import { getImageUrl } from '../../utils/image.utils';
 import type { User } from '../../types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface UsersTableProps {
   data: User[];
@@ -33,18 +34,6 @@ const UsersTable: React.FC<UsersTableProps> = ({
   onDelete,
   isAdmin,
 }) => {
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case 'admin':
-        return 'error';
-      case 'editeur':
-        return 'primary';
-      case 'lecteur':
-        return 'default';
-      default:
-        return 'default';
-    }
-  };
 
   const getRoleLabel = (role: string) => {
     switch (role) {
@@ -59,19 +48,32 @@ const UsersTable: React.FC<UsersTableProps> = ({
     }
   };
 
+  const getRoleVariant = (role: string) => {
+    switch (role) {
+      case 'admin': return 'default';
+      case 'editeur': return 'secondary';
+      case 'lecteur': return 'outline';
+      default: return 'outline';
+    }
+  };
+
   const columns: Column<User>[] = [
     {
       id: 'avatar',
       label: 'Avatar',
       minWidth: 80,
       render: (user) => (
-        <Avatar
-          src={user.avatar ? getImageUrl(user.avatar) : undefined}
-          alt={`${user.nom} ${user.prenom}`}
-          sx={{ width: 40, height: 40 }}
-        >
-          {user.prenom[0]}{user.nom[0]}
-        </Avatar>
+        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold text-sm">
+          {user.avatar ? (
+            <img
+              src={getImageUrl(user.avatar)}
+              alt={`${user.nom} ${user.prenom}`}
+              className="w-10 h-10 rounded-full object-cover"
+            />
+          ) : (
+            `${user.prenom[0]}${user.nom[0]}`
+          )}
+        </div>
       ),
     },
     {
@@ -99,12 +101,9 @@ const UsersTable: React.FC<UsersTableProps> = ({
       label: 'Rôle',
       minWidth: 140,
       render: (user) => (
-        <Chip
-          label={getRoleLabel(user.role)}
-          color={getRoleColor(user.role) as any}
-          size="small"
-          sx={{ fontWeight: 500 }}
-        />
+        <Badge variant={getRoleVariant(user.role)}>
+          {getRoleLabel(user.role)}
+        </Badge>
       ),
     },
     {
@@ -112,11 +111,9 @@ const UsersTable: React.FC<UsersTableProps> = ({
       label: 'Statut',
       minWidth: 120,
       render: (user) => (
-        <Chip
-          label={user.estActif ? 'Actif' : 'Inactif'}
-          color={user.estActif ? 'success' : 'default'}
-          size="small"
-        />
+        <Badge variant={user.estActif ? 'default' : 'outline'}>
+          {user.estActif ? 'Actif' : 'Inactif'}
+        </Badge>
       ),
     },
     {
@@ -126,22 +123,31 @@ const UsersTable: React.FC<UsersTableProps> = ({
       align: 'right',
       render: (user) => (
         <div className="flex justify-end gap-1">
-          <Tooltip title="Voir">
-            <IconButton size="small" onClick={() => onView(user)} color="info">
-              <VisibilityIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Modifier">
-            <IconButton size="small" onClick={() => onEdit(user)} color="primary">
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => onView(user)}
+            className="h-8 w-8"
+          >
+            <VisibilityIcon fontSize="small" className="h-4 w-4" />
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => onEdit(user)}
+            className="h-8 w-8"
+          >
+            <EditIcon fontSize="small" className="h-4 w-4" />
+          </Button>
           {isAdmin && (
-            <Tooltip title="Supprimer">
-              <IconButton size="small" onClick={() => onDelete(user)} color="error">
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => onDelete(user)}
+              className="h-8 w-8 text-red-600 hover:text-red-700"
+            >
+              <DeleteIcon fontSize="small" className="h-4 w-4" />
+            </Button>
           )}
         </div>
       ),

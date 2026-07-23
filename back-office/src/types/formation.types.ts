@@ -31,3 +31,26 @@ export interface FormationFilterOptions {
   domaine: string;
   enVedette: string;
 }
+
+
+export interface FormationFormProps {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (data: FormationFormData) => void;
+  initialData?: Formation | null;
+  mode: "create" | "edit";
+}
+
+export interface FormErrors {
+  titre?: string;
+  domaine?: string;
+  niveau?: string;
+  duree?: string;
+  description?: string;
+  credits?: string;
+  slug?: string;
+  responsable?: string;
+  email?: string;
+  objectifs?: string;
+  debouches?: string;
+}

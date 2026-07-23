@@ -109,17 +109,18 @@ const ContactForm: React.FC<ContactFormProps> = (
                 onSubmit(formData);
             }
 
-            toast.success("Message envoyé avec succès ! Nous vous répondrons sous 48h.", {
+            toast.success("Message envoyé avec succès ! Nous vous recevrez un email de confirmation.", {
                 duration: 5000,
-                position: "bottom-center",
+                position: "top-right",
             });
+            
 
             setFormData(INITIAL_FORM_DATA);
         } catch (error) {
             console.error("Erreur lors de l'envoi du message:", error);
             toast.error("Une erreur est survenue lors de l'envoi du message. Veuillez réessayer.", {
                 duration: 5000,
-                position: "bottom-center",
+                position: "top-right",
             });
         } finally {
             setLoading(false);
@@ -159,8 +160,8 @@ const ContactForm: React.FC<ContactFormProps> = (
                     <form onSubmit={handleSubmit} className="space-y-4">
                         {/* Section 1 — Informations */}
                         <div
-                            className="rounded-2xl border border-gray-100 p-5 sm:p-6"
-                            style={{ backgroundColor: "#fafafa" }}
+                            className="rounded-2xl border-2 border-gray-200 p-5 sm:p-6"
+                            style={{ backgroundColor: "#ffffff" }}
                         >
                             <div className="mb-3 flex items-center gap-2">
                                 <div
@@ -275,8 +276,8 @@ const ContactForm: React.FC<ContactFormProps> = (
 
                         {/* Section 2 — Demande */}
                         <div
-                            className="rounded-2xl border border-gray-100 p-4 sm:p-5"
-                            style={{ backgroundColor: "#fafafa" }}
+                            className="rounded-2xl border-2 border-gray-200 p-4 sm:p-5"
+                            style={{ backgroundColor: "#ffffff" }}
                         >
                             <div className="mb-3 flex items-center gap-2">
                                 <div

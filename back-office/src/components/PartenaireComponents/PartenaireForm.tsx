@@ -1,30 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from "react";
+import InfoIcon from "@mui/icons-material/Info";
+import WorkIcon from "@mui/icons-material/Work";
+import PublicIcon from "@mui/icons-material/Public";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { getImageUrl } from "../../utils/image.utils";
+import { uploadImage } from "../../services";
+import type { Partenaire, PartenaireFormData } from "../../types";
+import { PARTENAIRE_TYPES, DEFAULT_PARTENAIRE_FORM_DATA } from "../../constants/partenaire.constants";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
-  DialogActions,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  IconButton,
-  Box,
-  FormHelperText,
-  Avatar,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { getImageUrl } from '../../utils/image.utils';
-import type { Partenaire, PartenaireFormData } from '../../types/partenaire.types';
-import { PARTENAIRE_TYPES, DEFAULT_PARTENAIRE_FORM_DATA } from '../../constants/partenaire.constants';
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { FloatingInput } from "@/components/ui/floating-input";
+import { FloatingTextarea } from "@/components/ui/floating-textarea";
+import { FloatingSelect } from "@/components/ui/floating-select";
 
 interface PartenaireFormProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: PartenaireFormData) => void;
   initialData?: Partenaire | null;
-  mode: 'create' | 'edit';
+  mode: "create" | "edit";
 }
 
 interface FormErrors {
@@ -33,7 +38,33 @@ interface FormErrors {
   type?: string;
   secteur?: string;
   dateDebut?: string;
+  siteWeb?: string;
+  contact?: string;
 }
+
+const STEPS = [
+  {
+    id: 0,
+    label: "Informations",
+    icon: <InfoIcon className="h-4 w-4" />,
+  },
+  {
+    id: 1,
+    label: "Détails",
+    icon: <WorkIcon className="h-4 w-4" />,
+  },
+  {
+    id: 2,
+    label: "Publication",
+    icon: <PublicIcon className="h-4 w-4" />,
+  },
+];
+
+const STEP_FIELDS: Record<number, (keyof FormErrors)[]> = {
+  0: ["nom", "type", "secteur", "dateDebut"],
+  1: ["description"],
+  2: [],
+};
 
 const PartenaireForm: React.FC<PartenaireFormProps> = ({
   open,
@@ -45,78 +76,124 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
   const [formData, setFormData] = useState<PartenaireFormData>(DEFAULT_PARTENAIRE_FORM_DATA);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
-  const [logoPreview, setLogoPreview] = useState<string>('');
+  const [logoPreview, setLogoPreview] = useState<string>("");
   const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (open) {
-      if (mode === 'edit' && initialData) {
+      if (mode === "edit" && initialData) {
         setFormData({
-          nom: initialData.nom || '',
-          type: initialData.type || 'Entreprise',
-          secteur: initialData.secteur || '',
-          dateDebut: initialData.dateDebut || new Date().toISOString().split('T')[0],
-          description: initialData.description || '',
-          logo: initialData.logo || '',
-          siteWeb: initialData.siteWeb || '',
-          contact: initialData.contact || '',
+          nom: initialData.nom || "",
+          type: initialData.type || "Entreprise",
+          secteur: initialData.secteur || "",
+          dateDebut: initialData.dateDebut || new Date().toISOString().split("T")[0],
+          description: initialData.description || "",
+          logo: initialData.logo || "",
+          siteWeb: initialData.siteWeb || "",
+          contact: initialData.contact || "",
         });
-        // Charger l'aperçu du logo existant
         if (initialData.logo) {
           setLogoPreview(getImageUrl(initialData.logo));
         } else {
-          setLogoPreview('');
+          setLogoPreview("");
         }
       } else {
         setFormData(DEFAULT_PARTENAIRE_FORM_DATA);
-        setLogoPreview('');
+        setLogoPreview("");
       }
       setLogoFile(null);
       setErrors({});
       setTouched({});
+      setActiveStep(0);
     }
   }, [open, mode, initialData]);
 
-  const validate = (data: PartenaireFormData): FormErrors => {
+  const validateForm = (data: PartenaireFormData): FormErrors => {
     const newErrors: FormErrors = {};
 
-    const nom = data.nom || '';
-    const description = data.description || '';
-    const secteur = data.secteur || '';
+    const nom = data.nom || "";
+    const description = data.description || "";
+    const secteur = data.secteur || "";
 
     if (!nom.trim()) {
-      newErrors.nom = 'Le nom est requis';
+      newErrors.nom = "Le nom est requis";
     } else if (nom.trim().length < 3) {
-      newErrors.nom = 'Le nom doit contenir au moins 3 caractères';
+      newErrors.nom = "Le nom doit contenir au moins 3 caractères";
     }
 
     if (!description.trim()) {
-      newErrors.description = 'La description est requise';
+      newErrors.description = "La description est requise";
     } else if (description.trim().length < 20) {
-      newErrors.description = 'La description doit contenir au moins 20 caractères';
+      newErrors.description = "La description doit contenir au moins 20 caractères";
     }
 
     if (!data.type) {
-      newErrors.type = 'Le type est requis';
+      newErrors.type = "Le type est requis";
     }
 
     if (!secteur.trim()) {
-      newErrors.secteur = 'Le secteur est requis';
+      newErrors.secteur = "Le secteur est requis";
     }
 
     if (!data.dateDebut) {
-      newErrors.dateDebut = 'La date de début est requise';
+      newErrors.dateDebut = "La date de début est requise";
     }
 
     return newErrors;
   };
 
+  const validateStep = (step: number): boolean => {
+    const allErrors = validateForm(formData);
+    const fields = STEP_FIELDS[step] || [];
+    const stepErrors: FormErrors = {};
+    let hasError = false;
+    fields.forEach((field) => {
+      if (allErrors[field]) {
+        stepErrors[field] = allErrors[field];
+        hasError = true;
+      }
+    });
+    const touchedFields: Record<string, boolean> = {};
+    fields.forEach((f) => (touchedFields[f] = true));
+    setTouched((prev) => ({ ...prev, ...touchedFields }));
+    setErrors((prev) => {
+      const updated = { ...prev };
+      fields.forEach((f) => {
+        if (stepErrors[f]) updated[f] = stepErrors[f];
+        else delete updated[f];
+      });
+      return updated;
+    });
+    return !hasError;
+  };
+
+  const validateAllSteps = (): boolean => {
+    const allErrors = validateForm(formData);
+    const allTouched: Record<string, boolean> = {};
+    Object.keys(DEFAULT_PARTENAIRE_FORM_DATA).forEach((k) => (allTouched[k] = true));
+    setTouched(allTouched);
+    setErrors(allErrors);
+    if (Object.keys(allErrors).length > 0) {
+      for (let i = 0; i < STEPS.length; i++) {
+        const fields = STEP_FIELDS[i] || [];
+        if (fields.some((f) => allErrors[f])) {
+          setActiveStep(i);
+          return false;
+        }
+      }
+      return false;
+    }
+    return true;
+  };
+
   const handleChange = (field: keyof PartenaireFormData, value: string) => {
     const newData = { ...formData, [field]: value };
     setFormData(newData);
-
     if (touched[field]) {
-      const fieldErrors = validate(newData);
+      const fieldErrors = validateForm(newData);
       setErrors((prev) => ({
         ...prev,
         [field]: fieldErrors[field as keyof FormErrors],
@@ -124,302 +201,345 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
     }
   };
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Vérifier le type de fichier
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-      if (!allowedTypes.includes(file.type)) {
-        alert('Format d\'image non supporté. Utilisez JPG, PNG, GIF ou WebP.');
-        return;
-      }
-
-      // Vérifier la taille (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('L\'image ne doit pas dépasser 5MB.');
-        return;
-      }
-
-      setLogoFile(file);
-      
-      // Créer un aperçu
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogoPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleBlur = (field: string) => {
     setTouched((prev) => ({ ...prev, [field]: true }));
-    const fieldErrors = validate(formData);
+    const fieldErrors = validateForm(formData);
     setErrors((prev) => ({
       ...prev,
       [field]: fieldErrors[field as keyof FormErrors],
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const allTouched: Record<string, boolean> = {};
-    Object.keys(DEFAULT_PARTENAIRE_FORM_DATA).forEach((key) => {
-      allTouched[key] = true;
-    });
-    setTouched(allTouched);
-
-    const validationErrors = validate(formData);
-    setErrors(validationErrors);
-
-    if (Object.keys(validationErrors).length === 0) {
-      // Si un nouveau logo a été uploadé, créer un FormData
-      if (logoFile) {
-        const formDataObj = new FormData();
-        formDataObj.append('nom', formData.nom);
-        formDataObj.append('type', formData.type);
-        formDataObj.append('secteur', formData.secteur);
-        formDataObj.append('description', formData.description);
-        formDataObj.append('dateDebut', formData.dateDebut);
-        formDataObj.append('logo', logoFile);
-        if (formData.siteWeb) formDataObj.append('siteWeb', formData.siteWeb);
-        if (formData.contact) formDataObj.append('contact', formData.contact);
-
-        // Appeler onSubmit avec le FormData
-        await onSubmit(formDataObj as any);
-      } else {
-        // Pas de nouveau logo, envoyer les données normales
-        await onSubmit(formData);
-      }
-      onClose();
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingImage(true);
+    try {
+      const url = await uploadImage(file);
+      handleChange("logo", url);
+      setLogoPreview(url);
+      setLogoFile(null);
+    } catch (err) {
+      console.error("Erreur lors de l'upload:", err);
+    } finally {
+      setUploadingImage(false);
     }
   };
 
-  const isFormTitle = mode === 'create' ? 'Nouveau partenaire' : 'Modifier le partenaire';
+  const handleLogoEmojiChange = (emoji: string) => {
+    handleChange("logo", emoji);
+    setLogoPreview("");
+    setLogoFile(null);
+  };
+
+  const handleNext = () => {
+    if (validateStep(activeStep))
+      setActiveStep((s) => Math.min(s + 1, STEPS.length - 1));
+  };
+
+  const handleBack = () => setActiveStep((s) => Math.max(s - 1, 0));
+
+  const handleStepClick = (step: number) => {
+    if (step < activeStep) {
+      setActiveStep(step);
+    } else if (step > activeStep) {
+      let canAdvance = true;
+      for (let i = activeStep; i < step; i++) {
+        if (!validateStep(i)) {
+          setActiveStep(i);
+          canAdvance = false;
+          break;
+        }
+      }
+      if (canAdvance) setActiveStep(step);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (validateAllSteps()) {
+      if (logoFile) {
+        const formDataObj = new FormData();
+        formDataObj.append("nom", formData.nom);
+        formDataObj.append("type", formData.type);
+        formDataObj.append("secteur", formData.secteur);
+        formDataObj.append("description", formData.description);
+        formDataObj.append("dateDebut", formData.dateDebut);
+        formDataObj.append("logo", logoFile);
+        if (formData.siteWeb) formDataObj.append("siteWeb", formData.siteWeb);
+        if (formData.contact) formDataObj.append("contact", formData.contact);
+        await onSubmit(formDataObj as any);
+      } else {
+        await onSubmit(formData);
+      }
+    }
+  };
+
+  const dialogTitle =
+    mode === "create" ? "Nouveau partenaire" : "Modifier le partenaire";
+
+  /* ─── Step 0 : Informations générales ─── */
+  const renderStep0 = () => (
+    <div className="space-y-4">
+      <FloatingInput
+        id="nom"
+        label="Nom *"
+        value={formData.nom}
+        onChange={(e) => handleChange("nom", e.target.value)}
+        onBlur={() => handleBlur("nom")}
+        error={errors.nom}
+      />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <FloatingSelect
+          label="Type *"
+          value={formData.type}
+          onValueChange={(v) => handleChange("type", v)}
+          options={[...PARTENAIRE_TYPES]}
+          error={errors.type}
+        />
+        <FloatingInput
+          id="secteur"
+          label="Secteur *"
+          value={formData.secteur}
+          onChange={(e) => handleChange("secteur", e.target.value)}
+          onBlur={() => handleBlur("secteur")}
+          error={errors.secteur}
+          placeholder="Ex: Technologie, Finance, Santé..."
+        />
+      </div>
+
+      <FloatingInput
+        id="dateDebut"
+        label="Date de début *"
+        type="date"
+        value={formData.dateDebut}
+        onChange={(e) => handleChange("dateDebut", e.target.value)}
+        onBlur={() => handleBlur("dateDebut")}
+        error={errors.dateDebut}
+      />
+    </div>
+  );
+
+  /* ─── Step 1 : Détails ─── */
+  const renderStep1 = () => (
+    <div className="space-y-4">
+      <FloatingTextarea
+        id="description"
+        label="Description *"
+        value={formData.description}
+        onChange={(e) => handleChange("description", e.target.value)}
+        onBlur={() => handleBlur("description")}
+        rows={5}
+        error={errors.description}
+        hint={
+          !errors.description
+            ? `${formData.description.length} caractère(s)`
+            : undefined
+        }
+      />
+
+      {/* Logo */}
+      <div className="space-y-2">
+        <Label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+          Logo
+        </Label>
+        <div className="flex items-start gap-3">
+          {logoPreview && (
+            <img
+              src={logoPreview}
+              alt="Aperçu"
+              className="w-20 h-20 object-cover rounded-md border border-gray-200 shrink-0"
+              onError={() => setLogoPreview("")}
+            />
+          )}
+          <div className="flex flex-col gap-1.5">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+              onChange={handleImageUpload}
+              className="hidden"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadingImage}
+              size="sm"
+              className="gap-1.5 bg-white text-xs h-8"
+            >
+              <CloudUploadIcon className="h-3.5 w-3.5" />
+              {uploadingImage ? "Upload..." : logoPreview ? "Changer le logo" : "Ajouter un logo"}
+            </Button>
+            <span className="text-[10px] text-gray-400">
+              JPG, PNG, GIF, WebP — max 5 Mo
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-3">
+          <Label htmlFor="logo-emoji" className="block text-sm font-medium text-gray-700 mb-1">
+            Ou utilisez un emoji
+          </Label>
+          <input
+            id="logo-emoji"
+            value={formData.logo}
+            onChange={(e) => handleLogoEmojiChange(e.target.value)}
+            placeholder="Ex: 🏢, 💰, 🏥, 🎓"
+            maxLength={2}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+    </div>
+  );
+
+  /* ─── Step 2 : Publication ─── */
+  const renderStep2 = () => (
+    <div className="space-y-4">
+      <FloatingInput
+        id="siteWeb"
+        label="Site web"
+        value={formData.siteWeb}
+        onChange={(e) => handleChange("siteWeb", e.target.value)}
+        placeholder="https://exemple.com"
+      />
+
+      <FloatingInput
+        id="contact"
+        label="Contact"
+        value={formData.contact}
+        onChange={(e) => handleChange("contact", e.target.value)}
+        placeholder="Email ou téléphone"
+      />
+    </div>
+  );
+
+  const stepRenderers = [renderStep0, renderStep1, renderStep2];
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle className="flex items-center justify-between">
-        <span className="text-xl font-bold">{isFormTitle}</span>
-        <IconButton onClick={onClose} size="small">
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <DialogContent
+        className="
+          sm:max-w-3xl
+          w-[95vw]
+          bg-white
+          p-0
+          gap-0
+          overflow-hidden
+          [&>button]:hidden
+        "
+      >
+        {/* ─── Header + Stepper ─── */}
+        <DialogHeader className="px-5 pt-4 pb-3 border-b bg-gray-50/80">
+          <DialogTitle className="text-lg font-bold text-gray-900">
+            {dialogTitle}
+          </DialogTitle>
 
-      <form onSubmit={handleSubmit}>
-        <DialogContent dividers>
-          <Box className="space-y-5">
-            {/* Nom */}
-            <div className="w-full">
-              <label htmlFor="nom" className="block text-sm font-medium text-gray-700 mb-1">
-                Nom <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="nom"
-                value={formData.nom}
-                onChange={(e) => handleChange('nom', e.target.value)}
-                onBlur={() => handleBlur('nom')}
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.nom ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="Entrez le nom du partenaire"
-              />
-              {errors.nom && <p className="mt-1 text-sm text-red-500">{errors.nom}</p>}
-            </div>
+          <div className="flex items-center justify-center gap-1 mt-3">
+            {STEPS.map((step, index) => {
+              const isCompleted = index < activeStep;
+              const isActive = index === activeStep;
 
-            {/* Row: Type + Secteur */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FormControl fullWidth error={Boolean(errors.type)} required>
-                <InputLabel>Type</InputLabel>
-                <Select
-                  value={formData.type}
-                  label="Type"
-                  onChange={(e) => handleChange('type', e.target.value)}
-                  onBlur={() => handleBlur('type')}
-                  sx={{ borderRadius: '8px' }}
+              return (
+                <React.Fragment key={step.id}>
+                  {index > 0 && (
+                    <div
+                      className={`hidden sm:block h-px w-8 transition-colors ${
+                        isCompleted ? "bg-blue-500" : "bg-gray-300"
+                      }`}
+                    />
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleStepClick(index)}
+                    className={`
+                      flex items-center gap-1.5 px-3 py-1.5 rounded-full
+                      text-xs font-medium transition-all
+                      ${
+                        isActive
+                          ? "bg-blue-600 text-white shadow-sm"
+                          : isCompleted
+                            ? "bg-blue-50 text-blue-700 hover:bg-blue-100"
+                            : "bg-gray-100 text-gray-400"
+                      }
+                    `}
+                  >
+                    {isCompleted ? (
+                      <CheckCircleIcon className="h-4 w-4" />
+                    ) : (
+                      step.icon
+                    )}
+                    <span className="hidden sm:inline">{step.label}</span>
+                    <span className="sm:hidden">{index + 1}</span>
+                  </button>
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </DialogHeader>
+
+        {/* ─── Body ─── */}
+        <div className="px-5 py-4 overflow-y-auto max-h-[58vh]">
+          {stepRenderers[activeStep]()}
+        </div>
+
+        {/* ─── Footer ─── */}
+        <DialogFooter className="px-5 py-3 mb-4 mx-4 border-t bg-gray-50/80">
+          <div className="flex items-center justify-between w-full">
+            <span className="text-xs text-gray-400">
+              {activeStep + 1}/{STEPS.length}
+            </span>
+
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={onClose}
+                className="text-gray-500 h-8"
+              >
+                Annuler
+              </Button>
+
+              {activeStep > 0 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBack}
+                  className="gap-1 h-8"
                 >
-                  {PARTENAIRE_TYPES.map((type) => (
-                    <MenuItem key={type.value} value={type.value}>
-                      {type.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {errors.type && <FormHelperText>{errors.type}</FormHelperText>}
-              </FormControl>
+                  <ArrowBackIcon className="h-3.5 w-3.5" />
+                  Précédent
+                </Button>
+              )}
 
-              <div className="w-full">
-                <label htmlFor="secteur" className="block text-sm font-medium text-gray-700 mb-1">
-                  Secteur <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="secteur"
-                  value={formData.secteur}
-                  onChange={(e) => handleChange('secteur', e.target.value)}
-                  onBlur={() => handleBlur('secteur')}
-                  className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    errors.secteur ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="Ex: Technologie, Finance, Santé..."
-                />
-                {errors.secteur && <p className="mt-1 text-sm text-red-500">{errors.secteur}</p>}
-              </div>
-            </div>
-
-            {/* Date début */}
-            <div className="w-full">
-              <label htmlFor="dateDebut" className="block text-sm font-medium text-gray-700 mb-1">
-                Date de début <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="date"
-                id="dateDebut"
-                value={formData.dateDebut}
-                onChange={(e) => handleChange('dateDebut', e.target.value)}
-                onBlur={() => handleBlur('dateDebut')}
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.dateDebut ? 'border-red-500' : 'border-gray-300'
-                }`}
-              />
-              {errors.dateDebut && <p className="mt-1 text-sm text-red-500">{errors.dateDebut}</p>}
-            </div>
-
-            {/* Description */}
-            <div className="w-full">
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                Description <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => handleChange('description', e.target.value)}
-                onBlur={() => handleBlur('description')}
-                rows={3}
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.description ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="Décrivez le partenariat..."
-              />
-              {(errors.description || formData.description.length > 0) && (
-                <p className={`mt-1 text-sm ${errors.description ? 'text-red-500' : 'text-gray-500'}`}>
-                  {errors.description || `${formData.description.length} caractère(s)`}
-                </p>
+              {activeStep < STEPS.length - 1 ? (
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={handleNext}
+                  className="gap-1 h-8 bg-blue-600 hover:bg-blue-700"
+                >
+                  Suivant
+                  <ArrowForwardIcon className="h-3.5 w-3.5" />
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={handleSubmit}
+                  className="gap-1 h-8 bg-blue-600 hover:bg-blue-700"
+                >
+                  <CheckCircleIcon className="h-3.5 w-3.5" />
+                  {mode === "create" ? "Créer" : "Enregistrer"}
+                </Button>
               )}
             </div>
-
-            {/* Logo */}
-            <div className="w-full">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Logo
-              </label>
-              
-              {/* Aperçu du logo */}
-              <Box className="flex items-center gap-4 mb-3">
-                <Avatar
-                  src={logoPreview}
-                  sx={{ width: 80, height: 80 }}
-                  variant="rounded"
-                >
-                  {!logoPreview && (formData.logo || '')}
-                </Avatar>
-                
-                {/* Input file caché */}
-                <input
-                  type="file"
-                  id="logo-upload"
-                  accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-                  onChange={handleLogoChange}
-                  className="hidden"
-                />
-                
-                {/* Bouton pour déclencher l'upload */}
-                <label
-                  htmlFor="logo-upload"
-                  className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  <svg className="mr-2 -ml-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  {logoPreview ? 'Changer le logo' : 'Ajouter un logo'}
-                </label>
-              </Box>
-
-              {/* Emoji alternatif si pas d'image */}
-              <div className="mt-3">
-                <label htmlFor="logo-emoji" className="block text-sm font-medium text-gray-700 mb-1">
-                  Ou utilisez un emoji
-                </label>
-                <input
-                  type="text"
-                  id="logo-emoji"
-                  value={formData.logo}
-                  onChange={(e) => {
-                    handleChange('logo', e.target.value);
-                    setLogoPreview('');
-                    setLogoFile(null);
-                  }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Ex: 🏢, 💰, 🏥, 🎓"
-                  maxLength={2}
-                />
-              </div>
-              
-              <p className="mt-2 text-xs text-gray-500">
-                Formats acceptés: JPG, PNG, GIF, WebP. Taille max: 5MB
-              </p>
-            </div>
-
-            {/* Site Web */}
-            <div className="w-full">
-              <label htmlFor="siteWeb" className="block text-sm font-medium text-gray-700 mb-1">
-                Site web
-              </label>
-              <input
-                type="url"
-                id="siteWeb"
-                value={formData.siteWeb}
-                onChange={(e) => handleChange('siteWeb', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="https://exemple.com"
-              />
-            </div>
-
-            {/* Contact */}
-            <div className="w-full">
-              <label htmlFor="contact" className="block text-sm font-medium text-gray-700 mb-1">
-                Contact
-              </label>
-              <input
-                type="text"
-                id="contact"
-                value={formData.contact}
-                onChange={(e) => handleChange('contact', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Email ou téléphone"
-              />
-            </div>
-          </Box>
-        </DialogContent>
-
-        <DialogActions className="p-4 gap-2">
-          <Button
-            onClick={onClose}
-            variant="outlined"
-            color="inherit"
-            sx={{ borderRadius: '8px', textTransform: 'none' }}
-          >
-            Annuler
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{ borderRadius: '8px', textTransform: 'none', fontWeight: 600 }}
-          >
-            {mode === 'create' ? 'Créer' : 'Enregistrer'}
-          </Button>
-        </DialogActions>
-      </form>
+          </div>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 };

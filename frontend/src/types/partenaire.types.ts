@@ -17,9 +17,30 @@ export type PartenaireCardProps = {
     partenaire: PartenaireItem;
 };
 
+export type PartenaireTypeOption = {
+    value: string;
+    label: string;
+};
+
+export type PartenaireStat = {
+    value: string;
+    label: string;
+};
+
 export type PartenairesPageProps = {
     pageTitle?: string;
     pageSubtitle?: string;
     pageDescription?: string;
+    stats?: PartenaireStat[];
+    types?: PartenaireTypeOption[];
+    partenaires?: PartenaireItem[];
+};
+
+export type PartenairesSectionProps = {
+    title?: string;
+    description?: string;
+    ctaLabel?: string;
+    ctaLink?: string;
+    maxItems?: number;
     partenaires?: PartenaireItem[];
 };

@@ -20,6 +20,8 @@ export type AdmissionFormData = {
     niveau: string;
     formation: string;
     diplomePrecedent: string;
+    cv?: File;
+    lettreMotivation?: File;
     accepteConditions: boolean;
 };
 
@@ -33,4 +35,13 @@ export type AdmissionPageProps = {
     pageTitle?: string;
     pageSubtitle?: string;
     pageDescription?: string;
+};
+
+export type AdmissionCtaSectionProps = {
+    title?: string;
+    description?: string;
+    primaryButtonLabel?: string;
+    primaryButtonLink?: string;
+    secondaryButtonLabel?: string;
+    secondaryButtonLink?: string;
 };

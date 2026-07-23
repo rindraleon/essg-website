@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ressourceHumaineService } from '../services';
-import type { RessourceHumaine, PaginationResponse } from '../types/ressource-humaine.types';
+import type { RessourceHumaine } from '../types/ressource-humaine.types';
+import type { PaginationResponse } from '../types/formations.types';
 
 // Cache simple pour éviter les requêtes répétées
 const queryCache = new Map<string, { data: any; timestamp: number }>();

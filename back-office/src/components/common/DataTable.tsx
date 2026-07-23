@@ -1,17 +1,6 @@
 import React, { useMemo } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TablePagination,
-  Paper,
-  Typography,
-  Box,
-} from '@mui/material';
 import InboxIcon from '@mui/icons-material/Inbox';
+import { Button } from '@/components/ui/button';
 
 export interface Column<T> {
   id: string;
@@ -40,92 +29,88 @@ function DataTableInner<T>({
   page,
   rowsPerPage,
   onPageChange,
-  onRowsPerPageChange,
   emptyMessage = 'Aucune donnée trouvée',
   getRowId,
-}: DataTableProps<T>) {
+}: Readonly<DataTableProps<T>>) {
   const rowKey = useMemo(() => {
     if (!getRowId) return undefined;
     return new Map(data.map((row, index) => [row, getRowId(row, index)]));
   }, [data, getRowId]);
 
   return (
-    <Paper elevation={0} sx={{ border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
-      <TableContainer sx={{ overflowX: 'auto' }}>
-        <Table>
-          <TableHead>
-            <TableRow>
+    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr>
               {columns.map((column) => (
-                <TableCell
+                <th
                   key={column.id}
                   align={column.align || 'left'}
-                  sx={{
-                    minWidth: column.minWidth,
-                    fontWeight: 700,
-                    backgroundColor: '#f9fafb',
-                    color: '#374151',
-                    borderBottom: '2px solid #e5e7eb',
-                  }}
+                  style={{ minWidth: column.minWidth }}
+                  className="px-4 py-3 font-bold text-gray-700 bg-gray-50 border-b-2 border-gray-200"
                 >
                   {column.label}
-                </TableCell>
+                </th>
               ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
+            </tr>
+          </thead>
+          <tbody>
             {data.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={columns.length} align="center" sx={{ py: 8 }}>
-                  <Box className="flex flex-col items-center gap-2 text-gray-400">
+              <tr>
+                <td colSpan={columns.length} align="center" className="py-12">
+                  <div className="flex flex-col items-center gap-2 text-gray-400">
                     <InboxIcon sx={{ fontSize: 48 }} />
-                    <Typography variant="body1">{emptyMessage}</Typography>
-                  </Box>
-                </TableCell>
-              </TableRow>
+                    <p className="text-base">{emptyMessage}</p>
+                  </div>
+                </td>
+              </tr>
             ) : (
               data.map((row, index) => {
                 const key = rowKey ? rowKey.get(row) : index;
                 return (
-                  <TableRow
+                  <tr
                     key={key}
-                    hover
-                    sx={{
-                      '&:last-child td': { borderBottom: 0 },
-                      transition: 'background-color 0.15s',
-                    }}
+                    className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors"
                   >
                     {columns.map((column) => (
-                      <TableCell key={column.id} align={column.align || 'left'}>
+                      <td key={column.id} align={column.align || 'left'} className="px-4 py-3">
                         {column.render(row)}
-                      </TableCell>
+                      </td>
                     ))}
-                  </TableRow>
+                  </tr>
                 );
               })
             )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </tbody>
+        </table>
+      </div>
       {totalCount > 0 && (
-        <TablePagination
-          component="div"
-          count={totalCount}
-          page={page}
-          onPageChange={(_, newPage) => onPageChange(newPage)}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={(e) => onRowsPerPageChange(parseInt(e.target.value, 10))}
-          rowsPerPageOptions={[5, 10, 25, 50]}
-          labelRowsPerPage="Lignes par page :"
-          labelDisplayedRows={({ from, to, count }) =>
-            `${from}-${to} sur ${count !== -1 ? count : `plus de ${to}`}`
-          }
-          sx={{
-            borderTop: '1px solid #e5e7eb',
-            '.MuiTablePagination-toolbar': { px: 2 },
-          }}
-        />
+        <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
+          <div className="text-sm text-gray-600">
+            {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, totalCount)} sur {totalCount}
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(page - 1)}
+              disabled={page === 0}
+            >
+              Précédent
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(page + 1)}
+              disabled={(page + 1) * rowsPerPage >= totalCount}
+            >
+              Suivant
+            </Button>
+          </div>
+        </div>
       )}
-    </Paper>
+    </div>
   );
 }
 

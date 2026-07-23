@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { IconButton, Tooltip, Chip, Avatar } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -9,6 +8,15 @@ import { formatDate } from '../../utils/partenaire.utils';
 import { PARTENAIRE_TYPE_COLORS } from '../../constants/partenaire.constants';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface PartenaireTableProps {
   data: Partenaire[];
@@ -43,12 +51,14 @@ const PartenaireTable: React.FC<PartenaireTableProps> = ({
         return (
           <div className="max-w-md">
             <div className="flex items-center gap-3">
-              <Avatar
-                src={isImageLogo ? getImageUrl(row.logo) : undefined}
-                sx={{ width: 40, height: 40, fontSize: '1.5rem', backgroundColor: '#f3f4f6' }}
-                variant="rounded"
-              >
-                {!isImageLogo && row.logo}
+              <Avatar className="h-10 w-10">
+                {isImageLogo ? (
+                  <AvatarImage src={getImageUrl(row.logo)} alt={row.nom} />
+                ) : (
+                  <AvatarFallback className="bg-gray-100 text-gray-700">
+                    {row.logo}
+                  </AvatarFallback>
+                )}
               </Avatar>
               <div>
                 <span className="font-semibold text-gray-900 line-clamp-1">{row.nom}</span>
@@ -63,14 +73,20 @@ const PartenaireTable: React.FC<PartenaireTableProps> = ({
       id: 'type',
       label: 'Type',
       minWidth: 140,
-      render: (row) => (
-        <Chip
-          label={row.type}
-          size="small"
-          color={PARTENAIRE_TYPE_COLORS[row.type] || 'default'}
-          sx={{ borderRadius: '6px', fontWeight: 500 }}
-        />
-      ),
+      render: (row) => {
+        const colorMap: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+          'primary': 'default',
+          'secondary': 'secondary',
+          'success': 'default',
+          'warning': 'secondary',
+          'info': 'outline',
+        };
+        return (
+          <Badge variant={colorMap[PARTENAIRE_TYPE_COLORS[row.type]] || 'outline'}>
+            {row.type}
+          </Badge>
+        );
+      },
     },
     {
       id: 'contact',
@@ -98,23 +114,49 @@ const PartenaireTable: React.FC<PartenaireTableProps> = ({
       minWidth: 130,
       align: 'right',
       render: (row) => (
-        <div className="flex justify-end gap-1">
-          <Tooltip title="Voir">
-            <IconButton size="small" onClick={() => onView(row)} color="info">
-              <VisibilityIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Modifier">
-            <IconButton size="small" onClick={() => onEdit(row)} color="primary">
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Supprimer">
-            <IconButton size="small" onClick={() => onDelete(row)} color="error">
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </div>
+        <TooltipProvider>
+          <div className="flex justify-end gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => onView(row)}
+                  className="h-8 w-8"
+                >
+                  <VisibilityIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Voir</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => onEdit(row)}
+                  className="h-8 w-8"
+                >
+                  <EditIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Modifier</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => onDelete(row)}
+                  className="h-8 w-8 text-red-600 hover:text-red-700"
+                >
+                  <DeleteIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Supprimer</TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       ),
     },
   ], [onView, onEdit, onDelete]);

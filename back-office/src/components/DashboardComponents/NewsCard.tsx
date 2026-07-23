@@ -1,16 +1,10 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  Box,
-  Chip,
-  IconButton,
-} from "@mui/material";
-import { Visibility } from "@mui/icons-material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { getImageUrl } from "../../utils/image.utils";
 import { type Actualite } from "../../types/news.types";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface NewsCardProps {
   actualite: Actualite;
@@ -27,85 +21,49 @@ const NewsCard: React.FC<NewsCardProps> = ({ actualite, onView }) => {
   };
 
   return (
-    <Card
-      sx={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        transition: "0.3s",
-        "&:hover": {
-          boxShadow: 3,
-          transform: "translateY(-2px)",
-        },
-      }}
-    >
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2, mb: 2 }}>
-          <Box
-            sx={{
-              fontSize: "2.5rem",
-              width: 60,
-              height: 60,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              bgcolor: "primary.light",
-              borderRadius: 2,
-              flexShrink: 0,
-            }}
+    <Card className="h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+      <CardContent className="flex-1">
+        <div className="flex items-start gap-4 mb-3">
+          <div
+            className="text-2xl w-[60px] h-[60px] flex items-center justify-center bg-indigo-50 rounded-lg flex-shrink-0"
           >
             {actualite.image ? (
               <img
                 src={getImageUrl(actualite.image)}
                 alt={actualite.titre}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                className="w-full h-full object-cover rounded-lg"
               />
             ) : (
               <span>📰</span>
             )}
-          </Box>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography variant="h6" component="h3" fontWeight="600" gutterBottom>
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">
               {actualite.titre}
-            </Typography>
-            <Box sx={{ display: "flex", gap: 1, mb: 1, flexWrap: "wrap" }}>
-              <Chip
-                label={actualite.categorie}
-                size="small"
-                color="primary"
-                variant="outlined"
-              />
-              <Typography variant="caption" color="text.secondary">
+            </h3>
+            <div className="flex gap-2 mb-1 flex-wrap items-center">
+              <Badge variant="outline">{actualite.categorie}</Badge>
+              <span className="text-xs text-gray-500">
                 {formatDate(actualite.date)}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{
-            display: "-webkit-box",
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
+              </span>
+            </div>
+          </div>
+        </div>
+        <p className="text-sm text-gray-600 line-clamp-3">
           {actualite.resume || actualite.contenu}
-        </Typography>
+        </p>
       </CardContent>
       {onView && (
-        <CardActions sx={{ justifyContent: "flex-end", px: 2, pb: 2 }}>
-          <IconButton
-            size="small"
-            color="primary"
+        <CardFooter className="flex justify-end px-4 pb-4">
+          <Button
+            size="sm"
+            variant="ghost"
             onClick={() => onView(actualite.id)}
             aria-label="voir"
           >
-            <Visibility />
-          </IconButton>
-        </CardActions>
+            <VisibilityIcon className="h-4 w-4" />
+          </Button>
+        </CardFooter>
       )}
     </Card>
   );

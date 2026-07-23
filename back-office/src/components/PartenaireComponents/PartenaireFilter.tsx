@@ -1,19 +1,18 @@
 import React from 'react';
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-  Button,
-  Collapse,
-  Box,
-  IconButton,
-} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import RestoreIcon from '@mui/icons-material/Restore';
 import type { PartenaireFilterOptions } from '../../types/partenaire.types';
 import { PARTENAIRE_TYPES } from '../../constants/partenaire.constants';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface PartenaireFiltersProps {
   filters: PartenaireFilterOptions;
@@ -34,97 +33,85 @@ const PartenaireFilters: React.FC<PartenaireFiltersProps> = ({
 }) => {
   return (
     <div>
-      <Collapse in={open}>
-        <Box className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+      {open && (
+        <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-semibold text-gray-700">Filtres avancés</span>
-            <IconButton size="small" onClick={onToggle}>
-              <CloseIcon />
-            </IconButton>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={onToggle}
+            >
+              <CloseIcon className="h-4 w-4" />
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <FormControl size="small" fullWidth>
-              <InputLabel>Type</InputLabel>
+            <div className="w-full">
+              <Label htmlFor="type">Type</Label>
               <Select
-                value={filters.type}
-                label="Type"
-                onChange={(e) => onUpdateFilter('type', e.target.value)}
-                sx={{ borderRadius: '8px', backgroundColor: 'white' }}
+                value={filters.type || ''}
+                onValueChange={(value) => onUpdateFilter('type', value || '')}
               >
-                <MenuItem value="">
-                  <em>Tous</em>
-                </MenuItem>
-                {PARTENAIRE_TYPES.map((typeItem) => (
-                  <MenuItem key={typeItem.value} value={typeItem.value}>
-                    {typeItem.label}
-                  </MenuItem>
-                ))}
+                <SelectTrigger id="type">
+                  <SelectValue placeholder="Tous" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Tous</SelectItem>
+                  {PARTENAIRE_TYPES.map((typeItem) => (
+                    <SelectItem key={typeItem.value} value={typeItem.value}>
+                      {typeItem.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
-            </FormControl>
+            </div>
 
-            <TextField
-              size="small"
-              label="Secteur"
-              value={filters.secteur}
-              onChange={(e) => onUpdateFilter('secteur', e.target.value)}
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                  backgroundColor: 'white',
-                },
-              }}
-            />
+            <div className="w-full">
+              <Label htmlFor="secteur">Secteur</Label>
+              <Input
+                id="secteur"
+                value={filters.secteur}
+                onChange={(e) => onUpdateFilter('secteur', e.target.value)}
+                placeholder="Filtrer par secteur"
+              />
+            </div>
 
-            <TextField
-              size="small"
-              type="date"
-              label="Date début"
-              value={filters.dateDebut}
-              onChange={(e) => onUpdateFilter('dateDebut', e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                  backgroundColor: 'white',
-                },
-              }}
-            />
+            <div className="w-full">
+              <Label htmlFor="dateDebut">Date début</Label>
+              <Input
+                id="dateDebut"
+                type="date"
+                value={filters.dateDebut}
+                onChange={(e) => onUpdateFilter('dateDebut', e.target.value)}
+              />
+            </div>
 
-            <TextField
-              size="small"
-              type="date"
-              label="Date fin"
-              value={filters.dateFin}
-              onChange={(e) => onUpdateFilter('dateFin', e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                  backgroundColor: 'white',
-                },
-              }}
-            />
+            <div className="w-full">
+              <Label htmlFor="dateFin">Date fin</Label>
+              <Input
+                id="dateFin"
+                type="date"
+                value={filters.dateFin}
+                onChange={(e) => onUpdateFilter('dateFin', e.target.value)}
+              />
+            </div>
           </div>
 
           {activeFilterCount > 0 && (
             <div className="mt-3 flex justify-end">
               <Button
-                size="small"
-                color="error"
-                startIcon={<RestoreIcon fontSize="small" />}
+                size="sm"
+                variant="destructive"
                 onClick={onResetFilters}
-                sx={{ textTransform: 'none', fontSize: 12 }}
               >
+                <RestoreIcon className="h-4 w-4 mr-2" />
                 Réinitialiser tout
               </Button>
             </div>
           )}
-        </Box>
-      </Collapse>
+        </div>
+      )}
     </div>
   );
 };

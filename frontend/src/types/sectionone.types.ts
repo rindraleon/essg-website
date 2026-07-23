@@ -12,3 +12,18 @@ export type SectionOneProps = {
     readonly imageAlt?: string;
     readonly showTemplateNotice?: boolean;
 };
+
+export type LocalisationSectionProps = {
+    readonly title?: string;
+    readonly description?: string;
+    readonly addressLabel?: string;
+    readonly address?: string;
+    readonly contactLabel?: string;
+    readonly phone?: string;
+    readonly email?: string;
+    readonly ctaLabel?: string;
+    readonly ctaLink?: string;
+    readonly mapTitle?: string;
+    readonly latitude?: number;
+    readonly longitude?: number;
+};

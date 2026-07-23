@@ -1,17 +1,16 @@
 import React from 'react';
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Collapse,
-  Box,
-  IconButton,
-  Button,
-} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import RestoreIcon from '@mui/icons-material/Restore';
 import type { FormationFilterOptions } from '../../types/formation.types';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface FormationFiltersProps {
   filters: FormationFilterOptions;
@@ -48,87 +47,90 @@ const FormationFilters: React.FC<FormationFiltersProps> = ({
   onToggle,
 }) => {
   return (
-    <div>
-      <Collapse in={open}>
-        <Box className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-semibold text-gray-700">Filtres avancés</span>
-            <IconButton size="small" onClick={onToggle}>
-              <CloseIcon />
-            </IconButton>
-          </div>
+    <div className={open ? '' : 'hidden'}>
+      <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-semibold text-gray-700">Filtres avancés</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggle}
+            className="h-8 w-8"
+          >
+            <CloseIcon className="h-4 w-4" />
+          </Button>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <FormControl size="small" fullWidth>
-              <InputLabel>Niveau</InputLabel>
-              <Select
-                value={filters.niveau}
-                label="Niveau"
-                onChange={(e) => onUpdateFilter('niveau', e.target.value)}
-                sx={{ borderRadius: '8px', backgroundColor: 'white' }}
-              >
-                <MenuItem value="">
-                  <em>Tous</em>
-                </MenuItem>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="space-y-2">
+            <Label>Niveau</Label>
+            <Select
+              value={filters.niveau}
+              onValueChange={(value) => onUpdateFilter('niveau', value || '')}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Tous" />
+              </SelectTrigger>
+              <SelectContent>
                 {niveaux.map((niv) => (
-                  <MenuItem key={niv.value} value={niv.value}>
+                  <SelectItem key={niv.value} value={niv.value}>
                     {niv.label}
-                  </MenuItem>
+                  </SelectItem>
                 ))}
-              </Select>
-            </FormControl>
-
-            <FormControl size="small" fullWidth>
-              <InputLabel>Domaine</InputLabel>
-              <Select
-                value={filters.domaine}
-                label="Domaine"
-                onChange={(e) => onUpdateFilter('domaine', e.target.value)}
-                sx={{ borderRadius: '8px', backgroundColor: 'white' }}
-              >
-                <MenuItem value="">
-                  <em>Tous</em>
-                </MenuItem>
-                {domaines.map((dom) => (
-                  <MenuItem key={dom} value={dom}>
-                    {dom}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl size="small" fullWidth>
-              <InputLabel>En vedette</InputLabel>
-              <Select
-                value={filters.enVedette}
-                label="En vedette"
-                onChange={(e) => onUpdateFilter('enVedette', e.target.value)}
-                sx={{ borderRadius: '8px', backgroundColor: 'white' }}
-              >
-                <MenuItem value="">
-                  <em>Toutes</em>
-                </MenuItem>
-                <MenuItem value="true">Oui</MenuItem>
-                <MenuItem value="false">Non</MenuItem>
-              </Select>
-            </FormControl>
+              </SelectContent>
+            </Select>
           </div>
 
-          {activeFilterCount > 0 && (
-            <div className="mt-3 flex justify-end">
-              <Button
-                size="small"
-                color="error"
-                onClick={onResetFilters}
-                startIcon={<RestoreIcon fontSize="small" />}
-                sx={{ textTransform: 'none', fontSize: 12 }}
-              >
-                Réinitialiser tout
-              </Button>
-            </div>
-          )}
-        </Box>
-      </Collapse>
+          <div className="space-y-2">
+            <Label>Domaine</Label>
+            <Select
+              value={filters.domaine}
+              onValueChange={(value) => onUpdateFilter('domaine', value || '')}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Tous" />
+              </SelectTrigger>
+              <SelectContent>
+                {domaines.map((dom) => (
+                  <SelectItem key={dom} value={dom}>
+                    {dom}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>En vedette</Label>
+            <Select
+              value={filters.enVedette}
+              onValueChange={(value) => onUpdateFilter('enVedette', value || '')}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Toutes" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Oui</SelectItem>
+                <SelectItem value="false">Non</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {activeFilterCount > 0 && (
+          <div className="mt-3 flex justify-end">
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={onResetFilters}
+              className="text-xs"
+            >
+              <RestoreIcon className="h-3 w-3 mr-1" />
+              Réinitialiser tout
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

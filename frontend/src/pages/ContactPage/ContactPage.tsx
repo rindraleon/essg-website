@@ -75,7 +75,7 @@ const ContactPage: React.FC<ContactPageProps> = (
     return (
         <div className="min-h-screen bg-gray-50">
             <Toaster
-                position="bottom-center"
+                position="top-right"
                 toastOptions={{
                     duration: 5000,
                     style: {

@@ -6,6 +6,7 @@ import Chip from "@mui/material/Chip";
 import { Link as RouterLink } from "react-router-dom";
 import type { HeroSectionProps } from "../../types";
 
+
 const HERO_BACKGROUND_IMAGE =
     "https://images.unsplash.com/photo-1664273891579-22f28332f3c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920";
 

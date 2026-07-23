@@ -64,3 +64,6 @@ export { default as UsersForm } from './UsersComponent/UsersForm';
 export { default as UsersViewDialog } from './UsersComponent/UsersViewDialog';
 export { default as UsersFilter } from './UsersComponent/UsersFilter';
 export type { UserFilters } from './UsersComponent/UsersFilter';
+
+// Admission components
+export { default as AdmissionFilters } from './AdmissionComponents/AdmissionFilters';

@@ -1,20 +1,19 @@
 // src/components/actualites/ActualiteFilters.tsx
 import React from 'react';
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-  Button,
-  Collapse,
-  Box,
-  IconButton,
-} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import RestoreIcon from '@mui/icons-material/Restore';
 import type { FilterOptions } from '../../types/actualite.types';
 import { categories, statuts } from '../../data/mockData';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface ActualiteFiltersProps {
   filters: FilterOptions;
@@ -34,103 +33,96 @@ const ActualiteFilters: React.FC<ActualiteFiltersProps> = ({
   onToggle,
 }) => {
   return (
-    <div>
-      <Collapse in={open}>
-        <Box className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-semibold text-gray-700">Filtres avancés</span>
-            <IconButton size="small" onClick={onToggle}>
-              <CloseIcon />
-            </IconButton>
+    <div className={open ? '' : 'hidden'}>
+      <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-semibold text-gray-700">Filtres avancés</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggle}
+            className="h-8 w-8"
+          >
+            <CloseIcon className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="space-y-2">
+            <Label>Catégorie</Label>
+            <Select
+              value={filters.categorie}
+              onValueChange={(value) => onUpdateFilter('categorie', value || '')}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Toutes" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((cat) => (
+                  <SelectItem key={cat} value={cat}>
+                    {cat}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <FormControl size="small" fullWidth>
-              <InputLabel>Catégorie</InputLabel>
-              <Select
-                value={filters.categorie}
-                label="Catégorie"
-                onChange={(e) => onUpdateFilter('categorie', e.target.value)}
-                sx={{ borderRadius: '8px', backgroundColor: 'white' }}
-              >
-                <MenuItem value="">
-                  <em>Toutes</em>
-                </MenuItem>
-                {categories.map((cat) => (
-                  <MenuItem key={cat} value={cat}>
-                    {cat}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl size="small" fullWidth>
-              <InputLabel>Statut</InputLabel>
-              <Select
-                value={filters.statut}
-                label="Statut"
-                onChange={(e) => onUpdateFilter('statut', e.target.value)}
-                sx={{ borderRadius: '8px', backgroundColor: 'white' }}
-              >
-                <MenuItem value="">
-                  <em>Tous</em>
-                </MenuItem>
+          <div className="space-y-2">
+            <Label>Statut</Label>
+            <Select
+              value={filters.statut}
+              onValueChange={(value) => onUpdateFilter('statut', value || '')}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Tous" />
+              </SelectTrigger>
+              <SelectContent>
                 {statuts.map((s) => (
-                  <MenuItem key={s.value} value={s.value}>
+                  <SelectItem key={s.value} value={s.value}>
                     {s.label}
-                  </MenuItem>
+                  </SelectItem>
                 ))}
-              </Select>
-            </FormControl>
+              </SelectContent>
+            </Select>
+          </div>
 
-            <TextField
-              size="small"
+          <div className="space-y-2">
+            <Label htmlFor="dateDebut">Date début</Label>
+            <Input
+              id="dateDebut"
               type="date"
-              label="Date début"
               value={filters.dateDebut}
               onChange={(e) => onUpdateFilter('dateDebut', e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                  backgroundColor: 'white',
-                },
-              }}
-            />
-
-            <TextField
-              size="small"
-              type="date"
-              label="Date fin"
-              value={filters.dateFin}
-              onChange={(e) => onUpdateFilter('dateFin', e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                  backgroundColor: 'white',
-                },
-              }}
+              className="bg-white"
             />
           </div>
 
-          {activeFilterCount > 0 && (
-            <div className="mt-3 flex justify-end">
-              <Button
-                size="small"
-                color="error"
-                startIcon={<RestoreIcon fontSize="small" />}
-                onClick={onResetFilters}
-                sx={{ textTransform: 'none', fontSize: 12 }}
-              >
-                Réinitialiser tout
-              </Button>
-            </div>
-          )}
-        </Box>
-      </Collapse>
+          <div className="space-y-2">
+            <Label htmlFor="dateFin">Date fin</Label>
+            <Input
+              id="dateFin"
+              type="date"
+              value={filters.dateFin}
+              onChange={(e) => onUpdateFilter('dateFin', e.target.value)}
+              className="bg-white"
+            />
+          </div>
+        </div>
+
+        {activeFilterCount > 0 && (
+          <div className="mt-3 flex justify-end">
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={onResetFilters}
+              className="text-xs"
+            >
+              <RestoreIcon className="h-3 w-3 mr-1" />
+              Réinitialiser tout
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

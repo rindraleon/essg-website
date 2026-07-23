@@ -1,7 +1,6 @@
-// src/components/common/PageHeader.tsx
 import React from 'react';
-import { Button } from '@mui/material';
-import { Plus } from 'lucide-react';
+import AddIcon from '@mui/icons-material/Add';
+import { Button } from '@/components/ui/button';
 
 interface PageHeaderProps {
   title: string;
@@ -26,17 +25,10 @@ const PageHeader: React.FC<PageHeaderProps> = ({
       </div>
       {actionLabel && onAction && (
         <Button
-          variant="contained"
-          startIcon={actionIcon || <Plus className="h-4 w-4" />}
           onClick={onAction}
-          sx={{
-            borderRadius: '8px',
-            textTransform: 'none',
-            fontWeight: 600,
-            px: 3,
-            py: 1.2,
-          }}
+          className="rounded-lg"
         >
+          {actionIcon || <AddIcon className="h-4 w-4 mr-2" />}
           {actionLabel}
         </Button>
       )}

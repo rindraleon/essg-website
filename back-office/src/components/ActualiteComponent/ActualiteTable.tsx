@@ -1,6 +1,5 @@
 // src/components/actualites/ActualiteTable.tsx
 import React from 'react';
-import { IconButton, Tooltip, Chip } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,6 +7,8 @@ import type { ActualiteItem } from '../../types/actualite.types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
 import StatusBadge from '../common/StatusBadge';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface ActualiteTableProps {
   data: ActualiteItem[];
@@ -49,12 +50,9 @@ const ActualiteTable: React.FC<ActualiteTableProps> = ({
       label: 'Catégorie',
       minWidth: 120,
       render: (row) => (
-        <Chip
-          label={row.categorie}
-          size="small"
-          variant="outlined"
-          sx={{ borderRadius: '6px', fontWeight: 500 }}
-        />
+        <Badge variant="outline" className="text-xs">
+          {row.categorie}
+        </Badge>
       ),
     },
     {
@@ -86,21 +84,30 @@ const ActualiteTable: React.FC<ActualiteTableProps> = ({
       align: 'right',
       render: (row) => (
         <div className="flex justify-end gap-1">
-          <Tooltip title="Voir">
-            <IconButton size="small" onClick={() => onView(row)} color="info">
-              <VisibilityIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Modifier">
-            <IconButton size="small" onClick={() => onEdit(row)} color="primary">
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Supprimer">
-            <IconButton size="small" onClick={() => onDelete(row)} color="error">
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => onView(row)}
+            className="h-8 w-8"
+          >
+            <VisibilityIcon fontSize="small" className="h-4 w-4" />
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => onEdit(row)}
+            className="h-8 w-8"
+          >
+            <EditIcon fontSize="small" className="h-4 w-4" />
+          </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => onDelete(row)}
+            className="h-8 w-8 text-red-600 hover:text-red-700"
+          >
+            <DeleteIcon fontSize="small" className="h-4 w-4" />
+          </Button>
         </div>
       ),
     },

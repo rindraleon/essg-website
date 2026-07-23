@@ -1,19 +1,16 @@
 import React from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Box,
-  Typography,
-  Chip,
-  Grid as MuiGrid,
-  Avatar,
-  Divider,
-} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { getImageUrl } from '../../utils/image.utils';
 import type { User } from '../../types';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface UsersViewDialogProps {
   open: boolean;
@@ -24,18 +21,6 @@ interface UsersViewDialogProps {
 const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }) => {
   if (!user) return null;
 
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case 'admin':
-        return 'error';
-      case 'editeur':
-        return 'primary';
-      case 'lecteur':
-        return 'default';
-      default:
-        return 'default';
-    }
-  };
 
   const getRoleLabel = (role: string) => {
     switch (role) {
@@ -47,6 +32,17 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
         return 'Lecteur';
       default:
         return role;
+    }
+  };
+
+  const getRoleBadgeVariant = (role: string) => {
+    switch (role) {
+      case 'admin':
+        return 'default';
+      case 'editeur':
+        return 'secondary';
+      default:
+        return 'outline';
     }
   };
 
@@ -63,127 +59,139 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
   const avatarUrl = user.avatar ? getImageUrl(user.avatar) : null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
-        <Typography variant="h6" fontWeight={600}>
-          Détails de l'utilisateur
-        </Typography>
-      </DialogTitle>
-      <DialogContent>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1 }}>
-          {/* Avatar and basic info */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, pb: 2 }}>
-            <Avatar
-              src={avatarUrl || undefined}
-              sx={{ width: 120, height: 120, bgcolor: 'primary.main', fontSize: '3rem' }}
-            >
-              {getInitials()}
-            </Avatar>
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h6" fontWeight={600}>
-                {user.prenom} {user.nom}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {user.email}
-              </Typography>
-            </Box>
-          </Box>
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+      <DialogContent
+        className="
+          !w-[96vw]
+          !max-w-6xl
+          !h-[90vh]
+          !max-h-[90vh]
+          gap-0
+          overflow-hidden
+          rounded-[30px]
+          border-2 border-slate-200
+          bg-white
+          p-0
+          shadow-[0_24px_80px_rgba(15,23,42,0.35)]
+          [&>button]:hidden
+        "
+      >
+        <div className="flex min-h-0 flex-col">
+          <DialogHeader className="shrink-0 border-b border-slate-200 bg-white px-5 py-4 lg:px-6">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <DialogTitle className="text-xl font-bold text-slate-900">
+                  Détails de l'utilisateur
+                </DialogTitle>
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                className="h-10 w-10 shrink-0 rounded-full border border-slate-200 bg-white hover:bg-slate-100"
+                aria-label="Fermer"
+              >
+                <CloseIcon className="h-4 w-4" />
+              </Button>
+            </div>
+          </DialogHeader>
 
-          <Divider />
+          <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 lg:px-6">
+          {/* Avatar and basic info */}
+          <div className="flex flex-col items-center gap-3 pb-4">
+            <Avatar className="h-24 w-24">
+              <AvatarImage src={avatarUrl || undefined} alt="Avatar" />
+              <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
+                {getInitials()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-gray-900">
+                {user.prenom} {user.nom}
+              </h3>
+              <p className="text-sm text-gray-500">
+                {user.email}
+              </p>
+            </div>
+          </div>
+
+          <hr className="border-gray-200" />
 
           {/* Details Grid */}
-          <MuiGrid container spacing={2}>
-            <MuiGrid size={{ xs: 12, sm: 6 }}>
-              <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Prénom
-                </Typography>
-                <Typography variant="body1" fontWeight={500}>
-                  {user.prenom}
-                </Typography>
-              </Box>
-            </MuiGrid>
-            <MuiGrid size={{ xs: 12, sm: 6 }}>
-              <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Nom
-                </Typography>
-                <Typography variant="body1" fontWeight={500}>
-                  {user.nom}
-                </Typography>
-              </Box>
-            </MuiGrid>
-          </MuiGrid>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="p-3 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-1">Prénom</p>
+              <p className="text-sm font-medium text-gray-900">
+                {user.prenom}
+              </p>
+            </div>
+            <div className="p-3 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-1">Nom</p>
+              <p className="text-sm font-medium text-gray-900">
+                {user.nom}
+              </p>
+            </div>
+          </div>
 
-          <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              Email
-            </Typography>
-            <Typography variant="body1" fontWeight={500}>
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <p className="text-xs text-gray-500 mb-1">Email</p>
+            <p className="text-sm font-medium text-gray-900">
               {user.email}
-            </Typography>
-          </Box>
+            </p>
+          </div>
 
-          <MuiGrid container spacing={2}>
-            <MuiGrid size={{ xs: 12, sm: 6 }}>
-              <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Rôle
-                </Typography>
-                <Chip
-                  label={getRoleLabel(user.role)}
-                  color={getRoleColor(user.role)}
-                  size="small"
-                  sx={{ fontWeight: 500, mt: 0.5 }}
-                />
-              </Box>
-            </MuiGrid>
-            <MuiGrid size={{ xs: 12, sm: 6 }}>
-              <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Statut
-                </Typography>
-                <Chip
-                  label={user.estActif ? 'Actif' : 'Inactif'}
-                  color={user.estActif ? 'success' : 'default'}
-                  size="small"
-                  sx={{ mt: 0.5 }}
-                />
-              </Box>
-            </MuiGrid>
-          </MuiGrid>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="p-3 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-1">Rôle</p>
+              <Badge 
+                variant={getRoleBadgeVariant(user.role)}
+                className="mt-1"
+              >
+                {getRoleLabel(user.role)}
+              </Badge>
+            </div>
+            <div className="p-3 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-1">Statut</p>
+              <Badge 
+                variant={user.estActif ? 'default' : 'outline'}
+                className="mt-1"
+              >
+                {user.estActif ? 'Actif' : 'Inactif'}
+              </Badge>
+            </div>
+          </div>
 
-          <Divider />
+          <hr className="border-gray-200" />
 
-          <MuiGrid container spacing={2}>
-            <MuiGrid size={{ xs: 12, sm: 6 }}>
-              <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Créé le
-                </Typography>
-                <Typography variant="body1" fontWeight={500}>
-                  {formatDate(user.creeLe)}
-                </Typography>
-              </Box>
-            </MuiGrid>
-            <MuiGrid size={{ xs: 12, sm: 6 }}>
-              <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Mis à jour le
-                </Typography>
-                <Typography variant="body1" fontWeight={500}>
-                  {formatDate(user.misAJourLe)}
-                </Typography>
-              </Box>
-            </MuiGrid>
-          </MuiGrid>
-        </Box>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="p-3 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-1">Créé le</p>
+              <p className="text-sm font-medium text-gray-900">
+                {formatDate(user.creeLe)}
+              </p>
+            </div>
+            <div className="p-3 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-500 mb-1">Mis à jour le</p>
+              <p className="text-sm font-medium text-gray-900">
+                {formatDate(user.misAJourLe)}
+              </p>
+            </div>
+          </div>
+          </div>
+
+          <div className="flex shrink-0 items-center justify-end border-t border-slate-200 bg-white px-5 py-4 lg:px-6">
+            <Button
+              type="button"
+              onClick={onClose}
+              variant="outline"
+              className="rounded-xl"
+            >
+              Fermer
+            </Button>
+          </div>
+        </div>
       </DialogContent>
-      <DialogActions sx={{ px: 3, pb: 3 }}>
-        <Button onClick={onClose} variant="outlined">
-          Fermer
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

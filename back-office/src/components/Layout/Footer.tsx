@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import IconButton from "@mui/material/IconButton";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import LogoITDC from "../../assets/files/images/logo/itdc_logo.png";
 import { InsertLinkOutlined } from "@mui/icons-material";
 import type { FooterProps, SocialItem } from "../../types/footer.types";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 function SocialIcon({ kind }: Readonly<{ kind?: SocialItem["kind"] }>) {
     switch (kind) {
@@ -90,19 +91,16 @@ const Footer: React.FC<FooterProps> = (props: Readonly<FooterProps>) => {
 
                         <div className="flex items-center gap-2">
                             {socials.map((s) => (
-                                // stable key: combine kind and href (href should be unique)
-                                <IconButton
+                                <a
                                     key={`${s.kind ?? "social"}-${s.href}`}
-                                    component="a"
                                     href={s.href}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label={s.ariaLabel ?? `Ouvrir ${companyName} social`}
-                                    size="small"
-                                    className="text-gray-300 hover:text-primary hover:bg-primary/5 p-2"
+                                    className="p-2 rounded-lg text-gray-300 hover:text-primary hover:bg-primary/5 transition-colors"
                                 >
                                     <SocialIcon kind={s.kind} />
-                                </IconButton>
+                                </a>
                             ))}
                         </div>
                     </div>
@@ -155,24 +153,23 @@ const Footer: React.FC<FooterProps> = (props: Readonly<FooterProps>) => {
                             <label htmlFor="footer-newsletter" className="sr-only">
                                 Email
                             </label>
-                            <input
+                            <Input
                                 id="footer-newsletter"
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
                                 placeholder="ton.email@exemple.com"
-                                className="flex-1 px-3 py-2 border rounded-md bg-primary/5 text-sm placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                className="flex-1 bg-primary/5"
                                 aria-label="Adresse e-mail pour la newsletter"
                             />
-                            <button
+                            <Button
                                 type="submit"
                                 disabled={submitting}
-                                className="px-4 py-2 rounded-md bg-indigo-500 hover:bg-indigo-600 text-primary text-sm transition-colors disabled:opacity-60"
-                                aria-disabled={submitting}
+                                size="sm"
                             >
                                 {submitting ? "..." : "S'inscrire"}
-                            </button>
+                            </Button>
                         </form>
 
                         {message && <p className="text-xs text-gray-300 mt-2">{message}</p>}

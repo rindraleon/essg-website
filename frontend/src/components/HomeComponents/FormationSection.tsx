@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import Button from "@mui/material/Button";
 import { Link as RouterLink } from "react-router-dom";
-import type { FeaturedFormationsSectionProps, Formation } from "../../types";
+
 
 import { getImageUrl } from "../../utils/image.utils";
 import {
@@ -12,6 +12,7 @@ import {
     MobileCta,
 } from "../../components";
 import { formationService } from "../../services";
+import type { FeaturedFormationsSectionProps, Formation } from "../../types";
 
 const FALLBACK_IMAGE =
     "https://images.unsplash.com/photo-1523050854058-8df90110a6f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800";

@@ -1,19 +1,19 @@
-// src/components/common/ConfirmDialog.tsx
 import React from 'react';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import InfoIcon from '@mui/icons-material/Info';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
-  DialogContentText,
-  DialogActions,
-  Button,
-} from '@mui/material';
-import { AlertTriangle } from 'lucide-react';
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface ConfirmDialogProps {
   open: boolean;
   title: string;
-  message: string;
+  message: React.ReactNode;
   confirmLabel?: string;
   cancelLabel?: string;
   onConfirm: () => void;
@@ -31,37 +31,63 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onCancel,
   severity = 'warning',
 }) => {
-  const colorMap = {
-    warning: 'warning' as const,
-    error: 'error' as const,
-    info: 'info' as const,
+  const getIcon = () => {
+    const iconClass = "h-5 w-5";
+    switch (severity) {
+      case 'error':
+        return <ErrorOutlineIcon className={`${iconClass} text-red-500`} />;
+      case 'warning':
+        return <WarningAmberIcon className={`${iconClass} text-amber-500`} />;
+      case 'info':
+        return <InfoIcon className={`${iconClass} text-blue-500`} />;
+      default:
+        return <WarningAmberIcon className={`${iconClass} text-amber-500`} />;
+    }
   };
 
   return (
-    <Dialog open={open} onClose={onCancel} maxWidth="xs" fullWidth>
-      <DialogTitle className="flex items-center gap-2">
-        <AlertTriangle
-          className={`h-5 w-5 ${
-            severity === 'error'
-              ? 'text-red-500'
-              : severity === 'warning'
-              ? 'text-amber-500'
-              : 'text-blue-500'
-          }`}
-        />
-        {title}
-      </DialogTitle>
-      <DialogContent>
-        <DialogContentText>{message}</DialogContentText>
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onCancel()}>
+      <DialogContent
+        className="
+          !max-w-md
+          gap-0
+          overflow-hidden
+          rounded-2xl
+          border border-slate-200
+          bg-white
+          p-0
+          shadow-lg
+          [&>button]:hidden
+        "
+      >
+        <div className="flex min-h-0 flex-col">
+          <DialogHeader className="shrink-0 border-b border-slate-200 bg-white px-5 py-4 lg:px-6">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <DialogTitle className="flex items-center gap-2 text-xl font-bold text-slate-900">
+                  {getIcon()}
+                  {title}
+                </DialogTitle>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <div className="px-6 py-4">
+            <div className="text-base leading-relaxed text-slate-700">{message}</div>
+          </div>
+
+          <div className="flex shrink-0 items-center justify-end border-t border-slate-200 bg-white px-5 py-4 lg:px-6">
+            <div className="flex justify-end gap-2">
+              <Button onClick={onCancel} variant="outline" className="rounded-xl">
+                {cancelLabel}
+              </Button>
+              <Button onClick={onConfirm} className="rounded-xl">
+                {confirmLabel}
+              </Button>
+            </div>
+          </div>
+        </div>
       </DialogContent>
-      <DialogActions className="p-4">
-        <Button onClick={onCancel} variant="outlined" color="inherit">
-          {cancelLabel}
-        </Button>
-        <Button onClick={onConfirm} variant="contained" color={colorMap[severity]}>
-          {confirmLabel}
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

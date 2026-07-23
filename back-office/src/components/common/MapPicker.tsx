@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
-import { IconButton, TextField, Box, Typography, Paper } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import EditIcon from '@mui/icons-material/Edit';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 // Fix pour le marker par défaut de Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -104,22 +105,15 @@ const MapPicker: React.FC<MapPickerProps> = ({
   };
 
   return (
-    <Box className="w-full">
+    <div className="w-full space-y-3">
       {label && (
-        <Typography variant="subtitle2" className="font-semibold text-gray-700 mb-2">
+        <p className="font-semibold text-gray-700 mb-2">
           {label}
-        </Typography>
+        </p>
       )}
       
       {/* Map */}
-      <Paper
-        elevation={2}
-        sx={{
-          borderRadius: '12px',
-          overflow: 'hidden',
-          border: '1px solid #e5e7eb',
-        }}
-      >
+      <div className="rounded-xl overflow-hidden border border-gray-200">
         <MapContainer
           center={position}
           zoom={13}
@@ -132,92 +126,88 @@ const MapPicker: React.FC<MapPickerProps> = ({
           <MapClickHandler onLocationSelect={handleLocationSelect} />
           <Marker position={position}>
             <Popup>
-              <Box>
-                <Typography variant="body2" className="font-semibold">
-                  Emplacement sélectionné
-                </Typography>
-                <Typography variant="caption" className="text-gray-600">
+              <div>
+                <p className="font-semibold text-sm">Emplacement sélectionné</p>
+                <p className="text-xs text-gray-600">
                   {position[0].toFixed(5)}, {position[1].toFixed(5)}
-                </Typography>
-              </Box>
+                </p>
+              </div>
             </Popup>
           </Marker>
         </MapContainer>
-      </Paper>
+      </div>
 
       {/* Manual Coordinate Input */}
-       <Box className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-         <Box className="flex items-center gap-2 mb-2">
-           <EditIcon fontSize="small" className="text-gray-600" />
-           <Typography variant="subtitle2" className="font-semibold text-gray-700">
-             Saisie manuelle des coordonnées
-           </Typography>
-         </Box>
-         <Box className="grid grid-cols-2 gap-3">
-           <TextField
-             label="Latitude"
-             size="small"
-             type="number"
-             value={manualLat}
-             onChange={(e) => handleManualLatChange(e.target.value)}
-             onBlur={() => {
-               if (!isManualEdit) {
-                 setManualLat(position[0].toFixed(7));
-               }
-             }}
-             inputProps={{
-               min: -90,
-               max: 90,
-               step: 0.0000001,
-             }}
-             helperText="Entre -90 et 90"
-             sx={{ fontSize: '0.875rem' }}
-           />
-           <TextField
-             label="Longitude"
-             size="small"
-             type="number"
-             value={manualLng}
-             onChange={(e) => handleManualLngChange(e.target.value)}
-             onBlur={() => {
-               if (!isManualEdit) {
-                 setManualLng(position[1].toFixed(7));
-               }
-             }}
-             inputProps={{
-               min: -180,
-               max: 180,
-               step: 0.0000001,
-             }}
-             helperText="Entre -180 et 180"
-           />
-         </Box>
-       </Box>
+       <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="flex items-center gap-2 mb-2">
+            <EditIcon fontSize="small" className="text-gray-600" />
+            <p className="font-semibold text-gray-700 text-sm">
+              Saisie manuelle des coordonnées
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-gray-700">Latitude</label>
+              <Input
+                type="number"
+                value={manualLat}
+                onChange={(e) => handleManualLatChange(e.target.value)}
+                onBlur={() => {
+                  if (!isManualEdit) {
+                    setManualLat(position[0].toFixed(7));
+                  }
+                }}
+                min={-90}
+                max={90}
+                step={0.0000001}
+              />
+              <p className="text-xs text-gray-500">Entre -90 et 90</p>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-gray-700">Longitude</label>
+              <Input
+                type="number"
+                value={manualLng}
+                onChange={(e) => handleManualLngChange(e.target.value)}
+                onBlur={() => {
+                  if (!isManualEdit) {
+                    setManualLng(position[1].toFixed(7));
+                  }
+                }}
+                min={-180}
+                max={180}
+                step={0.0000001}
+              />
+              <p className="text-xs text-gray-500">Entre -180 et 180</p>
+            </div>
+          </div>
+        </div>
 
-       {/* Coordinates Display */}
-       <Box className="mt-2 flex items-center gap-3 text-sm">
-         <Box className="flex items-center gap-1">
-           <LocationOnIcon fontSize="small" className="text-gray-500" />
-           <Typography variant="body2" className="text-gray-600">
-             <span className="font-semibold">Lat:</span> {position[0].toFixed(5)}
-           </Typography>
-         </Box>
-         <Box className="flex items-center gap-1">
-           <LocationOnIcon fontSize="small" className="text-gray-500" />
-           <Typography variant="body2" className="text-gray-600">
-             <span className="font-semibold">Lng:</span> {position[1].toFixed(5)}
-           </Typography>
-         </Box>
-         <IconButton
-           size="small"
-           onClick={handleGetCurrentLocation}
-           title="Utiliser ma position actuelle"
-           sx={{ padding: '2px' }}
-         >
-           <MyLocationIcon fontSize="small" className="text-blue-600" />
-         </IconButton>
-       </Box>
-    </Box>
+        {/* Coordinates Display */}
+        <div className="mt-2 flex items-center gap-3 text-sm">
+          <div className="flex items-center gap-1">
+            <LocationOnIcon fontSize="small" className="text-gray-500" />
+            <span className="text-gray-600">
+              <span className="font-semibold">Lat:</span> {position[0].toFixed(5)}
+            </span>
+          </div>
+          <div className="flex items-center gap-1">
+            <LocationOnIcon fontSize="small" className="text-gray-500" />
+            <span className="text-gray-600">
+              <span className="font-semibold">Lng:</span> {position[1].toFixed(5)}
+            </span>
+          </div>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={handleGetCurrentLocation}
+            title="Utiliser ma position actuelle"
+            className="h-8 w-8"
+          >
+            <MyLocationIcon fontSize="small" className="text-blue-600" />
+          </Button>
+        </div>
+    </div>
   );
 };
 

@@ -63,3 +63,14 @@ export const updateMessage = async (id: number, lu: boolean): Promise<Message> =
 export const deleteMessage = async (id: number): Promise<void> => {
   await axiosConfig.delete(`/messages/${id}`);
 };
+
+export const getRecentMessages = async (limit: number = 4): Promise<PaginationResponse<Message>> => {
+  const params = new URLSearchParams();
+  params.append('page', '1');
+  params.append('limit', String(limit));
+  params.append('sortBy', 'creeLe');
+  params.append('sortOrder', 'DESC');
+
+  const response = await axiosConfig.get(`/messages?${params.toString()}`);
+  return response.data;
+};

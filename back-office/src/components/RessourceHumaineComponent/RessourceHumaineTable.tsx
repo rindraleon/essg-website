@@ -1,5 +1,4 @@
 import React from 'react';
-import { IconButton, Tooltip, Chip, Avatar } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -7,7 +6,15 @@ import { getImageUrl } from '../../utils/image.utils';
 import type { RessourceHumaineItem } from '../../types/ressource-humaine.types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
-
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface RessourceHumaineTableProps {
   data: RessourceHumaineItem[];
@@ -38,12 +45,14 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
       label: 'Photo',
       minWidth: 60,
       render: (row) => (
-        <Avatar
-          src={row.photo ? getImageUrl(row.photo) : undefined}
-          alt={`${row.nom} ${row.prenom}`}
-          sx={{ width: 36, height: 36 }}
-        >
-          {row.prenom[0]}{row.nom[0]}
+        <Avatar className="h-9 w-9">
+          {row.photo ? (
+            <AvatarImage src={getImageUrl(row.photo)} alt={`${row.nom} ${row.prenom}`} />
+          ) : (
+            <AvatarFallback className="bg-gray-100 text-gray-700 text-xs">
+              {row.prenom[0]}{row.nom[0]}
+            </AvatarFallback>
+          )}
         </Avatar>
       ),
     },
@@ -65,12 +74,9 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
       label: 'Poste',
       minWidth: 140,
       render: (row) => (
-        <Chip
-          label={row.poste}
-          size="small"
-          variant="outlined"
-          sx={{ borderRadius: '6px', fontWeight: 500 }}
-        />
+        <Badge variant="outline">
+          {row.poste}
+        </Badge>
       ),
     },
     {
@@ -94,12 +100,9 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
       label: 'Statut',
       minWidth: 90,
       render: (row) => (
-        <Chip
-          label={row.actif ? 'Actif' : 'Inactif'}
-          size="small"
-          color={row.actif ? 'success' : 'default'}
-          sx={{ borderRadius: '6px', fontWeight: 500 }}
-        />
+        <Badge variant={row.actif ? 'default' : 'secondary'}>
+          {row.actif ? 'Actif' : 'Inactif'}
+        </Badge>
       ),
     },
     {
@@ -108,29 +111,55 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
       minWidth: 110,
       align: 'right',
       render: (row) => (
-        <div className="flex justify-end gap-1">
-          <Tooltip title="Voir">
-            <IconButton size="small" onClick={() => onView(row)} color="info">
-              <VisibilityIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Modifier">
-            <IconButton size="small" onClick={() => onEdit(row)} color="primary">
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Supprimer">
-            <IconButton size="small" onClick={() => onDelete(row)} color="error">
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </div>
+        <TooltipProvider>
+          <div className="flex justify-end gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => onView(row)}
+                  className="h-8 w-8"
+                >
+                  <VisibilityIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Voir</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => onEdit(row)}
+                  className="h-8 w-8"
+                >
+                  <EditIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Modifier</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => onDelete(row)}
+                  className="h-8 w-8 text-red-600 hover:text-red-700"
+                >
+                  <DeleteIcon className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Supprimer</TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       ),
     },
   ];
 
   return (
-    <DataTable<RessourceHumaineItem>
+    <DataTable
       columns={columns}
       data={data}
       totalCount={totalCount}
@@ -139,6 +168,7 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
       onPageChange={onPageChange}
       onRowsPerPageChange={onRowsPerPageChange}
       emptyMessage="Aucune ressource humaine trouvée"
+      getRowId={(row) => row.id}
     />
   );
 };

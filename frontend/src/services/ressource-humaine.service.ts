@@ -1,4 +1,5 @@
-import type { RessourceHumaine, PaginationResponse } from '../types/ressource-humaine.types';
+import type { RessourceHumaine } from '../types/ressource-humaine.types';
+import type { PaginationResponse } from '../types/formations.types';
 
 const API_BASE_URL = import.meta.env.VITE_APP_URL || 'http://localhost:3000';
 const BASE_URL = `${API_BASE_URL.replace(/\/api\/?$/, '')}/ressources-humaines`;

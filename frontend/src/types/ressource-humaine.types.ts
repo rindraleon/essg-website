@@ -14,16 +14,8 @@ export interface RessourceHumaine {
   misAJourLe: string;
 }
 
-export interface PaginationResponse<T> {
-  data: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
-
 export interface RessourceHumaineSectionProps {
   title?: string;
   description?: string;
   ressourcesHumaines?: RessourceHumaine[];
-}
+};
