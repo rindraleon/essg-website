@@ -1,5 +1,5 @@
 // src/components/formations/FormationForm.tsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import ObjectiveIcon from "@mui/icons-material/Flag";
 import WorkIcon from "@mui/icons-material/Work";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
@@ -10,11 +10,8 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { getImageUrl } from "../../utils/image.utils";
 import { uploadImage } from "../../services";
-import type {
-  FormationFormData,
-  FormationFormProps,
-  FormErrors,
-} from "../../types";
+import type { FormationFormData, FormationFormProps } from "../../types";
+import { useFormValidation } from "../../hooks/useFormValidation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -78,7 +75,11 @@ const STEPS = [
   },
 ];
 
-const STEP_FIELDS: Record<number, (keyof FormErrors)[]> = {
+type ArrayField = "objectifs" | "debouches" | "programme" | "conditions" | "competences" | "modules";
+
+type FormationField = keyof FormationFormData;
+
+const STEP_FIELDS_MAP: Record<number, FormationField[]> = {
   0: ["titre", "slug", "domaine", "niveau", "duree", "credits", "description"],
   1: ["objectifs", "debouches"],
   2: ["email", "responsable"],
@@ -112,13 +113,62 @@ const FormationForm: React.FC<FormationFormProps> = ({
   initialData,
   mode,
 }) => {
-  const [formData, setFormData] = useState<FormationFormData>(defaultFormData);
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { formData, errors, activeStep, setActiveStep, handleChange, handleBlur, validateStep, validateAllSteps, setFormData, resetForm } = useFormValidation<FormationFormData>({
+    defaultValues: defaultFormData,
+    validators: {
+      titre: {
+        required: true,
+        minLength: { value: 5, message: "Min. 5 caractères" },
+      },
+      domaine: {
+        required: true,
+        custom: (value) => {
+          const arr = value as string[];
+          if (!arr || arr.length === 0) return "Le domaine est requis";
+          return undefined;
+        },
+      },
+      niveau: { required: true },
+      duree: { required: true },
+      description: {
+        required: true,
+        minLength: { value: 20, message: "Min. 20 caractères" },
+      },
+      slug: { required: true },
+      credits: {
+        required: true,
+        custom: (value) => {
+          const num = Number(value);
+          if (!num || num <= 0) return "Doit être > 0";
+          return undefined;
+        },
+      },
+      objectifs: {
+        required: true,
+        custom: (value) => {
+          const arr = value as string[];
+          if (arr.filter((o) => o.trim()).length === 0) return "Au moins un objectif requis";
+          return undefined;
+        },
+      },
+      debouches: {
+        required: true,
+        custom: (value) => {
+          const arr = value as string[];
+          if (arr.filter((d) => d.trim()).length === 0) return "Au moins un débouché requis";
+          return undefined;
+        },
+      },
+      email: {
+        pattern: { regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Email invalide" },
+      },
+    },
+    stepFields: STEP_FIELDS_MAP,
+  });
 
   useEffect(() => {
     if (open) {
@@ -132,139 +182,21 @@ const FormationForm: React.FC<FormationFormProps> = ({
         setFormData(rest);
         setImagePreview(getImageUrl(rest.image));
       } else {
-        setFormData(defaultFormData);
+        resetForm();
         setImagePreview("");
       }
-      setErrors({});
-      setTouched({});
-      setActiveStep(0);
     }
-  }, [open, mode, initialData]);
+  }, [open, mode, initialData, setFormData, resetForm]);
 
-  const validateForm = (data: FormationFormData): FormErrors => {
-    const e: FormErrors = {};
-    if (!data.titre.trim()) e.titre = "Le titre est requis";
-    else if (data.titre.trim().length < 5)
-      e.titre = "Min. 5 caractères";
-    if (!data.domaine || data.domaine.length === 0)
-      e.domaine = "Le domaine est requis";
-    if (!data.niveau) e.niveau = "Le niveau est requis";
-    if (!data.duree.trim()) e.duree = "La durée est requise";
-    if (!data.description.trim()) e.description = "La description est requise";
-    else if (data.description.trim().length < 20)
-      e.description = "Min. 20 caractères";
-    if (!data.slug.trim()) e.slug = "Le slug est requis";
-    if (!data.credits || data.credits <= 0) e.credits = "Doit être > 0";
-    if (data.objectifs.filter((o) => o.trim()).length === 0)
-      e.objectifs = "Au moins un objectif requis";
-    if (data.debouches.filter((d) => d.trim()).length === 0)
-      e.debouches = "Au moins un débouché requis";
-    if (data.email && !data.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
-      e.email = "Email invalide";
-    return e;
-  };
-
-  const validateStep = (step: number): boolean => {
-    const allErrors = validateForm(formData);
-    const fields = STEP_FIELDS[step] || [];
-    const stepErrors: FormErrors = {};
-    let hasError = false;
-    fields.forEach((field) => {
-      if (allErrors[field]) {
-        stepErrors[field] = allErrors[field];
-        hasError = true;
-      }
-    });
-    const touchedFields: Record<string, boolean> = {};
-    fields.forEach((f) => (touchedFields[f] = true));
-    setTouched((prev) => ({ ...prev, ...touchedFields }));
-    setErrors((prev) => {
-      const updated = { ...prev };
-      fields.forEach((f) => {
-        if (stepErrors[f]) updated[f] = stepErrors[f];
-        else delete updated[f];
-      });
-      return updated;
-    });
-    return !hasError;
-  };
-
-  const validateAllSteps = (): boolean => {
-    const allErrors = validateForm(formData);
-    const allTouched: Record<string, boolean> = {};
-    Object.keys(defaultFormData).forEach((k) => (allTouched[k] = true));
-    setTouched(allTouched);
-    setErrors(allErrors);
-    if (Object.keys(allErrors).length > 0) {
-      for (let i = 0; i < STEPS.length; i++) {
-        const fields = STEP_FIELDS[i] || [];
-        if (fields.some((f) => allErrors[f])) {
-          setActiveStep(i);
-          return false;
-        }
-      }
-      return false;
-    }
-    return true;
-  };
-
-  const handleChange = (field: keyof FormationFormData, value: any) => {
-    const newData = { ...formData, [field]: value };
-    setFormData(newData);
-    if (touched[field]) {
-      const fieldErrors = validateForm(newData);
-      setErrors((prev) => ({
-        ...prev,
-        [field]: fieldErrors[field as keyof FormErrors],
-      }));
-    }
-  };
-
-  const handleBlur = (field: string) => {
-    setTouched((prev) => ({ ...prev, [field]: true }));
-    const fieldErrors = validateForm(formData);
-    setErrors((prev) => ({
-      ...prev,
-      [field]: fieldErrors[field as keyof FormErrors],
-    }));
-  };
-
-  const handleArrayChange = (
-    field:
-      | "objectifs"
-      | "debouches"
-      | "programme"
-      | "conditions"
-      | "competences"
-      | "modules",
-    index: number,
-    value: string
-  ) => {
+  const handleArrayChange = (field: ArrayField, index: number, value: string) => {
     const arr = [...(formData[field] || [])];
     arr[index] = value;
     handleChange(field, arr);
   };
 
-  const addArrayItem = (
-    field:
-      | "objectifs"
-      | "debouches"
-      | "programme"
-      | "conditions"
-      | "competences"
-      | "modules"
-  ) => handleChange(field, [...(formData[field] || []), ""]);
+  const addArrayItem = (field: ArrayField) => handleChange(field, [...(formData[field] || []), ""]);
 
-  const removeArrayItem = (
-    field:
-      | "objectifs"
-      | "debouches"
-      | "programme"
-      | "conditions"
-      | "competences"
-      | "modules",
-    index: number
-  ) => {
+  const removeArrayItem = (field: ArrayField, index: number) => {
     const arr = formData[field] || [];
     if (arr.length > 1)
       handleChange(
@@ -344,16 +276,16 @@ const FormationForm: React.FC<FormationFormProps> = ({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <FloatingSelect
-          label="Domaine *"
+          label="Domaine de formation *"
           value={formData.domaine[0] || ""}
-          onValueChange={(v) => handleChange("domaine", v ? [v] : [])}
+          onValueChange={(v, _eventDetails) => v && handleChange("domaine", [v])}
           options={DOMAINE_OPTIONS}
           error={errors.domaine}
         />
         <FloatingSelect
           label="Niveau *"
           value={formData.niveau}
-          onValueChange={(v) => handleChange("niveau", v)}
+          onValueChange={(v, _eventDetails) => v && handleChange("niveau", v)}
           options={NIVEAU_OPTIONS}
           error={errors.niveau}
         />
@@ -363,7 +295,7 @@ const FormationForm: React.FC<FormationFormProps> = ({
         <FloatingSelect
           label="Durée *"
           value={formData.duree}
-          onValueChange={(v) => handleChange("duree", v)}
+          onValueChange={(v, _eventDetails) => v && handleChange("duree", v)}
           options={DUREE_OPTIONS}
           error={errors.duree}
         />
@@ -401,83 +333,49 @@ const FormationForm: React.FC<FormationFormProps> = ({
   const renderStep1 = () => (
     <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <div className="flex items-center gap-1.5 mb-2">
-            <ObjectiveIcon className="h-4 w-4 text-gray-400" />
-            <Label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-              Objectifs *
-            </Label>
-          </div>
-          <DynamicListField
-            label="Objectifs"
-            itemPlaceholder="Objectif"
-            items={formData.objectifs}
-            error={errors.objectifs}
-            onAdd={() => addArrayItem("objectifs")}
-            onRemove={(i) => removeArrayItem("objectifs", i)}
-            onChange={(i, v) => handleArrayChange("objectifs", i, v)}
-          />
-        </div>
+        <DynamicListField
+          label="Objectifs *"
+          items={formData.objectifs}
+          error={errors.objectifs}
+          onAdd={() => addArrayItem("objectifs")}
+          onRemove={(i) => removeArrayItem("objectifs", i)}
+          onChange={(i, v) => handleArrayChange("objectifs", i, v)}
+        />
 
-        <div>
-          <div className="flex items-center gap-1.5 mb-2">
-            <WorkIcon className="h-4 w-4 text-gray-400" />
-            <Label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-              Débouchés *
-            </Label>
-          </div>
-          <DynamicListField
-            label="Débouchés"
-            itemPlaceholder="Débouché"
-            items={formData.debouches}
-            error={errors.debouches}
-            onAdd={() => addArrayItem("debouches")}
-            onRemove={(i) => removeArrayItem("debouches", i)}
-            onChange={(i, v) => handleArrayChange("debouches", i, v)}
-          />
-        </div>
+        <DynamicListField
+          label="Débouchés *"
+          items={formData.debouches}
+          error={errors.debouches}
+          onAdd={() => addArrayItem("debouches")}
+          onRemove={(i) => removeArrayItem("debouches", i)}
+          onChange={(i, v) => handleArrayChange("debouches", i, v)}
+        />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <FloatingSelect
-          label="Conditions d'accès"
-          value={formData.conditionsAcces}
-          onValueChange={(v) => handleChange("conditionsAcces", v)}
-          options={CONDITIONS_ACCES_OPTIONS}
+        <DynamicListField
+          label="Programme"
+          items={formData.programme || []}
+          onAdd={() => addArrayItem("programme")}
+          onRemove={(i) => removeArrayItem("programme", i)}
+          onChange={(i, v) => handleArrayChange("programme", i, v)}
         />
 
-        <div>
-          <div className="flex items-center gap-1.5 mb-2">
-            <MenuBookIcon className="h-4 w-4 text-gray-400" />
-            <Label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-              Programme
-            </Label>
-          </div>
-          <DynamicListField
-            label="Programme"
-            itemPlaceholder="Élément"
-            items={formData.programme || []}
-            onAdd={() => addArrayItem("programme")}
-            onRemove={(i) => removeArrayItem("programme", i)}
-            onChange={(i, v) => handleArrayChange("programme", i, v)}
-          />
-        </div>
-      </div>
-
-      <div>
-        <div className="flex items-center gap-1.5 mb-2">
-          <ObjectiveIcon className="h-4 w-4 text-gray-400" />
-          <Label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-            Compétences
-          </Label>
-        </div>
         <DynamicListField
           label="Compétences"
-          itemPlaceholder="Compétence"
           items={formData.competences || []}
           onAdd={() => addArrayItem("competences")}
           onRemove={(i) => removeArrayItem("competences", i)}
           onChange={(i, v) => handleArrayChange("competences", i, v)}
+        />
+      </div>
+
+      <div>
+        <FloatingSelect
+          label="Conditions d'accès"
+          value={formData.conditionsAcces}
+          onValueChange={(v, _eventDetails) => v && handleChange("conditionsAcces", v)}
+          options={CONDITIONS_ACCES_OPTIONS}
         />
       </div>
     </div>
@@ -547,39 +445,21 @@ const FormationForm: React.FC<FormationFormProps> = ({
 
       {/* Conditions + Modules */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <div className="flex items-center gap-1.5 mb-2">
-            <MenuBookIcon className="h-4 w-4 text-gray-400" />
-            <Label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-              Conditions
-            </Label>
-          </div>
-          <DynamicListField
-            label="Conditions"
-            itemPlaceholder="Condition"
-            items={formData.conditions || []}
-            onAdd={() => addArrayItem("conditions")}
-            onRemove={(i) => removeArrayItem("conditions", i)}
-            onChange={(i, v) => handleArrayChange("conditions", i, v)}
-          />
-        </div>
+        <DynamicListField
+          label="Conditions"
+          items={formData.conditions || []}
+          onAdd={() => addArrayItem("conditions")}
+          onRemove={(i) => removeArrayItem("conditions", i)}
+          onChange={(i, v) => handleArrayChange("conditions", i, v)}
+        />
 
-        <div>
-          <div className="flex items-center gap-1.5 mb-2">
-            <MenuBookIcon className="h-4 w-4 text-gray-400" />
-            <Label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-              Modules
-            </Label>
-          </div>
-          <DynamicListField
-            label="Modules"
-            itemPlaceholder="Module"
-            items={formData.modules || []}
-            onAdd={() => addArrayItem("modules")}
-            onRemove={(i) => removeArrayItem("modules", i)}
-            onChange={(i, v) => handleArrayChange("modules", i, v)}
-          />
-        </div>
+        <DynamicListField
+          label="Modules"
+          items={formData.modules || []}
+          onAdd={() => addArrayItem("modules")}
+          onRemove={(i) => removeArrayItem("modules", i)}
+          onChange={(i, v) => handleArrayChange("modules", i, v)}
+        />
       </div>
 
       <div className="flex items-center gap-2">

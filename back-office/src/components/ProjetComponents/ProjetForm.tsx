@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 import WorkIcon from "@mui/icons-material/Work";
 import PublicIcon from "@mui/icons-material/Public";
@@ -6,13 +6,12 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { getImageUrl } from "../../utils/image.utils";
 import { uploadImage } from "../../services";
 import type { Projet, ProjetFormData } from "../../types/projet.types";
 import { PROJET_TYPES, DEFAULT_FORM_DATA } from "../../constants/projet.constants";
+import { useFormValidation } from "../../hooks/useFormValidation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +22,6 @@ import {
 import { FloatingInput } from "@/components/ui/floating-input";
 import { FloatingTextarea } from "@/components/ui/floating-textarea";
 import { FloatingSelect } from "@/components/ui/floating-select";
-import DynamicListField from "../common/DynamicListField";
 
 interface ProjetFormProps {
   open: boolean;
@@ -31,16 +29,6 @@ interface ProjetFormProps {
   onSubmit: (data: ProjetFormData) => void;
   initialData?: Projet | null;
   mode: "create" | "edit";
-}
-
-interface FormErrors {
-  titre?: string;
-  description?: string;
-  type?: string;
-  date?: string;
-  ville?: string;
-  pays?: string;
-  adresse?: string;
 }
 
 const STEPS = [
@@ -61,7 +49,9 @@ const STEPS = [
   },
 ];
 
-const STEP_FIELDS: Record<number, (keyof FormErrors)[]> = {
+type ProjetField = keyof ProjetFormData;
+
+const STEP_FIELDS_MAP: Record<number, ProjetField[]> = {
   0: ["titre", "type", "date"],
   1: ["description"],
   2: ["ville", "pays", "adresse"],
@@ -74,14 +64,27 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
   initialData,
   mode,
 }) => {
-  const [formData, setFormData] = useState<ProjetFormData>(DEFAULT_FORM_DATA);
-  const [partenairesInput, setPartenairesInput] = useState("");
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
-  const [imagePreview, setImagePreview] = useState<string>("");
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+  const [partenairesInput, setPartenairesInput] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const { formData, errors, activeStep, setActiveStep, handleChange, handleBlur, validateStep, validateAllSteps, setFormData, resetForm } = useFormValidation<ProjetFormData>({
+    defaultValues: DEFAULT_FORM_DATA,
+    validators: {
+      titre: {
+        required: true,
+        minLength: { value: 5, message: "Le titre doit contenir au moins 5 caractères" },
+      },
+      description: {
+        required: true,
+        minLength: { value: 20, message: "La description doit contenir au moins 20 caractères" },
+      },
+      type: { required: true },
+      date: { required: true },
+    },
+    stepFields: STEP_FIELDS_MAP,
+  });
 
   useEffect(() => {
     if (open) {
@@ -102,93 +105,12 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
         });
         setImagePreview(imageUrl);
       } else {
-        setFormData(DEFAULT_FORM_DATA);
+        resetForm();
         setImagePreview("");
       }
       setPartenairesInput("");
-      setErrors({});
-      setTouched({});
-      setActiveStep(0);
     }
-  }, [open, mode, initialData]);
-
-  const validateForm = (data: ProjetFormData): FormErrors => {
-    const e: FormErrors = {};
-    if (!data.titre.trim()) e.titre = "Le titre est requis";
-    else if (data.titre.trim().length < 5)
-      e.titre = "Le titre doit contenir au moins 5 caractères";
-    if (!data.description.trim()) e.description = "La description est requise";
-    else if (data.description.trim().length < 20)
-      e.description = "La description doit contenir au moins 20 caractères";
-    if (!data.type) e.type = "Le type est requis";
-    if (!data.date) e.date = "La date est requise";
-    return e;
-  };
-
-  const validateStep = (step: number): boolean => {
-    const allErrors = validateForm(formData);
-    const fields = STEP_FIELDS[step] || [];
-    const stepErrors: FormErrors = {};
-    let hasError = false;
-    fields.forEach((field) => {
-      if (allErrors[field]) {
-        stepErrors[field] = allErrors[field];
-        hasError = true;
-      }
-    });
-    const touchedFields: Record<string, boolean> = {};
-    fields.forEach((f) => (touchedFields[f] = true));
-    setTouched((prev) => ({ ...prev, ...touchedFields }));
-    setErrors((prev) => {
-      const updated = { ...prev };
-      fields.forEach((f) => {
-        if (stepErrors[f]) updated[f] = stepErrors[f];
-        else delete updated[f];
-      });
-      return updated;
-    });
-    return !hasError;
-  };
-
-  const validateAllSteps = (): boolean => {
-    const allErrors = validateForm(formData);
-    const allTouched: Record<string, boolean> = {};
-    Object.keys(DEFAULT_FORM_DATA).forEach((k) => (allTouched[k] = true));
-    setTouched(allTouched);
-    setErrors(allErrors);
-    if (Object.keys(allErrors).length > 0) {
-      for (let i = 0; i < STEPS.length; i++) {
-        const fields = STEP_FIELDS[i] || [];
-        if (fields.some((f) => allErrors[f])) {
-          setActiveStep(i);
-          return false;
-        }
-      }
-      return false;
-    }
-    return true;
-  };
-
-  const handleChange = (field: keyof ProjetFormData, value: any) => {
-    const newData = { ...formData, [field]: value };
-    setFormData(newData);
-    if (touched[field]) {
-      const fieldErrors = validateForm(newData);
-      setErrors((prev) => ({
-        ...prev,
-        [field]: fieldErrors[field as keyof FormErrors],
-      }));
-    }
-  };
-
-  const handleBlur = (field: string) => {
-    setTouched((prev) => ({ ...prev, [field]: true }));
-    const fieldErrors = validateForm(formData);
-    setErrors((prev) => ({
-      ...prev,
-      [field]: fieldErrors[field as keyof FormErrors],
-    }));
-  };
+  }, [open, mode, initialData, setFormData, resetForm]);
 
   const handleImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -267,7 +189,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
         <FloatingSelect
           label="Type *"
           value={formData.type}
-          onValueChange={(v) => handleChange("type", v)}
+          onValueChange={(v, _eventDetails) => v && handleChange("type", v)}
           options={[...PROJET_TYPES]}
           error={errors.type}
         />

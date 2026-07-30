@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 import WorkIcon from "@mui/icons-material/Work";
 import PublicIcon from "@mui/icons-material/Public";
@@ -10,9 +10,9 @@ import { getImageUrl } from "../../utils/image.utils";
 import { uploadImage } from "../../services";
 import type { Partenaire, PartenaireFormData } from "../../types";
 import { PARTENAIRE_TYPES, DEFAULT_PARTENAIRE_FORM_DATA } from "../../constants/partenaire.constants";
+import { useFormValidation } from "../../hooks/useFormValidation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -30,16 +30,6 @@ interface PartenaireFormProps {
   onSubmit: (data: PartenaireFormData) => void;
   initialData?: Partenaire | null;
   mode: "create" | "edit";
-}
-
-interface FormErrors {
-  nom?: string;
-  description?: string;
-  type?: string;
-  secteur?: string;
-  dateDebut?: string;
-  siteWeb?: string;
-  contact?: string;
 }
 
 const STEPS = [
@@ -60,7 +50,9 @@ const STEPS = [
   },
 ];
 
-const STEP_FIELDS: Record<number, (keyof FormErrors)[]> = {
+type PartenaireField = keyof PartenaireFormData;
+
+const STEP_FIELDS_MAP: Record<number, PartenaireField[]> = {
   0: ["nom", "type", "secteur", "dateDebut"],
   1: ["description"],
   2: [],
@@ -73,14 +65,28 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
   initialData,
   mode,
 }) => {
-  const [formData, setFormData] = useState<PartenaireFormData>(DEFAULT_PARTENAIRE_FORM_DATA);
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [logoPreview, setLogoPreview] = useState<string>("");
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { formData, errors, activeStep, setActiveStep, handleChange, handleBlur, validateStep, validateAllSteps, setFormData, resetForm } = useFormValidation<PartenaireFormData>({
+    defaultValues: DEFAULT_PARTENAIRE_FORM_DATA,
+    validators: {
+      nom: {
+        required: true,
+        minLength: { value: 3, message: "Le nom doit contenir au moins 3 caractères" },
+      },
+      description: {
+        required: true,
+        minLength: { value: 20, message: "La description doit contenir au moins 20 caractères" },
+      },
+      type: { required: true },
+      secteur: { required: true },
+      dateDebut: { required: true },
+    },
+    stepFields: STEP_FIELDS_MAP,
+  });
 
   useEffect(() => {
     if (open) {
@@ -101,114 +107,12 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
           setLogoPreview("");
         }
       } else {
-        setFormData(DEFAULT_PARTENAIRE_FORM_DATA);
+        resetForm();
         setLogoPreview("");
       }
       setLogoFile(null);
-      setErrors({});
-      setTouched({});
-      setActiveStep(0);
     }
-  }, [open, mode, initialData]);
-
-  const validateForm = (data: PartenaireFormData): FormErrors => {
-    const newErrors: FormErrors = {};
-
-    const nom = data.nom || "";
-    const description = data.description || "";
-    const secteur = data.secteur || "";
-
-    if (!nom.trim()) {
-      newErrors.nom = "Le nom est requis";
-    } else if (nom.trim().length < 3) {
-      newErrors.nom = "Le nom doit contenir au moins 3 caractères";
-    }
-
-    if (!description.trim()) {
-      newErrors.description = "La description est requise";
-    } else if (description.trim().length < 20) {
-      newErrors.description = "La description doit contenir au moins 20 caractères";
-    }
-
-    if (!data.type) {
-      newErrors.type = "Le type est requis";
-    }
-
-    if (!secteur.trim()) {
-      newErrors.secteur = "Le secteur est requis";
-    }
-
-    if (!data.dateDebut) {
-      newErrors.dateDebut = "La date de début est requise";
-    }
-
-    return newErrors;
-  };
-
-  const validateStep = (step: number): boolean => {
-    const allErrors = validateForm(formData);
-    const fields = STEP_FIELDS[step] || [];
-    const stepErrors: FormErrors = {};
-    let hasError = false;
-    fields.forEach((field) => {
-      if (allErrors[field]) {
-        stepErrors[field] = allErrors[field];
-        hasError = true;
-      }
-    });
-    const touchedFields: Record<string, boolean> = {};
-    fields.forEach((f) => (touchedFields[f] = true));
-    setTouched((prev) => ({ ...prev, ...touchedFields }));
-    setErrors((prev) => {
-      const updated = { ...prev };
-      fields.forEach((f) => {
-        if (stepErrors[f]) updated[f] = stepErrors[f];
-        else delete updated[f];
-      });
-      return updated;
-    });
-    return !hasError;
-  };
-
-  const validateAllSteps = (): boolean => {
-    const allErrors = validateForm(formData);
-    const allTouched: Record<string, boolean> = {};
-    Object.keys(DEFAULT_PARTENAIRE_FORM_DATA).forEach((k) => (allTouched[k] = true));
-    setTouched(allTouched);
-    setErrors(allErrors);
-    if (Object.keys(allErrors).length > 0) {
-      for (let i = 0; i < STEPS.length; i++) {
-        const fields = STEP_FIELDS[i] || [];
-        if (fields.some((f) => allErrors[f])) {
-          setActiveStep(i);
-          return false;
-        }
-      }
-      return false;
-    }
-    return true;
-  };
-
-  const handleChange = (field: keyof PartenaireFormData, value: string) => {
-    const newData = { ...formData, [field]: value };
-    setFormData(newData);
-    if (touched[field]) {
-      const fieldErrors = validateForm(newData);
-      setErrors((prev) => ({
-        ...prev,
-        [field]: fieldErrors[field as keyof FormErrors],
-      }));
-    }
-  };
-
-  const handleBlur = (field: string) => {
-    setTouched((prev) => ({ ...prev, [field]: true }));
-    const fieldErrors = validateForm(formData);
-    setErrors((prev) => ({
-      ...prev,
-      [field]: fieldErrors[field as keyof FormErrors],
-    }));
-  };
+  }, [open, mode, initialData, setFormData, resetForm]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -293,7 +197,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
         <FloatingSelect
           label="Type *"
           value={formData.type}
-          onValueChange={(v) => handleChange("type", v)}
+          onValueChange={(v, _eventDetails) => v && handleChange("type", v)}
           options={[...PARTENAIRE_TYPES]}
           error={errors.type}
         />
@@ -378,16 +282,13 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
         </div>
 
         <div className="mt-3">
-          <Label htmlFor="logo-emoji" className="block text-sm font-medium text-gray-700 mb-1">
-            Ou utilisez un emoji
-          </Label>
-          <input
+          <FloatingInput
             id="logo-emoji"
+            label="Ou utilisez un emoji"
             value={formData.logo}
             onChange={(e) => handleLogoEmojiChange(e.target.value)}
             placeholder="Ex: 🏢, 💰, 🏥, 🎓"
             maxLength={2}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>

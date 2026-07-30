@@ -95,7 +95,7 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
             </div>
             <div className="min-w-0">
               <span className="font-semibold text-gray-900 block">
-                {row.prenom} {row.nom}
+                {row.nom} {row.prenom} 
               </span>
               <p className="text-xs text-gray-500 truncate">{row.email}</p>
               <p className="text-xs text-gray-500">{row.telephone}</p>

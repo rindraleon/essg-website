@@ -5,10 +5,10 @@ import MyLocationIcon from '@mui/icons-material/MyLocation';
 import EditIcon from '@mui/icons-material/Edit';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Input } from '@/components/ui/input';
+import { FloatingInput } from '@/components/ui/floating-input';
 import { Button } from '@/components/ui/button';
 
-// Fix pour le marker par défaut de Leaflet
+
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -40,7 +40,7 @@ const MapPicker: React.FC<MapPickerProps> = ({
   onLocationChange,
   label = 'Sélectionner un emplacement sur la carte',
 }) => {
-  // Convertir les coordonnées en nombres (au cas où elles seraient des chaînes)
+  
   const lat = typeof latitude === 'string' ? parseFloat(latitude) : latitude;
   const lng = typeof longitude === 'string' ? parseFloat(longitude) : longitude;
 
@@ -72,7 +72,7 @@ const MapPicker: React.FC<MapPickerProps> = ({
 
   const handleManualLngChange = (value: string) => {
     setManualLng(value);
-    const lng = parseFloat(value);
+    const lng = Number.parseFloat(value);
     if (!isNaN(lng) && lng >= -180 && lng <= 180) {
       const lat = position[0];
       setPosition([lat, lng]);
@@ -112,7 +112,6 @@ const MapPicker: React.FC<MapPickerProps> = ({
         </p>
       )}
       
-      {/* Map */}
       <div className="rounded-xl overflow-hidden border border-gray-200">
         <MapContainer
           center={position}
@@ -137,7 +136,6 @@ const MapPicker: React.FC<MapPickerProps> = ({
         </MapContainer>
       </div>
 
-      {/* Manual Coordinate Input */}
        <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
           <div className="flex items-center gap-2 mb-2">
             <EditIcon fontSize="small" className="text-gray-600" />
@@ -146,44 +144,37 @@ const MapPicker: React.FC<MapPickerProps> = ({
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-gray-700">Latitude</label>
-              <Input
-                type="number"
-                value={manualLat}
-                onChange={(e) => handleManualLatChange(e.target.value)}
-                onBlur={() => {
-                  if (!isManualEdit) {
-                    setManualLat(position[0].toFixed(7));
-                  }
-                }}
-                min={-90}
-                max={90}
-                step={0.0000001}
-              />
-              <p className="text-xs text-gray-500">Entre -90 et 90</p>
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-gray-700">Longitude</label>
-              <Input
-                type="number"
-                value={manualLng}
-                onChange={(e) => handleManualLngChange(e.target.value)}
-                onBlur={() => {
-                  if (!isManualEdit) {
-                    setManualLng(position[1].toFixed(7));
-                  }
-                }}
-                min={-180}
-                max={180}
-                step={0.0000001}
-              />
-              <p className="text-xs text-gray-500">Entre -180 et 180</p>
-            </div>
+            <FloatingInput
+              label="Latitude"
+              type="number"
+              value={manualLat}
+              onChange={(e) => handleManualLatChange(e.target.value)}
+              onBlur={() => {
+                if (!isManualEdit) {
+                  setManualLat(position[0].toFixed(7));
+                }
+              }}
+              min={-90}
+              max={90}
+              step={0.0000001}
+            />
+            <FloatingInput
+              label="Longitude"
+              type="number"
+              value={manualLng}
+              onChange={(e) => handleManualLngChange(e.target.value)}
+              onBlur={() => {
+                if (!isManualEdit) {
+                  setManualLng(position[1].toFixed(7));
+                }
+              }}
+              min={-180}
+              max={180}
+              step={0.0000001}
+            />
           </div>
         </div>
 
-        {/* Coordinates Display */}
         <div className="mt-2 flex items-center gap-3 text-sm">
           <div className="flex items-center gap-1">
             <LocationOnIcon fontSize="small" className="text-gray-500" />

@@ -80,7 +80,13 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
         <div className="flex items-center gap-4 mb-4">
           <Avatar className="h-20 w-20">
             {partenaire.logo && (partenaire.logo.startsWith('/uploads/') || partenaire.logo.startsWith('http')) ? (
-              <AvatarImage src={getImageUrl(partenaire.logo)} alt={partenaire.nom} />
+              <AvatarImage 
+                src={getImageUrl(partenaire.logo)} 
+                alt={partenaire.nom}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
             ) : (
               <AvatarFallback className="bg-gray-100 text-gray-700 text-3xl">
                 {partenaire.logo}
@@ -165,6 +171,9 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
                   src={getImageUrl(partenaire.logo)}
                   alt={`Logo de ${partenaire.nom}`}
                   className="max-w-[200px] max-h-[200px] rounded-lg"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
                 />
               </div>
             ) : (

@@ -28,4 +28,5 @@ export interface UserFormData {
   role?: 'admin' | 'editeur' | 'lecteur';
   estActif?: boolean;
   avatar?: string;
+  avatarFile?: File;
 }

@@ -1,12 +1,12 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { FloatingInput } from "@/components/ui/floating-input";
 import { Label } from "@/components/ui/label";
 
 interface DynamicListFieldProps {
   label: string;
-  itemPlaceholder: string;
+  itemPlaceholder?: string;
   items: string[];
   error?: string;
   onAdd: () => void;
@@ -16,7 +16,7 @@ interface DynamicListFieldProps {
 
 const DynamicListField = ({
   label,
-  itemPlaceholder,
+  itemPlaceholder = label,
   items,
   error,
   onAdd,
@@ -43,10 +43,10 @@ const DynamicListField = ({
       <div className="space-y-2">
         {items.map((item, index) => (
           <div key={`${label}-${index}`} className="flex items-start gap-2">
-            <Input
+            <FloatingInput
+              label={`${itemPlaceholder} ${index + 1}`}
               value={item}
               onChange={(e) => onChange(index, e.target.value)}
-              placeholder={`${itemPlaceholder} ${index + 1}`}
               className="rounded-xl bg-white"
             />
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 import WorkIcon from "@mui/icons-material/Work";
 import PublicIcon from "@mui/icons-material/Public";
@@ -6,10 +6,10 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { getImageUrl } from "../../utils/image.utils";
 import { uploadImage } from "../../services";
 import type { RessourceHumaineItem, RessourceHumaineFormData } from "../../types/ressource-humaine.types";
 import { postes } from "../../data/mockData";
+import { useFormValidation } from "../../hooks/useFormValidation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -32,16 +32,6 @@ interface RessourceHumaineFormProps {
   mode: "create" | "edit";
 }
 
-interface FormErrors {
-  nom?: string;
-  prenom?: string;
-  poste?: string;
-  email?: string;
-  telephone?: string;
-  description?: string;
-  ordre?: string;
-}
-
 const STEPS = [
   {
     id: 0,
@@ -60,7 +50,9 @@ const STEPS = [
   },
 ];
 
-const STEP_FIELDS: Record<number, (keyof FormErrors)[]> = {
+type RessourceHumaineField = keyof RessourceHumaineFormData;
+
+const STEP_FIELDS_MAP: Record<number, RessourceHumaineField[]> = {
   0: ["nom", "prenom", "poste"],
   1: ["email", "telephone", "description"],
   2: ["ordre"],
@@ -85,13 +77,28 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
   initialData,
   mode,
 }) => {
-  const [formData, setFormData] = useState<RessourceHumaineFormData>(defaultFormData);
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { formData, errors, activeStep, setActiveStep, handleChange, handleBlur, validateStep, validateAllSteps, setFormData, resetForm } = useFormValidation<RessourceHumaineFormData>({
+    defaultValues: defaultFormData,
+    validators: {
+      nom: {
+        required: true,
+        minLength: { value: 2, message: "Le nom doit contenir au moins 2 caractères" },
+      },
+      prenom: {
+        required: true,
+        minLength: { value: 2, message: "Le prénom doit contenir au moins 2 caractères" },
+      },
+      poste: { required: true },
+      email: {
+        pattern: { regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Email invalide" },
+      },
+    },
+    stepFields: STEP_FIELDS_MAP,
+  });
 
   useEffect(() => {
     if (open) {
@@ -110,105 +117,11 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
         });
         setImagePreview(imageUrl);
       } else {
-        setFormData(defaultFormData);
+        resetForm();
         setImagePreview("");
       }
-      setErrors({});
-      setTouched({});
-      setActiveStep(0);
     }
-  }, [open, mode, initialData]);
-
-  const validateForm = (data: RessourceHumaineFormData): FormErrors => {
-    const newErrors: FormErrors = {};
-
-    if (!data.nom.trim()) {
-      newErrors.nom = "Le nom est requis";
-    } else if (data.nom.trim().length < 2) {
-      newErrors.nom = "Le nom doit contenir au moins 2 caractères";
-    }
-
-    if (!data.prenom.trim()) {
-      newErrors.prenom = "Le prénom est requis";
-    } else if (data.prenom.trim().length < 2) {
-      newErrors.prenom = "Le prénom doit contenir au moins 2 caractères";
-    }
-
-    if (!data.poste) {
-      newErrors.poste = "Le poste est requis";
-    }
-
-    if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-      newErrors.email = "Email invalide";
-    }
-
-    return newErrors;
-  };
-
-  const validateStep = (step: number): boolean => {
-    const allErrors = validateForm(formData);
-    const fields = STEP_FIELDS[step] || [];
-    const stepErrors: FormErrors = {};
-    let hasError = false;
-    fields.forEach((field) => {
-      if (allErrors[field]) {
-        stepErrors[field] = allErrors[field];
-        hasError = true;
-      }
-    });
-    const touchedFields: Record<string, boolean> = {};
-    fields.forEach((f) => (touchedFields[f] = true));
-    setTouched((prev) => ({ ...prev, ...touchedFields }));
-    setErrors((prev) => {
-      const updated = { ...prev };
-      fields.forEach((f) => {
-        if (stepErrors[f]) updated[f] = stepErrors[f];
-        else delete updated[f];
-      });
-      return updated;
-    });
-    return !hasError;
-  };
-
-  const validateAllSteps = (): boolean => {
-    const allErrors = validateForm(formData);
-    const allTouched: Record<string, boolean> = {};
-    Object.keys(defaultFormData).forEach((k) => (allTouched[k] = true));
-    setTouched(allTouched);
-    setErrors(allErrors);
-    if (Object.keys(allErrors).length > 0) {
-      for (let i = 0; i < STEPS.length; i++) {
-        const fields = STEP_FIELDS[i] || [];
-        if (fields.some((f) => allErrors[f])) {
-          setActiveStep(i);
-          return false;
-        }
-      }
-      return false;
-    }
-    return true;
-  };
-
-  const handleChange = (field: keyof RessourceHumaineFormData, value: any) => {
-    const newData = { ...formData, [field]: value };
-    setFormData(newData);
-    if (touched[field]) {
-      const fieldErrors = validateForm(newData);
-      setErrors((prev) => ({
-        ...prev,
-        [field]: fieldErrors[field as keyof FormErrors],
-      }));
-    }
-  };
-
-  const handleBlur = (field: string) => {
-    setTouched((prev) => ({ ...prev, [field]: true }));
-    const fieldErrors = validateForm(formData);
-    setErrors((prev) => ({
-      ...prev,
-      [field]: fieldErrors[field as keyof FormErrors],
-    }));
-  };
+  }, [open, mode, initialData, setFormData, resetForm]);
 
   const handleImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -284,7 +197,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
       <FloatingSelect
         label="Poste *"
         value={formData.poste}
-        onValueChange={(v) => handleChange("poste", v)}
+        onValueChange={(v, _eventDetails) => v && handleChange("poste", v)}
         options={postes.map((poste) => ({ label: poste, value: poste }))}
         error={errors.poste}
       />

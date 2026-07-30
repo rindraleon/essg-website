@@ -6,7 +6,7 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import LogoITDC from "../../assets/files/images/logo/itdc_logo.png";
 import { InsertLinkOutlined } from "@mui/icons-material";
 import type { FooterProps, SocialItem } from "../../types/footer.types";
-import { Input } from "@/components/ui/input";
+import { FloatingInput } from "@/components/ui/floating-input";
 import { Button } from "@/components/ui/button";
 
 function SocialIcon({ kind }: Readonly<{ kind?: SocialItem["kind"] }>) {
@@ -150,11 +150,9 @@ const Footer: React.FC<FooterProps> = (props: Readonly<FooterProps>) => {
                         </p>
 
                         <form onSubmit={handleSubscribe} className="mt-3 flex items-center gap-2">
-                            <label htmlFor="footer-newsletter" className="sr-only">
-                                Email
-                            </label>
-                            <Input
+                            <FloatingInput
                                 id="footer-newsletter"
+                                label="Email"
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}

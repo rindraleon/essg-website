@@ -1,8 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
-import { PhotoCamera, Delete, CloudUpload } from "@mui/icons-material";
+import React, { useRef, useState, useEffect } from "react";
+import { Delete, CloudUpload } from "@mui/icons-material";
+import { toast } from "sonner";
 import { getImageUrl } from "../../utils/image.utils";
 import { uploadAvatar } from "../../services";
 import type { User, UserFormData } from "../../types";
+import { useFormValidation } from "../../hooks/useFormValidation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -47,13 +49,26 @@ const UsersForm: React.FC<UsersFormProps> = ({
   initialData,
   mode,
 }) => {
-  const [formData, setFormData] = useState<UserFormData>(defaultFormData);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { formData, errors, handleChange, handleBlur, validateAllSteps, setFormData, resetForm } = useFormValidation<UserFormData>({
+    defaultValues: defaultFormData,
+    validators: {
+      email: {
+        required: true,
+        pattern: { regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Email invalide" },
+      },
+      motDePasse: {
+        required: mode === "create",
+        minLength: { value: 6, message: "Min. 6 caractères" },
+      },
+      prenom: { required: true },
+      nom: { required: true },
+    },
+  });
 
   useEffect(() => {
     if (open) {
@@ -71,49 +86,12 @@ const UsersForm: React.FC<UsersFormProps> = ({
           initialData.avatar ? getImageUrl(initialData.avatar) : null
         );
       } else {
-        setFormData(defaultFormData);
+        resetForm();
         setAvatarPreview(null);
         setAvatarFile(null);
       }
-      setErrors({});
-      setTouched({});
     }
-  }, [open, mode, initialData]);
-
-  const validateForm = (data: UserFormData): Record<string, string> => {
-    const e: Record<string, string> = {};
-    if (!data.email.trim()) e.email = "L'email est requis";
-    else if (!data.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
-      e.email = "Email invalide";
-    if (mode === "create" && !data.motDePasse)
-      e.motDePasse = "Le mot de passe est requis";
-    else if (mode === "create" && data.motDePasse && data.motDePasse.length < 6)
-      e.motDePasse = "Min. 6 caractères";
-    if (!data.prenom.trim()) e.prenom = "Le prénom est requis";
-    if (!data.nom.trim()) e.nom = "Le nom est requis";
-    return e;
-  };
-
-  const handleChange = (field: keyof UserFormData, value: any) => {
-    const newData = { ...formData, [field]: value };
-    setFormData(newData);
-    if (touched[field]) {
-      const fieldErrors = validateForm(newData);
-      setErrors((prev) => ({
-        ...prev,
-        [field]: fieldErrors[field],
-      }));
-    }
-  };
-
-  const handleBlur = (field: string) => {
-    setTouched((prev) => ({ ...prev, [field]: true }));
-    const fieldErrors = validateForm(formData);
-    setErrors((prev) => ({
-      ...prev,
-      [field]: fieldErrors[field],
-    }));
-  };
+  }, [open, mode, initialData, setFormData, resetForm]);
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -126,14 +104,12 @@ const UsersForm: React.FC<UsersFormProps> = ({
         "image/webp",
       ];
       if (!validTypes.includes(file.type)) {
-        alert(
-          "Format d'image non supporté. Utilisez JPG, PNG, GIF ou WebP"
-        );
+        toast.error("Format d'image non supporté. Utilisez JPG, PNG, GIF ou WebP");
         return;
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        alert("L'image ne doit pas dépasser 5MB");
+        toast.error("L'image ne doit pas dépasser 5MB");
         return;
       }
 
@@ -165,39 +141,52 @@ const UsersForm: React.FC<UsersFormProps> = ({
   };
 
   const handleSubmit = async () => {
-    const allErrors = validateForm(formData);
     const allTouched: Record<string, boolean> = {};
     Object.keys(defaultFormData).forEach((k) => (allTouched[k] = true));
-    setTouched(allTouched);
-    setErrors(allErrors);
-
-    if (Object.keys(allErrors).length > 0) {
+    
+    const isValid = validateAllSteps();
+    
+    if (!isValid) {
       return;
     }
 
-    // Upload avatar first if there's a new file
-    if (avatarFile && mode === "edit" && initialData) {
+    if (avatarFile) {
       try {
         setUploading(true);
-        const updatedUser = await uploadAvatar(initialData.id, avatarFile);
-        setFormData((prev) => ({ ...prev, avatar: updatedUser.avatar }));
-        setAvatarPreview(
-          updatedUser.avatar ? getImageUrl(updatedUser.avatar) : null
-        );
-        setAvatarFile(null);
+        
+        if (mode === "edit" && initialData) {
+          const updatedUser = await uploadAvatar(initialData.id, avatarFile);
+          setFormData((prev) => ({ ...prev, avatar: updatedUser.avatar }));
+          setAvatarPreview(
+            updatedUser.avatar ? getImageUrl(updatedUser.avatar) : null
+          );
+          setAvatarFile(null);
+        } 
       } catch (error) {
         console.error("Erreur lors de l'upload de l'avatar:", error);
+        toast.error("Erreur lors de l'upload de l'avatar");
         setUploading(false);
         return;
       }
     }
 
-    onSubmit(formData);
+    const formDataToSubmit = {
+      ...formData,
+      ...(avatarFile && { avatarFile }),
+    };
+
+    onSubmit(formDataToSubmit);
     setUploading(false);
   };
 
   const dialogTitle =
     mode === "create" ? "Nouvel utilisateur" : "Modifier l'utilisateur";
+
+  const buttonText = uploading
+    ? "Enregistrement..."
+    : mode === "create"
+      ? "Créer"
+      : "Enregistrer";
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -220,7 +209,6 @@ const UsersForm: React.FC<UsersFormProps> = ({
 
         <div className="px-5 py-4 overflow-y-auto max-h-[58vh]">
           <div className="space-y-4">
-            {/* Avatar Upload Section */}
             <div className="flex items-start gap-4">
               <div className="flex flex-col items-center gap-2">
                 <div className="relative">
@@ -324,8 +312,8 @@ const UsersForm: React.FC<UsersFormProps> = ({
 
             <FloatingSelect
               label="Rôle *"
-              value={formData.role}
-              onValueChange={(v) => handleChange("role", v)}
+              value={formData.role || "lecteur"}
+              onValueChange={(v, _eventDetails) => v && handleChange("role", v)}
               options={ROLE_OPTIONS}
               error={errors.role}
             />
@@ -365,7 +353,7 @@ const UsersForm: React.FC<UsersFormProps> = ({
               disabled={uploading}
               className="gap-1 h-8 bg-blue-600 hover:bg-blue-700"
             >
-              {uploading ? "Enregistrement..." : mode === "create" ? "Créer" : "Enregistrer"}
+              {buttonText}
             </Button>
           </div>
         </DialogFooter>

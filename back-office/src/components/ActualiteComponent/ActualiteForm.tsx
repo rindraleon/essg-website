@@ -1,5 +1,5 @@
 // src/components/actualites/ActualiteForm.tsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 import EditIcon from "@mui/icons-material/Edit";
 import PublicIcon from "@mui/icons-material/Public";
@@ -7,10 +7,10 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { getImageUrl } from "../../utils/image.utils";
 import { uploadImage } from "../../services";
 import type { ActualiteItem, ActualiteFormData } from "../../types/actualite.types";
 import { categories, statuts } from "../../data/mockData";
+import { useFormValidation } from "../../hooks/useFormValidation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -33,16 +33,6 @@ interface ActualiteFormProps {
   mode: "create" | "edit";
 }
 
-interface FormErrors {
-  titre?: string;
-  contenu?: string;
-  categorie?: string;
-  auteur?: string;
-  date?: string;
-  statut?: string;
-  resume?: string;
-}
-
 const STEPS = [
   {
     id: 0,
@@ -61,7 +51,9 @@ const STEPS = [
   },
 ];
 
-const STEP_FIELDS: Record<number, (keyof FormErrors)[]> = {
+type ActualiteField = keyof ActualiteFormData;
+
+const STEP_FIELDS_MAP: Record<number, ActualiteField[]> = {
   0: ["titre", "categorie", "auteur", "date"],
   1: ["contenu", "resume"],
   2: ["statut"],
@@ -86,13 +78,28 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
   initialData,
   mode,
 }) => {
-  const [formData, setFormData] = useState<ActualiteFormData>(defaultFormData);
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { formData, errors, activeStep, setActiveStep, handleChange, handleBlur, validateStep, validateAllSteps, setFormData, resetForm } = useFormValidation<ActualiteFormData>({
+    defaultValues: defaultFormData,
+    validators: {
+      titre: {
+        required: true,
+        minLength: { value: 5, message: "Le titre doit contenir au moins 5 caractères" },
+      },
+      contenu: {
+        required: true,
+        minLength: { value: 20, message: "Le contenu doit contenir au moins 20 caractères" },
+      },
+      categorie: { required: true },
+      auteur: { required: true },
+      date: { required: true },
+      statut: { required: true },
+    },
+    stepFields: STEP_FIELDS_MAP,
+  });
 
   useEffect(() => {
     if (open) {
@@ -111,94 +118,11 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
         });
         setImagePreview(imageUrl);
       } else {
-        setFormData(defaultFormData);
+        resetForm();
         setImagePreview("");
       }
-      setErrors({});
-      setTouched({});
-      setActiveStep(0);
     }
-  }, [open, mode, initialData]);
-
-  const validateForm = (data: ActualiteFormData): FormErrors => {
-    const e: FormErrors = {};
-    if (!data.titre.trim()) e.titre = "Le titre est requis";
-    else if (data.titre.trim().length < 5)
-      e.titre = "Le titre doit contenir au moins 5 caractères";
-    if (!data.contenu.trim()) e.contenu = "Le contenu est requis";
-    else if (data.contenu.trim().length < 20)
-      e.contenu = "Le contenu doit contenir au moins 20 caractères";
-    if (!data.categorie) e.categorie = "La catégorie est requise";
-    if (!data.auteur.trim()) e.auteur = "L'auteur est requis";
-    if (!data.date) e.date = "La date est requise";
-    if (!data.statut) e.statut = "Le statut est requis";
-    return e;
-  };
-
-  const validateStep = (step: number): boolean => {
-    const allErrors = validateForm(formData);
-    const fields = STEP_FIELDS[step] || [];
-    const stepErrors: FormErrors = {};
-    let hasError = false;
-    fields.forEach((field) => {
-      if (allErrors[field]) {
-        stepErrors[field] = allErrors[field];
-        hasError = true;
-      }
-    });
-    const touchedFields: Record<string, boolean> = {};
-    fields.forEach((f) => (touchedFields[f] = true));
-    setTouched((prev) => ({ ...prev, ...touchedFields }));
-    setErrors((prev) => {
-      const updated = { ...prev };
-      fields.forEach((f) => {
-        if (stepErrors[f]) updated[f] = stepErrors[f];
-        else delete updated[f];
-      });
-      return updated;
-    });
-    return !hasError;
-  };
-
-  const validateAllSteps = (): boolean => {
-    const allErrors = validateForm(formData);
-    const allTouched: Record<string, boolean> = {};
-    Object.keys(defaultFormData).forEach((k) => (allTouched[k] = true));
-    setTouched(allTouched);
-    setErrors(allErrors);
-    if (Object.keys(allErrors).length > 0) {
-      for (let i = 0; i < STEPS.length; i++) {
-        const fields = STEP_FIELDS[i] || [];
-        if (fields.some((f) => allErrors[f])) {
-          setActiveStep(i);
-          return false;
-        }
-      }
-      return false;
-    }
-    return true;
-  };
-
-  const handleChange = (field: keyof ActualiteFormData, value: any) => {
-    const newData = { ...formData, [field]: value };
-    setFormData(newData);
-    if (touched[field]) {
-      const fieldErrors = validateForm(newData);
-      setErrors((prev) => ({
-        ...prev,
-        [field]: fieldErrors[field as keyof FormErrors],
-      }));
-    }
-  };
-
-  const handleBlur = (field: string) => {
-    setTouched((prev) => ({ ...prev, [field]: true }));
-    const fieldErrors = validateForm(formData);
-    setErrors((prev) => ({
-      ...prev,
-      [field]: fieldErrors[field as keyof FormErrors],
-    }));
-  };
+  }, [open, mode, initialData, setFormData, resetForm]);
 
   const handleImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -250,23 +174,16 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
   /* ─── Step 0 : Informations générales ─── */
   const renderStep0 = () => (
     <div className="space-y-4">
-      <FloatingInput
-        id="titre"
-        label="Titre *"
-        value={formData.titre}
-        onChange={(e) => handleChange("titre", e.target.value)}
-        onBlur={() => handleBlur("titre")}
-        error={errors.titre}
-      />
-
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <FloatingSelect
-          label="Catégorie *"
-          value={formData.categorie}
-          onValueChange={(v) => handleChange("categorie", v)}
-          options={categories.map((cat) => ({ label: cat, value: cat }))}
-          error={errors.categorie}
+        <FloatingInput
+          id="titre"
+          label="Titre *"
+          value={formData.titre}
+          onChange={(e) => handleChange("titre", e.target.value)}
+          onBlur={() => handleBlur("titre")}
+          error={errors.titre}
         />
+
         <FloatingInput
           id="auteur"
           label="Auteur *"
@@ -276,8 +193,18 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
           error={errors.auteur}
         />
       </div>
+      
 
-      <FloatingInput
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <FloatingSelect
+          label="Catégorie *"
+          value={formData.categorie}
+          onValueChange={(v, _eventDetails) => v && handleChange("categorie", v)}
+          options={categories.map((cat) => ({ label: cat, value: cat }))}
+          error={errors.categorie}
+        />
+
+        <FloatingInput
         id="date"
         label="Date *"
         type="date"
@@ -286,6 +213,8 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
         onBlur={() => handleBlur("date")}
         error={errors.date}
       />
+        
+      </div>
     </div>
   );
 
@@ -366,7 +295,7 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
         <FloatingSelect
           label="Statut *"
           value={formData.statut}
-          onValueChange={(v) => handleChange("statut", v)}
+          onValueChange={(v, _eventDetails) => v && handleChange("statut", v)}
           options={statuts}
           error={errors.statut}
         />

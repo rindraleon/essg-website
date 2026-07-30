@@ -1,6 +1,7 @@
 // src/components/ui/floating-select.tsx
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import type { SelectRootChangeEventDetails } from "@base-ui/react/select";
 import {
   Select,
   SelectContent,
@@ -12,7 +13,7 @@ import {
 export interface FloatingSelectProps {
   label: string;
   value: string;
-  onValueChange: (value: string) => void;
+  onValueChange: (value: string | null, eventDetails: SelectRootChangeEventDetails) => void;
   options: { label: string; value: string }[];
   error?: string;
   placeholder?: string;

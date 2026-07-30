@@ -153,75 +153,6 @@ const Header: React.FC = () => {
           {isAuthenticated && (
             <div className="hidden md:flex items-center gap-1 lg:gap-2">
 
-              {/* Notifications */}
-              <DropdownMenu>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <DropdownMenuTrigger>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-gray-700 hover:text-indigo-600 relative"
-                          aria-label="notifications"
-                        >
-                          <Badge
-                            variant="danger"
-                            className="absolute -top-1 -right-1 px-1.5 py-0.5 text-xs"
-                          >
-                            {pendingAdmissionsCount}
-                          </Badge>
-                          <NotificationsIcon className="h-5 w-5" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>Notifications</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-
-                <DropdownMenuContent align="end" className="w-80 shadow-none ring-0 bg-white border border-gray-200">
-                  <div className="px-3 py-2 border-b border-gray-200">
-                    <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
-                  </div>
-                  <div className="max-h-96 overflow-y-auto">
-                    {recentAdmissions.length === 0 ? (
-                      <div className="px-3 py-4 text-sm text-gray-500 text-center">
-                        Aucune notification
-                      </div>
-                    ) : (
-                      recentAdmissions.map((admission) => (
-                        <DropdownMenuItem
-                          key={admission.id}
-                          className="flex flex-col items-start p-3 cursor-pointer"
-                          onClick={() => navigate(routesStatic.admissions)}
-                        >
-                          <div className="flex items-start justify-between w-full">
-                            <div className="flex-1">
-                              <p className="text-sm font-medium text-gray-900">
-                                {admission.prenom} {admission.nom}
-                              </p>
-                              <p className="text-xs text-gray-500 mt-1">
-                                Formation: {admission.formation}
-                              </p>
-                              <span className={`inline-block mt-2 px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(admission.statut)}`}>
-                                {getStatusLabel(admission.statut)}
-                              </span>
-                            </div>
-                          </div>
-                        </DropdownMenuItem>
-                      ))
-                    )}
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => navigate(routesStatic.admissions)}
-                    className="text-center text-sm font-medium text-indigo-600 hover:text-indigo-700"
-                  >
-                    Voir plus
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
               {/* Messages */}
               <DropdownMenu>
                 <TooltipProvider>
@@ -296,6 +227,75 @@ const Header: React.FC = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
+              {/* Notifications */}
+              <DropdownMenu>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DropdownMenuTrigger>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-gray-700 hover:text-indigo-600 relative"
+                          aria-label="notifications"
+                        >
+                          <Badge
+                            variant="danger"
+                            className="absolute -top-1 -right-1 px-1.5 py-0.5 text-xs"
+                          >
+                            {pendingAdmissionsCount}
+                          </Badge>
+                          <NotificationsIcon className="h-5 w-5" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>Notifications</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <DropdownMenuContent align="end" className="w-80 shadow-none ring-0 bg-white border border-gray-200">
+                  <div className="px-3 py-2 border-b border-gray-200">
+                    <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
+                  </div>
+                  <div className="max-h-96 overflow-y-auto">
+                    {recentAdmissions.length === 0 ? (
+                      <div className="px-3 py-4 text-sm text-gray-500 text-center">
+                        Aucune notification
+                      </div>
+                    ) : (
+                      recentAdmissions.map((admission) => (
+                        <DropdownMenuItem
+                          key={admission.id}
+                          className="flex flex-col items-start p-3 cursor-pointer"
+                          onClick={() => navigate(routesStatic.admissions)}
+                        >
+                          <div className="flex items-start justify-between w-full">
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-gray-900">
+                                {admission.prenom} {admission.nom}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                Formation: {admission.formation}
+                              </p>
+                              <span className={`inline-block mt-2 px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(admission.statut)}`}>
+                                {getStatusLabel(admission.statut)}
+                              </span>
+                            </div>
+                          </div>
+                        </DropdownMenuItem>
+                      ))
+                    )}
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => navigate(routesStatic.admissions)}
+                    className="text-center text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                  >
+                    Voir plus
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               {/* Aide */}
               {/* <DropdownMenu>
                 <TooltipProvider>
@@ -339,6 +339,9 @@ const Header: React.FC = () => {
                             <AvatarImage
                               src={avatarUrl || undefined}
                               alt={prenom}
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                              }}
                             />
                             <AvatarFallback className="bg-indigo-600 text-white text-xs">
                               {getInitials(prenom)}
@@ -410,7 +413,13 @@ const Header: React.FC = () => {
               <div className="flex items-center justify-between pb-4 border-b border-gray-200">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={avatarUrl || undefined} alt={prenom} />
+                    <AvatarImage
+                      src={avatarUrl || undefined}
+                      alt={prenom}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
                     <AvatarFallback className="bg-indigo-600 text-white text-sm">
                       {getInitials(prenom)}
                     </AvatarFallback>

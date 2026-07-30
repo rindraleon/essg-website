@@ -7,7 +7,7 @@ import type { UserFilters } from '../../components/UsersComponent/UsersFilter';
 import { usePagination } from '../../hooks';
 import { useAuth } from '../../contexts/AuthContext';
 import type { User, UserFormData } from '../../types';
-import { getAllUsers, createUser, updateUser, deleteUser } from '../../services';
+import { getAllUsers, createUser, updateUser, deleteUser, uploadAvatar } from '../../services';
 
 const Utilisateurs: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
@@ -140,9 +140,26 @@ const Utilisateurs: React.FC = () => {
             toast.error('Le mot de passe est requis');
             return;
           }
-          const newUser = await createUser(formData as Parameters<typeof createUser>[0]);
-          setData((prev) => [newUser, ...prev]);
-          toast.success('Utilisateur créé avec succès');
+          
+          // Create user without avatar first
+          const { avatar, avatarFile, ...userDataWithoutAvatar } = formData;
+          const newUser = await createUser(userDataWithoutAvatar as Parameters<typeof createUser>[0]);
+          
+          // Upload avatar if provided
+          if (avatarFile && newUser.id) {
+            try {
+              const updatedUser = await uploadAvatar(newUser.id, avatarFile);
+              setData((prev) => [updatedUser, ...prev]);
+              toast.success('Utilisateur créé avec succès avec avatar');
+            } catch (error) {
+              console.error('Erreur lors de l\'upload de l\'avatar:', error);
+              setData((prev) => [newUser, ...prev]);
+              toast.success('Utilisateur créé avec succès (avatar non uploadé)');
+            }
+          } else {
+            setData((prev) => [newUser, ...prev]);
+            toast.success('Utilisateur créé avec succès');
+          }
         } else if (selectedUser) {
           const updatedUser = await updateUser(selectedUser.id, formData);
           setData((prev) =>

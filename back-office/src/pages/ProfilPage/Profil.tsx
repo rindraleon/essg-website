@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Avatar from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
@@ -19,6 +19,8 @@ const Profil: React.FC = () => {
   if (!user) {
     return null;
   }
+
+  const [avatarError, setAvatarError] = useState(false);
 
   const getRoleLabel = (role: string) => {
     switch (role) {
@@ -64,16 +66,17 @@ const Profil: React.FC = () => {
           <CardContent className="p-6">
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <Avatar
-                src={user.avatar ? getImageUrl(user.avatar) : undefined}
+                src={!avatarError && user.avatar ? getImageUrl(user.avatar) : undefined}
+                onError={() => setAvatarError(true)}
                 sx={{
                   width: 120,
                   height: 120,
-                  bgcolor: user.avatar ? 'transparent' : '#4f46e5',
+                  bgcolor: user.avatar && !avatarError ? 'transparent' : '#4f46e5',
                   fontSize: '2.5rem',
                   fontWeight: 600,
                 }}
               >
-                {!user.avatar && `${user.prenom[0]}${user.nom[0]}`.toUpperCase()}
+                {(avatarError || !user.avatar) && `${user.prenom[0]}${user.nom[0]}`.toUpperCase()}
               </Avatar>
               <div className="text-center sm:text-left flex-1">
                 <Typography variant="h4" className="font-bold text-gray-900 mb-2">

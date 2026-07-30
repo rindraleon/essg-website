@@ -69,6 +69,10 @@ const UsersTable: React.FC<UsersTableProps> = ({
               src={getImageUrl(user.avatar)}
               alt={`${user.nom} ${user.prenom}`}
               className="w-10 h-10 rounded-full object-cover"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.parentElement!.textContent = `${user.prenom[0]}${user.nom[0]}`;
+              }}
             />
           ) : (
             `${user.prenom[0]}${user.nom[0]}`
