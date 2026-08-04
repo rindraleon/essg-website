@@ -50,7 +50,7 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
         const data = await partenaireService.findAllPaginated(1, 100);
 
         // Transformer les données du backend vers le format PartenaireItem
-        const transformedPartenaires: PartenaireItem[] = data.map((partenaire: any) => ({
+        const transformedPartenaires: PartenaireItem[] = data.map((partenaire: PartenaireItem) => ({
           id: partenaire.id,
           nom: partenaire.nom,
           type: partenaire.type,

@@ -304,10 +304,9 @@ const ProjetDetailPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-3">
-                    {projet.partenaires.map((partenaire: any, index: number) => {
+                    {projet.partenaires.map((partenaire: string, index: number) => {
                       // Support des partenaires en string ou objet {nom, type}
-                      const nom = typeof partenaire === 'string' ? partenaire : partenaire.nom;
-                      const type = typeof partenaire === 'object' ? partenaire.type : null;
+                      const nom = partenaire;
 
                       return (
                         <div
@@ -319,7 +318,6 @@ const ProjetDetailPage: React.FC = () => {
                           </div>
                           <div className="flex-1">
                             <div className="text-sm font-semibold text-gray-900">{nom}</div>
-                            {type && <div className="text-xs text-gray-500">{type}</div>}
                           </div>
                         </div>
                       );

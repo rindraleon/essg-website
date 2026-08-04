@@ -4,7 +4,11 @@ import type { RessourceHumaine } from '../types/ressource-humaine.types';
 import type { PaginationResponse } from '../types/formations.types';
 
 // Cache simple pour éviter les requêtes répétées
-const queryCache = new Map<string, { data: any; timestamp: number }>();
+const paginationCache = new Map<
+  string,
+  { data: PaginationResponse<RessourceHumaine>; timestamp: number }
+>();
+const activeCache = new Map<string, { data: RessourceHumaine[]; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 // Hook pour toutes les ressources humaines avec pagination
@@ -25,7 +29,7 @@ export default function useRessourcesHumaines(page = 1, limit = 10) {
 
     // Vérifier le cache
     const cacheKey = `ressources-humaines-${page}-${limit}`;
-    const cached = queryCache.get(cacheKey);
+    const cached = paginationCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
       setData(cached.data);
       setLoading(false);
@@ -39,7 +43,7 @@ export default function useRessourcesHumaines(page = 1, limit = 10) {
       setData(result);
 
       // Mettre en cache
-      queryCache.set(cacheKey, { data: result, timestamp: Date.now() });
+      paginationCache.set(cacheKey, { data: result, timestamp: Date.now() });
     } catch (err) {
       if (err instanceof Error && err.name !== 'AbortError') {
         setError(err.message);
@@ -81,7 +85,7 @@ export function useActiveRessourcesHumaines(limit = 100) {
 
     // Vérifier le cache
     const cacheKey = `active-ressources-humaines-${limit}`;
-    const cached = queryCache.get(cacheKey);
+    const cached = activeCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
       setRessourcesHumaines(cached.data);
       setLoading(false);
@@ -98,7 +102,7 @@ export function useActiveRessourcesHumaines(limit = 100) {
         if (!cancelled && !controller.signal.aborted) {
           setRessourcesHumaines(data);
           // Mettre en cache
-          queryCache.set(cacheKey, { data, timestamp: Date.now() });
+          activeCache.set(cacheKey, { data, timestamp: Date.now() });
         }
       } catch (err) {
         if (!cancelled && !(err instanceof Error && err.name === 'AbortError')) {

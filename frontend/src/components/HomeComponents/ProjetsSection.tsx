@@ -52,7 +52,7 @@ const ProjetsSection = ({
 
         const data = await projetService.findAll();
 
-        const transformedProjets = data.map((projet: any) => ({
+        const transformedProjets = data.map((projet) => ({
           id: String(projet.id),
           titre: projet.titre,
           statut: projet.statut || 'En cours',

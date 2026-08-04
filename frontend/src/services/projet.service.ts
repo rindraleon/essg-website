@@ -1,16 +1,30 @@
 import type { ProjetItem } from '../types/projets.types';
 
+type ApiProjet = Omit<ProjetItem, 'id' | 'annee' | 'location' | 'partenaires'> & {
+  id: number | string;
+  date?: string;
+  latitude?: number | string;
+  longitude?: number | string;
+  ville?: string;
+  pays?: string;
+  adresse?: string;
+  partenaires?: Array<string | { nom: string }>;
+};
+
 const API_BASE_URL = import.meta.env.VITE_APP_URL || 'http://localhost:3000';
 const BASE_URL = `${API_BASE_URL.replace(/\/api\/?$/, '')}/projects`;
 
-const transformProjet = (projet: any): ProjetItem => ({
+const transformProjet = (projet: ApiProjet): ProjetItem => ({
   id: String(projet.id),
   titre: projet.titre,
   type: projet.type,
   statut: projet.statut || 'En cours',
   annee: new Date(projet.date).getFullYear().toString(),
   description: projet.description,
-  partenaires: projet.partenaires || [],
+  partenaires:
+    projet.partenaires?.map((partenaire) =>
+      typeof partenaire === 'string' ? partenaire : partenaire.nom
+    ) || [],
   image: projet.image,
   budget: projet.budget,
   objectifs: projet.objectifs,
