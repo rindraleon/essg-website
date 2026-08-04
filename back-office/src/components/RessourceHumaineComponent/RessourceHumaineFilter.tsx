@@ -20,14 +20,7 @@ interface RessourceHumaineFilterProps {
   onToggle: () => void;
 }
 
-const postes = [
-  'Directeur',
-  'Enseignant',
-  'Administratif',
-  'Technicien',
-  'Responsable',
-  'Autre',
-];
+const postes = ['Directeur', 'Enseignant', 'Administratif', 'Technicien', 'Responsable', 'Autre'];
 
 const RessourceHumaineFilter: React.FC<RessourceHumaineFilterProps> = ({
   filters,
@@ -105,11 +98,7 @@ const RessourceHumaineFilter: React.FC<RessourceHumaineFilterProps> = ({
               onDelete={() => onUpdateFilter('search', '')}
             />
           )}
-          <Button
-            size="small"
-            onClick={onResetFilters}
-            sx={{ textTransform: 'none' }}
-          >
+          <Button size="small" onClick={onResetFilters} sx={{ textTransform: 'none' }}>
             Réinitialiser tout
           </Button>
         </Box>

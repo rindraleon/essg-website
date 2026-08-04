@@ -1,50 +1,50 @@
-import React, { useRef, useState, useEffect } from "react";
-import InfoIcon from "@mui/icons-material/Info";
-import WorkIcon from "@mui/icons-material/Work";
-import PublicIcon from "@mui/icons-material/Public";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { uploadImage } from "../../services";
-import type { Projet, ProjetFormData } from "../../types/projet.types";
-import { PROJET_TYPES, DEFAULT_FORM_DATA } from "../../constants/projet.constants";
-import { useFormValidation } from "../../hooks/useFormValidation";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import React, { useRef, useState, useEffect } from 'react';
+import InfoIcon from '@mui/icons-material/Info';
+import WorkIcon from '@mui/icons-material/Work';
+import PublicIcon from '@mui/icons-material/Public';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { uploadImage } from '../../services';
+import type { Projet, ProjetFormData } from '../../types/projet.types';
+import { PROJET_TYPES, DEFAULT_FORM_DATA } from '../../constants/projet.constants';
+import { useFormValidation } from '../../hooks/useFormValidation';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { FloatingInput } from "@/components/ui/floating-input";
-import { FloatingTextarea } from "@/components/ui/floating-textarea";
-import { FloatingSelect } from "@/components/ui/floating-select";
+} from '@/components/ui/dialog';
+import { FloatingInput } from '@/components/ui/floating-input';
+import { FloatingTextarea } from '@/components/ui/floating-textarea';
+import { FloatingSelect } from '@/components/ui/floating-select';
 
 interface ProjetFormProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: ProjetFormData) => void;
   initialData?: Projet | null;
-  mode: "create" | "edit";
+  mode: 'create' | 'edit';
 }
 
 const STEPS = [
   {
     id: 0,
-    label: "Informations",
+    label: 'Informations',
     icon: <InfoIcon className="h-4 w-4" />,
   },
   {
     id: 1,
-    label: "Détails",
+    label: 'Détails',
     icon: <WorkIcon className="h-4 w-4" />,
   },
   {
     id: 2,
-    label: "Publication",
+    label: 'Publication',
     icon: <PublicIcon className="h-4 w-4" />,
   },
 ];
@@ -52,33 +52,38 @@ const STEPS = [
 type ProjetField = keyof ProjetFormData;
 
 const STEP_FIELDS_MAP: Record<number, ProjetField[]> = {
-  0: ["titre", "type", "date"],
-  1: ["description"],
-  2: ["ville", "pays", "adresse"],
+  0: ['titre', 'type', 'date'],
+  1: ['description'],
+  2: ['ville', 'pays', 'adresse'],
 };
 
-const ProjetForm: React.FC<ProjetFormProps> = ({
-  open,
-  onClose,
-  onSubmit,
-  initialData,
-  mode,
-}) => {
+const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initialData, mode }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [imagePreview, setImagePreview] = useState<string>("");
-  const [partenairesInput, setPartenairesInput] = useState("");
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const [partenairesInput, setPartenairesInput] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  const { formData, errors, activeStep, setActiveStep, handleChange, handleBlur, validateStep, validateAllSteps, setFormData, resetForm } = useFormValidation<ProjetFormData>({
+  const {
+    formData,
+    errors,
+    activeStep,
+    setActiveStep,
+    handleChange,
+    handleBlur,
+    validateStep,
+    validateAllSteps,
+    setFormData,
+    resetForm,
+  } = useFormValidation<ProjetFormData>({
     defaultValues: DEFAULT_FORM_DATA,
     validators: {
       titre: {
         required: true,
-        minLength: { value: 5, message: "Le titre doit contenir au moins 5 caractères" },
+        minLength: { value: 5, message: 'Le titre doit contenir au moins 5 caractères' },
       },
       description: {
         required: true,
-        minLength: { value: 20, message: "La description doit contenir au moins 20 caractères" },
+        minLength: { value: 20, message: 'La description doit contenir au moins 20 caractères' },
       },
       type: { required: true },
       date: { required: true },
@@ -88,8 +93,8 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
 
   useEffect(() => {
     if (open) {
-      if (mode === "edit" && initialData) {
-        const imageUrl = initialData.image || "";
+      if (mode === 'edit' && initialData) {
+        const imageUrl = initialData.image || '';
         setFormData({
           titre: initialData.titre,
           type: initialData.type,
@@ -106,21 +111,19 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
         setImagePreview(imageUrl);
       } else {
         resetForm();
-        setImagePreview("");
+        setImagePreview('');
       }
-      setPartenairesInput("");
+      setPartenairesInput('');
     }
   }, [open, mode, initialData, setFormData, resetForm]);
 
-  const handleImageUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingImage(true);
     try {
       const url = await uploadImage(file);
-      handleChange("image", url);
+      handleChange('image', url);
       setImagePreview(url);
     } catch (err) {
       console.error("Erreur lors de l'upload:", err);
@@ -131,21 +134,20 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
 
   const handleAddPartenaire = () => {
     if (partenairesInput.trim()) {
-      handleChange("partenaires", [...formData.partenaires, partenairesInput.trim()]);
-      setPartenairesInput("");
+      handleChange('partenaires', [...formData.partenaires, partenairesInput.trim()]);
+      setPartenairesInput('');
     }
   };
 
   const handleRemovePartenaire = (index: number) => {
     handleChange(
-      "partenaires",
+      'partenaires',
       formData.partenaires.filter((_, i) => i !== index)
     );
   };
 
   const handleNext = () => {
-    if (validateStep(activeStep))
-      setActiveStep((s) => Math.min(s + 1, STEPS.length - 1));
+    if (validateStep(activeStep)) setActiveStep((s) => Math.min(s + 1, STEPS.length - 1));
   };
 
   const handleBack = () => setActiveStep((s) => Math.max(s - 1, 0));
@@ -170,8 +172,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
     if (validateAllSteps()) onSubmit(formData);
   };
 
-  const dialogTitle =
-    mode === "create" ? "Nouveau projet" : "Modifier le projet";
+  const dialogTitle = mode === 'create' ? 'Nouveau projet' : 'Modifier le projet';
 
   /* ─── Step 0 : Informations générales ─── */
   const renderStep0 = () => (
@@ -180,8 +181,8 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
         id="titre"
         label="Titre *"
         value={formData.titre}
-        onChange={(e) => handleChange("titre", e.target.value)}
-        onBlur={() => handleBlur("titre")}
+        onChange={(e) => handleChange('titre', e.target.value)}
+        onBlur={() => handleBlur('titre')}
         error={errors.titre}
       />
 
@@ -189,7 +190,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
         <FloatingSelect
           label="Type *"
           value={formData.type}
-          onValueChange={(v, _eventDetails) => v && handleChange("type", v)}
+          onValueChange={(v, _eventDetails) => v && handleChange('type', v)}
           options={[...PROJET_TYPES]}
           error={errors.type}
         />
@@ -198,8 +199,8 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
           label="Date *"
           type="date"
           value={formData.date}
-          onChange={(e) => handleChange("date", e.target.value)}
-          onBlur={() => handleBlur("date")}
+          onChange={(e) => handleChange('date', e.target.value)}
+          onBlur={() => handleBlur('date')}
           error={errors.date}
         />
       </div>
@@ -213,15 +214,11 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
         id="description"
         label="Description *"
         value={formData.description}
-        onChange={(e) => handleChange("description", e.target.value)}
-        onBlur={() => handleBlur("description")}
+        onChange={(e) => handleChange('description', e.target.value)}
+        onBlur={() => handleBlur('description')}
         rows={5}
         error={errors.description}
-        hint={
-          !errors.description
-            ? `${formData.description.length} caractère(s)`
-            : undefined
-        }
+        hint={!errors.description ? `${formData.description.length} caractère(s)` : undefined}
       />
 
       <div>
@@ -238,7 +235,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
             value={partenairesInput}
             onChange={(e) => setPartenairesInput(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              if (e.key === 'Enter') {
                 e.preventDefault();
                 handleAddPartenaire();
               }
@@ -289,7 +286,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
               src={imagePreview}
               alt="Aperçu"
               className="w-28 h-20 object-cover rounded-md border border-gray-200 shrink-0"
-              onError={() => setImagePreview("")}
+              onError={() => setImagePreview('')}
             />
           )}
           <div className="flex flex-col gap-1.5">
@@ -309,11 +306,9 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
               className="gap-1.5 bg-white text-xs h-8"
             >
               <CloudUploadIcon className="h-3.5 w-3.5" />
-              {uploadingImage ? "Upload..." : "Choisir une image"}
+              {uploadingImage ? 'Upload...' : 'Choisir une image'}
             </Button>
-            <span className="text-[10px] text-gray-400">
-              JPG, PNG, GIF, WebP — max 5 Mo
-            </span>
+            <span className="text-[10px] text-gray-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
           </div>
         </div>
       </div>
@@ -331,22 +326,22 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
           <FloatingInput
             id="ville"
             label="Ville"
-            value={formData.ville || ""}
-            onChange={(e) => handleChange("ville", e.target.value)}
+            value={formData.ville || ''}
+            onChange={(e) => handleChange('ville', e.target.value)}
           />
           <FloatingInput
             id="pays"
             label="Pays"
-            value={formData.pays || ""}
-            onChange={(e) => handleChange("pays", e.target.value)}
+            value={formData.pays || ''}
+            onChange={(e) => handleChange('pays', e.target.value)}
           />
         </div>
 
         <FloatingInput
           id="adresse"
           label="Adresse"
-          value={formData.adresse || ""}
-          onChange={(e) => handleChange("adresse", e.target.value)}
+          value={formData.adresse || ''}
+          onChange={(e) => handleChange('adresse', e.target.value)}
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -355,9 +350,9 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
             label="Latitude"
             type="number"
             step="any"
-            value={formData.latitude?.toString() || ""}
+            value={formData.latitude?.toString() || ''}
             onChange={(e) =>
-              handleChange("latitude", e.target.value ? parseFloat(e.target.value) : undefined)
+              handleChange('latitude', e.target.value ? parseFloat(e.target.value) : undefined)
             }
           />
           <FloatingInput
@@ -365,9 +360,9 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
             label="Longitude"
             type="number"
             step="any"
-            value={formData.longitude?.toString() || ""}
+            value={formData.longitude?.toString() || ''}
             onChange={(e) =>
-              handleChange("longitude", e.target.value ? parseFloat(e.target.value) : undefined)
+              handleChange('longitude', e.target.value ? parseFloat(e.target.value) : undefined)
             }
           />
         </div>
@@ -392,9 +387,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
       >
         {/* ─── Header + Stepper ─── */}
         <DialogHeader className="px-5 pt-4 pb-3 border-b bg-gray-50/80">
-          <DialogTitle className="text-lg font-bold text-gray-900">
-            {dialogTitle}
-          </DialogTitle>
+          <DialogTitle className="text-lg font-bold text-gray-900">{dialogTitle}</DialogTitle>
 
           <div className="flex items-center justify-center gap-1 mt-3">
             {STEPS.map((step, index) => {
@@ -406,7 +399,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
                   {index > 0 && (
                     <div
                       className={`hidden sm:block h-px w-8 transition-colors ${
-                        isCompleted ? "bg-blue-500" : "bg-gray-300"
+                        isCompleted ? 'bg-blue-500' : 'bg-gray-300'
                       }`}
                     />
                   )}
@@ -418,18 +411,14 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
                       text-xs font-medium transition-all
                       ${
                         isActive
-                          ? "bg-blue-600 text-white shadow-sm"
+                          ? 'bg-blue-600 text-white shadow-sm'
                           : isCompleted
-                            ? "bg-blue-50 text-blue-700 hover:bg-blue-100"
-                            : "bg-gray-100 text-gray-400"
+                            ? 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                            : 'bg-gray-100 text-gray-400'
                       }
                     `}
                   >
-                    {isCompleted ? (
-                      <CheckCircleIcon className="h-4 w-4" />
-                    ) : (
-                      step.icon
-                    )}
+                    {isCompleted ? <CheckCircleIcon className="h-4 w-4" /> : step.icon}
                     <span className="hidden sm:inline">{step.label}</span>
                     <span className="sm:hidden">{index + 1}</span>
                   </button>
@@ -440,9 +429,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
         </DialogHeader>
 
         {/* ─── Body ─── */}
-        <div className="px-5 py-4 overflow-y-auto max-h-[58vh]">
-          {stepRenderers[activeStep]()}
-        </div>
+        <div className="px-5 py-4 overflow-y-auto max-h-[58vh]">{stepRenderers[activeStep]()}</div>
 
         {/* ─── Footer ─── */}
         <DialogFooter className="px-5 py-3 mb-4 mx-4 border-t bg-gray-50/80">
@@ -493,7 +480,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({
                   className="gap-1 h-8 bg-blue-600 hover:bg-blue-700"
                 >
                   <CheckCircleIcon className="h-3.5 w-3.5" />
-                  {mode === "create" ? "Créer" : "Enregistrer"}
+                  {mode === 'create' ? 'Créer' : 'Enregistrer'}
                 </Button>
               )}
             </div>

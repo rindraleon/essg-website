@@ -8,7 +8,6 @@ import 'leaflet/dist/leaflet.css';
 import { FloatingInput } from '@/components/ui/floating-input';
 import { Button } from '@/components/ui/button';
 
-
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -40,7 +39,6 @@ const MapPicker: React.FC<MapPickerProps> = ({
   onLocationChange,
   label = 'Sélectionner un emplacement sur la carte',
 }) => {
-  
   const lat = typeof latitude === 'string' ? parseFloat(latitude) : latitude;
   const lng = typeof longitude === 'string' ? parseFloat(longitude) : longitude;
 
@@ -106,18 +104,10 @@ const MapPicker: React.FC<MapPickerProps> = ({
 
   return (
     <div className="w-full space-y-3">
-      {label && (
-        <p className="font-semibold text-gray-700 mb-2">
-          {label}
-        </p>
-      )}
-      
+      {label && <p className="font-semibold text-gray-700 mb-2">{label}</p>}
+
       <div className="rounded-xl overflow-hidden border border-gray-200">
-        <MapContainer
-          center={position}
-          zoom={13}
-          style={{ height: '300px', width: '100%' }}
-        >
+        <MapContainer center={position} zoom={13} style={{ height: '300px', width: '100%' }}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -136,68 +126,66 @@ const MapPicker: React.FC<MapPickerProps> = ({
         </MapContainer>
       </div>
 
-       <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-          <div className="flex items-center gap-2 mb-2">
-            <EditIcon fontSize="small" className="text-gray-600" />
-            <p className="font-semibold text-gray-700 text-sm">
-              Saisie manuelle des coordonnées
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <FloatingInput
-              label="Latitude"
-              type="number"
-              value={manualLat}
-              onChange={(e) => handleManualLatChange(e.target.value)}
-              onBlur={() => {
-                if (!isManualEdit) {
-                  setManualLat(position[0].toFixed(7));
-                }
-              }}
-              min={-90}
-              max={90}
-              step={0.0000001}
-            />
-            <FloatingInput
-              label="Longitude"
-              type="number"
-              value={manualLng}
-              onChange={(e) => handleManualLngChange(e.target.value)}
-              onBlur={() => {
-                if (!isManualEdit) {
-                  setManualLng(position[1].toFixed(7));
-                }
-              }}
-              min={-180}
-              max={180}
-              step={0.0000001}
-            />
-          </div>
+      <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="flex items-center gap-2 mb-2">
+          <EditIcon fontSize="small" className="text-gray-600" />
+          <p className="font-semibold text-gray-700 text-sm">Saisie manuelle des coordonnées</p>
         </div>
+        <div className="grid grid-cols-2 gap-3">
+          <FloatingInput
+            label="Latitude"
+            type="number"
+            value={manualLat}
+            onChange={(e) => handleManualLatChange(e.target.value)}
+            onBlur={() => {
+              if (!isManualEdit) {
+                setManualLat(position[0].toFixed(7));
+              }
+            }}
+            min={-90}
+            max={90}
+            step={0.0000001}
+          />
+          <FloatingInput
+            label="Longitude"
+            type="number"
+            value={manualLng}
+            onChange={(e) => handleManualLngChange(e.target.value)}
+            onBlur={() => {
+              if (!isManualEdit) {
+                setManualLng(position[1].toFixed(7));
+              }
+            }}
+            min={-180}
+            max={180}
+            step={0.0000001}
+          />
+        </div>
+      </div>
 
-        <div className="mt-2 flex items-center gap-3 text-sm">
-          <div className="flex items-center gap-1">
-            <LocationOnIcon fontSize="small" className="text-gray-500" />
-            <span className="text-gray-600">
-              <span className="font-semibold">Lat:</span> {position[0].toFixed(5)}
-            </span>
-          </div>
-          <div className="flex items-center gap-1">
-            <LocationOnIcon fontSize="small" className="text-gray-500" />
-            <span className="text-gray-600">
-              <span className="font-semibold">Lng:</span> {position[1].toFixed(5)}
-            </span>
-          </div>
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={handleGetCurrentLocation}
-            title="Utiliser ma position actuelle"
-            className="h-8 w-8"
-          >
-            <MyLocationIcon fontSize="small" className="text-blue-600" />
-          </Button>
+      <div className="mt-2 flex items-center gap-3 text-sm">
+        <div className="flex items-center gap-1">
+          <LocationOnIcon fontSize="small" className="text-gray-500" />
+          <span className="text-gray-600">
+            <span className="font-semibold">Lat:</span> {position[0].toFixed(5)}
+          </span>
         </div>
+        <div className="flex items-center gap-1">
+          <LocationOnIcon fontSize="small" className="text-gray-500" />
+          <span className="text-gray-600">
+            <span className="font-semibold">Lng:</span> {position[1].toFixed(5)}
+          </span>
+        </div>
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={handleGetCurrentLocation}
+          title="Utiliser ma position actuelle"
+          className="h-8 w-8"
+        >
+          <MyLocationIcon fontSize="small" className="text-blue-600" />
+        </Button>
+      </div>
     </div>
   );
 };

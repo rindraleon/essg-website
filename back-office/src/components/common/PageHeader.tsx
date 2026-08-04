@@ -24,10 +24,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         {subtitle && <p className="text-gray-600">{subtitle}</p>}
       </div>
       {actionLabel && onAction && (
-        <Button
-          onClick={onAction}
-          className="rounded-lg"
-        >
+        <Button onClick={onAction} className="rounded-lg">
           {actionIcon || <AddIcon className="h-4 w-4 mr-2" />}
           {actionLabel}
         </Button>

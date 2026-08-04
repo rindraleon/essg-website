@@ -29,52 +29,52 @@ export interface PaginationResponse<T> {
 }
 
 export type FormationModule = {
-    semestre: string;
-    cours: string[];
+  semestre: string;
+  cours: string[];
 };
 
 export type FormationItem = {
-    id: number;
-    titre: string;
-    niveau: string;
-    domaine: string[];
-    duree: string;
-    credits?: number;
-    description: string;
-    objectifs: string[];
-    debouches: string[];
-    modules?: FormationModule[];
-    conditions?: string[];
-    competences?: string[];
-    responsable?: string;
-    email?: string;
+  id: number;
+  titre: string;
+  niveau: string;
+  domaine: string[];
+  duree: string;
+  credits?: number;
+  description: string;
+  objectifs: string[];
+  debouches: string[];
+  modules?: FormationModule[];
+  conditions?: string[];
+  competences?: string[];
+  responsable?: string;
+  email?: string;
 };
 
 export type FormationCardProps = {
-    formation: Formation;
-    detailLinkBase?: string;
-    applyLink?: string;
+  formation: Formation;
+  detailLinkBase?: string;
+  applyLink?: string;
 };
 
 export type FormationDetailContentProps = {
-    formation: Formation;
+  formation: Formation;
 };
 
 export type FormationsPageProps = {
-    pageTitle?: string;
-    pageSubtitle?: string;
-    pageDescription?: string;
-    formations?: Formation[];
+  pageTitle?: string;
+  pageSubtitle?: string;
+  pageDescription?: string;
+  formations?: Formation[];
 };
 
 export type FormationDetailPageProps = {
-    formations?: Formation[];
+  formations?: Formation[];
 };
 
 export type FeaturedFormationsSectionProps = {
-    title?: string;
-    description?: string;
-    ctaLabel?: string;
-    ctaLink?: string;
-    featuredFormations?: Formation[];
+  title?: string;
+  description?: string;
+  ctaLabel?: string;
+  ctaLink?: string;
+  featuredFormations?: Formation[];
 };

@@ -36,9 +36,11 @@ const createPartenaire = async (data: PartenaireFormData | FormData): Promise<Pa
   try {
     const isFormData = data instanceof FormData;
     const response = await axiosConfig.post<any>('/partners', data, {
-      headers: isFormData ? {
-        'Content-Type': 'multipart/form-data',
-      } : undefined,
+      headers: isFormData
+        ? {
+            'Content-Type': 'multipart/form-data',
+          }
+        : undefined,
     });
     return transformPartenaire(response.data);
   } catch (error) {
@@ -47,13 +49,18 @@ const createPartenaire = async (data: PartenaireFormData | FormData): Promise<Pa
   }
 };
 
-const updatePartenaire = async (id: number, data: PartenaireFormData | FormData): Promise<Partenaire> => {
+const updatePartenaire = async (
+  id: number,
+  data: PartenaireFormData | FormData
+): Promise<Partenaire> => {
   try {
     const isFormData = data instanceof FormData;
     const response = await axiosConfig.put<any>(`/partners/${id}`, data, {
-      headers: isFormData ? {
-        'Content-Type': 'multipart/form-data',
-      } : undefined,
+      headers: isFormData
+        ? {
+            'Content-Type': 'multipart/form-data',
+          }
+        : undefined,
     });
     return transformPartenaire(response.data);
   } catch (error) {
@@ -71,4 +78,10 @@ const deletePartenaire = async (id: number): Promise<void> => {
   }
 };
 
-export { getAllPartenaires, getPartenaireById, createPartenaire, updatePartenaire, deletePartenaire };
+export {
+  getAllPartenaires,
+  getPartenaireById,
+  createPartenaire,
+  updatePartenaire,
+  deletePartenaire,
+};

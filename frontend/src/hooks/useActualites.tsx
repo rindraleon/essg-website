@@ -37,7 +37,7 @@ export default function useActualites(page = 1, limit = 10) {
       setError(null);
       const result = await actualiteService.findAll(page, limit, controller.signal);
       setData(result);
-      
+
       // Mettre en cache
       queryCache.set(cacheKey, { data: result, timestamp: Date.now() });
     } catch (err) {
@@ -139,15 +139,16 @@ export function useActualiteBySlug(slug: string) {
         const data = await actualiteService.findBySlug(slug);
         if (!cancelled) setActualite(data);
       } catch (err) {
-        if (!cancelled)
-          setError(err instanceof Error ? err.message : 'Erreur inconnue');
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Erreur inconnue');
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
 
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
   return { actualite, loading, error };

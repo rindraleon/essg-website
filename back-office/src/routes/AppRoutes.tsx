@@ -43,9 +43,7 @@ const LoadingScreen = () => (
           }}
         />
       </div>
-      <p className="text-lime-400/60 text-sm tracking-widest animate-pulse">
-        Vérification...
-      </p>
+      <p className="text-lime-400/60 text-sm tracking-widest animate-pulse">Vérification...</p>
     </div>
     <style>{`
       @keyframes spin {
@@ -80,11 +78,7 @@ const PublicRoute = ({ children }: { children: React.JSX.Element }) => {
     return <LoadingScreen />;
   }
 
-  return isAuthenticated ? (
-    <Navigate to={routesStatic.dashboard} replace />
-  ) : (
-    children
-  );
+  return isAuthenticated ? <Navigate to={routesStatic.dashboard} replace /> : children;
 };
 
 const AppRoutes = () => {
@@ -231,15 +225,7 @@ const AppRoutes = () => {
         }
       />
 
-      <Route
-        path="*"
-        element={
-          <Navigate
-            to={routesStatic.login}
-            replace
-          />
-        }
-      />
+      <Route path="*" element={<Navigate to={routesStatic.login} replace />} />
     </Routes>
   );
 };

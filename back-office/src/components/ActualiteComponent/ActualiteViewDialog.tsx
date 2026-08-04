@@ -9,12 +9,7 @@ import { getImageUrl } from '../../utils/image.utils';
 import type { ActualiteItem } from '../../types/actualite.types';
 import StatusBadge from '../common/StatusBadge';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 
 interface ActualiteViewDialogProps {
@@ -23,11 +18,7 @@ interface ActualiteViewDialogProps {
   actualite: ActualiteItem | null;
 }
 
-const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({
-  open,
-  onClose,
-  actualite,
-}) => {
+const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose, actualite }) => {
   if (!actualite) return null;
 
   return (
@@ -79,9 +70,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({
             {/* Texte séparé de l'image pour meilleure lisibilité */}
             <div className="mt-5 space-y-4">
               <div className="flex items-center justify-between gap-3">
-                <Badge className="rounded-full bg-white/10 px-3 py-1 text-white">
-                  Actualité
-                </Badge>
+                <Badge className="rounded-full bg-white/10 px-3 py-1 text-white">Actualité</Badge>
 
                 {actualite.enVedette && (
                   <Badge className="rounded-full bg-amber-500 px-3 py-1 text-white">
@@ -92,9 +81,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({
               </div>
 
               <div>
-                <h2 className="text-2xl font-bold leading-tight text-white">
-                  {actualite.titre}
-                </h2>
+                <h2 className="text-2xl font-bold leading-tight text-white">{actualite.titre}</h2>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Badge className="rounded-full bg-white text-slate-900">
                     <LabelIcon className="mr-1 h-3.5 w-3.5" />
@@ -107,21 +94,15 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="mb-2 flex items-center gap-2 text-white/80">
                     <PersonIcon className="h-4 w-4" />
-                    <span className="text-xs uppercase tracking-wide">
-                      Auteur
-                    </span>
+                    <span className="text-xs uppercase tracking-wide">Auteur</span>
                   </div>
-                  <p className="text-base font-semibold text-white">
-                    {actualite.auteur}
-                  </p>
+                  <p className="text-base font-semibold text-white">{actualite.auteur}</p>
                 </div>
 
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="mb-2 flex items-center gap-2 text-white/80">
                     <CalendarTodayIcon className="h-4 w-4" />
-                    <span className="text-xs uppercase tracking-wide">
-                      Date
-                    </span>
+                    <span className="text-xs uppercase tracking-wide">Date</span>
                   </div>
                   <p className="text-base font-semibold text-white">
                     {new Date(actualite.date).toLocaleDateString('fr-FR', {
@@ -134,9 +115,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="mb-2 text-xs uppercase tracking-wide text-white/70">
-                  Statut
-                </p>
+                <p className="mb-2 text-xs uppercase tracking-wide text-white/70">Statut</p>
                 <div className="mt-1">
                   <StatusBadge status={actualite.statut} />
                 </div>
@@ -194,9 +173,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({
                   </div>
 
                   <div className="p-4">
-                    <h2 className="mb-3 text-2xl font-bold text-slate-900">
-                      {actualite.titre}
-                    </h2>
+                    <h2 className="mb-3 text-2xl font-bold text-slate-900">{actualite.titre}</h2>
 
                     <div className="mb-4 flex flex-wrap gap-2">
                       <Badge className="gap-1 rounded-full">
@@ -215,9 +192,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({
                     <div className="grid grid-cols-2 gap-3">
                       <div className="rounded-xl bg-slate-50 p-3">
                         <p className="text-xs text-slate-500">Auteur</p>
-                        <p className="text-sm font-semibold text-slate-900">
-                          {actualite.auteur}
-                        </p>
+                        <p className="text-sm font-semibold text-slate-900">{actualite.auteur}</p>
                       </div>
 
                       <div className="rounded-xl bg-slate-50 p-3">
@@ -275,9 +250,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({
                     <div className="space-y-3">
                       <div>
                         <p className="text-xs text-slate-500">Auteur</p>
-                        <p className="text-sm font-medium text-slate-900">
-                          {actualite.auteur}
-                        </p>
+                        <p className="text-sm font-medium text-slate-900">{actualite.auteur}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-500">Date de publication</p>
@@ -291,9 +264,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({
                       </div>
                       <div>
                         <p className="text-xs text-slate-500">Catégorie</p>
-                        <p className="text-sm font-medium text-slate-900">
-                          {actualite.categorie}
-                        </p>
+                        <p className="text-sm font-medium text-slate-900">{actualite.categorie}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-500">Statut</p>
@@ -309,12 +280,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({
 
             {/* Footer */}
             <div className="flex shrink-0 items-center justify-end border-t border-slate-200 bg-white px-5 py-4 lg:px-6">
-              <Button
-                type="button"
-                onClick={onClose}
-                variant="outline"
-                className="rounded-xl"
-              >
+              <Button type="button" onClick={onClose} variant="outline" className="rounded-xl">
                 Fermer
               </Button>
             </div>

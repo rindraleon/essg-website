@@ -1,7 +1,7 @@
-import axiosConfig from "../config/axios.config";
+import axiosConfig from '../config/axios.config';
 
 export const getAllAdmissions = async () => {
-  const response = await axiosConfig.get("/admissions");
+  const response = await axiosConfig.get('/admissions');
   return response.data;
 };
 

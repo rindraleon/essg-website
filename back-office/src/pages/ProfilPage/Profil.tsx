@@ -54,7 +54,7 @@ const Profil: React.FC = () => {
       month: 'long',
       year: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
@@ -99,7 +99,10 @@ const Profil: React.FC = () => {
         {/* Informations personnelles */}
         <Card className="mb-6 shadow-sm">
           <CardContent className="p-6">
-            <Typography variant="h6" className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <Typography
+              variant="h6"
+              className="font-semibold text-gray-900 mb-4 flex items-center gap-2"
+            >
               <PersonIcon className="text-indigo-600" />
               Informations personnelles
             </Typography>

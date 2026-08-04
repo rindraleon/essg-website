@@ -1,40 +1,40 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { useScrollToTop } from "../../hooks/";
-import { useTitle } from "../../hooks/useTitle";
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useScrollToTop } from '../../hooks/';
+import { useTitle } from '../../hooks/useTitle';
 import {
   getAllAdmissions,
   updateAdmissionStatus,
   deleteAdmission,
-} from "../../services/admissions.service";
-import type { Admission, AdmissionStatus } from "../../types/admission.types";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { SearchInput, AdmissionFilters } from "../../components";
-import AdmissionTable from "../../components/AdmissionComponents/AdmissionTable";
-import AdmissionDetailDialog from "../../components/AdmissionComponents/AdmissionDetailDialog";
-import usePagination from "../../hooks/usePagination";
+} from '../../services/admissions.service';
+import type { Admission, AdmissionStatus } from '../../types/admission.types';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { SearchInput, AdmissionFilters } from '../../components';
+import AdmissionTable from '../../components/AdmissionComponents/AdmissionTable';
+import AdmissionDetailDialog from '../../components/AdmissionComponents/AdmissionDetailDialog';
+import usePagination from '../../hooks/usePagination';
 
 const ITEMS_PER_PAGE = 10;
 
 const Admissions = () => {
   useScrollToTop();
-  useTitle("Admissions");
+  useTitle('Admissions');
 
   const [admissions, setAdmissions] = useState<Admission[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedAdmission, setSelectedAdmission] = useState<Admission | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
-  const [newStatus, setNewStatus] = useState<AdmissionStatus>("en_attente");
-  const [commentaire, setCommentaire] = useState("");
+  const [newStatus, setNewStatus] = useState<AdmissionStatus>('en_attente');
+  const [commentaire, setCommentaire] = useState('');
   const [updating, setUpdating] = useState(false);
 
   // Filtres
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [filterNiveau, setFilterNiveau] = useState("all");
-  const [filterFormation, setFilterFormation] = useState("all");
-  const [filterDateDebut, setFilterDateDebut] = useState("");
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterNiveau, setFilterNiveau] = useState('all');
+  const [filterFormation, setFilterFormation] = useState('all');
+  const [filterDateDebut, setFilterDateDebut] = useState('');
 
   const {
     currentPage,
@@ -54,30 +54,30 @@ const Admissions = () => {
   }, [searchTerm, filterStatus, filterNiveau, filterFormation, filterDateDebut, resetPage]);
 
   const niveaux = useMemo(() => {
-    const uniqueNiveaux = Array.from(new Set(admissions.map(a => a.niveau)));
+    const uniqueNiveaux = Array.from(new Set(admissions.map((a) => a.niveau)));
     return uniqueNiveaux.sort((a, b) => a.localeCompare(b));
   }, [admissions]);
 
   const formations = useMemo(() => {
-    const uniqueFormations = Array.from(new Set(admissions.map(a => a.formation)));
+    const uniqueFormations = Array.from(new Set(admissions.map((a) => a.formation)));
     return uniqueFormations.sort((a, b) => a.localeCompare(b));
   }, [admissions]);
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
-    if (filterStatus !== "all") count++;
-    if (filterNiveau !== "all") count++;
-    if (filterFormation !== "all") count++;
+    if (filterStatus !== 'all') count++;
+    if (filterNiveau !== 'all') count++;
+    if (filterFormation !== 'all') count++;
     if (filterDateDebut) count++;
     return count;
   }, [filterStatus, filterNiveau, filterFormation, filterDateDebut]);
 
   const handleResetFilters = useCallback(() => {
-    setSearchTerm("");
-    setFilterStatus("all");
-    setFilterNiveau("all");
-    setFilterFormation("all");
-    setFilterDateDebut("");
+    setSearchTerm('');
+    setFilterStatus('all');
+    setFilterNiveau('all');
+    setFilterFormation('all');
+    setFilterDateDebut('');
     resetPage();
   }, [resetPage]);
 
@@ -86,8 +86,8 @@ const Admissions = () => {
       const data = await getAllAdmissions();
       setAdmissions(data);
     } catch (error) {
-      console.error("Erreur lors du chargement des admissions:", error);
-      toast.error("Erreur lors du chargement des admissions");
+      console.error('Erreur lors du chargement des admissions:', error);
+      toast.error('Erreur lors du chargement des admissions');
     }
   };
 
@@ -99,10 +99,11 @@ const Admissions = () => {
       admission.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       admission.formation.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus = filterStatus === "all" || admission.statut === filterStatus;
-    const matchesNiveau = filterNiveau === "all" || admission.niveau === filterNiveau;
-    const matchesFormation = filterFormation === "all" || admission.formation === filterFormation;
-    const matchesDateDebut = !filterDateDebut || new Date(admission.creeLe) >= new Date(filterDateDebut);
+    const matchesStatus = filterStatus === 'all' || admission.statut === filterStatus;
+    const matchesNiveau = filterNiveau === 'all' || admission.niveau === filterNiveau;
+    const matchesFormation = filterFormation === 'all' || admission.formation === filterFormation;
+    const matchesDateDebut =
+      !filterDateDebut || new Date(admission.creeLe) >= new Date(filterDateDebut);
 
     return matchesSearch && matchesStatus && matchesNiveau && matchesFormation && matchesDateDebut;
   });
@@ -115,7 +116,7 @@ const Admissions = () => {
   const handleUpdateStatus = (admission: Admission) => {
     setSelectedAdmission(admission);
     setNewStatus(admission.statut);
-    setCommentaire(admission.commentaire || "");
+    setCommentaire(admission.commentaire || '');
     setShowStatusModal(true);
   };
 
@@ -128,28 +129,28 @@ const Admissions = () => {
       await loadAdmissions();
       setShowStatusModal(false);
       setSelectedAdmission(null);
-      setCommentaire("");
-      toast.success("Statut mis à jour avec succès");
+      setCommentaire('');
+      toast.success('Statut mis à jour avec succès');
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du statut:", error);
-      toast.error("Une erreur est survenue lors de la mise à jour du statut.");
+      console.error('Erreur lors de la mise à jour du statut:', error);
+      toast.error('Une erreur est survenue lors de la mise à jour du statut.');
     } finally {
       setUpdating(false);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Êtes-vous sûr de vouloir supprimer cette candidature ?")) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?')) {
       return;
     }
 
     try {
       await deleteAdmission(id);
       await loadAdmissions();
-      toast.success("Candidature supprimée avec succès");
+      toast.success('Candidature supprimée avec succès');
     } catch (error) {
-      console.error("Erreur lors de la suppression:", error);
-      toast.error("Une erreur est survenue lors de la suppression.");
+      console.error('Erreur lors de la suppression:', error);
+      toast.error('Une erreur est survenue lors de la suppression.');
     }
   };
 
@@ -179,10 +180,10 @@ const Admissions = () => {
 
   const stats = {
     total: admissions.length,
-    enAttente: admissions.filter((a) => a.statut === "en_attente").length,
-    enCours: admissions.filter((a) => a.statut === "en_cours_etude").length,
-    acceptes: admissions.filter((a) => a.statut === "accepte").length,
-    refuses: admissions.filter((a) => a.statut === "refuse").length,
+    enAttente: admissions.filter((a) => a.statut === 'en_attente').length,
+    enCours: admissions.filter((a) => a.statut === 'en_cours_etude').length,
+    acceptes: admissions.filter((a) => a.statut === 'accepte').length,
+    refuses: admissions.filter((a) => a.statut === 'refuse').length,
   };
 
   return (
@@ -224,11 +225,7 @@ const Admissions = () => {
             />
           </div>
           <div className="flex items-center gap-3 w-full lg:w-auto">
-            <Button
-              variant="outline"
-              onClick={handleToggleFilters}
-              className="rounded-lg"
-            >
+            <Button variant="outline" onClick={handleToggleFilters} className="rounded-lg">
               {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
             </Button>
           </div>
@@ -269,7 +266,14 @@ const Admissions = () => {
         onDelete={handleDelete}
         onDownloadCV={handleDownloadCV}
         onDownloadLettre={handleDownloadLettre}
-        emptyMessage={searchTerm || filterStatus !== "all" || filterNiveau !== "all" || filterFormation !== "all" ? "Aucun résultat trouvé" : "Aucune candidature trouvée"}
+        emptyMessage={
+          searchTerm ||
+          filterStatus !== 'all' ||
+          filterNiveau !== 'all' ||
+          filterFormation !== 'all'
+            ? 'Aucun résultat trouvé'
+            : 'Aucune candidature trouvée'
+        }
       />
 
       {showDetailModal && selectedAdmission && (
@@ -347,7 +351,7 @@ const Admissions = () => {
                       Enregistrement...
                     </>
                   ) : (
-                    "Enregistrer"
+                    'Enregistrer'
                   )}
                 </button>
                 <button

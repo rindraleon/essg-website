@@ -1,5 +1,9 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { login as loginService, verifyToken, logout as logoutService } from '../services/auth.service';
+import {
+  login as loginService,
+  verifyToken,
+  logout as logoutService,
+} from '../services/auth.service';
 import { setAuthToken, clearAuthToken } from '../config/axios.config';
 import type { User } from '../types/auth.types';
 
@@ -43,7 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string) => {
     const response = await loginService(email, password);
     setAuthToken(response.accessToken);
-    
+
     // Récupérer les informations complètes de l'utilisateur
     try {
       const userData = await verifyToken();
@@ -54,7 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('Error fetching user data after login:', error);
     }
-    
+
     setIsAuthenticated(true);
   };
 

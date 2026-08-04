@@ -46,12 +46,7 @@ const AdmissionFilters: React.FC<AdmissionFiltersProps> = ({
       <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-semibold text-gray-700">Filtres avancés</span>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggle}
-            className="h-8 w-8"
-          >
+          <Button variant="ghost" size="icon" onClick={onToggle} className="h-8 w-8">
             <CloseIcon className="h-4 w-4" />
           </Button>
         </div>
@@ -118,24 +113,19 @@ const AdmissionFilters: React.FC<AdmissionFiltersProps> = ({
 
           <div className="space-y-2">
             <Label htmlFor="dateDebut">Date début</Label>
-              <Input
-                id="dateDebut"
-                type="date"
-                value={filters.dateDebut || ''}
-                onChange={(e) => onUpdateFilter('dateDebut', e.target.value || '')}
-                className="bg-white"
-              />
+            <Input
+              id="dateDebut"
+              type="date"
+              value={filters.dateDebut || ''}
+              onChange={(e) => onUpdateFilter('dateDebut', e.target.value || '')}
+              className="bg-white"
+            />
           </div>
         </div>
 
         {activeFilterCount > 0 && (
           <div className="mt-3 flex justify-end">
-            <Button
-              size="sm"
-              variant="destructive"
-              onClick={onResetFilters}
-              className="text-xs"
-            >
+            <Button size="sm" variant="destructive" onClick={onResetFilters} className="text-xs">
               <RestoreIcon className="h-3 w-3 mr-1" />
               Réinitialiser tout
             </Button>

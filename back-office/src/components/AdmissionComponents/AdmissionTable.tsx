@@ -9,12 +9,7 @@ import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface AdmissionTableProps {
   data: Admission[];
@@ -54,7 +49,7 @@ const getStatusLabel = (statut: string): string => {
     case 'en_attente':
       return 'En attente';
     case 'en_cours_etude':
-      return 'En cours d\'étude';
+      return "En cours d'étude";
     case 'refuse':
       return 'Refusé';
     default:
@@ -75,176 +70,179 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
   onDownloadCV,
   onDownloadLettre,
   loading = false,
-  emptyMessage = "Aucune admission trouvée",
+  emptyMessage = 'Aucune admission trouvée',
 }) => {
-  const columns = useMemo<Column<Admission>[]>(() => [
-    {
-      id: 'candidat',
-      label: 'Candidat',
-      minWidth: 250,
-      render: (row) => (
-        <div className="max-w-md">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-sm font-semibold text-indigo-600">
-                {row.nom
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </span>
-            </div>
-            <div className="min-w-0">
-              <span className="font-semibold text-gray-900 block">
-                {row.nom} {row.prenom} 
-              </span>
-              <p className="text-xs text-gray-500 truncate">{row.email}</p>
-              <p className="text-xs text-gray-500">{row.telephone}</p>
+  const columns = useMemo<Column<Admission>[]>(
+    () => [
+      {
+        id: 'candidat',
+        label: 'Candidat',
+        minWidth: 250,
+        render: (row) => (
+          <div className="max-w-md">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                <span className="text-sm font-semibold text-indigo-600">
+                  {row.nom
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')}
+                </span>
+              </div>
+              <div className="min-w-0">
+                <span className="font-semibold text-gray-900 block">
+                  {row.nom} {row.prenom}
+                </span>
+                <p className="text-xs text-gray-500 truncate">{row.email}</p>
+                <p className="text-xs text-gray-500">{row.telephone}</p>
+              </div>
             </div>
           </div>
-        </div>
-      ),
-    },
-    {
-      id: 'formation',
-      label: 'Formation',
-      minWidth: 200,
-      render: (row) => (
-        <div>
-          <span className="text-sm text-gray-900 font-medium">{row.formation}</span>
-          <p className="text-xs text-gray-500 capitalize">{row.niveau}</p>
-        </div>
-      ),
-    },
-    {
-      id: 'statut',
-      label: 'Statut',
-      minWidth: 140,
-      align: 'center',
-      render: (row) => (
-        <Badge variant={getStatusColor(row.statut)} className="text-xs">
-          {getStatusLabel(row.statut)}
-        </Badge>
-      ),
-    },
-    {
-      id: 'documents',
-      label: 'Documents',
-      minWidth: 120,
-      align: 'center',
-      render: (row) => (
-        <div className="flex items-center justify-center gap-1">
-          {row.cvPath && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      e.nativeEvent.stopImmediatePropagation();
-                      window.open(row.cvPath, '_blank', 'noopener,noreferrer');
-                      return false;
-                    }}
-                    className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
-                  >
-                    <PictureAsPdfIcon className="h-4 w-4 text-red-600" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>CV</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-          {row.lettreMotivationPath && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      e.nativeEvent.stopImmediatePropagation();
-                      window.open(row.lettreMotivationPath, '_blank', 'noopener,noreferrer');
-                      return false;
-                    }}
-                    className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
-                  >
-                    <PictureAsPdfIcon className="h-4 w-4 text-blue-600" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>Lettre de motivation</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-          {!row.cvPath && !row.lettreMotivationPath && (
-            <span className="text-xs text-gray-400">-</span>
-          )}
-        </div>
-      ),
-    },
-    {
-      id: 'date',
-      label: 'Date',
-      minWidth: 100,
-      render: (row) => (
-        <span className="text-sm text-gray-600">
-          {new Date(row.creeLe).toLocaleDateString("fr-FR")}
-        </span>
-      ),
-    },
-    {
-      id: 'actions',
-      label: 'Actions',
-      minWidth: 130,
-      align: 'right',
-      render: (row) => (
-        <TooltipProvider>
-          <div className="flex justify-end gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => onView(row)}
-                  className="h-8 w-8"
-                >
-                  <VisibilityIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Voir détails</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => onEdit(row)}
-                  className="h-8 w-8"
-                >
-                  <CheckCircleIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Modifier statut</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => onDelete(row.id)}
-                  className="h-8 w-8 text-red-600 hover:text-red-700"
-                >
-                  <DeleteIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Supprimer</TooltipContent>
-            </Tooltip>
+        ),
+      },
+      {
+        id: 'formation',
+        label: 'Formation',
+        minWidth: 200,
+        render: (row) => (
+          <div>
+            <span className="text-sm text-gray-900 font-medium">{row.formation}</span>
+            <p className="text-xs text-gray-500 capitalize">{row.niveau}</p>
           </div>
-        </TooltipProvider>
-      ),
-    },
-  ], [onView, onEdit, onDelete, onDownloadCV, onDownloadLettre]);
+        ),
+      },
+      {
+        id: 'statut',
+        label: 'Statut',
+        minWidth: 140,
+        align: 'center',
+        render: (row) => (
+          <Badge variant={getStatusColor(row.statut)} className="text-xs">
+            {getStatusLabel(row.statut)}
+          </Badge>
+        ),
+      },
+      {
+        id: 'documents',
+        label: 'Documents',
+        minWidth: 120,
+        align: 'center',
+        render: (row) => (
+          <div className="flex items-center justify-center gap-1">
+            {row.cvPath && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.nativeEvent.stopImmediatePropagation();
+                        window.open(row.cvPath, '_blank', 'noopener,noreferrer');
+                        return false;
+                      }}
+                      className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+                    >
+                      <PictureAsPdfIcon className="h-4 w-4 text-red-600" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>CV</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+            {row.lettreMotivationPath && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.nativeEvent.stopImmediatePropagation();
+                        window.open(row.lettreMotivationPath, '_blank', 'noopener,noreferrer');
+                        return false;
+                      }}
+                      className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+                    >
+                      <PictureAsPdfIcon className="h-4 w-4 text-blue-600" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Lettre de motivation</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+            {!row.cvPath && !row.lettreMotivationPath && (
+              <span className="text-xs text-gray-400">-</span>
+            )}
+          </div>
+        ),
+      },
+      {
+        id: 'date',
+        label: 'Date',
+        minWidth: 100,
+        render: (row) => (
+          <span className="text-sm text-gray-600">
+            {new Date(row.creeLe).toLocaleDateString('fr-FR')}
+          </span>
+        ),
+      },
+      {
+        id: 'actions',
+        label: 'Actions',
+        minWidth: 130,
+        align: 'right',
+        render: (row) => (
+          <TooltipProvider>
+            <div className="flex justify-end gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => onView(row)}
+                    className="h-8 w-8"
+                  >
+                    <VisibilityIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Voir détails</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => onEdit(row)}
+                    className="h-8 w-8"
+                  >
+                    <CheckCircleIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Modifier statut</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => onDelete(row.id)}
+                    className="h-8 w-8 text-red-600 hover:text-red-700"
+                  >
+                    <DeleteIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Supprimer</TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
+        ),
+      },
+    ],
+    [onView, onEdit, onDelete, onDownloadCV, onDownloadLettre]
+  );
 
   if (loading) {
     return (

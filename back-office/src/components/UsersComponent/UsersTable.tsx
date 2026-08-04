@@ -34,7 +34,6 @@ const UsersTable: React.FC<UsersTableProps> = ({
   onDelete,
   isAdmin,
 }) => {
-
   const getRoleLabel = (role: string) => {
     switch (role) {
       case 'admin':
@@ -50,10 +49,14 @@ const UsersTable: React.FC<UsersTableProps> = ({
 
   const getRoleVariant = (role: string) => {
     switch (role) {
-      case 'admin': return 'default';
-      case 'editeur': return 'secondary';
-      case 'lecteur': return 'outline';
-      default: return 'outline';
+      case 'admin':
+        return 'default';
+      case 'editeur':
+        return 'secondary';
+      case 'lecteur':
+        return 'outline';
+      default:
+        return 'outline';
     }
   };
 
@@ -96,18 +99,14 @@ const UsersTable: React.FC<UsersTableProps> = ({
       id: 'email',
       label: 'Email',
       minWidth: 220,
-      render: (user) => (
-        <span className="text-sm text-gray-600">{user.email}</span>
-      ),
+      render: (user) => <span className="text-sm text-gray-600">{user.email}</span>,
     },
     {
       id: 'role',
       label: 'Rôle',
       minWidth: 140,
       render: (user) => (
-        <Badge variant={getRoleVariant(user.role)}>
-          {getRoleLabel(user.role)}
-        </Badge>
+        <Badge variant={getRoleVariant(user.role)}>{getRoleLabel(user.role)}</Badge>
       ),
     },
     {
@@ -127,20 +126,10 @@ const UsersTable: React.FC<UsersTableProps> = ({
       align: 'right',
       render: (user) => (
         <div className="flex justify-end gap-1">
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => onView(user)}
-            className="h-8 w-8"
-          >
+          <Button size="icon" variant="ghost" onClick={() => onView(user)} className="h-8 w-8">
             <VisibilityIcon fontSize="small" className="h-4 w-4" />
           </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => onEdit(user)}
-            className="h-8 w-8"
-          >
+          <Button size="icon" variant="ghost" onClick={() => onEdit(user)} className="h-8 w-8">
             <EditIcon fontSize="small" className="h-4 w-4" />
           </Button>
           {isAdmin && (

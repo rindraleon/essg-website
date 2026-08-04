@@ -7,7 +7,7 @@ export { default as Footer } from './Layout/Footer';
 export { default as HeroSection } from './HomeComponents/HeroSection';
 export { default as CertificationsSection } from './HomeComponents/CertificationSection';
 export { default as FormationsSection } from './HomeComponents/FormationSection';
-export { default as ProjetsSection } from './HomeComponents/ProjetsSection';    
+export { default as ProjetsSection } from './HomeComponents/ProjetsSection';
 export { default as PartenairesSection } from './HomeComponents/PartenairesSection';
 export { default as LocalisationSection } from './HomeComponents/LocalisationSection';
 export { default as AdmissionSection } from './HomeComponents/AdmissionSection';

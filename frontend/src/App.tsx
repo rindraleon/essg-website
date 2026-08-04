@@ -1,4 +1,4 @@
-import './styles/index.css'
+import './styles/index.css';
 import { AppRoutes } from './routes';
 import { Layout } from './components';
 
@@ -7,7 +7,7 @@ function App() {
     <Layout>
       <AppRoutes />
     </Layout>
-  )
+  );
 }
 
-export default App
+export default App;

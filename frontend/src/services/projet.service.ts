@@ -7,20 +7,23 @@ const transformProjet = (projet: any): ProjetItem => ({
   id: String(projet.id),
   titre: projet.titre,
   type: projet.type,
-  statut: projet.statut || "En cours",
+  statut: projet.statut || 'En cours',
   annee: new Date(projet.date).getFullYear().toString(),
   description: projet.description,
   partenaires: projet.partenaires || [],
   image: projet.image,
   budget: projet.budget,
   objectifs: projet.objectifs,
-  location: projet.latitude && projet.longitude ? {
-    lat: Number.parseFloat(projet.latitude),
-    lng: Number.parseFloat(projet.longitude),
-    ville: projet.ville || "",
-    pays: projet.pays || "",
-    adresse: projet.adresse,
-  } : undefined,
+  location:
+    projet.latitude && projet.longitude
+      ? {
+          lat: Number.parseFloat(projet.latitude),
+          lng: Number.parseFloat(projet.longitude),
+          ville: projet.ville || '',
+          pays: projet.pays || '',
+          adresse: projet.adresse,
+        }
+      : undefined,
 });
 
 const projetService = {

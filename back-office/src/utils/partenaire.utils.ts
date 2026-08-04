@@ -26,7 +26,9 @@ export function filterPartenaireData(
 
   // Secteur filter
   if (filters.secteur) {
-    result = result.filter((item) => item.secteur.toLowerCase().includes(filters.secteur.toLowerCase()));
+    result = result.filter((item) =>
+      item.secteur.toLowerCase().includes(filters.secteur.toLowerCase())
+    );
   }
 
   // Date range filter
@@ -42,7 +44,7 @@ export function filterPartenaireData(
 
 export function formatDate(dateString: string): string {
   if (!dateString) return '';
-  
+
   const date = new Date(dateString);
   return new Intl.DateTimeFormat('fr-FR', {
     year: 'numeric',

@@ -7,12 +7,7 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { getImageUrl } from '../../utils/image.utils';
 import type { RessourceHumaineItem } from '../../types/ressource-humaine.types';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -78,9 +73,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
             {/* Texte séparé de l'image pour meilleure lisibilité */}
             <div className="mt-5 space-y-4">
               <div className="flex items-center justify-between gap-3">
-                <Badge className="rounded-full bg-white/10 px-3 py-1 text-white">
-                  Membre
-                </Badge>
+                <Badge className="rounded-full bg-white/10 px-3 py-1 text-white">Membre</Badge>
 
                 <Badge
                   className={`rounded-full px-3 py-1 text-white ${
@@ -108,9 +101,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <div className="mb-2 flex items-center gap-2 text-white/80">
                       <EmailOutlinedIcon className="h-4 w-4" />
-                      <span className="text-xs uppercase tracking-wide">
-                        Email
-                      </span>
+                      <span className="text-xs uppercase tracking-wide">Email</span>
                     </div>
                     <p className="text-base font-semibold text-white break-all">
                       {ressource.email}
@@ -122,24 +113,16 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <div className="mb-2 flex items-center gap-2 text-white/80">
                       <PhoneOutlinedIcon className="h-4 w-4" />
-                      <span className="text-xs uppercase tracking-wide">
-                        Téléphone
-                      </span>
+                      <span className="text-xs uppercase tracking-wide">Téléphone</span>
                     </div>
-                    <p className="text-base font-semibold text-white">
-                      {ressource.telephone}
-                    </p>
+                    <p className="text-base font-semibold text-white">{ressource.telephone}</p>
                   </div>
                 )}
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="mb-2 text-xs uppercase tracking-wide text-white/70">
-                  Ordre
-                </p>
-                <p className="text-base font-semibold text-white">
-                  {ressource.ordre}
-                </p>
+                <p className="mb-2 text-xs uppercase tracking-wide text-white/70">Ordre</p>
+                <p className="text-base font-semibold text-white">{ressource.ordre}</p>
               </div>
             </div>
           </aside>
@@ -153,9 +136,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                   <DialogTitle className="text-xl font-bold text-slate-900">
                     Détail de la ressource humaine
                   </DialogTitle>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Informations complètes du membre
-                  </p>
+                  <p className="mt-1 text-sm text-slate-500">Informations complètes du membre</p>
                 </div>
 
                 <Button
@@ -180,8 +161,8 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                     <div className="flex items-start gap-4 mb-4">
                       <Avatar className="h-16 w-16">
                         {ressource.photo ? (
-                          <AvatarImage 
-                            src={getImageUrl(ressource.photo)} 
+                          <AvatarImage
+                            src={getImageUrl(ressource.photo)}
                             alt={`${ressource.prenom} ${ressource.nom}`}
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
@@ -189,7 +170,8 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                           />
                         ) : (
                           <AvatarFallback className="bg-gray-100 text-gray-700 text-xl">
-                            {ressource.prenom[0]}{ressource.nom[0]}
+                            {ressource.prenom[0]}
+                            {ressource.nom[0]}
                           </AvatarFallback>
                         )}
                       </Avatar>
@@ -255,9 +237,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                       </div>
                       <div>
                         <p className="text-xs text-slate-500">Poste</p>
-                        <p className="text-sm font-medium text-slate-900">
-                          {ressource.poste}
-                        </p>
+                        <p className="text-sm font-medium text-slate-900">{ressource.poste}</p>
                       </div>
                       {ressource.email && (
                         <div>
@@ -277,9 +257,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                       )}
                       <div>
                         <p className="text-xs text-slate-500">Ordre</p>
-                        <p className="text-sm font-medium text-slate-900">
-                          {ressource.ordre}
-                        </p>
+                        <p className="text-sm font-medium text-slate-900">{ressource.ordre}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-500">Statut</p>
@@ -297,12 +275,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
 
             {/* Footer */}
             <div className="flex shrink-0 items-center justify-end border-t border-slate-200 bg-white px-5 py-4 lg:px-6">
-              <Button
-                type="button"
-                onClick={onClose}
-                variant="outline"
-                className="rounded-xl"
-              >
+              <Button type="button" onClick={onClose} variant="outline" className="rounded-xl">
                 Fermer
               </Button>
             </div>

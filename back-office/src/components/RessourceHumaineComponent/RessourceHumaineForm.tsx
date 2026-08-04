@@ -1,51 +1,54 @@
-import React, { useRef, useState, useEffect } from "react";
-import InfoIcon from "@mui/icons-material/Info";
-import WorkIcon from "@mui/icons-material/Work";
-import PublicIcon from "@mui/icons-material/Public";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { uploadImage } from "../../services";
-import type { RessourceHumaineItem, RessourceHumaineFormData } from "../../types/ressource-humaine.types";
-import { postes } from "../../data/mockData";
-import { useFormValidation } from "../../hooks/useFormValidation";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import React, { useRef, useState, useEffect } from 'react';
+import InfoIcon from '@mui/icons-material/Info';
+import WorkIcon from '@mui/icons-material/Work';
+import PublicIcon from '@mui/icons-material/Public';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { uploadImage } from '../../services';
+import type {
+  RessourceHumaineItem,
+  RessourceHumaineFormData,
+} from '../../types/ressource-humaine.types';
+import { postes } from '../../data/mockData';
+import { useFormValidation } from '../../hooks/useFormValidation';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { FloatingInput } from "@/components/ui/floating-input";
-import { FloatingTextarea } from "@/components/ui/floating-textarea";
-import { FloatingSelect } from "@/components/ui/floating-select";
+} from '@/components/ui/dialog';
+import { FloatingInput } from '@/components/ui/floating-input';
+import { FloatingTextarea } from '@/components/ui/floating-textarea';
+import { FloatingSelect } from '@/components/ui/floating-select';
 
 interface RessourceHumaineFormProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: RessourceHumaineFormData) => void;
   initialData?: RessourceHumaineItem | null;
-  mode: "create" | "edit";
+  mode: 'create' | 'edit';
 }
 
 const STEPS = [
   {
     id: 0,
-    label: "Informations",
+    label: 'Informations',
     icon: <InfoIcon className="h-4 w-4" />,
   },
   {
     id: 1,
-    label: "Contact",
+    label: 'Contact',
     icon: <WorkIcon className="h-4 w-4" />,
   },
   {
     id: 2,
-    label: "Publication",
+    label: 'Publication',
     icon: <PublicIcon className="h-4 w-4" />,
   },
 ];
@@ -53,19 +56,19 @@ const STEPS = [
 type RessourceHumaineField = keyof RessourceHumaineFormData;
 
 const STEP_FIELDS_MAP: Record<number, RessourceHumaineField[]> = {
-  0: ["nom", "prenom", "poste"],
-  1: ["email", "telephone", "description"],
-  2: ["ordre"],
+  0: ['nom', 'prenom', 'poste'],
+  1: ['email', 'telephone', 'description'],
+  2: ['ordre'],
 };
 
 const defaultFormData: RessourceHumaineFormData = {
-  nom: "",
-  prenom: "",
-  poste: "",
-  description: "",
-  email: "",
-  telephone: "",
-  photo: "",
+  nom: '',
+  prenom: '',
+  poste: '',
+  description: '',
+  email: '',
+  telephone: '',
+  photo: '',
   actif: true,
   ordre: 0,
 };
@@ -78,23 +81,34 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
   mode,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [imagePreview, setImagePreview] = useState<string>("");
+  const [imagePreview, setImagePreview] = useState<string>('');
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  const { formData, errors, activeStep, setActiveStep, handleChange, handleBlur, validateStep, validateAllSteps, setFormData, resetForm } = useFormValidation<RessourceHumaineFormData>({
+  const {
+    formData,
+    errors,
+    activeStep,
+    setActiveStep,
+    handleChange,
+    handleBlur,
+    validateStep,
+    validateAllSteps,
+    setFormData,
+    resetForm,
+  } = useFormValidation<RessourceHumaineFormData>({
     defaultValues: defaultFormData,
     validators: {
       nom: {
         required: true,
-        minLength: { value: 2, message: "Le nom doit contenir au moins 2 caractères" },
+        minLength: { value: 2, message: 'Le nom doit contenir au moins 2 caractères' },
       },
       prenom: {
         required: true,
-        minLength: { value: 2, message: "Le prénom doit contenir au moins 2 caractères" },
+        minLength: { value: 2, message: 'Le prénom doit contenir au moins 2 caractères' },
       },
       poste: { required: true },
       email: {
-        pattern: { regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Email invalide" },
+        pattern: { regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email invalide' },
       },
     },
     stepFields: STEP_FIELDS_MAP,
@@ -102,15 +116,15 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
 
   useEffect(() => {
     if (open) {
-      if (mode === "edit" && initialData) {
-        const imageUrl = initialData.photo || "";
+      if (mode === 'edit' && initialData) {
+        const imageUrl = initialData.photo || '';
         setFormData({
           nom: initialData.nom,
           prenom: initialData.prenom,
           poste: initialData.poste,
-          description: initialData.description || "",
-          email: initialData.email || "",
-          telephone: initialData.telephone || "",
+          description: initialData.description || '',
+          email: initialData.email || '',
+          telephone: initialData.telephone || '',
           photo: imageUrl,
           actif: initialData.actif,
           ordre: initialData.ordre,
@@ -118,20 +132,18 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
         setImagePreview(imageUrl);
       } else {
         resetForm();
-        setImagePreview("");
+        setImagePreview('');
       }
     }
   }, [open, mode, initialData, setFormData, resetForm]);
 
-  const handleImageUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingImage(true);
     try {
       const url = await uploadImage(file);
-      handleChange("photo", url);
+      handleChange('photo', url);
       setImagePreview(url);
     } catch (err) {
       console.error("Erreur lors de l'upload:", err);
@@ -141,8 +153,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
   };
 
   const handleNext = () => {
-    if (validateStep(activeStep))
-      setActiveStep((s) => Math.min(s + 1, STEPS.length - 1));
+    if (validateStep(activeStep)) setActiveStep((s) => Math.min(s + 1, STEPS.length - 1));
   };
 
   const handleBack = () => setActiveStep((s) => Math.max(s - 1, 0));
@@ -168,9 +179,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
   };
 
   const dialogTitle =
-    mode === "create"
-      ? "Nouvelle ressource humaine"
-      : "Modifier la ressource humaine";
+    mode === 'create' ? 'Nouvelle ressource humaine' : 'Modifier la ressource humaine';
 
   /* ─── Step 0 : Informations personnelles ─── */
   const renderStep0 = () => (
@@ -180,16 +189,16 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
           id="nom"
           label="Nom *"
           value={formData.nom}
-          onChange={(e) => handleChange("nom", e.target.value)}
-          onBlur={() => handleBlur("nom")}
+          onChange={(e) => handleChange('nom', e.target.value)}
+          onBlur={() => handleBlur('nom')}
           error={errors.nom}
         />
         <FloatingInput
           id="prenom"
           label="Prénom *"
           value={formData.prenom}
-          onChange={(e) => handleChange("prenom", e.target.value)}
-          onBlur={() => handleBlur("prenom")}
+          onChange={(e) => handleChange('prenom', e.target.value)}
+          onBlur={() => handleBlur('prenom')}
           error={errors.prenom}
         />
       </div>
@@ -197,7 +206,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
       <FloatingSelect
         label="Poste *"
         value={formData.poste}
-        onValueChange={(v, _eventDetails) => v && handleChange("poste", v)}
+        onValueChange={(v, _eventDetails) => v && handleChange('poste', v)}
         options={postes.map((poste) => ({ label: poste, value: poste }))}
         error={errors.poste}
       />
@@ -213,7 +222,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
               src={imagePreview}
               alt="Aperçu"
               className="w-24 h-24 object-cover rounded-md border border-gray-200 shrink-0"
-              onError={() => setImagePreview("")}
+              onError={() => setImagePreview('')}
             />
           )}
           <div className="flex flex-col gap-1.5">
@@ -233,11 +242,9 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
               className="gap-1.5 bg-white text-xs h-8"
             >
               <CloudUploadIcon className="h-3.5 w-3.5" />
-              {uploadingImage ? "Upload..." : "Choisir une photo"}
+              {uploadingImage ? 'Upload...' : 'Choisir une photo'}
             </Button>
-            <span className="text-[10px] text-gray-400">
-              JPG, PNG, GIF, WebP — max 5 Mo
-            </span>
+            <span className="text-[10px] text-gray-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
           </div>
         </div>
       </div>
@@ -253,8 +260,8 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
           label="Email"
           type="email"
           value={formData.email}
-          onChange={(e) => handleChange("email", e.target.value)}
-          onBlur={() => handleBlur("email")}
+          onChange={(e) => handleChange('email', e.target.value)}
+          onBlur={() => handleBlur('email')}
           error={errors.email}
           placeholder="email@exemple.com"
         />
@@ -262,7 +269,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
           id="telephone"
           label="Téléphone"
           value={formData.telephone}
-          onChange={(e) => handleChange("telephone", e.target.value)}
+          onChange={(e) => handleChange('telephone', e.target.value)}
           placeholder="+261 34 00 000 00"
         />
       </div>
@@ -271,7 +278,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
         id="description"
         label="Description (optionnel)"
         value={formData.description}
-        onChange={(e) => handleChange("description", e.target.value)}
+        onChange={(e) => handleChange('description', e.target.value)}
         rows={5}
         placeholder="Description du poste, compétences, expériences..."
       />
@@ -286,7 +293,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
         label="Ordre d'affichage"
         type="number"
         value={formData.ordre.toString()}
-        onChange={(e) => handleChange("ordre", parseInt(e.target.value) || 0)}
+        onChange={(e) => handleChange('ordre', parseInt(e.target.value) || 0)}
         min="0"
       />
       <p className="text-xs text-gray-500 -mt-2">
@@ -297,9 +304,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
         <Checkbox
           id="actif"
           checked={formData.actif}
-          onCheckedChange={(checked) =>
-            handleChange("actif", checked as boolean)
-          }
+          onCheckedChange={(checked) => handleChange('actif', checked as boolean)}
           className="bg-white"
         />
         <Label htmlFor="actif" className="cursor-pointer text-sm">
@@ -326,9 +331,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
       >
         {/* ─── Header + Stepper ─── */}
         <DialogHeader className="px-5 pt-4 pb-3 border-b bg-gray-50/80">
-          <DialogTitle className="text-lg font-bold text-gray-900">
-            {dialogTitle}
-          </DialogTitle>
+          <DialogTitle className="text-lg font-bold text-gray-900">{dialogTitle}</DialogTitle>
 
           <div className="flex items-center justify-center gap-1 mt-3">
             {STEPS.map((step, index) => {
@@ -340,7 +343,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                   {index > 0 && (
                     <div
                       className={`hidden sm:block h-px w-8 transition-colors ${
-                        isCompleted ? "bg-blue-500" : "bg-gray-300"
+                        isCompleted ? 'bg-blue-500' : 'bg-gray-300'
                       }`}
                     />
                   )}
@@ -352,18 +355,14 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                       text-xs font-medium transition-all
                       ${
                         isActive
-                          ? "bg-blue-600 text-white shadow-sm"
+                          ? 'bg-blue-600 text-white shadow-sm'
                           : isCompleted
-                            ? "bg-blue-50 text-blue-700 hover:bg-blue-100"
-                            : "bg-gray-100 text-gray-400"
+                            ? 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                            : 'bg-gray-100 text-gray-400'
                       }
                     `}
                   >
-                    {isCompleted ? (
-                      <CheckCircleIcon className="h-4 w-4" />
-                    ) : (
-                      step.icon
-                    )}
+                    {isCompleted ? <CheckCircleIcon className="h-4 w-4" /> : step.icon}
                     <span className="hidden sm:inline">{step.label}</span>
                     <span className="sm:hidden">{index + 1}</span>
                   </button>
@@ -374,9 +373,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
         </DialogHeader>
 
         {/* ─── Body ─── */}
-        <div className="px-5 py-4 overflow-y-auto max-h-[58vh]">
-          {stepRenderers[activeStep]()}
-        </div>
+        <div className="px-5 py-4 overflow-y-auto max-h-[58vh]">{stepRenderers[activeStep]()}</div>
 
         {/* ─── Footer ─── */}
         <DialogFooter className="px-5 py-3 mb-4 mx-4 border-t bg-gray-50/80">
@@ -427,7 +424,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                   className="gap-1 h-8 bg-blue-600 hover:bg-blue-700"
                 >
                   <CheckCircleIcon className="h-3.5 w-3.5" />
-                  {mode === "create" ? "Créer" : "Enregistrer"}
+                  {mode === 'create' ? 'Créer' : 'Enregistrer'}
                 </Button>
               )}
             </div>

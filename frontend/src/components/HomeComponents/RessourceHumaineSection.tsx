@@ -1,13 +1,12 @@
-import React from "react";
-import { useActiveRessourcesHumaines } from "../../hooks";
-import { getImageUrl } from "../../utils/image.utils";
-import type { RessourceHumaine } from "../../types/ressource-humaine.types";
-import { SectionContent, ScrollableCardGrid } from "../../components";
+import { useActiveRessourcesHumaines } from '../../hooks';
+import { getImageUrl } from '../../utils/image.utils';
+import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../utils/component.utils';
+import { SectionContent, ScrollableCardGrid } from '../../components';
 
 const FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400";
+  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400';
 
-const RessourceHumaineSection: React.FC = () => {
+const RessourceHumaineSection = () => {
   const { ressourcesHumaines, loading, error } = useActiveRessourcesHumaines();
 
   const headerContent = (
@@ -19,24 +18,12 @@ const RessourceHumaineSection: React.FC = () => {
     </div>
   );
 
-  /**
-   * Responsive :
-   * - mobile : 1 card
-   * - sm/tablette : 2 cards
-   * - lg+ : 4 cards
-   *
-   * gap-6 = 1.5rem
-   * pour 4 cards => 3 gaps = 4.5rem
-   */
-  const cardWidthClass =
-    "flex-none w-full sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-4.5rem)/4)] snap-start";
-
   const loadingSkeletons = (
     <ScrollableCardGrid className="mt-2 w-full">
       {Array.from({ length: 4 }).map((_, i) => (
         <div
-          key={i}
-          className={`${cardWidthClass} rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-sm`}
+          key={SKELETON_KEYS[i]}
+          className={`${CARD_WIDTH_CLASS} rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-sm`}
         >
           <div className="aspect-[4/3] w-full bg-gray-200 animate-pulse" />
           <div className="p-6 space-y-4">
@@ -63,15 +50,13 @@ const RessourceHumaineSection: React.FC = () => {
       containerClassName="w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12"
     >
       <ScrollableCardGrid className="mt-2 w-full">
-        {ressourcesHumaines.map((membre: RessourceHumaine) => {
-          const imageUrl = membre.photo
-            ? getImageUrl(membre.photo)
-            : FALLBACK_IMAGE;
+        {ressourcesHumaines.map((membre) => {
+          const imageUrl = membre.photo ? getImageUrl(membre.photo) : FALLBACK_IMAGE;
 
           return (
             <article
               key={membre.id}
-              className={`${cardWidthClass} rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col`}
+              className={`${CARD_WIDTH_CLASS} rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col`}
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
                 <img
@@ -87,9 +72,7 @@ const RessourceHumaineSection: React.FC = () => {
                   {membre.prenom} {membre.nom}
                 </h3>
 
-                <p className="text-sm font-semibold text-blue-600 mb-4">
-                  {membre.poste}
-                </p>
+                <p className="text-sm font-semibold text-blue-600 mb-4">{membre.poste}</p>
 
                 {membre.description && (
                   <p className="text-sm text-gray-600 line-clamp-3 flex-1 leading-6 mb-4">

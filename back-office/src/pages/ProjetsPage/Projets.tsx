@@ -1,7 +1,15 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Card, CardContent, Typography, Box, Button } from '@mui/material';
 import { toast, Toaster } from 'sonner';
-import { ProjetFilters, ProjetForm, ProjetTable, ProjetViewDialog, ConfirmDialog, SearchInput, StatsCard } from '../../components';
+import {
+  ProjetFilters,
+  ProjetForm,
+  ProjetTable,
+  ProjetViewDialog,
+  ConfirmDialog,
+  SearchInput,
+  StatsCard,
+} from '../../components';
 import { usePagination, useProjetFilter } from '../../hooks';
 import type { ProjetFormData, Projet } from '../../types';
 import { getAllProjets, createProjet, updateProjet, deleteProjet } from '../../services';
@@ -106,14 +114,12 @@ const Projets: React.FC = () => {
         } else if (selectedProjet) {
           const updatedProjet = await updateProjet(selectedProjet.id, formData);
           setData((prev) =>
-            prev.map((item) =>
-              item.id === selectedProjet.id ? updatedProjet : item
-            )
+            prev.map((item) => (item.id === selectedProjet.id ? updatedProjet : item))
           );
           toast.success('Projet modifié avec succès');
         }
       } catch (error) {
-        toast.error('Erreur lors de l\'enregistrement');
+        toast.error("Erreur lors de l'enregistrement");
         console.error('Error saving projet:', error);
       }
     },
@@ -136,10 +142,9 @@ const Projets: React.FC = () => {
     const rechercheCount = data.filter((p) => p.type === 'Recherche').length;
     const partenariatCount = data.filter((p) => p.type === 'Partenariat').length;
     const servicePublicCount = data.filter((p) => p.type === 'Service public').length;
-    
+
     return { totalCount, internationalCount, rechercheCount, partenariatCount, servicePublicCount };
   }, [data]);
-
 
   return (
     <div className="space-y-2 p-2 sm:p-6 lg:p-8">
@@ -155,19 +160,13 @@ const Projets: React.FC = () => {
       </div>
 
       {/* Search + Add Button */}
-      <Card
-        variant="outlined"
-        sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-      >
+      <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
         <CardContent>
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
               <Typography variant="h6" className="font-bold text-gray-800 whitespace-nowrap">
                 Liste des projets
-                <Box
-                  component="span"
-                  className="ml-2 text-sm font-normal text-gray-500"
-                >
+                <Box component="span" className="ml-2 text-sm font-normal text-gray-500">
                   ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
                 </Box>
               </Typography>
@@ -189,8 +188,8 @@ const Projets: React.FC = () => {
                   color: '#374151',
                   '&:hover': {
                     borderColor: '#d1d5db',
-                    backgroundColor: '#f9fafb'
-                  }
+                    backgroundColor: '#f9fafb',
+                  },
                 }}
               >
                 {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
@@ -205,7 +204,7 @@ const Projets: React.FC = () => {
                   backgroundColor: '#2563eb',
                   '&:hover': {
                     backgroundColor: '#1d4ed8',
-                  }
+                  },
                 }}
               >
                 + Nouveau projet
@@ -217,10 +216,7 @@ const Projets: React.FC = () => {
 
       {/* Filters - Full Width Below */}
       {filtersOpen && (
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
+        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
           <CardContent>
             <ProjetFilters
               filters={filters}

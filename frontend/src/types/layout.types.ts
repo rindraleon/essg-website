@@ -1,3 +1,3 @@
 export type LayoutProps = {
-    children: import("react").ReactNode;
+  children: import('react').ReactNode;
 };

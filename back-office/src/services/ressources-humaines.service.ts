@@ -3,7 +3,9 @@ import type { RessourceHumaineItem } from '../types/ressource-humaine.types';
 
 const getAllRessourcesHumaines = async (): Promise<RessourceHumaineItem[]> => {
   try {
-    const response = await axiosConfig.get<{ data: RessourceHumaineItem[] }>('/ressources-humaines');
+    const response = await axiosConfig.get<{ data: RessourceHumaineItem[] }>(
+      '/ressources-humaines'
+    );
     return response.data.data;
   } catch (error) {
     console.error('Error fetching ressources humaines:', error);
@@ -21,7 +23,9 @@ const getRessourceHumaineById = async (id: string): Promise<RessourceHumaineItem
   }
 };
 
-const createRessourceHumaine = async (data: Partial<RessourceHumaineItem>): Promise<RessourceHumaineItem> => {
+const createRessourceHumaine = async (
+  data: Partial<RessourceHumaineItem>
+): Promise<RessourceHumaineItem> => {
   try {
     const response = await axiosConfig.post<RessourceHumaineItem>('/ressources-humaines', data);
     return response.data;
@@ -31,9 +35,15 @@ const createRessourceHumaine = async (data: Partial<RessourceHumaineItem>): Prom
   }
 };
 
-const updateRessourceHumaine = async (id: string, data: Partial<RessourceHumaineItem>): Promise<RessourceHumaineItem> => {
+const updateRessourceHumaine = async (
+  id: string,
+  data: Partial<RessourceHumaineItem>
+): Promise<RessourceHumaineItem> => {
   try {
-    const response = await axiosConfig.put<RessourceHumaineItem>(`/ressources-humaines/${id}`, data);
+    const response = await axiosConfig.put<RessourceHumaineItem>(
+      `/ressources-humaines/${id}`,
+      data
+    );
     return response.data;
   } catch (error) {
     console.error('Error updating ressource humaine:', error);
@@ -50,4 +60,10 @@ const deleteRessourceHumaine = async (id: string): Promise<void> => {
   }
 };
 
-export { getAllRessourcesHumaines, getRessourceHumaineById, createRessourceHumaine, updateRessourceHumaine, deleteRessourceHumaine };
+export {
+  getAllRessourcesHumaines,
+  getRessourceHumaineById,
+  createRessourceHumaine,
+  updateRessourceHumaine,
+  deleteRessourceHumaine,
+};

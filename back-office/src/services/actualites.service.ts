@@ -36,7 +36,10 @@ const createActualite = async (data: Partial<ActualiteItem>): Promise<ActualiteI
   }
 };
 
-const updateActualite = async (id: string, data: Partial<ActualiteItem>): Promise<ActualiteItem> => {
+const updateActualite = async (
+  id: string,
+  data: Partial<ActualiteItem>
+): Promise<ActualiteItem> => {
   try {
     // Convertir le statut string en boolean pour le backend
     const backendData = {

@@ -1,4 +1,4 @@
-import axiosConfig from "../config/axios.config";
+import axiosConfig from '../config/axios.config';
 
 export interface Message {
   id: number;
@@ -27,7 +27,9 @@ export interface PaginationQuery {
   sortOrder?: 'ASC' | 'DESC';
 }
 
-export const getAllMessages = async (query: PaginationQuery = {}): Promise<PaginationResponse<Message>> => {
+export const getAllMessages = async (
+  query: PaginationQuery = {}
+): Promise<PaginationResponse<Message>> => {
   const params = new URLSearchParams();
   if (query.page) params.append('page', String(query.page));
   if (query.limit) params.append('limit', String(query.limit));
@@ -38,7 +40,10 @@ export const getAllMessages = async (query: PaginationQuery = {}): Promise<Pagin
   return response.data;
 };
 
-export const searchMessages = async (q: string, query: PaginationQuery = {}): Promise<PaginationResponse<Message>> => {
+export const searchMessages = async (
+  q: string,
+  query: PaginationQuery = {}
+): Promise<PaginationResponse<Message>> => {
   const params = new URLSearchParams();
   params.append('q', q);
   if (query.page) params.append('page', String(query.page));
@@ -64,7 +69,9 @@ export const deleteMessage = async (id: number): Promise<void> => {
   await axiosConfig.delete(`/messages/${id}`);
 };
 
-export const getRecentMessages = async (limit: number = 4): Promise<PaginationResponse<Message>> => {
+export const getRecentMessages = async (
+  limit: number = 4
+): Promise<PaginationResponse<Message>> => {
   const params = new URLSearchParams();
   params.append('page', '1');
   params.append('limit', String(limit));

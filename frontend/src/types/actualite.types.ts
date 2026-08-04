@@ -22,17 +22,17 @@ export interface ActualitesPageProps {
 }
 
 export type ActualiteItem = {
-    id: string;
-    titre: string;
-    categorie: string;
-    date: string;
-    resume: string;
+  id: string;
+  titre: string;
+  categorie: string;
+  date: string;
+  resume: string;
 };
 
 export type RecentActualitesSectionProps = {
-    title?: string;
-    description?: string;
-    ctaLabel?: string;
-    ctaLink?: string;
-    recentActualites?: ActualiteItem[];
+  title?: string;
+  description?: string;
+  ctaLabel?: string;
+  ctaLink?: string;
+  recentActualites?: ActualiteItem[];
 };

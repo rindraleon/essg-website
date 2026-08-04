@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import NewsCard from "./NewsCard";
-import {  type Actualite } from "../../types/news.types";
-import { getNews } from "../../services/news.service";
-import { Button } from "@/components/ui/button";
+import React, { useEffect, useState } from 'react';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import NewsCard from './NewsCard';
+import { type Actualite } from '../../types/news.types';
+import { getNews } from '../../services/news.service';
+import { Button } from '@/components/ui/button';
 
 const NewsList: React.FC = () => {
   const [news, setNews] = useState<Actualite[]>([]);
@@ -17,7 +17,7 @@ const NewsList: React.FC = () => {
       const data = await getNews();
       setNews(data);
     } catch (err) {
-      setError("Erreur lors du chargement des actualités");
+      setError('Erreur lors du chargement des actualités');
       console.error(err);
     } finally {
       setLoading(false);
@@ -42,7 +42,7 @@ const NewsList: React.FC = () => {
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
           {error}
         </div>
-          <Button onClick={fetchNews}>
+        <Button onClick={fetchNews}>
           <RefreshIcon className="mr-2" />
           Réessayer
         </Button>
@@ -53,9 +53,7 @@ const NewsList: React.FC = () => {
   if (news.length === 0) {
     return (
       <div className="text-center py-8">
-        <h6 className="text-gray-500 text-lg">
-          Aucune actualité disponible pour le moment
-        </h6>
+        <h6 className="text-gray-500 text-lg">Aucune actualité disponible pour le moment</h6>
       </div>
     );
   }

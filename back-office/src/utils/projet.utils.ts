@@ -1,7 +1,9 @@
 import { PROJET_TYPE_COLORS } from '../constants/projet.constants';
 import type { Projet } from '../types/projet.types';
 
-export const getTypeColor = (type: string): 'primary' | 'secondary' | 'success' | 'warning' | 'info' => {
+export const getTypeColor = (
+  type: string
+): 'primary' | 'secondary' | 'success' | 'warning' | 'info' => {
   return PROJET_TYPE_COLORS[type] || 'info';
 };
 
@@ -19,7 +21,7 @@ export const formatDateLong = (dateString: string): string => {
 
 export const filterBySearchTerm = (projets: Projet[], searchTerm: string): Projet[] => {
   if (!searchTerm.trim()) return projets;
-  
+
   const term = searchTerm.toLowerCase();
   return projets.filter(
     (projet) =>

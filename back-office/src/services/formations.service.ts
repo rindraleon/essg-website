@@ -43,7 +43,10 @@ const createFormation = async (data: FormationFormData): Promise<Formation> => {
   }
 };
 
-const updateFormation = async (id: number, data: Partial<FormationFormData>): Promise<Formation> => {
+const updateFormation = async (
+  id: number,
+  data: Partial<FormationFormData>
+): Promise<Formation> => {
   try {
     const response = await axiosConfig.put<Formation>(`/formations/${id}`, data);
     return response.data;
@@ -62,4 +65,11 @@ const deleteFormation = async (id: number): Promise<void> => {
   }
 };
 
-export { getAllFormations, getFormationById, searchFormations, createFormation, updateFormation, deleteFormation };
+export {
+  getAllFormations,
+  getFormationById,
+  searchFormations,
+  createFormation,
+  updateFormation,
+  deleteFormation,
+};

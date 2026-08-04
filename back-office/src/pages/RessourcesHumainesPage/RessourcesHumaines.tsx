@@ -1,13 +1,28 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Card, CardContent, Typography, Box, Button } from '@mui/material';
 import { toast, Toaster } from 'sonner';
-import { RessourceHumaineFilters, RessourceHumaineForm, RessourceHumaineTable, RessourceHumaineViewDialog, ConfirmDialog, SearchInput } from '../../components';
+import {
+  RessourceHumaineFilters,
+  RessourceHumaineForm,
+  RessourceHumaineTable,
+  RessourceHumaineViewDialog,
+  ConfirmDialog,
+  SearchInput,
+} from '../../components';
 import { useRessourceHumaineFilter } from '../../hooks/useRessourceHumaineFilter';
 import { usePagination } from '../../hooks';
-import type { RessourceHumaineFormData, RessourceHumaineItem, RessourceHumaineFilterOptions } from '../../types';
+import type {
+  RessourceHumaineFormData,
+  RessourceHumaineItem,
+  RessourceHumaineFilterOptions,
+} from '../../types';
 import { initialRessourcesHumaines } from '../../data/mockData';
-import { getAllRessourcesHumaines, createRessourceHumaine, updateRessourceHumaine, deleteRessourceHumaine } from '../../services';
-
+import {
+  getAllRessourcesHumaines,
+  createRessourceHumaine,
+  updateRessourceHumaine,
+  deleteRessourceHumaine,
+} from '../../services';
 
 const RessourcesHumaines: React.FC = () => {
   // Data state
@@ -24,10 +39,11 @@ const RessourcesHumaines: React.FC = () => {
   const [ressourceToDelete, setRessourceToDelete] = useState<RessourceHumaineItem | null>(null);
 
   // Hooks
-  const { filters, filteredData, updateFilter, resetFilters, activeFilterCount } = useRessourceHumaineFilter({
-    data,
-    searchTerm,
-  });
+  const { filters, filteredData, updateFilter, resetFilters, activeFilterCount } =
+    useRessourceHumaineFilter({
+      data,
+      searchTerm,
+    });
 
   const {
     currentPage,
@@ -88,7 +104,9 @@ const RessourcesHumaines: React.FC = () => {
       try {
         await deleteRessourceHumaine(ressourceToDelete.id.toString());
         setData((prev) => prev.filter((item) => item.id !== ressourceToDelete.id));
-        toast.success(`"${ressourceToDelete.prenom} ${ressourceToDelete.nom}" a été supprimé(e) avec succès`);
+        toast.success(
+          `"${ressourceToDelete.prenom} ${ressourceToDelete.nom}" a été supprimé(e) avec succès`
+        );
         setDeleteDialogOpen(false);
         setRessourceToDelete(null);
       } catch (error) {
@@ -106,16 +124,17 @@ const RessourcesHumaines: React.FC = () => {
           setData((prev) => [newRessource, ...prev]);
           toast.success('Ressource humaine créée avec succès');
         } else if (selectedRessource) {
-          const updatedRessource = await updateRessourceHumaine(selectedRessource.id.toString(), formData);
+          const updatedRessource = await updateRessourceHumaine(
+            selectedRessource.id.toString(),
+            formData
+          );
           setData((prev) =>
-            prev.map((item) =>
-              item.id === selectedRessource.id ? updatedRessource : item
-            )
+            prev.map((item) => (item.id === selectedRessource.id ? updatedRessource : item))
           );
           toast.success('Ressource humaine modifiée avec succès');
         }
       } catch (error) {
-        toast.error('Erreur lors de l\'enregistrement');
+        toast.error("Erreur lors de l'enregistrement");
         console.error('Error saving ressource humaine:', error);
       }
     },
@@ -142,10 +161,7 @@ const RessourcesHumaines: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
+        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
           <CardContent className="flex flex-col items-center py-4">
             <Typography variant="h4" className="font-bold text-gray-900">
               {totalCount}
@@ -155,10 +171,7 @@ const RessourcesHumaines: React.FC = () => {
             </Typography>
           </CardContent>
         </Card>
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
+        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
           <CardContent className="flex flex-col items-center py-4">
             <Typography variant="h4" className="font-bold text-green-600">
               {activeCount}
@@ -168,10 +181,7 @@ const RessourcesHumaines: React.FC = () => {
             </Typography>
           </CardContent>
         </Card>
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
+        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
           <CardContent className="flex flex-col items-center py-4">
             <Typography variant="h4" className="font-bold text-gray-600">
               {inactiveCount}
@@ -184,19 +194,13 @@ const RessourcesHumaines: React.FC = () => {
       </div>
 
       {/* Search + Add Button */}
-      <Card
-        variant="outlined"
-        sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-      >
+      <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
         <CardContent>
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
               <Typography variant="h6" className="font-bold text-gray-800 whitespace-nowrap">
                 Liste des ressources humaines
-                <Box
-                  component="span"
-                  className="ml-2 text-sm font-normal text-gray-500"
-                >
+                <Box component="span" className="ml-2 text-sm font-normal text-gray-500">
                   ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
                 </Box>
               </Typography>
@@ -210,16 +214,16 @@ const RessourcesHumaines: React.FC = () => {
               <Button
                 variant="outlined"
                 onClick={handleToggleFilters}
-                sx={{ 
-                  borderRadius: '8px', 
+                sx={{
+                  borderRadius: '8px',
                   textTransform: 'none',
                   whiteSpace: 'nowrap',
                   borderColor: '#e5e7eb',
                   color: '#374151',
                   '&:hover': {
                     borderColor: '#d1d5db',
-                    backgroundColor: '#f9fafb'
-                  }
+                    backgroundColor: '#f9fafb',
+                  },
                 }}
               >
                 {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
@@ -227,14 +231,14 @@ const RessourcesHumaines: React.FC = () => {
               <Button
                 variant="contained"
                 onClick={handleOpenCreate}
-                sx={{ 
-                  borderRadius: '8px', 
+                sx={{
+                  borderRadius: '8px',
                   textTransform: 'none',
                   whiteSpace: 'nowrap',
                   backgroundColor: '#2563eb',
                   '&:hover': {
                     backgroundColor: '#1d4ed8',
-                  }
+                  },
                 }}
               >
                 + Nouvelle ressource
@@ -246,10 +250,7 @@ const RessourcesHumaines: React.FC = () => {
 
       {/* Filters - Full Width Below */}
       {filtersOpen && (
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
+        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
           <CardContent>
             <RessourceHumaineFilters
               filters={filters}

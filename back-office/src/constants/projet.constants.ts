@@ -5,11 +5,14 @@ export const PROJET_TYPES = [
   { value: 'Partenariat', label: 'Partenariat' },
 ] as const;
 
-export const PROJET_TYPE_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'warning' | 'info'> = {
-  'International': 'primary',
+export const PROJET_TYPE_COLORS: Record<
+  string,
+  'primary' | 'secondary' | 'success' | 'warning' | 'info'
+> = {
+  International: 'primary',
   'Service public': 'secondary',
-  'Recherche': 'success',
-  'Partenariat': 'warning',
+  Recherche: 'success',
+  Partenariat: 'warning',
 };
 
 export const DEFAULT_FORM_DATA = {

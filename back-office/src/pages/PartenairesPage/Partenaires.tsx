@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import {Button } from '@mui/material';
+import { Button } from '@mui/material';
 import { toast, Toaster } from 'sonner';
 import {
   PartenaireFilters,
@@ -11,7 +11,12 @@ import {
 } from '../../components';
 import { usePagination, usePartenaireFilter } from '../../hooks';
 import type { PartenaireFormData, Partenaire } from '../../types';
-import { getAllPartenaires, createPartenaire, updatePartenaire, deletePartenaire } from '../../services';
+import {
+  getAllPartenaires,
+  createPartenaire,
+  updatePartenaire,
+  deletePartenaire,
+} from '../../services';
 
 const Partenaires: React.FC = () => {
   const [data, setData] = useState<Partenaire[]>([]);
@@ -24,10 +29,11 @@ const Partenaires: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [partenaireToDelete, setPartenaireToDelete] = useState<Partenaire | null>(null);
 
-  const { filters, filteredData, updateFilter, resetFilters, activeFilterCount } = usePartenaireFilter({
-    data,
-    searchTerm,
-  });
+  const { filters, filteredData, updateFilter, resetFilters, activeFilterCount } =
+    usePartenaireFilter({
+      data,
+      searchTerm,
+    });
 
   const {
     currentPage,
@@ -41,7 +47,7 @@ const Partenaires: React.FC = () => {
   useEffect(() => {
     const loadPartenaires = async () => {
       try {
-        const partenaires = await getAllPartenaires() as Partenaire[];
+        const partenaires = (await getAllPartenaires()) as Partenaire[];
         setData(partenaires);
       } catch (error) {
         console.error('Failed to load partenaires from backend:', error);
@@ -107,14 +113,12 @@ const Partenaires: React.FC = () => {
         } else if (selectedPartenaire) {
           const updatedPartenaire = await updatePartenaire(selectedPartenaire.id, formData);
           setData((prev) =>
-            prev.map((item) =>
-              item.id === selectedPartenaire.id ? updatedPartenaire : item
-            )
+            prev.map((item) => (item.id === selectedPartenaire.id ? updatedPartenaire : item))
           );
           toast.success('Partenaire modifié avec succès');
         }
       } catch (error) {
-        toast.error('Erreur lors de l\'enregistrement');
+        toast.error("Erreur lors de l'enregistrement");
         console.error('Error saving partenaire:', error);
       }
     },
@@ -183,17 +187,10 @@ const Partenaires: React.FC = () => {
             />
           </div>
           <div className="flex items-center gap-3 w-full lg:w-auto">
-            <Button
-              variant="outlined"
-              onClick={handleToggleFilters}
-              className="rounded-lg"
-            >
+            <Button variant="outlined" onClick={handleToggleFilters} className="rounded-lg">
               {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
             </Button>
-            <Button
-              onClick={handleOpenCreate}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
+            <Button onClick={handleOpenCreate} className="bg-blue-600 hover:bg-blue-700">
               + Nouveau partenaire
             </Button>
           </div>

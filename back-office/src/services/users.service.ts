@@ -15,7 +15,11 @@ export const getAllUsers = async (page = 1, limit = 10): Promise<UsersListRespon
   return response.data;
 };
 
-export const searchUsers = async (query: string, page = 1, limit = 10): Promise<UsersListResponse> => {
+export const searchUsers = async (
+  query: string,
+  page = 1,
+  limit = 10
+): Promise<UsersListResponse> => {
   const response = await api.get('/users/search', {
     params: { q: query, page, limit },
   });
@@ -52,10 +56,7 @@ interface UpdateUserData {
   avatar?: string;
 }
 
-export const updateUser = async (
-  id: number,
-  userData: UpdateUserData,
-): Promise<User> => {
+export const updateUser = async (id: number, userData: UpdateUserData): Promise<User> => {
   // Remove undefined values
   const filteredData = Object.fromEntries(
     Object.entries(userData).filter(([_, v]) => v !== undefined)
@@ -67,7 +68,7 @@ export const updateUser = async (
 export const uploadAvatar = async (id: number, file: File): Promise<User> => {
   const formData = new FormData();
   formData.append('avatar', file);
-  
+
   const response = await api.post(`/users/${id}/avatar`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',

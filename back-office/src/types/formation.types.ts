@@ -1,4 +1,4 @@
-export type FormationLevel = "Licence" | "Master" | "Doctorat";
+export type FormationLevel = 'Licence' | 'Master' | 'Doctorat';
 
 export interface Formation {
   id: number;
@@ -32,13 +32,12 @@ export interface FormationFilterOptions {
   enVedette: string;
 }
 
-
 export interface FormationFormProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: FormationFormData) => void;
   initialData?: Formation | null;
-  mode: "create" | "edit";
+  mode: 'create' | 'edit';
 }
 
 export interface FormErrors {

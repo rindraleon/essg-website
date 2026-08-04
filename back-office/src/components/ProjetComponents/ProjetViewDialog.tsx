@@ -7,17 +7,9 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import MapPicker from '../common/MapPicker';
 import { getImageUrl } from '../../utils/image.utils';
 import type { Projet } from '../../types/projet.types';
-import {
-  getTypeColor,
-  formatDateLong,
-} from '../../utils/projet.utils';
+import { getTypeColor, formatDateLong } from '../../utils/projet.utils';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 
 interface ProjetViewDialogProps {
@@ -63,20 +55,11 @@ interface SectionCardProps {
   className?: string;
 }
 
-const SectionCard: React.FC<SectionCardProps> = ({
-  title,
-  icon,
-  children,
-  className = '',
-}) => (
-  <div
-    className={`rounded-2xl border border-slate-200 bg-white p-4 shadow-sm ${className}`}
-  >
+const SectionCard: React.FC<SectionCardProps> = ({ title, icon, children, className = '' }) => (
+  <div className={`rounded-2xl border border-slate-200 bg-white p-4 shadow-sm ${className}`}>
     <div className="mb-3 flex items-center gap-2">
       {icon}
-      <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
-        {title}
-      </h3>
+      <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-700">{title}</h3>
     </div>
     {children}
   </div>
@@ -88,27 +71,17 @@ interface ProjectImageCardProps {
   dark?: boolean;
 }
 
-const ProjectImageCard: React.FC<ProjectImageCardProps> = ({
-  image,
-  title,
-  dark = false,
-}) => {
+const ProjectImageCard: React.FC<ProjectImageCardProps> = ({ image, title, dark = false }) => {
   const [hasError, setHasError] = React.useState(false);
   const showImage = Boolean(image) && !hasError;
 
   return (
     <div
       className={`overflow-hidden rounded-2xl border shadow-[0_12px_30px_rgba(0,0,0,0.12)] ${
-        dark
-          ? 'border-white/10 bg-slate-800'
-          : 'border-slate-200 bg-white shadow-sm'
+        dark ? 'border-white/10 bg-slate-800' : 'border-slate-200 bg-white shadow-sm'
       }`}
     >
-      <div
-        className={`aspect-[16/9] w-full ${
-          dark ? 'bg-slate-800' : 'bg-slate-100'
-        }`}
-      >
+      <div className={`aspect-[16/9] w-full ${dark ? 'bg-slate-800' : 'bg-slate-100'}`}>
         {showImage ? (
           <img
             src={getImageUrl(image!)}
@@ -126,15 +99,9 @@ const ProjectImageCard: React.FC<ProjectImageCardProps> = ({
           >
             <div className="text-center">
               <ImageOutlinedIcon
-                className={`mx-auto mb-2 h-12 w-12 ${
-                  dark ? 'text-slate-500' : 'text-slate-400'
-                }`}
+                className={`mx-auto mb-2 h-12 w-12 ${dark ? 'text-slate-500' : 'text-slate-400'}`}
               />
-              <p
-                className={`text-sm ${
-                  dark ? 'text-slate-400' : 'text-slate-500'
-                }`}
-              >
+              <p className={`text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>
                 Aucune image
               </p>
             </div>
@@ -145,11 +112,7 @@ const ProjectImageCard: React.FC<ProjectImageCardProps> = ({
   );
 };
 
-const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({
-  open,
-  onClose,
-  projet,
-}) => {
+const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, projet }) => {
   if (!projet) return null;
 
   const typeColor = getTypeColor(projet.type);
@@ -184,11 +147,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({
       >
         <div className="grid h-full min-h-0 lg:grid-cols-[360px_minmax(0,1fr)]">
           <aside className="hidden min-h-0 flex-col border-r border-slate-200 bg-slate-950 p-5 text-white lg:flex">
-            <ProjectImageCard
-              image={projet.image}
-              title={projet.titre}
-              dark
-            />
+            <ProjectImageCard image={projet.image} title={projet.titre} dark />
 
             <div className="mt-5 space-y-4">
               <div className="flex items-center justify-between gap-3">
@@ -196,18 +155,14 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({
                   Fiche projet
                 </Badge>
 
-                <Badge
-                  className={`rounded-full px-3 py-1 ${getTypeBadgeDarkClass(typeColor)}`}
-                >
+                <Badge className={`rounded-full px-3 py-1 ${getTypeBadgeDarkClass(typeColor)}`}>
                   <LabelIcon className="mr-1 h-3.5 w-3.5" />
                   {projet.type}
                 </Badge>
               </div>
 
               <div>
-                <h2 className="text-2xl font-bold leading-tight text-white">
-                  {projet.titre}
-                </h2>
+                <h2 className="text-2xl font-bold leading-tight text-white">{projet.titre}</h2>
 
                 <div className="mt-3 space-y-2 text-sm text-white/80">
                   <div className="flex items-center gap-2">
@@ -233,9 +188,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({
                   <DialogTitle className="text-xl font-bold text-slate-900">
                     Détails du projet
                   </DialogTitle>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Présentation complète du projet
-                  </p>
+                  <p className="mt-1 text-sm text-slate-500">Présentation complète du projet</p>
                 </div>
 
                 <Button
@@ -252,23 +205,15 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({
             </DialogHeader>
 
             <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 lg:px-6">
-              
               <div className="mb-5 lg:hidden">
                 <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                  <ProjectImageCard
-                    image={projet.image}
-                    title={projet.titre}
-                  />
+                  <ProjectImageCard image={projet.image} title={projet.titre} />
 
                   <div className="p-4">
-                    <h2 className="mb-3 text-2xl font-bold text-slate-900">
-                      {projet.titre}
-                    </h2>
+                    <h2 className="mb-3 text-2xl font-bold text-slate-900">{projet.titre}</h2>
 
                     <div className="mb-3 flex flex-wrap gap-2">
-                      <Badge
-                        className={`rounded-full ${getTypeBadgeLightClass(typeColor)}`}
-                      >
+                      <Badge className={`rounded-full ${getTypeBadgeLightClass(typeColor)}`}>
                         <LabelIcon className="mr-1 h-3.5 w-3.5" />
                         {projet.type}
                       </Badge>
@@ -305,11 +250,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({
                     <SectionCard title="Partenaires">
                       <div className="flex flex-wrap gap-2">
                         {projet.partenaires.map((partenaire) => (
-                          <Badge
-                            key={partenaire}
-                            variant="outline"
-                            className="rounded-full"
-                          >
+                          <Badge key={partenaire} variant="outline" className="rounded-full">
                             {partenaire}
                           </Badge>
                         ))}
@@ -323,14 +264,10 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({
                   {hasAddressBlock && (
                     <SectionCard
                       title="Adresse"
-                      icon={
-                        <LocationOnIcon className="h-4 w-4 text-slate-500" />
-                      }
+                      icon={<LocationOnIcon className="h-4 w-4 text-slate-500" />}
                     >
                       <div className="space-y-1 text-sm text-slate-600">
-                        {projet.adresse && (
-                          <p className="break-words">{projet.adresse}</p>
-                        )}
+                        {projet.adresse && <p className="break-words">{projet.adresse}</p>}
                         {locationText && <p>{locationText}</p>}
                       </div>
                     </SectionCard>
@@ -339,9 +276,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({
                   {hasLocation && (
                     <SectionCard
                       title="Localisation"
-                      icon={
-                        <LocationOnIcon className="h-4 w-4 text-slate-500" />
-                      }
+                      icon={<LocationOnIcon className="h-4 w-4 text-slate-500" />}
                     >
                       <div className="w-full overflow-hidden rounded-xl border border-slate-200 aspect-[16/9]">
                         <MapPicker
@@ -359,12 +294,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({
 
             {/* Footer fixe */}
             <div className="flex shrink-0 items-center justify-end border-t border-slate-200 bg-white px-5 py-4 lg:px-6">
-              <Button
-                type="button"
-                onClick={onClose}
-                variant="outline"
-                className="rounded-xl"
-              >
+              <Button type="button" onClick={onClose} variant="outline" className="rounded-xl">
                 Fermer
               </Button>
             </div>

@@ -84,20 +84,10 @@ const ActualiteTable: React.FC<ActualiteTableProps> = ({
       align: 'right',
       render: (row) => (
         <div className="flex justify-end gap-1">
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => onView(row)}
-            className="h-8 w-8"
-          >
+          <Button size="icon" variant="ghost" onClick={() => onView(row)} className="h-8 w-8">
             <VisibilityIcon fontSize="small" className="h-4 w-4" />
           </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => onEdit(row)}
-            className="h-8 w-8"
-          >
+          <Button size="icon" variant="ghost" onClick={() => onEdit(row)} className="h-8 w-8">
             <EditIcon fontSize="small" className="h-4 w-4" />
           </Button>
           <Button

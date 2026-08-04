@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  TextField,
-  IconButton,
-  Button,
-  Box,
-} from '@mui/material';
+import { TextField, IconButton, Button, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -58,16 +53,11 @@ const ArrayField: React.FC<ArrayFieldProps> = ({
       >
         {icon && <span className="flex-shrink-0">{icon}</span>}
         {label}
-        {hasError && touched && (
-          <span className="text-red-500 text-xs ml-1">{error}</span>
-        )}
+        {hasError && touched && <span className="text-red-500 text-xs ml-1">{error}</span>}
       </label>
 
       {items.map((item, index) => (
-        <div
-          key={`${itemKey || 'item'}-${index}-${item}`}
-          className="flex gap-2 mb-2 items-center"
-        >
+        <div key={`${itemKey || 'item'}-${index}-${item}`} className="flex gap-2 mb-2 items-center">
           <TextField
             value={item}
             onChange={(e) => handleChange(index, e.target.value)}

@@ -17,7 +17,10 @@ interface UsePartenaireFilterReturn {
   activeFilterCount: number;
 }
 
-export function usePartenaireFilter({ data, searchTerm }: UsePartenaireFilterProps): UsePartenaireFilterReturn {
+export function usePartenaireFilter({
+  data,
+  searchTerm,
+}: UsePartenaireFilterProps): UsePartenaireFilterReturn {
   const [filters, setFilters] = useState<PartenaireFilterOptions>(INITIAL_PARTENAIRE_FILTERS);
 
   const updateFilter = useCallback((key: keyof PartenaireFilterOptions, value: string) => {
@@ -43,7 +46,9 @@ export function usePartenaireFilter({ data, searchTerm }: UsePartenaireFilterPro
 
     // Secteur filter
     if (filters.secteur) {
-      result = result.filter((item) => item.secteur.toLowerCase().includes(filters.secteur.toLowerCase()));
+      result = result.filter((item) =>
+        item.secteur.toLowerCase().includes(filters.secteur.toLowerCase())
+      );
     }
 
     // Date range filter

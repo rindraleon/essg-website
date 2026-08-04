@@ -2,7 +2,14 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Card, CardContent, Typography, Box, Button, IconButton } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { toast, Toaster } from 'sonner';
-import { UsersTable, UsersForm, UsersViewDialog, ConfirmDialog, SearchInput, UsersFilter } from '../../components';
+import {
+  UsersTable,
+  UsersForm,
+  UsersViewDialog,
+  ConfirmDialog,
+  SearchInput,
+  UsersFilter,
+} from '../../components';
 import type { UserFilters } from '../../components/UsersComponent/UsersFilter';
 import { usePagination } from '../../hooks';
 import { useAuth } from '../../contexts/AuthContext';
@@ -27,14 +34,16 @@ const Utilisateurs: React.FC = () => {
   const isAdmin = user?.role === 'admin';
 
   const filteredData = data.filter((user) => {
-    const matchesSearch = filters.search === '' ||
+    const matchesSearch =
+      filters.search === '' ||
       user.nom.toLowerCase().includes(filters.search.toLowerCase()) ||
       user.prenom.toLowerCase().includes(filters.search.toLowerCase()) ||
       user.email.toLowerCase().includes(filters.search.toLowerCase());
 
     const matchesRole = filters.role === '' || user.role === filters.role;
-    
-    const matchesStatut = filters.statut === '' ||
+
+    const matchesStatut =
+      filters.statut === '' ||
       (filters.statut === 'actif' && user.estActif) ||
       (filters.statut === 'inactif' && !user.estActif);
 
@@ -64,15 +73,21 @@ const Utilisateurs: React.FC = () => {
     }
   };
 
-  const handleSearchChange = useCallback((value: string) => {
-    setFilters(prev => ({ ...prev, search: value }));
-    resetPage();
-  }, [resetPage]);
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setFilters((prev) => ({ ...prev, search: value }));
+      resetPage();
+    },
+    [resetPage]
+  );
 
-  const handleUpdateFilter = useCallback((key: keyof UserFilters, value: string) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-    resetPage();
-  }, [resetPage]);
+  const handleUpdateFilter = useCallback(
+    (key: keyof UserFilters, value: string) => {
+      setFilters((prev) => ({ ...prev, [key]: value }));
+      resetPage();
+    },
+    [resetPage]
+  );
 
   const handleResetFilters = useCallback(() => {
     setFilters({
@@ -84,7 +99,7 @@ const Utilisateurs: React.FC = () => {
   }, [resetPage]);
 
   const handleToggleFilters = useCallback(() => {
-    setFilterOpen(prev => !prev);
+    setFilterOpen((prev) => !prev);
   }, []);
 
   const activeFilterCount = useCallback(() => {
@@ -140,11 +155,13 @@ const Utilisateurs: React.FC = () => {
             toast.error('Le mot de passe est requis');
             return;
           }
-          
+
           // Create user without avatar first
           const { avatar, avatarFile, ...userDataWithoutAvatar } = formData;
-          const newUser = await createUser(userDataWithoutAvatar as Parameters<typeof createUser>[0]);
-          
+          const newUser = await createUser(
+            userDataWithoutAvatar as Parameters<typeof createUser>[0]
+          );
+
           // Upload avatar if provided
           if (avatarFile && newUser.id) {
             try {
@@ -152,7 +169,7 @@ const Utilisateurs: React.FC = () => {
               setData((prev) => [updatedUser, ...prev]);
               toast.success('Utilisateur créé avec succès avec avatar');
             } catch (error) {
-              console.error('Erreur lors de l\'upload de l\'avatar:', error);
+              console.error("Erreur lors de l'upload de l'avatar:", error);
               setData((prev) => [newUser, ...prev]);
               toast.success('Utilisateur créé avec succès (avatar non uploadé)');
             }
@@ -162,16 +179,12 @@ const Utilisateurs: React.FC = () => {
           }
         } else if (selectedUser) {
           const updatedUser = await updateUser(selectedUser.id, formData);
-          setData((prev) =>
-            prev.map((item) =>
-              item.id === selectedUser.id ? updatedUser : item
-            )
-          );
+          setData((prev) => prev.map((item) => (item.id === selectedUser.id ? updatedUser : item)));
           toast.success('Utilisateur modifié avec succès');
         }
         setFormOpen(false);
       } catch (error) {
-        toast.error('Erreur lors de l\'enregistrement');
+        toast.error("Erreur lors de l'enregistrement");
         console.error('Error saving user:', error);
       }
     },
@@ -227,10 +240,7 @@ const Utilisateurs: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
               <Typography variant="h6" className="font-bold text-gray-800 whitespace-nowrap">
                 Gestion des utilisateurs
-                <Box
-                  component="span"
-                  className="ml-2 text-sm font-normal text-gray-500"
-                >
+                <Box component="span" className="ml-2 text-sm font-normal text-gray-500">
                   ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
                 </Box>
               </Typography>
@@ -245,7 +255,7 @@ const Utilisateurs: React.FC = () => {
                 onClick={handleToggleFilters}
                 sx={{
                   backgroundColor: filterOpen ? '#e5e7eb' : 'transparent',
-                  '&:hover': { backgroundColor: '#e5e7eb' }
+                  '&:hover': { backgroundColor: '#e5e7eb' },
                 }}
               >
                 <FilterListIcon />
@@ -261,7 +271,7 @@ const Utilisateurs: React.FC = () => {
                     backgroundColor: '#2563eb',
                     '&:hover': {
                       backgroundColor: '#1d4ed8',
-                    }
+                    },
                   }}
                 >
                   + Nouvel utilisateur

@@ -1,16 +1,16 @@
-import axiosConfig from "../config/axios.config";
+import axiosConfig from '../config/axios.config';
 
 class AdmissionService {
   async createAdmission(data: FormData): Promise<void> {
-    await axiosConfig.post("/admissions", data, {
+    await axiosConfig.post('/admissions', data, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
     });
   }
 
   async getAllAdmissions() {
-    const response = await axiosConfig.get("/admissions");
+    const response = await axiosConfig.get('/admissions');
     return response.data;
   }
 

@@ -1,8 +1,8 @@
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Button } from "@/components/ui/button";
-import { FloatingInput } from "@/components/ui/floating-input";
-import { Label } from "@/components/ui/label";
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Button } from '@/components/ui/button';
+import { FloatingInput } from '@/components/ui/floating-input';
+import { Label } from '@/components/ui/label';
 
 interface DynamicListFieldProps {
   label: string;
@@ -26,15 +26,9 @@ const DynamicListField = ({
   return (
     <div className="w-full space-y-2">
       <div className="mb-2 flex items-center justify-between">
-        <Label className="text-sm font-medium text-slate-700">
-          {label}
-        </Label>
+        <Label className="text-sm font-medium text-slate-700">{label}</Label>
 
-        <Button
-          size="sm"
-          onClick={onAdd}
-          className="normal-case"
-        >
+        <Button size="sm" onClick={onAdd} className="normal-case">
           <AddIcon className="h-4 w-4 mr-1" />
           Ajouter
         </Button>
@@ -64,10 +58,8 @@ const DynamicListField = ({
         ))}
       </div>
 
-      {error && (
-        <p className="text-sm text-red-500">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   );
-}
+};
 export default DynamicListField;

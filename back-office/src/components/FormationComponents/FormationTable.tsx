@@ -51,9 +51,9 @@ const FormationTable: React.FC<FormationTableProps> = ({
       minWidth: 110,
       render: (row) => {
         const variantMap: Record<string, 'default' | 'secondary' | 'outline'> = {
-          'Licence': 'default',
-          'Master': 'secondary',
-          'Doctorat': 'outline',
+          Licence: 'default',
+          Master: 'secondary',
+          Doctorat: 'outline',
         };
         return (
           <Badge variant={variantMap[row.niveau] || 'outline'} className="text-xs">
@@ -73,9 +73,7 @@ const FormationTable: React.FC<FormationTableProps> = ({
       label: 'Crédits',
       minWidth: 80,
       align: 'center',
-      render: (row) => (
-        <span className="text-sm font-medium text-gray-700">{row.credits}</span>
-      ),
+      render: (row) => <span className="text-sm font-medium text-gray-700">{row.credits}</span>,
     },
     {
       id: 'enVedette',
@@ -96,20 +94,10 @@ const FormationTable: React.FC<FormationTableProps> = ({
       align: 'right',
       render: (row) => (
         <div className="flex justify-end gap-1">
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => onView(row)}
-            className="h-8 w-8"
-          >
+          <Button size="icon" variant="ghost" onClick={() => onView(row)} className="h-8 w-8">
             <VisibilityIcon fontSize="small" className="h-4 w-4" />
           </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => onEdit(row)}
-            className="h-8 w-8"
-          >
+          <Button size="icon" variant="ghost" onClick={() => onEdit(row)} className="h-8 w-8">
             <EditIcon fontSize="small" className="h-4 w-4" />
           </Button>
           <Button

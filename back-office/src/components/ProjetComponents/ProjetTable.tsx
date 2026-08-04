@@ -9,12 +9,7 @@ import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ProjetTableProps {
   data: Projet[];
@@ -39,129 +34,124 @@ const ProjetTable: React.FC<ProjetTableProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const columns = useMemo<Column<Projet>[]>(() => [
-    {
-      id: 'titre',
-      label: 'Projet',
-      minWidth: 200,
-      render: (row) => (
-        <div className="max-w-xs">
-          <span className="font-semibold text-gray-900 line-clamp-1">{row.titre}</span>
-          <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">{row.description}</p>
-        </div>
-      ),
-    },
-    {
-      id: 'type',
-      label: 'Type',
-      minWidth: 120,
-      render: (row) => {
-        const colorMap: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-          'primary': 'default',
-          'secondary': 'secondary',
-          'success': 'default',
-          'warning': 'secondary',
-          'info': 'outline',
-        };
-        return (
-          <Badge variant={colorMap[getTypeColor(row.type)] || 'outline'}>
-            {row.type}
-          </Badge>
-        );
-      },
-    },
-    {
-      id: 'partenaires',
-      label: 'Partenaires',
-      minWidth: 150,
-      render: (row) => (
-        <div className="flex flex-wrap gap-1">
-          {row.partenaires.slice(0, 2).map((partenaire, index) => (
-            <Badge key={`${row.id}-${index}`} variant="outline" className="text-xs">
-              {partenaire}
-            </Badge>
-          ))}
-          {row.partenaires.length > 2 && (
-            <Badge key={`${row.id}-more`} variant="outline" className="text-xs">
-              +{row.partenaires.length - 2}
-            </Badge>
-          )}
-        </div>
-      ),
-    },
-    {
-      id: 'localisation',
-      minWidth: 140,
-      label: 'Localisation',
-      render: (row) => (
-        <div className="text-sm text-gray-600">
-          {row.ville && <div>{row.ville}</div>}
-          {row.pays && <div className="text-xs text-gray-500">{row.pays}</div>}
-        </div>
-      ),
-    },
-    {
-      id: 'date',
-      label: 'Date',
-      minWidth: 100,
-      render: (row) => (
-        <span className="text-sm text-gray-600">
-          {formatDate(row.date)}
-        </span>
-      ),
-    },
-    {
-      id: 'actions',
-      label: 'Actions',
-      minWidth: 120,
-      align: 'right',
-      render: (row) => (
-        <TooltipProvider>
-          <div className="flex justify-end gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => onView(row)}
-                  className="h-8 w-8"
-                >
-                  <VisibilityIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Voir</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => onEdit(row)}
-                  className="h-8 w-8"
-                >
-                  <EditIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Modifier</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => onDelete(row)}
-                  className="h-8 w-8 text-red-600 hover:text-red-700"
-                >
-                  <DeleteIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Supprimer</TooltipContent>
-            </Tooltip>
+  const columns = useMemo<Column<Projet>[]>(
+    () => [
+      {
+        id: 'titre',
+        label: 'Projet',
+        minWidth: 200,
+        render: (row) => (
+          <div className="max-w-xs">
+            <span className="font-semibold text-gray-900 line-clamp-1">{row.titre}</span>
+            <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">{row.description}</p>
           </div>
-        </TooltipProvider>
-      ),
-    },
-  ], [onView, onEdit, onDelete]);
+        ),
+      },
+      {
+        id: 'type',
+        label: 'Type',
+        minWidth: 120,
+        render: (row) => {
+          const colorMap: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+            primary: 'default',
+            secondary: 'secondary',
+            success: 'default',
+            warning: 'secondary',
+            info: 'outline',
+          };
+          return <Badge variant={colorMap[getTypeColor(row.type)] || 'outline'}>{row.type}</Badge>;
+        },
+      },
+      {
+        id: 'partenaires',
+        label: 'Partenaires',
+        minWidth: 150,
+        render: (row) => (
+          <div className="flex flex-wrap gap-1">
+            {row.partenaires.slice(0, 2).map((partenaire, index) => (
+              <Badge key={`${row.id}-${index}`} variant="outline" className="text-xs">
+                {partenaire}
+              </Badge>
+            ))}
+            {row.partenaires.length > 2 && (
+              <Badge key={`${row.id}-more`} variant="outline" className="text-xs">
+                +{row.partenaires.length - 2}
+              </Badge>
+            )}
+          </div>
+        ),
+      },
+      {
+        id: 'localisation',
+        minWidth: 140,
+        label: 'Localisation',
+        render: (row) => (
+          <div className="text-sm text-gray-600">
+            {row.ville && <div>{row.ville}</div>}
+            {row.pays && <div className="text-xs text-gray-500">{row.pays}</div>}
+          </div>
+        ),
+      },
+      {
+        id: 'date',
+        label: 'Date',
+        minWidth: 100,
+        render: (row) => <span className="text-sm text-gray-600">{formatDate(row.date)}</span>,
+      },
+      {
+        id: 'actions',
+        label: 'Actions',
+        minWidth: 120,
+        align: 'right',
+        render: (row) => (
+          <TooltipProvider>
+            <div className="flex justify-end gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => onView(row)}
+                    className="h-8 w-8"
+                  >
+                    <VisibilityIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Voir</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => onEdit(row)}
+                    className="h-8 w-8"
+                  >
+                    <EditIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Modifier</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => onDelete(row)}
+                    className="h-8 w-8 text-red-600 hover:text-red-700"
+                  >
+                    <DeleteIcon className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Supprimer</TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
+        ),
+      },
+    ],
+    [onView, onEdit, onDelete]
+  );
 
   return (
     <DataTable

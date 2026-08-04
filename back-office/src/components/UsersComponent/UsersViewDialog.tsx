@@ -6,12 +6,7 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { getImageUrl } from '../../utils/image.utils';
 import type { User } from '../../types';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -100,9 +95,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
             {/* Texte séparé de l'image pour meilleure lisibilité */}
             <div className="mt-5 space-y-4">
               <div className="flex items-center justify-between gap-3">
-                <Badge className="rounded-full bg-white/10 px-3 py-1 text-white">
-                  Utilisateur
-                </Badge>
+                <Badge className="rounded-full bg-white/10 px-3 py-1 text-white">Utilisateur</Badge>
 
                 <Badge
                   className={`rounded-full px-3 py-1 text-white ${
@@ -130,35 +123,23 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <div className="mb-2 flex items-center gap-2 text-white/80">
                       <EmailOutlinedIcon className="h-4 w-4" />
-                      <span className="text-xs uppercase tracking-wide">
-                        Email
-                      </span>
+                      <span className="text-xs uppercase tracking-wide">Email</span>
                     </div>
-                    <p className="text-base font-semibold text-white break-all">
-                      {user.email}
-                    </p>
+                    <p className="text-base font-semibold text-white break-all">{user.email}</p>
                   </div>
                 )}
 
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="mb-2 flex items-center gap-2 text-white/80">
-                    <span className="text-xs uppercase tracking-wide">
-                      Rôle
-                    </span>
+                    <span className="text-xs uppercase tracking-wide">Rôle</span>
                   </div>
-                  <p className="text-base font-semibold text-white">
-                    {getRoleLabel(user.role)}
-                  </p>
+                  <p className="text-base font-semibold text-white">{getRoleLabel(user.role)}</p>
                 </div>
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="mb-2 text-xs uppercase tracking-wide text-white/70">
-                  Créé le
-                </p>
-                <p className="text-base font-semibold text-white">
-                  {formatDate(user.creeLe)}
-                </p>
+                <p className="mb-2 text-xs uppercase tracking-wide text-white/70">Créé le</p>
+                <p className="text-base font-semibold text-white">{formatDate(user.creeLe)}</p>
               </div>
             </div>
           </aside>
@@ -172,9 +153,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                   <DialogTitle className="text-xl font-bold text-slate-900">
                     Détails de l'utilisateur
                   </DialogTitle>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Informations complètes du compte
-                  </p>
+                  <p className="mt-1 text-sm text-slate-500">Informations complètes du compte</p>
                 </div>
 
                 <Button
@@ -198,7 +177,10 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                   <div className="p-4">
                     <div className="flex items-start gap-4 mb-4">
                       <Avatar className="h-16 w-16">
-                        <AvatarImage src={user.avatar ? getImageUrl(user.avatar) : undefined} alt="Avatar" />
+                        <AvatarImage
+                          src={user.avatar ? getImageUrl(user.avatar) : undefined}
+                          alt="Avatar"
+                        />
                         <AvatarFallback className="bg-gray-100 text-gray-700 text-xl">
                           {getInitials()}
                         </AvatarFallback>
@@ -230,23 +212,17 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="p-3 bg-slate-50 rounded-lg">
                         <p className="text-xs text-slate-500 mb-1">Prénom</p>
-                        <p className="text-sm font-medium text-slate-900">
-                          {user.prenom}
-                        </p>
+                        <p className="text-sm font-medium text-slate-900">{user.prenom}</p>
                       </div>
                       <div className="p-3 bg-slate-50 rounded-lg">
                         <p className="text-xs text-slate-500 mb-1">Nom</p>
-                        <p className="text-sm font-medium text-slate-900">
-                          {user.nom}
-                        </p>
+                        <p className="text-sm font-medium text-slate-900">{user.nom}</p>
                       </div>
                     </div>
 
                     <div className="mt-3 p-3 bg-slate-50 rounded-lg">
                       <p className="text-xs text-slate-500 mb-1">Email</p>
-                      <p className="text-sm font-medium text-slate-900">
-                        {user.email}
-                      </p>
+                      <p className="text-sm font-medium text-slate-900">{user.email}</p>
                     </div>
                   </div>
                 </div>
@@ -261,7 +237,15 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                       <div>
                         <p className="text-xs text-slate-500">Rôle</p>
                         <div className="mt-1">
-                          <Badge variant={user.role === 'admin' ? 'default' : user.role === 'editeur' ? 'secondary' : 'outline'}>
+                          <Badge
+                            variant={
+                              user.role === 'admin'
+                                ? 'default'
+                                : user.role === 'editeur'
+                                  ? 'secondary'
+                                  : 'outline'
+                            }
+                          >
                             {getRoleLabel(user.role)}
                           </Badge>
                         </div>
@@ -294,12 +278,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
 
             {/* Footer */}
             <div className="flex shrink-0 items-center justify-end border-t border-slate-200 bg-white px-5 py-4 lg:px-6">
-              <Button
-                type="button"
-                onClick={onClose}
-                variant="outline"
-                className="rounded-xl"
-              >
+              <Button type="button" onClick={onClose} variant="outline" className="rounded-xl">
                 Fermer
               </Button>
             </div>

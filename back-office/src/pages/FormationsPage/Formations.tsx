@@ -1,10 +1,22 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Card, CardContent, Typography, Box, Button } from '@mui/material';
 import { toast, Toaster } from 'sonner';
-import { FormationFilters, FormationForm, FormationTable, FormationViewDialog, ConfirmDialog, SearchInput } from '../../components';
+import {
+  FormationFilters,
+  FormationForm,
+  FormationTable,
+  FormationViewDialog,
+  ConfirmDialog,
+  SearchInput,
+} from '../../components';
 import { usePagination, useFormationFilter } from '../../hooks';
 import type { FormationFormData, Formation } from '../../types';
-import { getAllFormations, createFormation, updateFormation, deleteFormation } from '../../services';
+import {
+  getAllFormations,
+  createFormation,
+  updateFormation,
+  deleteFormation,
+} from '../../services';
 
 const Formations: React.FC = () => {
   // Data state
@@ -21,10 +33,11 @@ const Formations: React.FC = () => {
   const [formationToDelete, setFormationToDelete] = useState<Formation | null>(null);
 
   // Hooks
-  const { filters, filteredData, updateFilter, resetFilters, activeFilterCount } = useFormationFilter({
-    data,
-    searchTerm,
-  });
+  const { filters, filteredData, updateFilter, resetFilters, activeFilterCount } =
+    useFormationFilter({
+      data,
+      searchTerm,
+    });
 
   const {
     currentPage,
@@ -106,16 +119,14 @@ const Formations: React.FC = () => {
         } else if (selectedFormation) {
           const updatedFormation = await updateFormation(selectedFormation.id, formData);
           setData((prev) =>
-            prev.map((item) =>
-              item.id === selectedFormation.id ? updatedFormation : item
-            )
+            prev.map((item) => (item.id === selectedFormation.id ? updatedFormation : item))
           );
           toast.success('Formation modifiée avec succès');
         }
         // Close the dialog only after successful API call
         setFormOpen(false);
       } catch (error) {
-        toast.error('Erreur lors de l\'enregistrement');
+        toast.error("Erreur lors de l'enregistrement");
         console.error('Error saving formation:', error);
       }
     },
@@ -143,10 +154,7 @@ const Formations: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
+        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
           <CardContent className="flex flex-col items-center py-4">
             <Typography variant="h4" className="font-bold text-gray-900">
               {totalCount}
@@ -156,10 +164,7 @@ const Formations: React.FC = () => {
             </Typography>
           </CardContent>
         </Card>
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
+        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
           <CardContent className="flex flex-col items-center py-4">
             <Typography variant="h4" className="font-bold text-blue-600">
               {licenceCount}
@@ -169,10 +174,7 @@ const Formations: React.FC = () => {
             </Typography>
           </CardContent>
         </Card>
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
+        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
           <CardContent className="flex flex-col items-center py-4">
             <Typography variant="h4" className="font-bold text-purple-600">
               {masterCount}
@@ -182,10 +184,7 @@ const Formations: React.FC = () => {
             </Typography>
           </CardContent>
         </Card>
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
+        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
           <CardContent className="flex flex-col items-center py-4">
             <Typography variant="h4" className="font-bold text-amber-500">
               {featuredCount}
@@ -198,19 +197,13 @@ const Formations: React.FC = () => {
       </div>
 
       {/* Search + Add Button */}
-      <Card
-        variant="outlined"
-        sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-      >
+      <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
         <CardContent>
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
               <Typography variant="h6" className="font-bold text-gray-800 whitespace-nowrap">
                 Liste des formations
-                <Box
-                  component="span"
-                  className="ml-2 text-sm font-normal text-gray-500"
-                >
+                <Box component="span" className="ml-2 text-sm font-normal text-gray-500">
                   ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
                 </Box>
               </Typography>
@@ -232,8 +225,8 @@ const Formations: React.FC = () => {
                   color: '#374151',
                   '&:hover': {
                     borderColor: '#d1d5db',
-                    backgroundColor: '#f9fafb'
-                  }
+                    backgroundColor: '#f9fafb',
+                  },
                 }}
               >
                 {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
@@ -248,7 +241,7 @@ const Formations: React.FC = () => {
                   backgroundColor: '#2563eb',
                   '&:hover': {
                     backgroundColor: '#1d4ed8',
-                  }
+                  },
                 }}
               >
                 + Nouvelle formation
@@ -260,10 +253,7 @@ const Formations: React.FC = () => {
 
       {/* Filters - Full Width Below */}
       {filtersOpen && (
-        <Card
-          variant="outlined"
-          sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}
-        >
+        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
           <CardContent>
             <FormationFilters
               filters={filters}

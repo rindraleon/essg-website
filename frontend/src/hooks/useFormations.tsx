@@ -44,15 +44,16 @@ export function useFeaturedFormations(limit = 6) {
         const data = await formationService.findFeatured(limit);
         if (!cancelled) setFormations(data);
       } catch (err) {
-        if (!cancelled)
-          setError(err instanceof Error ? err.message : 'Erreur inconnue');
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Erreur inconnue');
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
 
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [limit]);
 
   return { formations, loading, error };
@@ -75,15 +76,16 @@ export function useFormationBySlug(slug: string) {
         const data = await formationService.findBySlug(slug);
         if (!cancelled) setFormation(data);
       } catch (err) {
-        if (!cancelled)
-          setError(err instanceof Error ? err.message : 'Erreur inconnue');
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Erreur inconnue');
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
 
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
   return { formation, loading, error };

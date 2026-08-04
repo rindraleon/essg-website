@@ -14,7 +14,10 @@ export interface RessourceHumaineItem {
   misAJourLe: Date;
 }
 
-export type RessourceHumaineFormData = Omit<RessourceHumaineItem, 'id' | 'slug' | 'creeLe' | 'misAJourLe'>;
+export type RessourceHumaineFormData = Omit<
+  RessourceHumaineItem,
+  'id' | 'slug' | 'creeLe' | 'misAJourLe'
+>;
 
 export interface RessourceHumaineFilterOptions {
   poste: string;

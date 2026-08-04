@@ -45,15 +45,16 @@ export function useProjetById(slug: string) {
         const data = await projetService.findBySlug(slug);
         if (!cancelled) setProjet(data);
       } catch (err) {
-        if (!cancelled)
-          setError(err instanceof Error ? err.message : 'Erreur inconnue');
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Erreur inconnue');
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
 
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
   return { projet, loading, error };

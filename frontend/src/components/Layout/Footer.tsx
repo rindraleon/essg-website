@@ -1,60 +1,68 @@
-import { Link } from "react-router-dom";
-import IconButton from "@mui/material/IconButton";
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import { InsertLinkOutlined } from "@mui/icons-material";
+import { Link } from 'react-router-dom';
+import IconButton from '@mui/material/IconButton';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { InsertLinkOutlined } from '@mui/icons-material';
 
-import EssG from "../../assets/files/images/logo/itdc_logo.png";
-import type { FooterProps, SocialItem } from "../../types/footer.types";
+import EssG from '../../assets/files/images/logo/itdc_logo.png';
+import type { FooterProps, SocialItem } from '../../types/footer.types';
 
-function SocialIcon({ kind }: Readonly<{ kind: SocialItem["kind"] }>) {
-  switch (kind) {
-    case "web":
-      return <InsertLinkOutlined fontSize="small" color="primary" />;
-    case "linkedin":
-      return <LinkedInIcon fontSize="small" color="primary" />;
-    case "facebook":
-      return <FacebookIcon fontSize="small" color="primary" />;
-    default:
-      return <OpenInNewIcon fontSize="small" color="primary" />;
-  }
-}
+const SOCIAL_ICONS = {
+  web: InsertLinkOutlined,
+  linkedin: LinkedInIcon,
+  facebook: FacebookIcon,
+} as const;
+
+const SOCIAL_ICON_DEFAULT = OpenInNewIcon;
+
+const ICON_BUTTON_STYLES = {
+  backgroundColor: 'rgba(255,255,255,0.06)',
+  '&:hover': { backgroundColor: 'rgba(255,255,255,0.12)' },
+} as const;
+
+const DEFAULT_PROPS = {
+  companyName: 'ESSG' as const,
+  navLinks: [
+    { label: 'Accueil', to: '/' },
+    { label: 'Formations', to: '/formations' },
+    { label: 'Projets', to: '/projets' },
+    { label: 'Actualités', to: '/actualites' },
+    { label: 'Partenaires', to: '/partenaires' },
+    { label: 'Admission', to: '/admission' },
+  ],
+  contact: {
+    email: 'contact@essg.sn',
+    phone: '+261 38 18 282 49',
+    address: 'ESSG e-atiala Andrainjato Université Fianarantsoa, Madagascar',
+  },
+  socials: [
+    { href: 'https://www.essg.sn', kind: 'web' as const, ariaLabel: 'Site officiel ESSG' },
+    {
+      href: 'https://www.linkedin.com/company/essg',
+      kind: 'linkedin' as const,
+      ariaLabel: 'LinkedIn ESSG',
+    },
+    {
+      href: 'https://www.facebook.com/profile.php?id=61588935937597',
+      kind: 'facebook' as const,
+      ariaLabel: 'Facebook ESSG',
+    },
+  ],
+};
 
 const Footer = ({
-  companyName = "ESSG",
-  navLinks = [
-    { label: "Accueil", to: "/" },
-    { label: "Formations", to: "/formations" },
-    { label: "Projets", to: "/projets" },
-    { label: "Actualités", to: "/actualites" },
-    { label: "Partenaires", to: "/partenaires" },
-    { label: "Admission", to: "/admission" },
-  ],
-  contact = {
-    email: "contact@essg.sn",
-    phone: "+261 38 18 282 49",
-    address: "ESSG e-atiala Andrainjato Université Fianarantsoa, Madagascar",
-  },
-  socials = [
-    {
-      href: "https://www.essg.sn",
-      kind: "web",
-      ariaLabel: "Site officiel ESSG",
-    },
-    {
-      href: "https://www.linkedin.com/company/essg",
-      kind: "linkedin",
-      ariaLabel: "LinkedIn ESSG",
-    },
-    {
-      href: "https://www.facebook.com/profile.php?id=61588935937597",
-      kind: "facebook",
-      ariaLabel: "Facebook ESSG",
-    },
-  ],
-}: Readonly<FooterProps>) => {
+  companyName = DEFAULT_PROPS.companyName,
+  navLinks = DEFAULT_PROPS.navLinks,
+  contact = DEFAULT_PROPS.contact,
+  socials = DEFAULT_PROPS.socials,
+}: FooterProps) => {
   const currentYear = new Date().getFullYear();
+
+  const SocialIcon = ({ kind }: { kind: SocialItem['kind'] }) => {
+    const IconComponent = SOCIAL_ICONS[kind as keyof typeof SOCIAL_ICONS] || SOCIAL_ICON_DEFAULT;
+    return <IconComponent fontSize="small" color="primary" />;
+  };
 
   return (
     <footer className="bg-gray-900 text-gray-300">
@@ -64,31 +72,24 @@ const Footer = ({
           <div className="lg:col-span-2">
             <Link to="/" className="mb-4 flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white p-1 shadow-sm">
-                <img
-                  src={EssG}
-                  alt="Logo ESSG"
-                  className="h-full w-full object-contain"
-                />
+                <img src={EssG} alt="Logo ESSG" className="h-full w-full object-contain" />
               </div>
 
               <div>
                 <p className="text-lg font-bold text-white">{companyName}</p>
-                <p className="text-sm text-gray-400">
-                  École Supérieure de Sciences Géomatiques
-                </p>
+                <p className="text-sm text-gray-400">École Supérieure de Sciences Géomatiques</p>
               </div>
             </Link>
 
             <p className="max-w-md text-sm leading-6 text-gray-400 text-justify">
-              L&apos;ESSG est un établissement d&apos;enseignement supérieur
-              spécialisé dans la formation, la recherche et l&apos;innovation en
-              sciences géomatiques, cartographie, télédétection et systèmes
-              d&apos;information géographique.
+              L&apos;ESSG est un établissement d&apos;enseignement supérieur spécialisé dans la
+              formation, la recherche et l&apos;innovation en sciences géomatiques, cartographie,
+              télédétection et systèmes d&apos;information géographique.
             </p>
 
             <p className="mt-3 max-w-md text-sm leading-6 text-gray-400 text-justify">
-              Excellence académique, professionnalisation et ouverture vers les
-              technologies spatiales et numériques.
+              Excellence académique, professionnalisation et ouverture vers les technologies
+              spatiales et numériques.
             </p>
 
             {socials.length > 0 && (
@@ -101,12 +102,7 @@ const Footer = ({
                     target="_blank"
                     rel="noreferrer"
                     aria-label={social.ariaLabel}
-                    sx={{
-                      backgroundColor: "rgba(255,255,255,0.06)",
-                      "&:hover": {
-                        backgroundColor: "rgba(255,255,255,0.12)",
-                      },
-                    }}
+                    sx={ICON_BUTTON_STYLES}
                   >
                     <SocialIcon kind={social.kind} />
                   </IconButton>
@@ -146,7 +142,7 @@ const Footer = ({
               {contact.phone && (
                 <li>
                   <a
-                    href={`tel:${contact.phone.replace(/\s+/g, "")}`}
+                    href={`tel:${contact.phone.replace(/\s+/g, '')}`}
                     className="transition-colors hover:text-white"
                   >
                     {contact.phone}
@@ -154,10 +150,7 @@ const Footer = ({
                 </li>
               )}
               <li>
-                <a
-                  href={`mailto:${contact.email}`}
-                  className="transition-colors hover:text-white"
-                >
+                <a href={`mailto:${contact.email}`} className="transition-colors hover:text-white">
                   {contact.email}
                 </a>
               </li>

@@ -1,13 +1,24 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { toast, Toaster } from 'sonner';
-import { ActualiteFilters, ActualiteForm, ActualiteTable, ActualiteViewDialog, ConfirmDialog, SearchInput } from '../../components';
+import {
+  ActualiteFilters,
+  ActualiteForm,
+  ActualiteTable,
+  ActualiteViewDialog,
+  ConfirmDialog,
+  SearchInput,
+} from '../../components';
 import { useFilter } from '../../hooks/useFilter';
 import { usePagination } from '../../hooks';
-import type { ActualiteFormData, ActualiteItem} from '../../types';
+import type { ActualiteFormData, ActualiteItem } from '../../types';
 import { initialActualites } from '../../data/mockData';
-import { getAllActualites, createActualite, updateActualite, deleteActualite } from '../../services';
+import {
+  getAllActualites,
+  createActualite,
+  updateActualite,
+  deleteActualite,
+} from '../../services';
 import { Button } from '@/components/ui/button';
-
 
 const Actualites: React.FC = () => {
   // Data state
@@ -46,7 +57,6 @@ const Actualites: React.FC = () => {
         setData(actualites);
       } catch (error) {
         console.error('Failed to load actualites from backend:', error);
-        
       }
     };
 
@@ -109,14 +119,12 @@ const Actualites: React.FC = () => {
         } else if (selectedActualite) {
           const updatedActualite = await updateActualite(selectedActualite.id, formData);
           setData((prev) =>
-            prev.map((item) =>
-              item.id === selectedActualite.id ? updatedActualite : item
-            )
+            prev.map((item) => (item.id === selectedActualite.id ? updatedActualite : item))
           );
           toast.success('Actualité modifiée avec succès');
         }
       } catch (error) {
-        toast.error('Erreur lors de l\'enregistrement');
+        toast.error("Erreur lors de l'enregistrement");
         console.error('Error saving actualite:', error);
       }
     },
@@ -139,7 +147,6 @@ const Actualites: React.FC = () => {
 
   return (
     <div className="space-y-2 p-2 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      
       <Toaster position="top-right" richColors />
 
       {/* Stats Cards */}
@@ -175,17 +182,10 @@ const Actualites: React.FC = () => {
             />
           </div>
           <div className="flex items-center gap-3 w-full lg:w-auto">
-            <Button
-              variant="outline"
-              onClick={handleToggleFilters}
-              className="rounded-lg"
-            >
+            <Button variant="outline" onClick={handleToggleFilters} className="rounded-lg">
               {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
             </Button>
-            <Button
-              onClick={handleOpenCreate}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
+            <Button onClick={handleOpenCreate} className="bg-blue-600 hover:bg-blue-700">
               + Nouvelle actualité
             </Button>
           </div>

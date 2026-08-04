@@ -9,12 +9,7 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { getImageUrl } from '../../utils/image.utils';
 import type { Formation } from '../../types/formation.types';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 
 interface FormationViewDialogProps {
@@ -23,11 +18,7 @@ interface FormationViewDialogProps {
   formation: Formation | null;
 }
 
-const FormationViewDialog: React.FC<FormationViewDialogProps> = ({
-  open,
-  onClose,
-  formation,
-}) => {
+const FormationViewDialog: React.FC<FormationViewDialogProps> = ({ open, onClose, formation }) => {
   if (!formation) return null;
 
   return (
@@ -92,9 +83,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({
               </div>
 
               <div>
-                <h2 className="text-2xl font-bold leading-tight text-white">
-                  {formation.titre}
-                </h2>
+                <h2 className="text-2xl font-bold leading-tight text-white">{formation.titre}</h2>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Badge className="rounded-full bg-white text-slate-900">
                     <SchoolIcon className="mr-1 h-3.5 w-3.5" />
@@ -114,40 +103,28 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="mb-2 flex items-center gap-2 text-white/80">
                     <AccessTimeIcon className="h-4 w-4" />
-                    <span className="text-xs uppercase tracking-wide">
-                      Durée
-                    </span>
+                    <span className="text-xs uppercase tracking-wide">Durée</span>
                   </div>
-                  <p className="text-base font-semibold text-white">
-                    {formation.duree}
-                  </p>
+                  <p className="text-base font-semibold text-white">{formation.duree}</p>
                 </div>
 
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="mb-2 flex items-center gap-2 text-white/80">
                     <StarsIcon className="h-4 w-4" />
-                    <span className="text-xs uppercase tracking-wide">
-                      Crédits
-                    </span>
+                    <span className="text-xs uppercase tracking-wide">Crédits</span>
                   </div>
-                  <p className="text-base font-semibold text-white">
-                    {formation.credits} crédits
-                  </p>
+                  <p className="text-base font-semibold text-white">{formation.credits} crédits</p>
                 </div>
               </div>
 
               {(formation.responsable || formation.email) && (
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <p className="mb-3 text-xs uppercase tracking-wide text-white/70">
-                    Contact
-                  </p>
+                  <p className="mb-3 text-xs uppercase tracking-wide text-white/70">Contact</p>
 
                   {formation.responsable && (
                     <div className="mb-2 flex items-center gap-2">
                       <PersonOutlineOutlinedIcon className="h-4 w-4 text-white/80" />
-                      <span className="text-sm text-white">
-                        {formation.responsable}
-                      </span>
+                      <span className="text-sm text-white">{formation.responsable}</span>
                     </div>
                   )}
 
@@ -217,9 +194,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({
                   </div>
 
                   <div className="p-4">
-                    <h2 className="mb-3 text-2xl font-bold text-slate-900">
-                      {formation.titre}
-                    </h2>
+                    <h2 className="mb-3 text-2xl font-bold text-slate-900">{formation.titre}</h2>
 
                     <div className="mb-4 flex flex-wrap gap-2">
                       <Badge className="gap-1 rounded-full">
@@ -242,9 +217,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({
                     <div className="grid grid-cols-2 gap-3">
                       <div className="rounded-xl bg-slate-50 p-3">
                         <p className="text-xs text-slate-500">Durée</p>
-                        <p className="text-sm font-semibold text-slate-900">
-                          {formation.duree}
-                        </p>
+                        <p className="text-sm font-semibold text-slate-900">{formation.duree}</p>
                       </div>
 
                       <div className="rounded-xl bg-slate-50 p-3">
@@ -291,10 +264,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({
                       </h3>
                       <ul className="space-y-2">
                         {formation.objectifs.map((objectif) => (
-                          <li
-                            key={objectif}
-                            className="text-sm leading-6 text-slate-600"
-                          >
+                          <li key={objectif} className="text-sm leading-6 text-slate-600">
                             • {objectif}
                           </li>
                         ))}
@@ -309,10 +279,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({
                       </h3>
                       <ul className="space-y-2">
                         {formation.debouches.map((debouche) => (
-                          <li
-                            key={debouche}
-                            className="text-sm leading-6 text-slate-600"
-                          >
+                          <li key={debouche} className="text-sm leading-6 text-slate-600">
                             • {debouche}
                           </li>
                         ))}
@@ -327,10 +294,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({
                       </h3>
                       <ul className="space-y-2">
                         {formation.programme.map((module) => (
-                          <li
-                            key={module}
-                            className="text-sm leading-6 text-slate-600"
-                          >
+                          <li key={module} className="text-sm leading-6 text-slate-600">
                             • {module}
                           </li>
                         ))}
@@ -372,12 +336,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({
 
             {/* Footer */}
             <div className="flex shrink-0 items-center justify-end border-t border-slate-200 bg-white px-5 py-4 lg:px-6">
-              <Button
-                type="button"
-                onClick={onClose}
-                variant="outline"
-                className="rounded-xl"
-              >
+              <Button type="button" onClick={onClose} variant="outline" className="rounded-xl">
                 Fermer
               </Button>
             </div>

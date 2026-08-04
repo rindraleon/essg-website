@@ -5,11 +5,14 @@ export const PARTENAIRE_TYPES = [
   { value: 'Autre', label: 'Autre' },
 ] as const;
 
-export const PARTENAIRE_TYPE_COLORS: Record<string, 'primary' | 'secondary' | 'success' | 'warning' | 'info'> = {
-  'Entreprise': 'primary',
-  'Institution': 'secondary',
-  'Organisation': 'success',
-  'Autre': 'warning',
+export const PARTENAIRE_TYPE_COLORS: Record<
+  string,
+  'primary' | 'secondary' | 'success' | 'warning' | 'info'
+> = {
+  Entreprise: 'primary',
+  Institution: 'secondary',
+  Organisation: 'success',
+  Autre: 'warning',
 };
 
 export const DEFAULT_PARTENAIRE_FORM_DATA = {

@@ -20,7 +20,10 @@ interface UseFormationFilterReturn {
   activeFilterCount: number;
 }
 
-const useFormationFilter = ({ data, searchTerm }: UseFormationFilterProps): UseFormationFilterReturn => {
+const useFormationFilter = ({
+  data,
+  searchTerm,
+}: UseFormationFilterProps): UseFormationFilterReturn => {
   const [filters, setFilters] = useState<FormationFilterOptions>(initialFilters);
 
   const updateFilter = useCallback((key: keyof FormationFilterOptions, value: string) => {
@@ -76,5 +79,5 @@ const useFormationFilter = ({ data, searchTerm }: UseFormationFilterProps): UseF
     resetFilters,
     activeFilterCount,
   };
-}
+};
 export default useFormationFilter;

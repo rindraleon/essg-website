@@ -1,20 +1,22 @@
 // src/components/ActualiteCard.tsx
-import React from "react";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
-import CalendarTodayRoundedIcon from "@mui/icons-material/CalendarTodayRounded";
-import Button from "@mui/material/Button";
-import { Link as RouterLink } from "react-router-dom";
-import type { Actualite } from "../../types/actualite.types";
-import CategoryChip from "../common/CategoryChip";
-import { formatDate } from "../../utils/date.utils";
-import { getImageUrl } from "../../utils/image.utils";
+import React from 'react';
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
+import Button from '@mui/material/Button';
+import { Link as RouterLink } from 'react-router-dom';
+import type { Actualite } from '../../types/actualite.types';
+import CategoryChip from '../common/CategoryChip';
+import { formatDate } from '../../utils/date.utils';
+import { getImageUrl } from '../../utils/image.utils';
 
 interface Props {
   actualite: Actualite;
 }
 
 const ActualiteCard: React.FC<Props> = ({ actualite }) => {
-  const imageUrl = actualite.image ? getImageUrl(actualite.image) : "https://images.unsplash.com/photo-1768117173988-5ebfdde4fdd3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800";
+  const imageUrl = actualite.image
+    ? getImageUrl(actualite.image)
+    : 'https://images.unsplash.com/photo-1768117173988-5ebfdde4fdd3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 
   return (
     <div className="rounded-2xl overflow-hidden border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col bg-white">
@@ -45,9 +47,7 @@ const ActualiteCard: React.FC<Props> = ({ actualite }) => {
         </h3>
 
         {/* Résumé */}
-        <p className="text-sm text-gray-500 line-clamp-3 flex-1">
-          {actualite.resume}
-        </p>
+        <p className="text-sm text-gray-500 line-clamp-3 flex-1">{actualite.resume}</p>
 
         {/* Auteur */}
         {actualite.auteur && (
@@ -65,14 +65,14 @@ const ActualiteCard: React.FC<Props> = ({ actualite }) => {
           sx={{
             mt: 2,
             p: 0,
-            minWidth: "auto",
-            color: "#2563eb",
+            minWidth: 'auto',
+            color: '#2563eb',
             fontWeight: 600,
-            textTransform: "none",
-            justifyContent: "flex-start",
-            "&:hover": {
-              backgroundColor: "transparent",
-              color: "#1d4ed8",
+            textTransform: 'none',
+            justifyContent: 'flex-start',
+            '&:hover': {
+              backgroundColor: 'transparent',
+              color: '#1d4ed8',
             },
           }}
         >

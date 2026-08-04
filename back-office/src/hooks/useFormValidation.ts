@@ -172,7 +172,9 @@ export function useFormValidation<T extends Record<string, any>>(
 
     if (Object.keys(allErrors).length > 0) {
       // Find first step with errors
-      const steps = Object.keys(stepFields).map(Number).sort((a, b) => a - b);
+      const steps = Object.keys(stepFields)
+        .map(Number)
+        .sort((a, b) => a - b);
       for (const step of steps) {
         const fields = stepFields[step] || [];
         if (fields.some((f) => allErrors[String(f)])) {
@@ -193,7 +195,7 @@ export function useFormValidation<T extends Record<string, any>>(
 
       if (validateOnChange && touched[String(field)]) {
         const error = validateField(field);
-      setErrors((prev: Record<string, string | undefined>) => ({
+        setErrors((prev: Record<string, string | undefined>) => ({
           ...prev,
           [field]: error,
         }));
@@ -209,10 +211,10 @@ export function useFormValidation<T extends Record<string, any>>(
 
       if (validateOnBlur) {
         const error = validateField(field);
-      setErrors((prev: Record<string, string | undefined>) => ({
-        ...prev,
-        [field]: error,
-      }));
+        setErrors((prev: Record<string, string | undefined>) => ({
+          ...prev,
+          [field]: error,
+        }));
       }
     },
     [validateField, validateOnBlur]

@@ -156,9 +156,7 @@ export const ArrayField: React.FC<ArrayFieldProps> = ({
       <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
         {icon}
         {label}
-        {error && touched && (
-          <span className="text-red-500 text-xs ml-1">{error}</span>
-        )}
+        {error && touched && <span className="text-red-500 text-xs ml-1">{error}</span>}
       </label>
       {items.map((item, index) => (
         <div
@@ -211,7 +209,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   onImageChange,
   onUpload,
   uploading,
-  
+
   label = 'Image',
 }) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -224,9 +222,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
   return (
     <div className="w-full">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {label}
-      </label>
+      <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
 
       {imageUrl && (
         <Box className="mb-3">
@@ -285,11 +281,7 @@ interface FormCheckboxProps {
   onChange: (checked: boolean) => void;
 }
 
-export const FormCheckbox: React.FC<FormCheckboxProps> = ({
-  label,
-  checked,
-  onChange,
-}) => {
+export const FormCheckbox: React.FC<FormCheckboxProps> = ({ label, checked, onChange }) => {
   return (
     <div className="flex items-center gap-2">
       <input

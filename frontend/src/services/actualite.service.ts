@@ -5,7 +5,11 @@ const API_BASE_URL = import.meta.env.VITE_APP_URL || 'http://localhost:3000';
 const BASE_URL = `${API_BASE_URL.replace(/\/api\/?$/, '')}/news`;
 
 const actualiteService = {
-  async findAll(page = 1, limit = 10, signal?: AbortSignal): Promise<PaginationResponse<Actualite>> {
+  async findAll(
+    page = 1,
+    limit = 10,
+    signal?: AbortSignal
+  ): Promise<PaginationResponse<Actualite>> {
     const res = await fetch(
       `${BASE_URL}?page=${Number(page)}&limit=${Number(limit)}&sortBy=date&sortOrder=DESC`,
       { signal }
@@ -26,7 +30,12 @@ const actualiteService = {
     return res.json();
   },
 
-  async search(query: string, page = 1, limit = 10, signal?: AbortSignal): Promise<PaginationResponse<Actualite>> {
+  async search(
+    query: string,
+    page = 1,
+    limit = 10,
+    signal?: AbortSignal
+  ): Promise<PaginationResponse<Actualite>> {
     const res = await fetch(
       `${BASE_URL}/search?q=${encodeURIComponent(query)}&page=${Number(page)}&limit=${Number(limit)}`,
       { signal }

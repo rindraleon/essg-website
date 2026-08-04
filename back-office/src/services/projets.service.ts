@@ -55,16 +55,18 @@ const uploadImage = async (file: File): Promise<string> => {
   try {
     const formData = new FormData();
     formData.append('file', file);
-    
+
     const response = await axiosConfig.post<{ url: string }>('/upload/image', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-    
+
     // Construire l'URL complète
     const baseUrl = axiosConfig.defaults.baseURL?.replace(/\/$/, '') || '';
-    return response.data.url.startsWith('http') ? response.data.url : `${baseUrl}${response.data.url}`;
+    return response.data.url.startsWith('http')
+      ? response.data.url
+      : `${baseUrl}${response.data.url}`;
   } catch (error) {
     console.error('Error uploading image:', error);
     throw error;

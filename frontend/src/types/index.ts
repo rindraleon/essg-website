@@ -1,13 +1,13 @@
 // Common types used across the application
 export type FilterOption = {
-    value: string;
-    label: string;
+  value: string;
+  label: string;
 };
 
 export type StatItem = {
-    icon: string;
-    value: string;
-    label: string;
+  icon: string;
+  value: string;
+  label: string;
 };
 
 export interface HeroSectionProps {
@@ -25,14 +25,14 @@ export interface HeroSectionProps {
 }
 
 export type CertificationItem = {
-    nom: string;
-    annee: string;
+  nom: string;
+  annee: string;
 };
 
 export type CertificationsSectionProps = {
-    title?: string;
-    description?: string;
-    certifications?: CertificationItem[];
+  title?: string;
+  description?: string;
+  certifications?: CertificationItem[];
 };
 
 // Re-export domain-specific types

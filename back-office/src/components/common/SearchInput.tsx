@@ -3,7 +3,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-
 interface SearchInputProps {
   value: string;
   onChange: (value: string) => void;
@@ -18,7 +17,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   className = '',
 }) => {
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn('relative', className)}>
       <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
       <Input
         type="text"

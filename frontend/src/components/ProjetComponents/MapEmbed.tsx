@@ -1,120 +1,106 @@
-import React, { useState } from "react";
-import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
-import RoomRoundedIcon from "@mui/icons-material/RoomRounded";
-import Fade from "@mui/material/Fade";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import { GREEN } from "../../constants/colors";
-import type { MapEmbedProps } from "../../types/projets.types";
-
+import React, { useState } from 'react';
+import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
+import RoomRoundedIcon from '@mui/icons-material/RoomRounded';
+import Fade from '@mui/material/Fade';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import { GREEN } from '../../constants/colors';
+import type { MapEmbedProps } from '../../types/projets.types';
 
 const ZOOM_DELTAS: Record<string, number> = {
-    close: 0.01,
-    city: 0.04,
-    region: 0.15,
+  close: 0.01,
+  city: 0.04,
+  region: 0.15,
 };
 
 const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
-    const { lat, lng, label, adresse, zoom = "city", height = 400 } = props;
+  const { lat, lng, label, adresse, zoom = 'city', height = 400 } = props;
 
-    const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
-    const delta = ZOOM_DELTAS[zoom] ?? ZOOM_DELTAS.city;
-    const bbox = `${lng - delta},${lat - delta},${lng + delta},${lat + delta}`;
-    const src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lng}`;
-    const osmLink = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=14/${lat}/${lng}`;
+  const delta = ZOOM_DELTAS[zoom] ?? ZOOM_DELTAS.city;
+  const bbox = `${lng - delta},${lat - delta},${lng + delta},${lat + delta}`;
+  const src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lng}`;
+  const osmLink = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=14/${lat}/${lng}`;
 
-    return (
-        <div className="w-full">
-            {/* {adresse && (
+  return (
+    <div className="w-full">
+      {/* {adresse && (
                 <p className="mb-3 flex items-center justify-center gap-1.5 text-center text-xs text-gray-500">
                     <RoomRoundedIcon sx={{ fontSize: 14 }} />
                     {adresse}
                 </p>
             )} */}
 
-            <div
-                className="relative overflow-hidden rounded-xl border border-gray-200 shadow-inner"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+      <div
+        className="relative overflow-hidden rounded-xl border border-gray-200 shadow-inner"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Barre d'en-tête */}
+        <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-3 py-2">
+          <RoomRoundedIcon sx={{ fontSize: 16, color: GREEN[600] }} />
+          <span className="truncate text-xs font-medium text-gray-700">{label}</span>
+
+          <Tooltip title="Ouvrir dans OpenStreetMap">
+            <IconButton
+              component="a"
+              href={osmLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              size="small"
+              sx={{ ml: 'auto' }}
             >
-                {/* Barre d'en-tête */}
-                <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-3 py-2">
-                    <RoomRoundedIcon
-                        sx={{ fontSize: 16, color: GREEN[600] }}
-                    />
-                    <span className="truncate text-xs font-medium text-gray-700">
-                        {label}
-                    </span>
-
-                    <Tooltip title="Ouvrir dans OpenStreetMap">
-                        <IconButton
-                            component="a"
-                            href={osmLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            size="small"
-                            sx={{ ml: "auto" }}
-                        >
-                            <OpenInNewRoundedIcon sx={{ fontSize: 16 }} />
-                        </IconButton>
-                    </Tooltip>
-                </div>
-
-                {/* Carte */}
-                <div className="relative">
-                    <iframe
-                        title={label}
-                        src={src}
-                        width="100%"
-                        height={height}
-                        className="block border-0"
-                        loading="lazy"
-                        referrerPolicy="no-referrer"
-                    />
-
-                    {/* Tooltip au survol */}
-                    <Fade in={isHovered} timeout={300}>
-                        <div
-                            className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-start gap-3 rounded-xl p-4 text-center shadow-lg backdrop-blur-sm"
-                            style={{
-                                backgroundColor: "rgba(255,255,255,0.95)",
-                                border: `1px solid ${GREEN[200]}`,
-                            }}
-                        >
-                            <div
-                                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
-                                style={{ backgroundColor: GREEN[50] }}
-                            >
-                                <RoomRoundedIcon
-                                    sx={{ fontSize: 22, color: GREEN[600] }}
-                                />
-                            </div>
-
-                            <div className="min-w-0 flex-1">
-                                <p
-                                    className="text-sm font-semibold"
-                                    style={{ color: GREEN[800] }}
-                                >
-                                    {label}
-                                </p>
-
-                                {adresse && (
-                                    <p className="mt-0.5 text-xs text-gray-500">
-                                        {adresse}
-                                    </p>
-                                )}
-
-                                <p className="mt-1 text-xs text-gray-400">
-                                    {lat.toFixed(4)}°S, {lng.toFixed(4)}°E
-                                </p>
-                            </div>
-                        </div>
-                    </Fade>
-                </div>
-            </div>
+              <OpenInNewRoundedIcon sx={{ fontSize: 16 }} />
+            </IconButton>
+          </Tooltip>
         </div>
-    );
+
+        {/* Carte */}
+        <div className="relative">
+          <iframe
+            title={label}
+            src={src}
+            width="100%"
+            height={height}
+            className="block border-0"
+            loading="lazy"
+            referrerPolicy="no-referrer"
+          />
+
+          {/* Tooltip au survol */}
+          <Fade in={isHovered} timeout={300}>
+            <div
+              className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-start gap-3 rounded-xl p-4 text-center shadow-lg backdrop-blur-sm"
+              style={{
+                backgroundColor: 'rgba(255,255,255,0.95)',
+                border: `1px solid ${GREEN[200]}`,
+              }}
+            >
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
+                style={{ backgroundColor: GREEN[50] }}
+              >
+                <RoomRoundedIcon sx={{ fontSize: 22, color: GREEN[600] }} />
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold" style={{ color: GREEN[800] }}>
+                  {label}
+                </p>
+
+                {adresse && <p className="mt-0.5 text-xs text-gray-500">{adresse}</p>}
+
+                <p className="mt-1 text-xs text-gray-400">
+                  {lat.toFixed(4)}°S, {lng.toFixed(4)}°E
+                </p>
+              </div>
+            </div>
+          </Fade>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default MapEmbed;

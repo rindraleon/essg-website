@@ -1,6 +1,9 @@
 // src/hooks/useRessourceHumaineFilter.ts
 import { useState, useMemo, useCallback } from 'react';
-import type { RessourceHumaineItem, RessourceHumaineFilterOptions } from '../types/ressource-humaine.types';
+import type {
+  RessourceHumaineItem,
+  RessourceHumaineFilterOptions,
+} from '../types/ressource-humaine.types';
 
 const initialFilters: RessourceHumaineFilterOptions = {
   poste: '',
@@ -22,7 +25,10 @@ interface UseRessourceHumaineFilterReturn {
   activeFilterCount: number;
 }
 
-export function useRessourceHumaineFilter({ data, searchTerm }: UseRessourceHumaineFilterProps): UseRessourceHumaineFilterReturn {
+export function useRessourceHumaineFilter({
+  data,
+  searchTerm,
+}: UseRessourceHumaineFilterProps): UseRessourceHumaineFilterReturn {
   const [filters, setFilters] = useState<RessourceHumaineFilterOptions>(initialFilters);
 
   const updateFilter = useCallback((key: keyof RessourceHumaineFilterOptions, value: string) => {

@@ -18,4 +18,4 @@ export interface RessourceHumaineSectionProps {
   title?: string;
   description?: string;
   ressourcesHumaines?: RessourceHumaine[];
-};
+}

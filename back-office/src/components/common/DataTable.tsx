@@ -88,7 +88,8 @@ function DataTableInner<T>({
       {totalCount > 0 && (
         <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
           <div className="text-sm text-gray-600">
-            {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, totalCount)} sur {totalCount}
+            {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, totalCount)} sur{' '}
+            {totalCount}
           </div>
           <div className="flex gap-2">
             <Button
@@ -115,7 +116,9 @@ function DataTableInner<T>({
 }
 
 const DataTable = React.memo(DataTableInner) as {
-  <T>(props: DataTableProps<T> & { getRowId?: (row: T, index: number) => string | number }): React.ReactElement;
+  <T>(
+    props: DataTableProps<T> & { getRowId?: (row: T, index: number) => string | number }
+  ): React.ReactElement;
   displayName: string;
 };
 

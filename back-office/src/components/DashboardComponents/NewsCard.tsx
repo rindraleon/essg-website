@@ -1,10 +1,10 @@
-import React from "react";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import { getImageUrl } from "../../utils/image.utils";
-import { type Actualite } from "../../types/news.types";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import React from 'react';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { getImageUrl } from '../../utils/image.utils';
+import { type Actualite } from '../../types/news.types';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 interface NewsCardProps {
   actualite: Actualite;
@@ -13,10 +13,10 @@ interface NewsCardProps {
 
 const NewsCard: React.FC<NewsCardProps> = ({ actualite, onView }) => {
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("fr-FR", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
     });
   };
 
@@ -24,9 +24,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ actualite, onView }) => {
     <Card className="h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <CardContent className="flex-1">
         <div className="flex items-start gap-4 mb-3">
-          <div
-            className="text-2xl w-[60px] h-[60px] flex items-center justify-center bg-indigo-50 rounded-lg flex-shrink-0"
-          >
+          <div className="text-2xl w-[60px] h-[60px] flex items-center justify-center bg-indigo-50 rounded-lg flex-shrink-0">
             {actualite.image ? (
               <img
                 src={getImageUrl(actualite.image)}
@@ -38,14 +36,10 @@ const NewsCard: React.FC<NewsCardProps> = ({ actualite, onView }) => {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
-              {actualite.titre}
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">{actualite.titre}</h3>
             <div className="flex gap-2 mb-1 flex-wrap items-center">
               <Badge variant="outline">{actualite.categorie}</Badge>
-              <span className="text-xs text-gray-500">
-                {formatDate(actualite.date)}
-              </span>
+              <span className="text-xs text-gray-500">{formatDate(actualite.date)}</span>
             </div>
           </div>
         </div>
@@ -55,12 +49,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ actualite, onView }) => {
       </CardContent>
       {onView && (
         <CardFooter className="flex justify-end px-4 pb-4">
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onView(actualite.id)}
-            aria-label="voir"
-          >
+          <Button size="sm" variant="ghost" onClick={() => onView(actualite.id)} aria-label="voir">
             <VisibilityIcon className="h-4 w-4" />
           </Button>
         </CardFooter>

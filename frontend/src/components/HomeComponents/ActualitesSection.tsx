@@ -1,21 +1,28 @@
-import React from "react";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
-import Button from "@mui/material/Button";
-import { Link as RouterLink } from "react-router-dom";
-import { useRecentActualites } from "../../hooks";
-import CategoryChip from "../common/CategoryChip";
-import { getImageUrl } from "../../utils/image.utils";
-import {
-  SectionHeader,
-  SectionContent,
-  ScrollableCardGrid,
-  MobileCta,
-} from "../../components";
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import Button from '@mui/material/Button';
+import { Link as RouterLink } from 'react-router-dom';
+import { useRecentActualites } from '../../hooks';
+import CategoryChip from '../common/CategoryChip';
+import { getImageUrl } from '../../utils/image.utils';
+import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../utils/component.utils';
+import { SectionHeader, SectionContent, ScrollableCardGrid, MobileCta } from '../../components';
 
 const FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1768117173988-5ebfdde4fdd3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800";
+  'https://images.unsplash.com/photo-1768117173988-5ebfdde4fdd3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 
-const ActualitesSection: React.FC = () => {
+const BUTTON_STYLES = {
+  mt: 3,
+  p: 0,
+  minWidth: 'auto',
+  color: '#2563eb',
+  fontWeight: 700,
+  textTransform: 'none',
+  justifyContent: 'flex-start',
+  alignSelf: 'flex-start',
+  '&:hover': { backgroundColor: 'transparent', color: '#1d4ed8' },
+} as const;
+
+const ActualitesSection = () => {
   const { actualites, loading, error } = useRecentActualites(8);
 
   const headerContent = (
@@ -27,26 +34,12 @@ const ActualitesSection: React.FC = () => {
     />
   );
 
-  /**
-   * Responsive :
-   * - mobile : 1 card
-   * - tablette : 2 cards
-   * - desktop : 4 cards
-   *
-   * gap-6 = 1.5rem
-   * pour 4 cards => 3 gaps = 4.5rem
-   */
-  const cardWidthClass =
-    "flex-none w-full sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-4.5rem)/4)] snap-start";
-
-  const skeletonKeys = ['skeleton-1', 'skeleton-2', 'skeleton-3', 'skeleton-4'];
-
   const loadingSkeletons = (
     <ScrollableCardGrid className="mt-2 w-full">
       {Array.from({ length: 4 }).map((_, i) => (
         <div
-          key={skeletonKeys[i]}
-          className={`${cardWidthClass} rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-sm`}
+          key={SKELETON_KEYS[i]}
+          className={`${CARD_WIDTH_CLASS} rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-sm`}
         >
           <div className="aspect-[16/10] w-full bg-gray-200 animate-pulse" />
           <div className="p-6 space-y-4">
@@ -79,7 +72,7 @@ const ActualitesSection: React.FC = () => {
           return (
             <article
               key={actu.id}
-              className={`${cardWidthClass} rounded-3xl overflow-hidden border border-gray-100 bg-gray-50 shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col`}
+              className={`${CARD_WIDTH_CLASS} rounded-3xl overflow-hidden border border-gray-100 bg-gray-50 shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col`}
             >
               <div className="relative aspect-[16/9] overflow-hidden bg-gray-100">
                 <img
@@ -94,10 +87,10 @@ const ActualitesSection: React.FC = () => {
                 <div className="flex items-center gap-2 mb-4 flex-wrap">
                   <CategoryChip category={actu.categorie} size="small" />
                   <span className="text-xs text-gray-500">
-                    {new Date(actu.date).toLocaleDateString("fr-FR", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
+                    {new Date(actu.date).toLocaleDateString('fr-FR', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
                     })}
                   </span>
                 </div>
@@ -106,9 +99,7 @@ const ActualitesSection: React.FC = () => {
                   {actu.titre}
                 </h3>
 
-                <p className="text-sm text-gray-600 line-clamp-3 flex-1 leading-6">
-                  {actu.resume}
-                </p>
+                <p className="text-sm text-gray-600 line-clamp-3 flex-1 leading-6">{actu.resume}</p>
 
                 <Button
                   component={RouterLink}
@@ -116,20 +107,7 @@ const ActualitesSection: React.FC = () => {
                   variant="text"
                   endIcon={<ArrowForwardRoundedIcon />}
                   aria-label={`Lire la suite : ${actu.titre}`}
-                  sx={{
-                    mt: 3,
-                    p: 0,
-                    minWidth: "auto",
-                    color: "#2563eb",
-                    fontWeight: 700,
-                    textTransform: "none",
-                    justifyContent: "flex-start",
-                    alignSelf: "flex-start",
-                    "&:hover": {
-                      backgroundColor: "transparent",
-                      color: "#1d4ed8",
-                    },
-                  }}
+                  sx={BUTTON_STYLES}
                 >
                   Lire la suite
                 </Button>

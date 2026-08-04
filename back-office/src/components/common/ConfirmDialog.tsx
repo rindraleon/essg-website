@@ -3,12 +3,7 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import InfoIcon from '@mui/icons-material/Info';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -32,7 +27,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   severity = 'warning',
 }) => {
   const getIcon = () => {
-    const iconClass = "h-5 w-5";
+    const iconClass = 'h-5 w-5';
     switch (severity) {
       case 'error':
         return <ErrorOutlineIcon className={`${iconClass} text-red-500`} />;

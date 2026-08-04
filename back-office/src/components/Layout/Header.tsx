@@ -1,43 +1,38 @@
-import React, { useState, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import MailIcon from "@mui/icons-material/Mail";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import LogoutIcon from "@mui/icons-material/Logout";
-import SettingsIcon from "@mui/icons-material/Settings";
-import PersonIcon from "@mui/icons-material/Person";
-import { routesStatic } from "../../routes";
-import { useAuth } from "../../contexts/AuthContext";
-import { getImageUrl } from "../../utils/image.utils";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import React, { useState, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import MailIcon from '@mui/icons-material/Mail';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
+import PersonIcon from '@mui/icons-material/Person';
+import { routesStatic } from '../../routes';
+import { useAuth } from '../../contexts/AuthContext';
+import { getImageUrl } from '../../utils/image.utils';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Badge } from "@/components/ui/badge";
-import { getRecentAdmissions } from "../../services/admissions.service";
-import { getRecentMessages } from "../../services/messages.service";
-import type { Admission } from "../../types/admission.types";
-import type { Message } from "../../services/messages.service";
+} from '@/components/ui/dropdown-menu';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Badge } from '@/components/ui/badge';
+import { getRecentAdmissions } from '../../services/admissions.service';
+import { getRecentMessages } from '../../services/messages.service';
+import type { Admission } from '../../types/admission.types';
+import type { Message } from '../../services/messages.service';
 
 const Header: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -59,7 +54,7 @@ const Header: React.FC = () => {
       const data = await getRecentAdmissions(4);
       setRecentAdmissions(data);
     } catch (error) {
-      console.error("Erreur lors du chargement des admissions récentes:", error);
+      console.error('Erreur lors du chargement des admissions récentes:', error);
     }
   };
 
@@ -68,7 +63,7 @@ const Header: React.FC = () => {
       const response = await getRecentMessages(4);
       setRecentMessages(response.data);
     } catch (error) {
-      console.error("Erreur lors du chargement des messages récents:", error);
+      console.error('Erreur lors du chargement des messages récents:', error);
     }
   };
 
@@ -88,50 +83,50 @@ const Header: React.FC = () => {
 
   // Fonction pour générer les initiales
   const getInitials = (name: string) => {
-    if (!name) return "U";
+    if (!name) return 'U';
     return name
-      .split(" ")
+      .split(' ')
       .map((n) => n[0])
-      .join("")
+      .join('')
       .toUpperCase()
       .slice(0, 2);
   };
 
   // Récupérer le prénom et l'avatar
-  const prenom = user?.prenom || username || "Utilisateur";
+  const prenom = user?.prenom || username || 'Utilisateur';
   const avatarUrl = user?.avatar ? getImageUrl(user.avatar) : undefined;
 
   // Compter les admissions en attente
-  const pendingAdmissionsCount = recentAdmissions.filter(a => a.statut === "en_attente").length;
+  const pendingAdmissionsCount = recentAdmissions.filter((a) => a.statut === 'en_attente').length;
 
   // Compter les messages non lus
-  const unreadMessagesCount = recentMessages.filter(m => !m.lu).length;
+  const unreadMessagesCount = recentMessages.filter((m) => !m.lu).length;
 
   const getStatusColor = (statut: string) => {
     switch (statut) {
-      case "en_attente":
-        return "bg-yellow-100 text-yellow-800 border-yellow-300";
-      case "en_cours_etude":
-        return "bg-blue-100 text-blue-800 border-blue-300";
-      case "accepte":
-        return "bg-green-100 text-green-800 border-green-300";
-      case "refuse":
-        return "bg-red-100 text-red-800 border-red-300";
+      case 'en_attente':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      case 'en_cours_etude':
+        return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 'accepte':
+        return 'bg-green-100 text-green-800 border-green-300';
+      case 'refuse':
+        return 'bg-red-100 text-red-800 border-red-300';
       default:
-        return "bg-gray-100 text-gray-800 border-gray-300";
+        return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   };
 
   const getStatusLabel = (statut: string) => {
     switch (statut) {
-      case "en_attente":
-        return "En attente";
-      case "en_cours_etude":
+      case 'en_attente':
+        return 'En attente';
+      case 'en_cours_etude':
         return "En cours d'étude";
-      case "accepte":
-        return "Accepté";
-      case "refuse":
-        return "Refusé";
+      case 'accepte':
+        return 'Accepté';
+      case 'refuse':
+        return 'Refusé';
       default:
         return statut;
     }
@@ -152,7 +147,6 @@ const Header: React.FC = () => {
           {/* Actions à droite - Desktop */}
           {isAuthenticated && (
             <div className="hidden md:flex items-center gap-1 lg:gap-2">
-
               {/* Messages */}
               <DropdownMenu>
                 <TooltipProvider>
@@ -179,7 +173,10 @@ const Header: React.FC = () => {
                   </Tooltip>
                 </TooltipProvider>
 
-                <DropdownMenuContent align="end" className="w-80 shadow-none ring-0 bg-white border border-gray-200">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-80 shadow-none ring-0 bg-white border border-gray-200"
+                >
                   <div className="px-3 py-2 border-b border-gray-200">
                     <h3 className="text-sm font-semibold text-gray-900">Messages</h3>
                   </div>
@@ -200,9 +197,7 @@ const Header: React.FC = () => {
                               <p className="text-sm font-medium text-gray-900">
                                 {message.prenom} {message.nom}
                               </p>
-                              <p className="text-xs text-gray-500 mt-1">
-                                {message.email}
-                              </p>
+                              <p className="text-xs text-gray-500 mt-1">{message.email}</p>
                               <p className="text-xs text-gray-600 mt-1 line-clamp-2">
                                 {message.message}
                               </p>
@@ -253,7 +248,10 @@ const Header: React.FC = () => {
                   </Tooltip>
                 </TooltipProvider>
 
-                <DropdownMenuContent align="end" className="w-80 shadow-none ring-0 bg-white border border-gray-200">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-80 shadow-none ring-0 bg-white border border-gray-200"
+                >
                   <div className="px-3 py-2 border-b border-gray-200">
                     <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
                   </div>
@@ -277,7 +275,9 @@ const Header: React.FC = () => {
                               <p className="text-xs text-gray-500 mt-1">
                                 Formation: {admission.formation}
                               </p>
-                              <span className={`inline-block mt-2 px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(admission.statut)}`}>
+                              <span
+                                className={`inline-block mt-2 px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(admission.statut)}`}
+                              >
                                 {getStatusLabel(admission.statut)}
                               </span>
                             </div>
@@ -359,10 +359,11 @@ const Header: React.FC = () => {
                   </Tooltip>
                 </TooltipProvider>
 
-                <DropdownMenuContent align="end" className="w-48 shadow-none ring-0 bg-white border border-gray-200">
-                  <DropdownMenuItem
-                    onClick={() => navigate(routesStatic.profil)}
-                  >
+                <DropdownMenuContent
+                  align="end"
+                  className="w-48 shadow-none ring-0 bg-white border border-gray-200"
+                >
+                  <DropdownMenuItem onClick={() => navigate(routesStatic.profil)}>
                     <PersonIcon className="h-4 w-4 mr-2" />
                     Mon profil
                   </DropdownMenuItem>
@@ -380,7 +381,6 @@ const Header: React.FC = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-
             </div>
           )}
 
@@ -393,11 +393,7 @@ const Header: React.FC = () => {
               className="text-gray-700"
               aria-label="Toggle menu"
             >
-              {open ? (
-                <CloseIcon className="h-6 w-6" />
-              ) : (
-                <MenuIcon className="h-6 w-6" />
-              )}
+              {open ? <CloseIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
             </Button>
           </div>
         </div>
@@ -407,7 +403,6 @@ const Header: React.FC = () => {
       {open && (
         <div className="md:hidden bg-white border-t shadow-sm">
           <div className="px-4 sm:px-6 py-4 flex flex-col gap-4">
-
             {/* Profil mobile */}
             {isAuthenticated && (
               <div className="flex items-center justify-between pb-4 border-b border-gray-200">
@@ -439,9 +434,7 @@ const Header: React.FC = () => {
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
                   `py-2.5 px-3 rounded-md text-sm font-medium ${
-                    isActive
-                      ? "bg-indigo-50 text-indigo-600"
-                      : "text-gray-700 hover:bg-gray-50"
+                    isActive ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'
                   }`
                 }
               >
@@ -453,9 +446,7 @@ const Header: React.FC = () => {
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
                   `py-2.5 px-3 rounded-md text-sm font-medium ${
-                    isActive
-                      ? "bg-indigo-50 text-indigo-600"
-                      : "text-gray-700 hover:bg-gray-50"
+                    isActive ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'
                   }`
                 }
               >
@@ -467,9 +458,7 @@ const Header: React.FC = () => {
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
                   `py-2.5 px-3 rounded-md text-sm font-medium ${
-                    isActive
-                      ? "bg-indigo-50 text-indigo-600"
-                      : "text-gray-700 hover:bg-gray-50"
+                    isActive ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'
                   }`
                 }
               >
@@ -482,17 +471,13 @@ const Header: React.FC = () => {
               <>
                 <hr className="border-gray-200" />
                 <div className="flex flex-col gap-1">
-
                   <button
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
                   >
                     <NotificationsIcon fontSize="small" />
                     <span>Notifications</span>
-                    <Badge
-                      variant="destructive"
-                      className="ml-auto px-1.5 py-0.5 text-xs"
-                    >
+                    <Badge variant="destructive" className="ml-auto px-1.5 py-0.5 text-xs">
                       {pendingAdmissionsCount}
                     </Badge>
                   </button>
@@ -503,10 +488,7 @@ const Header: React.FC = () => {
                   >
                     <MailIcon fontSize="small" />
                     <span>Messages</span>
-                    <Badge
-                      variant="default"
-                      className="ml-auto px-1.5 py-0.5 text-xs"
-                    >
+                    <Badge variant="default" className="ml-auto px-1.5 py-0.5 text-xs">
                       {unreadMessagesCount}
                     </Badge>
                   </button>
@@ -545,7 +527,6 @@ const Header: React.FC = () => {
                     <LogoutIcon fontSize="small" />
                     <span>Déconnexion</span>
                   </button>
-
                 </div>
               </>
             )}
@@ -563,20 +544,20 @@ const Header: React.FC = () => {
           </DialogHeader>
           <div className="py-4">
             <p className="text-sm text-gray-700">
-              Êtes-vous sûr de vouloir vous déconnecter ? Vous devrez vous
-              reconnecter pour accéder à l'espace d'administration.
+              Êtes-vous sûr de vouloir vous déconnecter ? Vous devrez vous reconnecter pour accéder
+              à l'espace d'administration.
             </p>
           </div>
           <DialogFooter className="gap-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={handleLogoutCancel}
               className="border-2 border-gray-300 hover:bg-gray-50"
             >
               Annuler
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={handleLogoutConfirm}
               className="bg-red-600 hover:bg-red-700 text-white"
             >

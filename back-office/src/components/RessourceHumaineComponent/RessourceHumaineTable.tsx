@@ -9,12 +9,7 @@ import type { Column } from '../common/DataTable';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface RessourceHumaineTableProps {
   data: RessourceHumaineItem[];
@@ -50,7 +45,8 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
             <AvatarImage src={getImageUrl(row.photo)} alt={`${row.nom} ${row.prenom}`} />
           ) : (
             <AvatarFallback className="bg-gray-100 text-gray-700 text-xs">
-              {row.prenom[0]}{row.nom[0]}
+              {row.prenom[0]}
+              {row.nom[0]}
             </AvatarFallback>
           )}
         </Avatar>
@@ -73,27 +69,19 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
       id: 'poste',
       label: 'Poste',
       minWidth: 140,
-      render: (row) => (
-        <Badge variant="outline">
-          {row.poste}
-        </Badge>
-      ),
+      render: (row) => <Badge variant="outline">{row.poste}</Badge>,
     },
     {
       id: 'email',
       label: 'Email',
       minWidth: 180,
-      render: (row) => (
-        <span className="text-sm text-gray-600">{row.email || '-'}</span>
-      ),
+      render: (row) => <span className="text-sm text-gray-600">{row.email || '-'}</span>,
     },
     {
       id: 'telephone',
       label: 'Téléphone',
       minWidth: 120,
-      render: (row) => (
-        <span className="text-sm text-gray-600">{row.telephone || '-'}</span>
-      ),
+      render: (row) => <span className="text-sm text-gray-600">{row.telephone || '-'}</span>,
     },
     {
       id: 'actif',
@@ -115,12 +103,7 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
           <div className="flex justify-end gap-1">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => onView(row)}
-                  className="h-8 w-8"
-                >
+                <Button size="icon" variant="ghost" onClick={() => onView(row)} className="h-8 w-8">
                   <VisibilityIcon className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
@@ -128,12 +111,7 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => onEdit(row)}
-                  className="h-8 w-8"
-                >
+                <Button size="icon" variant="ghost" onClick={() => onEdit(row)} className="h-8 w-8">
                   <EditIcon className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
