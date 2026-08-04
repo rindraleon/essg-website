@@ -28,9 +28,9 @@ import { FloatingSelect } from "@/components/ui/floating-select";
 import DynamicListField from "../common/DynamicListField";
 
 const DOMAINE_OPTIONS = [
-  { label: "Informatique", value: "Informatique" },
-  { label: "Ingénierie", value: "Ingénierie" },
-  { label: "Sciences", value: "Sciences" },
+  { label: "Géomatique et applications", value: "Géomatique et applications" },
+  { label: "Géomatique et management", value: "Géomatique et management" },
+  { label: "Informatique et données spatiales", value: "Informatique et données spatiales" },
   { label: "Autre", value: "Autre" },
 ];
 

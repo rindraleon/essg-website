@@ -14,7 +14,7 @@ import { Link as RouterLink, useParams } from "react-router-dom";
 import { CtaSection, EmptyState, PageHero, CategoryChip } from "../../components";
 import { GREEN } from "../../constants/colors";
 import { formatDate } from "../../utils/date.utils";
-import { useActualiteBySlug } from "../../hooks";
+import { useActualiteBySlug, useScrollToTop } from "../../hooks";
 import { useTitle } from "../../hooks/useTitle";
 
 const ACTUALITE_IMAGES: Record<string, string> = {
@@ -34,6 +34,8 @@ const ActualiteDetailPage: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();
     const { actualite, loading, error } = useActualiteBySlug(slug || "");
     const { setTitle } = useTitle();
+    
+    useScrollToTop();
 
     useEffect(() => {
         if (actualite) {

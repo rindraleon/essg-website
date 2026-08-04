@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import { GREEN } from "../../constants/colors";
 import type { AdmissionPageProps } from "../../types/admission.types";
 import { AdmissionForm, ContactCard, CtaSection, PageHero } from "../../components";
+import { useScrollToTop } from "../../hooks";
 
 const HERO_IMAGE =
     "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920";
@@ -14,6 +15,8 @@ const HERO_IMAGE =
 const AdmissionPage: React.FC<AdmissionPageProps> = (
     props: Readonly<AdmissionPageProps>,
 ) => {
+    useScrollToTop();
+    
     const {
         pageTitle = "Admission",
         pageSubtitle = "ESSG — Candidature",

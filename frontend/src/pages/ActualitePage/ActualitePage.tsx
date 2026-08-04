@@ -19,7 +19,7 @@ import {
   FilterToolbar,
 } from "../../components";
 import { GREEN } from "../../constants/colors";
-import { useActualites } from "../../hooks";
+import { useActualites, useScrollToTop } from "../../hooks";
 import type { Actualite } from "../../types/actualite.types";
 
 const HERO_IMAGE =
@@ -34,6 +34,8 @@ const CATEGORIES = [
 ];
 
 const ActualitesPage: React.FC = () => {
+  useScrollToTop();
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [categorieFilter, setCategorieFilter] = useState("all");
   const [showSearch, setShowSearch] = useState(false);

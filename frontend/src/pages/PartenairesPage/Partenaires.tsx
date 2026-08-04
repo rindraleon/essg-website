@@ -14,6 +14,7 @@ import PartenaireCard from "../../components/PartenaireComponents/PartenaireCard
 
 import { GREEN } from "../../constants/colors";
 import { partenaireService } from "../../services";
+import { useScrollToTop } from "../../hooks";
 import type { PartenairesPageProps, PartenaireItem } from "../../types/partenaire.types";
 
 const HERO_IMAGE =
@@ -30,6 +31,8 @@ const TYPES = [
 const PartenairesPage: React.FC<PartenairesPageProps> = (
     props: Readonly<PartenairesPageProps>,
 ) => {
+    useScrollToTop();
+    
     const {
         pageTitle = "Nos Partenaires",
         pageSubtitle = "ESSG — Réseau & Coopération",

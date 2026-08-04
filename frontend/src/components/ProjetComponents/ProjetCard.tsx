@@ -10,7 +10,7 @@ import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { GREEN } from "../../constants/colors";
-import ProjetMap from "./ProjetMap";
+import MapEmbed from "./MapEmbed";
 import { getImageUrl } from "../../utils/image.utils";
 import type { ProjetCardProps } from "../../types/projets.types";
 
@@ -157,10 +157,13 @@ const ProjetCard: React.FC<ProjetCardProps> = (
                                 {projet.location.ville}, {projet.location.pays}
                             </span>
                         </div>
-                        <ProjetMap
-                            location={projet.location}
+                        <MapEmbed
+                            lat={projet.location.lat}
+                            lng={projet.location.lng}
                             label={`${projet.location.ville}, ${projet.location.pays}`}
-                            height="200px"
+                            adresse={projet.location.adresse}
+                            zoom="city"
+                            height={280}
                         />
                     </div>
                 )}

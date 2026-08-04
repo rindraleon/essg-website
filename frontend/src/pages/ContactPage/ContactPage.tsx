@@ -11,6 +11,7 @@ import PageHero from "../../components/common/PageHero";
 import { GREEN } from "../../constants/colors";
 import type { ContactPageProps } from "../../types/contact.types";
 import { ContactForm, ContactInfoCards, MapEmbed } from "../../components";
+import { useScrollToTop } from "../../hooks";
 
 const HERO_IMAGE =
     "https://images.unsplash.com/photo-1423666639041-f56000c27a9a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920";
@@ -26,6 +27,8 @@ const UNIV_FIANAR = {
 const ContactPage: React.FC<ContactPageProps> = (
     props: Readonly<ContactPageProps>,
 ) => {
+    useScrollToTop();
+    
     const {
         pageTitle = "Contactez-nous",
         pageSubtitle = "ESSG — Support & Échanges",

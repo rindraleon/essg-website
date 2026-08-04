@@ -6,11 +6,14 @@ import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import { GREEN } from "../../constants/colors";
 import type { FaqPageProps } from "../../types/faq.types";
 import { ContactCard, CtaSection, FaqAccordion, PageHero } from "../../components";
+import { useScrollToTop } from "../../hooks";
 
 const HERO_IMAGE =
     "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920";
 
 const FaqPage: React.FC<FaqPageProps> = (props: Readonly<FaqPageProps>) => {
+    useScrollToTop();
+    
     const {
         pageTitle = "Questions Fréquentes",
         pageSubtitle = "ESSG — Aide & Support",

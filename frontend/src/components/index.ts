@@ -51,5 +51,4 @@ export { default as ContactInfoCards } from './Contact/ContactInfoCards';
 
 //projet components
 export { default as ProjetCard } from './ProjetComponents/ProjetCard';
-export { default as ProjetDetailModal } from './ProjetComponents/ProjetDetailModal';
 export { default as MapEmbed } from './ProjetComponents/MapEmbed';

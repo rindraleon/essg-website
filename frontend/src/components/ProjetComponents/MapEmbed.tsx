@@ -7,12 +7,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { GREEN } from "../../constants/colors";
 import type { MapEmbedProps } from "../../types/projets.types";
 
-/**
- * Delta = taille de la zone visible autour du marqueur
- * - close  : bâtiment / rue
- * - city   : toute la ville
- * - region : région entière
- */
+
 const ZOOM_DELTAS: Record<string, number> = {
     close: 0.01,
     city: 0.04,
@@ -20,7 +15,7 @@ const ZOOM_DELTAS: Record<string, number> = {
 };
 
 const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
-    const { lat, lng, label, adresse, zoom = "city" } = props;
+    const { lat, lng, label, adresse, zoom = "city", height = 400 } = props;
 
     const [isHovered, setIsHovered] = useState(false);
 
@@ -30,13 +25,13 @@ const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
     const osmLink = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=14/${lat}/${lng}`;
 
     return (
-        <div>
-            {adresse && (
-                <p className="mb-2 flex items-center gap-1 text-xs text-gray-500">
+        <div className="w-full">
+            {/* {adresse && (
+                <p className="mb-3 flex items-center justify-center gap-1.5 text-center text-xs text-gray-500">
                     <RoomRoundedIcon sx={{ fontSize: 14 }} />
                     {adresse}
                 </p>
-            )}
+            )} */}
 
             <div
                 className="relative overflow-hidden rounded-xl border border-gray-200 shadow-inner"
@@ -72,7 +67,7 @@ const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
                         title={label}
                         src={src}
                         width="100%"
-                        height="400"
+                        height={height}
                         className="block border-0"
                         loading="lazy"
                         referrerPolicy="no-referrer"
@@ -81,7 +76,7 @@ const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
                     {/* Tooltip au survol */}
                     <Fade in={isHovered} timeout={300}>
                         <div
-                            className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-start gap-3 rounded-xl p-4 shadow-lg backdrop-blur-sm"
+                            className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-start gap-3 rounded-xl p-4 text-center shadow-lg backdrop-blur-sm"
                             style={{
                                 backgroundColor: "rgba(255,255,255,0.95)",
                                 border: `1px solid ${GREEN[200]}`,
@@ -96,7 +91,7 @@ const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
                                 />
                             </div>
 
-                            <div className="min-w-0">
+                            <div className="min-w-0 flex-1">
                                 <p
                                     className="text-sm font-semibold"
                                     style={{ color: GREEN[800] }}

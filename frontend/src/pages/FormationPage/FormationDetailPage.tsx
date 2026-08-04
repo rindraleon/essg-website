@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { CtaSection, EmptyState, PageHero, FormationDetailContent } from "../../components";
 import { GREEN } from "../../constants/colors";
-import { useFormationBySlug } from "../../hooks";
+import { useFormationBySlug, useScrollToTop } from "../../hooks";
 import { useTitle } from "../../hooks/useTitle";
 import { getFormationImage } from "../../utils/image.utils";
 
@@ -14,6 +14,8 @@ const FormationDetailPage: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();
     const { formation, loading, error } = useFormationBySlug(slug || "");
     const { setTitle } = useTitle();
+    
+    useScrollToTop();
 
     useEffect(() => {
         if (formation) {

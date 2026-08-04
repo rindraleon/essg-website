@@ -17,7 +17,7 @@ import TextField from "@mui/material/TextField";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import { CtaSection, EmptyState, PageHero, FilterToolbar, FormationCard } from "../../components";
 import { GREEN } from "../../constants/colors";
-import { useFormations } from "../../hooks";
+import { useFormations, useScrollToTop } from "../../hooks";
 import type { Formation } from "../../types/formations.types";
 
 const HERO_IMAGE =
@@ -66,6 +66,8 @@ const HERO_STATS = [
 ];
 
 const FormationsPage: React.FC = () => {
+    useScrollToTop();
+    
     const [searchTerm, setSearchTerm] = useState("");
     const [niveauFilter, setNiveauFilter] = useState("all");
     const [domaineFilter, setDomaineFilter] = useState("all");

@@ -12,9 +12,9 @@ import EmptyState from "../../components/common/EmptyState";
 import FilterToolbar from "../../components/common/FilterToolbar";
 import PageHero from "../../components/common/PageHero";
 import ProjetCard from "../../components/ProjetComponents/ProjetCard";
-import ProjetDetailModal from "../../components/ProjetComponents/ProjetDetailModal";
 import { GREEN } from "../../constants/colors";
 import { projetService } from "../../services";
+import { useScrollToTop } from "../../hooks";
 import type { ProjetsPageProps, ProjetItem } from "../../types/projets.types";
 
 const HERO_IMAGE =
@@ -37,6 +37,8 @@ const STATUTS = [
 const ProjetsPage: React.FC<ProjetsPageProps> = (
     props: Readonly<ProjetsPageProps>,
 ) => {
+    useScrollToTop();
+    
     const {
         pageTitle = "Nos Projets",
         pageSubtitle = "ESSG — Innovation & Recherche",
@@ -49,37 +51,12 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (
     const [typeFilter, setTypeFilter] = useState("all");
     const [statutFilter, setStatutFilter] = useState("all");
     const [showFilters, setShowFilters] = useState(false);
-    const [selectedProjet, setSelectedProjet] = useState<ProjetItem | null>(null);
-    const [modalOpen, setModalOpen] = useState(false);
-
     useEffect(() => {
         const loadProjets = async () => {
             try {
                 setLoading(true);
                 const data = await projetService.findAll();
-                
-                // Transformer les données du backend vers le format ProjetItem
-                const transformedProjets: ProjetItem[] = data.map((projet: any) => ({
-                    id: String(projet.id),
-                    titre: projet.titre,
-                    type: projet.type,
-                    statut: projet.statut || "En cours",
-                    annee: new Date(projet.date).getFullYear().toString(),
-                    description: projet.description,
-                    partenaires: projet.partenaires || [],
-                    image: projet.image,
-                    budget: projet.budget,
-                    objectifs: projet.objectifs,
-                    location: projet.latitude && projet.longitude ? {
-                        lat: Number.parseFloat(projet.latitude),
-                        lng: Number.parseFloat(projet.longitude),
-                        ville: projet.ville || "",
-                        pays: projet.pays || "",
-                        adresse: projet.adresse,
-                    } : undefined,
-                }));
-                
-                setAllProjets(transformedProjets);
+                setAllProjets(data);
                 setError(null);
             } catch (err) {
                 console.error('Erreur lors du chargement des projets:', err);
@@ -126,8 +103,8 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (
     };
 
     const handleViewDetail = (projet: ProjetItem) => {
-        setSelectedProjet(projet);
-        setModalOpen(true);
+        // Navigation vers la page de détail via le slug
+        window.location.href = `/projets/${projet.id}`;
     };
 
     const activeFilterChips = [
@@ -180,7 +157,7 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (
                     <FormControl fullWidth size="small">
                         <InputLabel
                             id="type-label"
-                            sx={{ "&.Mui-focused": { color: GREEN[600] } }}
+                            sx={{ "&.Mui-focused": { color: GREEN[800] } }}
                         >
                             Type de projet
                         </InputLabel>
@@ -292,12 +269,6 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (
                 primaryLink="/contact"
                 secondaryLabel="Voir nos formations"
                 secondaryLink="/formations"
-            />
-
-            <ProjetDetailModal
-                projet={selectedProjet}
-                open={modalOpen}
-                onClose={() => setModalOpen(false)}
             />
         </div>
     );
