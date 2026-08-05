@@ -42,14 +42,15 @@ const ProjetCard: React.FC<ProjetCardProps> = (props: Readonly<ProjetCardProps>)
   return (
     <Card
       sx={{
-        borderRadius: '1rem',
-        border: '1px solid #e5e7eb',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        borderRadius: '1.25rem',
+        border: '1px solid',
+        borderColor: 'divider',
+        boxShadow: '0 1px 2px rgba(15, 33, 30, 0.04), 0 4px 16px -4px rgba(15, 33, 30, 0.08)',
         overflow: 'hidden',
         transition: 'all 0.3s ease',
         '&:hover': {
-          boxShadow: '0 12px 24px rgba(0,0,0,0.08)',
-          transform: 'translateY(-2px)',
+          boxShadow: '0 2px 4px rgba(15, 33, 30, 0.05), 0 16px 40px -12px rgba(15, 33, 30, 0.16)',
+          transform: 'translateY(-3px)',
         },
         '&:hover .projet-overlay': {
           opacity: 1,
@@ -57,7 +58,7 @@ const ProjetCard: React.FC<ProjetCardProps> = (props: Readonly<ProjetCardProps>)
       }}
     >
       {/* Image */}
-      <div className="relative aspect-video bg-gradient-to-br from-green-600 to-green-900">
+      <div className="relative aspect-video bg-gradient-to-br from-brand-600 to-brand-950">
         <img
           src={projet.image ? getImageUrl(projet.image) : getUnsplashUrl(projet.id)}
           alt={projet.titre}
@@ -113,7 +114,7 @@ const ProjetCard: React.FC<ProjetCardProps> = (props: Readonly<ProjetCardProps>)
       <CardContent className="p-6">
         {/* Meta */}
         <div className="mb-3 flex items-center justify-between">
-          <div className="flex items-center gap-1 text-sm text-gray-500">
+          <div className="flex items-center gap-1 text-sm text-ink-500">
             <CalendarTodayRoundedIcon sx={{ fontSize: 14 }} />
             {projet.annee}
           </div>
@@ -135,14 +136,14 @@ const ProjetCard: React.FC<ProjetCardProps> = (props: Readonly<ProjetCardProps>)
           </Tooltip>
         </div>
 
-        <h3 className="mb-3 text-xl font-bold text-gray-900">{projet.titre}</h3>
+        <h3 className="mb-3 text-xl font-bold text-ink-900">{projet.titre}</h3>
 
-        <p className="mb-4 line-clamp-3 text-gray-600">{projet.description}</p>
+        <p className="mb-4 line-clamp-3 text-ink-500 leading-6">{projet.description}</p>
 
         {projet.location && (
           <div className="mb-4">
-            <div className="mb-2 flex items-center gap-1.5 text-sm text-gray-500">
-              <RoomRoundedIcon sx={{ fontSize: 16, color: '#f43f5e' }} />
+            <div className="mb-2 flex items-center gap-1.5 text-sm text-ink-500">
+              <RoomRoundedIcon sx={{ fontSize: 16, color: '#2e6a5f' }} />
               <span>
                 {projet.location.ville}, {projet.location.pays}
               </span>
@@ -160,7 +161,7 @@ const ProjetCard: React.FC<ProjetCardProps> = (props: Readonly<ProjetCardProps>)
 
         {/* Partenaires */}
         <div>
-          <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-900">
+          <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-ink-900">
             <GroupsRoundedIcon sx={{ fontSize: 18, color: GREEN[600] }} />
             Partenaires
           </div>

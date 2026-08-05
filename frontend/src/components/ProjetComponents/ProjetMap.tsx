@@ -43,19 +43,19 @@ const ProjetMap: React.FC<ProjetMapProps> = ({
 
   if (!lat || !lng) {
     return (
-      <div className="overflow-hidden rounded-xl border border-gray-200 shadow-inner">
+      <div className="overflow-hidden rounded-2xl border border-ink-100 shadow-card">
         <div
           style={{ height, width: '100%' }}
-          className="flex items-center justify-center bg-gray-100"
+          className="flex items-center justify-center bg-ink-100"
         >
-          <p className="text-sm text-gray-500">Localisation non disponible</p>
+          <p className="text-sm text-ink-500">Localisation non disponible</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 shadow-inner">
+    <div className="overflow-hidden rounded-2xl border border-ink-100 shadow-card">
       <MapContainer
         center={mapCenter}
         zoom={13}
@@ -69,23 +69,23 @@ const ProjetMap: React.FC<ProjetMapProps> = ({
         <Marker position={[lat, lng]}>
           <Popup>
             <div className="text-sm">
-              <p className="font-semibold text-gray-900">{label || `${ville}, ${pays}`}</p>
-              {adresse && <p className="mt-1 text-xs text-gray-600">{adresse}</p>}
+              <p className="font-semibold text-ink-900">{label || `${ville}, ${pays}`}</p>
+              {adresse && <p className="mt-1 text-xs text-ink-500">{adresse}</p>}
             </div>
           </Popup>
         </Marker>
       </MapContainer>
 
       {/* Info bar */}
-      <div className="flex items-center gap-2 border-t border-gray-200 bg-gray-50 px-3 py-2">
+      <div className="flex items-center gap-2 border-t border-ink-100 bg-ink-50/60 px-3 py-2.5">
         <RoomRoundedIcon sx={{ fontSize: 16, color: GREEN[600] }} />
-        <span className="truncate text-xs font-medium text-gray-700">
+        <span className="truncate text-xs font-medium text-ink-700">
           {label || `${ville}, ${pays}`}
         </span>
         {adresse && (
           <>
-            <span className="text-gray-400">•</span>
-            <span className="truncate text-xs text-gray-500">{adresse}</span>
+            <span className="text-ink-400">•</span>
+            <span className="truncate text-xs text-ink-500">{adresse}</span>
           </>
         )}
       </div>

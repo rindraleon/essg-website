@@ -6,7 +6,7 @@ import { Toaster } from 'react-hot-toast';
 
 import { GREEN } from '../../constants/colors';
 import type { AdmissionPageProps } from '../../types/admission.types';
-import { AdmissionForm, ContactCard, CtaSection, PageHero } from '../../components';
+import { AdmissionForm, ContactCard, CtaSection, PageHero, Breadcrumb } from '../../components';
 import { useScrollToTop } from '../../hooks';
 
 const HERO_IMAGE =
@@ -22,7 +22,7 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPa
   } = props;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-ink-50">
       <Toaster
         position="top-right"
         toastOptions={{
@@ -61,6 +61,8 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPa
           { value: 'Sept', label: 'Rentrée' },
         ]}
       />
+
+      <Breadcrumb items={[{ label: 'Admission' }]} />
 
       {/* <AdmissionTimeline /> */}
 

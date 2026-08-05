@@ -21,8 +21,6 @@ export type LocalisationSectionProps = {
   readonly contactLabel?: string;
   readonly phone?: string;
   readonly email?: string;
-  readonly ctaLabel?: string;
-  readonly ctaLink?: string;
   readonly mapTitle?: string;
   readonly latitude?: number;
   readonly longitude?: number;

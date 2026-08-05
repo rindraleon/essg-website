@@ -20,33 +20,40 @@ const FormationCard: React.FC<FormationCardProps> = (props: Readonly<FormationCa
   return (
     <Card
       sx={{
-        borderRadius: '1rem',
-        border: '1px solid #e5e7eb',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-        transition: 'all 0.3s ease',
-        '&:hover': {
-          boxShadow: '0 12px 24px rgba(0,0,0,0.08)',
-          transform: 'translateY(-2px)',
-        },
+        borderRadius: '1.25rem',
+        border: '1px solid',
+        borderColor: 'divider',
+        boxShadow: '0 1px 2px rgba(15, 33, 30, 0.04), 0 4px 16px -4px rgba(15, 33, 30, 0.08)',
       }}
     >
       <div className="flex flex-col sm:flex-row">
         {formation.image && (
-          <CardMedia
-            component="img"
-            image={getImageUrl(formation.image)}
-            alt={formation.titre}
-            sx={{
-              width: { xs: '100%', sm: '33.33%' },
-              height: { xs: '200px', sm: 'auto' },
-              objectFit: 'cover',
-              flexShrink: 0,
-            }}
-          />
+          <div className="relative w-full shrink-0 overflow-hidden bg-ink-100 sm:w-[40%] sm:self-stretch">
+            <div className="aspect-[16/9] w-full sm:h-full sm:aspect-auto">
+              <CardMedia
+                component="img"
+                image={getImageUrl(formation.image)}
+                alt={formation.titre}
+                sx={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block',
+                }}
+              />
+            </div>
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-ink-950/25 to-transparent sm:hidden"
+            />
+          </div>
+        )}
+
+        {formation.image && (
+          <div aria-hidden="true" className="hidden w-px shrink-0 bg-ink-100 sm:block" />
         )}
         <CardContent className="p-0" sx={{ width: { xs: '100%', sm: '66.67%' } }}>
           <div className="p-6">
-            {/* En-tête */}
             <div className="mb-4 flex items-start justify-between">
               <Chip
                 label={formation.niveau}
@@ -60,29 +67,29 @@ const FormationCard: React.FC<FormationCardProps> = (props: Readonly<FormationCa
                 }}
               />
 
-              <div className="flex items-center gap-1 text-xs text-gray-500">
+              <div className="flex items-center gap-1 text-xs text-ink-500">
                 <AccessTimeRoundedIcon sx={{ fontSize: 14 }} />
                 {formation.duree}
               </div>
             </div>
 
-            <h3 className="mb-2 text-xl font-bold text-gray-900">{formation.titre}</h3>
+            <h3 className="mb-2 text-xl font-bold text-ink-900">{formation.titre}</h3>
 
             <p className="mb-4 text-sm font-medium" style={{ color: GREEN[600] }}>
               {formation.domaine.join(', ')}
             </p>
 
-            <p className="mb-6 leading-relaxed text-gray-600">{formation.description}</p>
+            <p className="mb-6 leading-relaxed text-ink-500">{formation.description}</p>
 
             <Divider className="mb-6" />
 
             {/* Objectifs */}
             <div className="mb-5">
-              <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
+              <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-ink-900">
                 <SchoolRoundedIcon sx={{ fontSize: 18, color: GREEN[600] }} />
                 Objectifs principaux
               </div>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <ul className="space-y-2 text-sm text-ink-500">
                 {formation.objectifs.slice(0, 3).map((obj) => (
                   <li key={obj} className="flex items-start gap-2">
                     <span
@@ -101,7 +108,7 @@ const FormationCard: React.FC<FormationCardProps> = (props: Readonly<FormationCa
 
             {/* Débouchés */}
             <div className="mb-6">
-              <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900">
+              <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-ink-900">
                 <WorkRoundedIcon sx={{ fontSize: 18, color: GREEN[600] }} />
                 Débouchés
               </div>

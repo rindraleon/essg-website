@@ -4,7 +4,7 @@ import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 
 import { GREEN } from '../../constants/colors';
 import type { FaqPageProps } from '../../types/faq.types';
-import { ContactCard, CtaSection, FaqAccordion, PageHero } from '../../components';
+import { ContactCard, CtaSection, FaqAccordion, PageHero, Breadcrumb } from '../../components';
 import { useScrollToTop } from '../../hooks';
 
 const HERO_IMAGE =
@@ -52,7 +52,7 @@ const FaqPage: React.FC<FaqPageProps> = (props: Readonly<FaqPageProps>) => {
   } = props;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-ink-50">
       <PageHero
         image={HERO_IMAGE}
         imageAlt="FAQ ESSG"
@@ -66,6 +66,8 @@ const FaqPage: React.FC<FaqPageProps> = (props: Readonly<FaqPageProps>) => {
           { value: '< 24h', label: 'Temps de réponse' },
         ]}
       />
+
+      <Breadcrumb items={[{ label: 'FAQ' }]} />
 
       <section className="py-12">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">

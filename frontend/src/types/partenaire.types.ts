@@ -1,5 +1,6 @@
 export type PartenaireItem = {
   id: number | string;
+  slug?: string;
   nom: string;
   type: 'Entreprise' | 'Institution' | 'Organisation' | 'Autre' | string;
   pays?: string;
@@ -39,8 +40,6 @@ export type PartenairesPageProps = {
 export type PartenairesSectionProps = {
   title?: string;
   description?: string;
-  ctaLabel?: string;
-  ctaLink?: string;
   maxItems?: number;
   partenaires?: PartenaireItem[];
 };

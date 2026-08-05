@@ -1,18 +1,23 @@
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import Button from '@mui/material/Button';
+import { Link as RouterLink } from 'react-router-dom';
 import { useActiveRessourcesHumaines } from '../../hooks';
 import { getImageUrl } from '../../utils/image.utils';
 import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../utils/component.utils';
-import { SectionContent, ScrollableCardGrid } from '../../components';
+import { TEXT_LINK_BUTTON } from '../../constants/styles';
+import { SectionContent, ScrollableCardGrid, SectionCta } from '../../components';
 
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400';
+  const SECTION_CTA = { label: 'Découvrir tous les membres', link: '/ressources-humaines' } as const;
 
 const RessourceHumaineSection = () => {
   const { ressourcesHumaines, loading, error } = useActiveRessourcesHumaines();
 
   const headerContent = (
     <div className="text-center mb-12">
-      <h2 className="text-3xl font-bold text-gray-900">Notre Équipe</h2>
-      <p className="mt-2 text-gray-500 max-w-2xl mx-auto">
+      <h2 className="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">Notre Équipe</h2>
+      <p className="mt-3 text-ink-500 max-w-2xl mx-auto">
         Des professionnels qualifiés et passionnés au service de votre réussite
       </p>
     </div>
@@ -23,15 +28,15 @@ const RessourceHumaineSection = () => {
       {Array.from({ length: 4 }).map((_, i) => (
         <div
           key={SKELETON_KEYS[i]}
-          className={`${CARD_WIDTH_CLASS} rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-sm`}
+          className={`${CARD_WIDTH_CLASS} rounded-3xl overflow-hidden border border-ink-100 bg-white shadow-card`}
         >
-          <div className="aspect-[4/3] w-full bg-gray-200 animate-pulse" />
+          <div className="aspect-[4/3] w-full bg-ink-100 animate-pulse" />
           <div className="p-6 space-y-4">
-            <div className="h-5 w-3/5 rounded bg-gray-200 animate-pulse" />
-            <div className="h-4 w-2/5 rounded bg-gray-200 animate-pulse" />
-            <div className="h-4 w-full rounded bg-gray-200 animate-pulse" />
-            <div className="h-4 w-11/12 rounded bg-gray-200 animate-pulse" />
-            <div className="h-4 w-4/5 rounded bg-gray-200 animate-pulse" />
+            <div className="h-5 w-3/5 rounded bg-ink-100 animate-pulse" />
+            <div className="h-4 w-2/5 rounded bg-ink-100 animate-pulse" />
+            <div className="h-4 w-full rounded bg-ink-100 animate-pulse" />
+            <div className="h-4 w-11/12 rounded bg-ink-100 animate-pulse" />
+            <div className="h-4 w-4/5 rounded bg-ink-100 animate-pulse" />
           </div>
         </div>
       ))}
@@ -46,7 +51,7 @@ const RessourceHumaineSection = () => {
       emptyMessage="Aucun membre de l'équipe disponible pour le moment."
       headerContent={headerContent}
       loadingSkeletons={loadingSkeletons}
-      sectionClassName="py-16 bg-gray-50"
+      sectionClassName="py-20 bg-white"
       containerClassName="w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12"
     >
       <ScrollableCardGrid className="mt-2 w-full">
@@ -56,33 +61,35 @@ const RessourceHumaineSection = () => {
           return (
             <article
               key={membre.id}
-              className={`${CARD_WIDTH_CLASS} rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col`}
+              className={`${CARD_WIDTH_CLASS} group rounded-xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col`}
             >
-              <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+              <div className="relative aspect-[16/9] overflow-hidden bg-ink-100">
                 <img
                   src={imageUrl}
                   alt={`${membre.prenom} ${membre.nom}`}
                   loading="lazy"
-                  className="h-full w-full object-cover object-top"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
+                <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
+                  <p className="text-sm font-semibold text-brand-600 mb-4">{membre.poste}</p>
+                </div>
+                
               </div>
 
               <div className="p-6 flex flex-col flex-1">
-                <h3 className="text-lg font-semibold text-gray-900 mb-1 leading-snug">
-                  {membre.prenom} {membre.nom}
+                <h3 className="text-lg font-semibold text-ink-900 mb-1 leading-snug">
+                  {membre.nom} {membre.prenom}
                 </h3>
 
-                <p className="text-sm font-semibold text-blue-600 mb-4">{membre.poste}</p>
-
                 {membre.description && (
-                  <p className="text-sm text-gray-600 line-clamp-3 flex-1 leading-6 mb-4">
+                  <p className="text-sm text-ink-500 line-clamp-3 flex-1 leading-6 mb-4">
                     {membre.description}
                   </p>
                 )}
 
                 <div className="mt-auto space-y-2">
                   {membre.email && (
-                    <p className="text-xs text-gray-500 flex items-start gap-2 break-all">
+                    <p className="text-xs text-ink-500 flex items-start gap-2 break-all">
                       <svg
                         className="w-4 h-4 mt-0.5 flex-shrink-0"
                         fill="none"
@@ -101,7 +108,7 @@ const RessourceHumaineSection = () => {
                   )}
 
                   {membre.telephone && (
-                    <p className="text-xs text-gray-500 flex items-start gap-2">
+                    <p className="text-xs text-ink-500 flex items-start gap-2">
                       <svg
                         className="w-4 h-4 mt-0.5 flex-shrink-0"
                         fill="none"
@@ -119,11 +126,24 @@ const RessourceHumaineSection = () => {
                     </p>
                   )}
                 </div>
+
+                <Button
+                  component={RouterLink}
+                  to={`/ressources-humaines/${membre.slug}`}
+                  variant="text"
+                  endIcon={<ArrowForwardRoundedIcon />}
+                  aria-label={`Voir le profil de ${membre.prenom} ${membre.nom}`}
+                  sx={TEXT_LINK_BUTTON}
+                >
+                  Voir le profil
+                </Button>
               </div>
+
             </article>
           );
         })}
       </ScrollableCardGrid>
+      <SectionCta label={SECTION_CTA.label} link={SECTION_CTA.link} />
     </SectionContent>
   );
 };

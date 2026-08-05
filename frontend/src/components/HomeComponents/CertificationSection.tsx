@@ -11,17 +11,19 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = (
   } = props;
 
   return (
-    <section className="bg-green-50 py-12">
+    <section className="bg-brand-50 py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 text-center">
-          <h2 className="mb-2 text-2xl font-bold text-gray-900">{title}</h2>
-          <p className="text-gray-600">{description}</p>
+          <h2 className="mb-3 text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
+            {title}
+          </h2>
+          <p className="mx-auto max-w-3xl text-ink-500 leading-7">{description}</p>
         </div>
 
         <div className="flex flex-wrap justify-center gap-4">
-          <div className="flex items-center gap-2 rounded-lg bg-white p-4 shadow-md">
-            <WorkspacePremiumRoundedIcon className="text-green-600" />
-            <span className="text-gray-800 font-semibold">
+          <div className="flex items-center gap-3 rounded-2xl bg-white px-6 py-4 shadow-card ring-1 ring-brand-100">
+            <WorkspacePremiumRoundedIcon sx={{ color: '#2e6a5f' }} />
+            <span className="text-ink-800 font-semibold">
               Reconnaissance nationale et internationale de notre excellence
             </span>
           </div>

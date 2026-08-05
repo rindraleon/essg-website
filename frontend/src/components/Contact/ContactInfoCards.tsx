@@ -15,11 +15,14 @@ const ContactInfoCards: React.FC<ContactInfoCardsProps> = (
         <Card
           key={item.id}
           sx={{
-            borderRadius: '1rem',
-            border: '1px solid #e5e7eb',
+            borderRadius: '1.25rem',
+            border: '1px solid',
+            borderColor: 'divider',
             transition: 'all 0.3s ease',
             '&:hover': {
-              boxShadow: '0 8px 16px rgba(0,0,0,0.06)',
+              boxShadow:
+                '0 2px 4px rgba(15, 33, 30, 0.05), 0 16px 40px -12px rgba(15, 33, 30, 0.16)',
+              transform: 'translateY(-2px)',
               borderColor: GREEN[200],
             },
           }}
@@ -32,12 +35,12 @@ const ContactInfoCards: React.FC<ContactInfoCardsProps> = (
               >
                 {item.icon}
               </div>
-              <h3 className="font-semibold text-gray-900">{item.title}</h3>
+              <h3 className="font-semibold text-ink-900">{item.title}</h3>
             </div>
 
             <div className="space-y-1 pl-11">
               {item.lines.map((line, index) => (
-                <p key={`${item.id}-line-${index}`} className="text-sm text-gray-600">
+                <p key={`${item.id}-line-${index}`} className="text-sm text-ink-500">
                   {line}
                 </p>
               ))}

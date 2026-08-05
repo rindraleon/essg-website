@@ -27,28 +27,28 @@ const LocalisationSection: React.FC<LocalisationSectionProps> = (
     contactLabel = 'Contact',
     phone = '+261 38 18 282 49',
     email = 'contact@essg.mg',
-    ctaLabel = 'Nous contacter',
-    ctaLink = '/contact',
     latitude = -21.462997,
     longitude = 47.107401,
   } = props;
 
   return (
-    <section className="py-16">
+    <section className="py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div>
-            <h2 className="mb-4 text-3xl font-bold text-gray-900">{title}</h2>
+            <h2 className="mb-4 text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
+              {title}
+            </h2>
 
-            <p className="mb-6 text-lg text-gray-600">{description}</p>
+            <p className="mb-7 text-lg leading-7 text-ink-500">{description}</p>
 
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <RoomRoundedIcon color="primary" sx={{ mt: 0.25 }} />
 
                 <div>
-                  <div className="font-semibold text-gray-900">{addressLabel}</div>
-                  <div className="text-gray-600">{address}</div>
+                  <div className="font-semibold text-ink-900">{addressLabel}</div>
+                  <div className="text-ink-500">{address}</div>
                 </div>
               </div>
 
@@ -56,8 +56,8 @@ const LocalisationSection: React.FC<LocalisationSectionProps> = (
                 <PublicRoundedIcon color="primary" sx={{ mt: 0.25 }} />
 
                 <div>
-                  <div className="font-semibold text-gray-900">{contactLabel}</div>
-                  <div className="text-gray-600">
+                  <div className="font-semibold text-ink-900">{contactLabel}</div>
+                  <div className="text-ink-500">
                     {phone} • {email}
                   </div>
                 </div>
@@ -67,22 +67,23 @@ const LocalisationSection: React.FC<LocalisationSectionProps> = (
             <div className="mt-8">
               <Button
                 component={RouterLink}
-                to={ctaLink}
+                to="/contact"
                 variant="contained"
                 sx={{
-                  borderRadius: '0.75rem',
-                  px: 3,
+                  borderRadius: '0.9rem',
+                  px: 3.5,
                   py: 1.25,
                   textTransform: 'none',
                   fontWeight: 600,
+                  boxShadow: '0 10px 24px -10px rgba(46, 106, 95, 0.5)',
                 }}
               >
-                {ctaLabel}
+                Nous contacter
               </Button>
             </div>
           </div>
 
-          <div className="aspect-video overflow-hidden rounded-xl bg-gray-200 shadow-sm lg:h-96 lg:aspect-auto">
+          <div className="aspect-video overflow-hidden rounded-2xl bg-ink-100 shadow-card ring-1 ring-ink-100 lg:h-96 lg:aspect-auto">
             <MapContainer
               center={[latitude, longitude]}
               zoom={15}

@@ -8,15 +8,19 @@ interface CategoryChipProps {
   sx?: SxProps;
 }
 
+/**
+ * Couleurs de catégories harmonisées avec la charte ESSG :
+ * tons doux en fond, teintes soutenues en texte, lisibles (WCAG AA).
+ */
 const categoryColors: Record<string, { backgroundColor: string; color: string }> = {
-  Événement: { backgroundColor: '#f0fdf4', color: '#16a34a' },
-  Partenariat: { backgroundColor: '#fef3c7', color: '#d97706' },
-  Recherche: { backgroundColor: '#dbeafe', color: '#2563eb' },
-  'Vie Étudiante': { backgroundColor: '#fce7f3', color: '#db2777' },
+  Événement: { backgroundColor: '#eef4df', color: '#4f6834' },
+  Partenariat: { backgroundColor: '#fef3c7', color: '#92400e' },
+  Recherche: { backgroundColor: '#d9ece7', color: '#27564e' },
+  'Vie Étudiante': { backgroundColor: '#fce7f3', color: '#9d174d' },
 };
 
 const CategoryChip: React.FC<CategoryChipProps> = ({ category, size = 'small', sx }) => {
-  const colors = categoryColors[category] || { backgroundColor: '#ede9fe', color: '#7c3aed' };
+  const colors = categoryColors[category] || { backgroundColor: '#eef2ff', color: '#4338ca' };
 
   return (
     <Chip

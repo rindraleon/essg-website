@@ -1,24 +1,14 @@
 import { useEffect, useState } from 'react';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import Button from '@mui/material/Button';
-import { Link as RouterLink } from 'react-router-dom';
+import { SectionCta } from '../../components';
 import partenaireService from '../../services/partenaire.service';
 import { getImageUrl } from '../../utils/image.utils';
 import type { PartenaireItem, PartenairesSectionProps } from '../../types';
 
-const BUTTON_STYLES = {
-  textTransform: 'none',
-  fontWeight: 600,
-  fontSize: '1rem',
-  color: '#2563eb',
-  '&:hover': { backgroundColor: 'transparent', color: '#1d4ed8' },
-} as const;
+const SECTION_CTA = { label: 'Voir tous nos partenaires', link: '/partenaires' } as const;
 
 const PartenairesSection = ({
   title = 'Nos Partenaires',
   description = 'Des collaborations prestigieuses au niveau mondial',
-  ctaLabel = 'Voir tous nos partenaires',
-  ctaLink = '/partenaires',
   maxItems = 8,
   partenaires: propPartenaires,
 }: PartenairesSectionProps) => {
@@ -61,16 +51,21 @@ const PartenairesSection = ({
   ];
 
   return (
-    <section className="bg-gradient-to-b from-gray-50 to-white py-20">
+    <section className="bg-gradient-to-b from-ink-50 to-white py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-14 text-center">
-          <h2 className="mb-3 text-4xl font-bold text-gray-900">{title}</h2>
-          <p className="mx-auto max-w-2xl text-lg text-gray-600">{description}</p>
+          <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
+            Réseau mondial
+          </span>
+          <h2 className="mb-3 text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
+            {title}
+          </h2>
+          <p className="mx-auto max-w-2xl text-lg text-ink-500">{description}</p>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+            <div className="h-12 w-12 animate-spin rounded-xl border-4 border-brand-600 border-t-transparent"></div>
           </div>
         ) : (
           <div className="relative overflow-hidden py-8">
@@ -89,8 +84,8 @@ const PartenairesSection = ({
                         className="max-w-full max-h-full object-contain"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
-                        <span className="text-xs text-gray-400 text-center px-2">
+                      <div className="w-full h-full flex items-center justify-center bg-brand-50 rounded-2xl border border-brand-100">
+                        <span className="text-xs text-ink-500 text-center px-2">
                           {partenaire.nom}
                         </span>
                       </div>
@@ -102,17 +97,7 @@ const PartenairesSection = ({
           </div>
         )}
 
-        <div className="mt-12 text-center">
-          <Button
-            component={RouterLink}
-            to={ctaLink}
-            variant="text"
-            endIcon={<ArrowForwardRoundedIcon />}
-            sx={BUTTON_STYLES}
-          >
-            {ctaLabel}
-          </Button>
-        </div>
+        <SectionCta label={SECTION_CTA.label} link={SECTION_CTA.link} />
       </div>
 
       <style>{`

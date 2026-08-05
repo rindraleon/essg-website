@@ -17,11 +17,11 @@ const AdmissionSection: React.FC<AdmissionCtaSectionProps> = (
   } = props;
 
   return (
-    <section className="bg-gradient-to-r from-blue-600 to-blue-800 py-16 text-white">
+    <section className="relative overflow-hidden bg-gradient-to-br from-brand-800 via-brand-700 to-brand-600 py-20 text-white">
       <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-        <h2 className="mb-4 text-3xl font-bold sm:text-4xl">{title}</h2>
+        <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>
 
-        <p className="mx-auto mb-8 max-w-2xl text-xl text-blue-100">{description}</p>
+        <p className="mx-auto mb-8 max-w-2xl text-xl text-sage-100/90">{description}</p>
 
         <div className="flex flex-col justify-center gap-4 sm:flex-row">
           <Button
@@ -35,13 +35,15 @@ const AdmissionSection: React.FC<AdmissionCtaSectionProps> = (
               px: 3,
               py: 1.5,
               backgroundColor: '#ffffff',
-              color: '#1e3a8a',
+              color: '#1e3a35',
               fontWeight: 600,
               textTransform: 'none',
-              boxShadow: 'none',
+              boxShadow: '0 10px 24px -10px rgba(0,0,0,0.35)',
+              transition: 'all 0.25s ease',
               '&:hover': {
-                backgroundColor: '#eff6ff',
-                boxShadow: 'none',
+                backgroundColor: '#eff7f4',
+                boxShadow: '0 14px 32px -12px rgba(0,0,0,0.4)',
+                transform: 'translateY(-2px)',
               },
             }}
           >

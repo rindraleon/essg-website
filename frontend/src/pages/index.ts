@@ -1,7 +1,10 @@
 export { default as Home } from './HomePage/Home';
+export { default as AboutPage } from './AboutPage/AboutPage';
 export { default as FormationsPage } from './FormationPage/Formations';
 export { default as FormationDetailPage } from './FormationPage/FormationDetailPage';
 export { default as PartenairesPage } from './PartenairesPage/Partenaires';
+export { default as PartenaireDetailPage } from './PartenairesPage/PartenaireDetailPage';
+export { default as RessourceHumaineDetailPage } from './RessourcesHumainesPage/RessourceHumaineDetailPage';
 export { default as ProjetsPage } from './ProjetsPage/ProjetsPage';
 export { default as ProjetDetailPage } from './ProjetsPage/ProjetDetailPage';
 export { default as ActualitesPage } from './ActualitePage/ActualitePage';

@@ -1,16 +1,23 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import RocketLaunchRoundedIcon from '@mui/icons-material/RocketLaunchRounded';
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import Skeleton from '@mui/material/Skeleton';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import type { SelectChangeEvent } from '@mui/material/Select';
 
 import CtaSection from '../../components/common/CtaSection';
 import EmptyState from '../../components/common/EmptyState';
 import FilterToolbar from '../../components/common/FilterToolbar';
 import PageHero from '../../components/common/PageHero';
+import Breadcrumb from '../../components/common/Breadcrumb';
 import ProjetCard from '../../components/ProjetComponents/ProjetCard';
 import { GREEN } from '../../constants/colors';
 import { projetService } from '../../services';
@@ -48,7 +55,16 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
   const [error, setError] = useState<string | null>(null);
   const [typeFilter, setTypeFilter] = useState('all');
   const [statutFilter, setStatutFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (showSearch && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [showSearch]);
   useEffect(() => {
     const loadProjets = async () => {
       try {
@@ -67,18 +83,20 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
     loadProjets();
   }, []);
 
-  const hasActiveFilters = typeFilter !== 'all' || statutFilter !== 'all';
+  const hasActiveFilters = typeFilter !== 'all' || statutFilter !== 'all' || searchTerm !== '';
   const activeFilterCount = (typeFilter !== 'all' ? 1 : 0) + (statutFilter !== 'all' ? 1 : 0);
 
-  const filteredProjets = useMemo(
-    () =>
-      allProjets.filter((projet) => {
-        const matchesType = typeFilter === 'all' || projet.type === typeFilter;
-        const matchesStatut = statutFilter === 'all' || projet.statut === statutFilter;
-        return matchesType && matchesStatut;
-      }),
-    [allProjets, typeFilter, statutFilter]
-  );
+  const filteredProjets = useMemo(() => {
+    const search = searchTerm.toLowerCase();
+    return allProjets.filter((projet) => {
+      const matchesSearch =
+        projet.titre.toLowerCase().includes(search) ||
+        (projet.description || '').toLowerCase().includes(search);
+      const matchesType = typeFilter === 'all' || projet.type === typeFilter;
+      const matchesStatut = statutFilter === 'all' || projet.statut === statutFilter;
+      return matchesSearch && matchesType && matchesStatut;
+    });
+  }, [allProjets, typeFilter, statutFilter, searchTerm]);
 
   const resultCount = filteredProjets.length;
   const resultText = `${resultCount} projet${resultCount > 1 ? 's' : ''}`;
@@ -91,9 +109,16 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
     setStatutFilter(event.target.value);
   };
 
+  const handleToggleSearch = () => {
+    setShowSearch((prev) => !prev);
+    if (showSearch) setSearchTerm('');
+  };
+
   const handleResetFilters = () => {
     setTypeFilter('all');
     setStatutFilter('all');
+    setSearchTerm('');
+    setShowSearch(false);
     setShowFilters(false);
   };
 
@@ -103,6 +128,15 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
   };
 
   const activeFilterChips = [
+    ...(searchTerm
+      ? [
+          {
+            key: 'search',
+            label: `Recherche: "${searchTerm}"`,
+            onDelete: () => setSearchTerm(''),
+          },
+        ]
+      : []),
     ...(typeFilter !== 'all'
       ? [
           {
@@ -124,7 +158,7 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-ink-50">
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Projets ESSG"
@@ -139,6 +173,8 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
         ]}
       />
 
+      <Breadcrumb items={[{ label: 'Projets' }]} />
+
       <FilterToolbar
         resultText={resultText}
         showFilters={showFilters}
@@ -147,6 +183,42 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
         activeFilterChips={activeFilterChips}
         onToggleFilters={() => setShowFilters((prev) => !prev)}
         onResetFilters={handleResetFilters}
+        searchEnabled
+        showSearch={showSearch}
+        searchIsActive={searchTerm !== ''}
+        onToggleSearch={handleToggleSearch}
+        searchContent={
+          <TextField
+            inputRef={searchInputRef}
+            fullWidth
+            size="small"
+            placeholder="Rechercher un projet par titre ou description..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchRoundedIcon sx={{ color: GREEN[600] }} />
+                </InputAdornment>
+              ),
+              endAdornment: searchTerm && (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={() => setSearchTerm('')}>
+                    <CloseRoundedIcon sx={{ fontSize: 18 }} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '0.75rem',
+                '&.Mui-focused fieldset': {
+                  borderColor: GREEN[600],
+                },
+              },
+            }}
+          />
+        }
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <FormControl fullWidth size="small">
@@ -198,8 +270,20 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
       {loading && (
         <section className="py-12">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <p className="text-gray-500">Chargement des projets...</p>
+            <div className="grid gap-8 md:grid-cols-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-card"
+                >
+                  <Skeleton variant="rectangular" height={200} />
+                  <div className="space-y-3 p-5">
+                    <Skeleton variant="text" width="40%" />
+                    <Skeleton variant="text" width="80%" />
+                    <Skeleton variant="text" width="60%" />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -209,7 +293,7 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
         <section className="py-12">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <p className="text-red-500">{error}</p>
+              <p className="text-red-600">{error}</p>
             </div>
           </div>
         </section>

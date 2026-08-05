@@ -122,34 +122,28 @@ const ContactForm: React.FC<ContactFormProps> = (props: Readonly<ContactFormProp
     <Card
       elevation={0}
       sx={{
-        borderRadius: '1.25rem',
-        border: '1px solid #e5e7eb',
-        boxShadow: 'none',
+        borderRadius: '1.5rem',
+        border: '1px solid',
+        borderColor: 'divider',
+        boxShadow: '0 1px 2px rgba(15, 33, 30, 0.04), 0 4px 16px -4px rgba(15, 33, 30, 0.08)',
         height: '100%',
         overflow: 'hidden',
         backgroundColor: '#ffffff',
       }}
     >
-      <div
-        className="h-2 w-full"
-        style={{
-          background: `linear-gradient(90deg, ${GREEN[500]}, ${GREEN[400]})`,
-        }}
-      />
 
       <CardContent className="p-4 sm:p-6">
         <div className="mb-4">
-          <h2 className="mb-1 text-xl font-bold text-gray-900">Envoyez-nous un message</h2>
-          <p className="text-xs text-gray-600">
+          <h2 className="mb-1 text-xl font-bold text-ink-900">Envoyez-nous un message</h2>
+          <p className="text-xs text-ink-500">
             Remplissez le formulaire ci-dessous et notre équipe vous répondra dans les plus brefs
             délais.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Section 1 — Informations */}
           <div
-            className="rounded-2xl border-2 border-gray-200 p-5 sm:p-6"
+            className="rounded-2xl border border-ink-100 bg-ink-50/50 p-5 sm:p-6"
             style={{ backgroundColor: '#ffffff' }}
           >
             <div className="mb-3 flex items-center gap-2">
@@ -165,7 +159,7 @@ const ContactForm: React.FC<ContactFormProps> = (props: Readonly<ContactFormProp
                 />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-gray-900">Vos informations</h3>
+                <h3 className="text-base font-semibold text-ink-900">Vos informations</h3>
               </div>
             </div>
 
@@ -214,6 +208,7 @@ const ContactForm: React.FC<ContactFormProps> = (props: Readonly<ContactFormProp
                 label="Email"
                 name="email"
                 type="email"
+                placeholder='example@gmail.com'
                 value={formData.email}
                 onChange={handleChange}
                 required
@@ -235,6 +230,7 @@ const ContactForm: React.FC<ContactFormProps> = (props: Readonly<ContactFormProp
                 label="Téléphone"
                 name="telephone"
                 type="tel"
+                placeholder='+261 3X XXX XX'
                 value={formData.telephone}
                 onChange={handleChange}
                 fullWidth
@@ -257,10 +253,10 @@ const ContactForm: React.FC<ContactFormProps> = (props: Readonly<ContactFormProp
 
           {/* Section 2 — Demande */}
           <div
-            className="rounded-2xl border-2 border-gray-200 p-4 sm:p-5"
+            className="rounded-2xl border border-ink-100 bg-ink-50/50 p-4 sm:p-5"
             style={{ backgroundColor: '#ffffff' }}
           >
-            <div className="mb-3 flex items-center gap-2">
+            <div className="mb-3 flex items-center gap-3">
               <div
                 className="flex h-7 w-7 items-center justify-center rounded-md"
                 style={{ backgroundColor: GREEN[50] }}
@@ -273,7 +269,7 @@ const ContactForm: React.FC<ContactFormProps> = (props: Readonly<ContactFormProp
                 />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-gray-900">Votre demande</h3>
+                <h3 className="text-base font-semibold text-ink-900">Votre demande</h3>
               </div>
             </div>
 
@@ -310,6 +306,24 @@ const ContactForm: React.FC<ContactFormProps> = (props: Readonly<ContactFormProp
                 </Select>
               </FormControl>
 
+              <div className="mb-3 flex items-center gap-3 my-3">
+              <div
+                className="flex h-7 w-7 items-center justify-center rounded-md"
+                style={{ backgroundColor: GREEN[50] }}
+              >
+                <MessageRoundedIcon
+                  sx={{
+                    fontSize: 16,
+                    color: GREEN[600],
+                  }}
+                />
+              </div>
+              <div>
+                <h3 className="text-base font-semibold text-ink-900">Votre demande</h3>
+              </div>
+            </div>
+              
+              
               <TextField
                 label="Message"
                 name="message"
@@ -361,13 +375,14 @@ const ContactForm: React.FC<ContactFormProps> = (props: Readonly<ContactFormProp
                 fontWeight: 700,
                 fontSize: '0.9rem',
                 backgroundColor: GREEN[600],
-                boxShadow: 'none',
+                boxShadow: '0 10px 24px -10px rgba(46, 106, 95, 0.5)',
                 '&:hover': {
                   backgroundColor: GREEN[700],
-                  boxShadow: 'none',
+                  boxShadow: '0 14px 28px -12px rgba(46, 106, 95, 0.55)',
                 },
                 '&.Mui-disabled': {
-                  backgroundColor: GREEN[400],
+                  backgroundColor: GREEN[300],
+                  color: '#ffffff',
                 },
               }}
             >

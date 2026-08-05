@@ -74,7 +74,5 @@ export type FormationDetailPageProps = {
 export type FeaturedFormationsSectionProps = {
   title?: string;
   description?: string;
-  ctaLabel?: string;
-  ctaLink?: string;
   featuredFormations?: Formation[];
 };

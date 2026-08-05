@@ -11,7 +11,14 @@ import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Skeleton from '@mui/material/Skeleton';
 import type { SelectChangeEvent } from '@mui/material/Select';
-import { CtaSection, EmptyState, PageHero, ActualiteCard, FilterToolbar } from '../../components';
+import {
+  CtaSection,
+  EmptyState,
+  PageHero,
+  Breadcrumb,
+  ActualiteCard,
+  FilterToolbar,
+} from '../../components';
 import { GREEN } from '../../constants/colors';
 import { useActualites, useScrollToTop } from '../../hooks';
 import type { Actualite } from '../../types/actualite.types';
@@ -113,6 +120,7 @@ const ActualitesPage: React.FC = () => {
           { value: 'Hebdo', label: 'Fréquence' },
         ]}
       />
+      <Breadcrumb items={[{ label: 'Actualités' }]} />
 
       <FilterToolbar
         resultText={resultText}
@@ -182,7 +190,7 @@ const ActualitesPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Erreur */}
           {error && (
-            <div className="text-center py-10 text-red-500">
+            <div className="text-center py-10 text-red-600">
               <p>Erreur : {error}</p>
             </div>
           )}
@@ -193,7 +201,7 @@ const ActualitesPage: React.FC = () => {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm"
+                  className="rounded-2xl overflow-hidden border border-ink-100 shadow-card"
                 >
                   <Skeleton variant="rectangular" height={200} />
                   <div className="p-5 space-y-3">

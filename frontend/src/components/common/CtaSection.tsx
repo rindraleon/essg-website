@@ -22,26 +22,26 @@ const CtaSection: React.FC<CtaSectionProps> = (props: Readonly<CtaSectionProps>)
       <div
         className="absolute inset-0"
         style={{
-          background: `linear-gradient(135deg, ${GREEN[950]}, ${GREEN[900]}, ${GREEN[800]})`,
+          background: `linear-gradient(135deg, ${GREEN[950]}, ${GREEN[900]}, ${GREEN[700]})`,
         }}
       />
 
       <div
         aria-hidden="true"
-        className="absolute inset-0 opacity-10"
+        className="absolute inset-0 opacity-[0.12]"
         style={{
           backgroundImage:
-            'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.15) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(255,255,255,0.1) 0%, transparent 50%)',
+            'radial-gradient(circle at 18% 45%, rgba(152,192,112,0.55) 0%, transparent 45%), radial-gradient(circle at 82% 55%, rgba(91,160,146,0.5) 0%, transparent 45%)',
         }}
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-        {icon && <div className="mb-4 flex justify-center">{icon}</div>}
+      <div className="relative mx-auto max-w-7xl px-4 py-6 text-center sm:px-6 lg:px-8">
+        {icon && <div className="mb-5 flex justify-center animate-float">{icon}</div>}
 
-        <h2 className="mb-4 text-3xl font-bold sm:text-4xl">{title}</h2>
+        <h2 className="mb-4 text-3xl font-bold drop-shadow-sm sm:text-4xl text-balance">{title}</h2>
 
         {description && (
-          <p className="mx-auto mb-8 max-w-2xl text-lg sm:text-xl" style={{ color: GREEN[100] }}>
+          <p className="mx-auto mb-9 max-w-2xl text-lg sm:text-xl" style={{ color: GREEN[100] }}>
             {description}
           </p>
         )}
@@ -55,17 +55,19 @@ const CtaSection: React.FC<CtaSectionProps> = (props: Readonly<CtaSectionProps>)
               size="large"
               endIcon={<ArrowForwardRoundedIcon />}
               sx={{
-                borderRadius: '0.75rem',
+                borderRadius: '0.9rem',
                 px: 4,
                 py: 1.5,
                 backgroundColor: '#ffffff',
                 color: GREEN[900],
                 fontWeight: 600,
                 textTransform: 'none',
-                boxShadow: 'none',
+                boxShadow: '0 8px 24px -8px rgba(0,0,0,0.4)',
+                transition: 'all 0.25s ease',
                 '&:hover': {
                   backgroundColor: GREEN[50],
-                  boxShadow: 'none',
+                  boxShadow: '0 12px 32px -10px rgba(0,0,0,0.45)',
+                  transform: 'translateY(-2px)',
                 },
               }}
             >
@@ -79,17 +81,19 @@ const CtaSection: React.FC<CtaSectionProps> = (props: Readonly<CtaSectionProps>)
               size="large"
               endIcon={<ArrowForwardRoundedIcon />}
               sx={{
-                borderRadius: '0.75rem',
+                borderRadius: '0.9rem',
                 px: 4,
                 py: 1.5,
                 backgroundColor: '#ffffff',
                 color: GREEN[900],
                 fontWeight: 600,
                 textTransform: 'none',
-                boxShadow: 'none',
+                boxShadow: '0 8px 24px -8px rgba(0,0,0,0.4)',
+                transition: 'all 0.25s ease',
                 '&:hover': {
                   backgroundColor: GREEN[50],
-                  boxShadow: 'none',
+                  boxShadow: '0 12px 32px -10px rgba(0,0,0,0.45)',
+                  transform: 'translateY(-2px)',
                 },
               }}
             >
@@ -104,16 +108,18 @@ const CtaSection: React.FC<CtaSectionProps> = (props: Readonly<CtaSectionProps>)
               variant="outlined"
               size="large"
               sx={{
-                borderRadius: '0.75rem',
+                borderRadius: '0.9rem',
                 px: 4,
                 py: 1.5,
                 borderColor: 'rgba(255,255,255,0.6)',
                 color: '#ffffff',
                 fontWeight: 600,
                 textTransform: 'none',
+                transition: 'all 0.25s ease',
                 '&:hover': {
                   borderColor: '#ffffff',
-                  backgroundColor: 'rgba(255,255,255,0.08)',
+                  backgroundColor: 'rgba(255,255,255,0.1)',
+                  transform: 'translateY(-2px)',
                 },
               }}
             >

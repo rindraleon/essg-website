@@ -13,17 +13,21 @@ const EmptyState: React.FC<EmptyStateProps> = (props: Readonly<EmptyStateProps>)
   } = props;
 
   return (
-    <div className="py-20 text-center">
+    <div className="py-20 text-center animate-fade-in">
       <div
-        className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full"
-        style={{ backgroundColor: GREEN[50] }}
+        className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-2xl ring-1"
+        style={{
+          backgroundColor: GREEN[50],
+          borderColor: GREEN[100],
+          boxShadow: '0 8px 24px -12px rgba(46, 106, 95, 0.35)',
+        }}
       >
         {icon}
       </div>
 
-      <h3 className="mb-2 text-xl font-semibold text-gray-900">{title}</h3>
+      <h3 className="mb-2 text-xl font-semibold text-ink-900">{title}</h3>
 
-      <p className="mx-auto mb-6 max-w-md text-gray-500">{description}</p>
+      <p className="mx-auto mb-7 max-w-md text-ink-500">{description}</p>
 
       {onAction && (
         <Button

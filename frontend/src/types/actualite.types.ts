@@ -32,7 +32,5 @@ export type ActualiteItem = {
 export type RecentActualitesSectionProps = {
   title?: string;
   description?: string;
-  ctaLabel?: string;
-  ctaLink?: string;
   recentActualites?: ActualiteItem[];
 };

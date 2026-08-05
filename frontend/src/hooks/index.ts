@@ -6,3 +6,6 @@ export { default as useActualites } from './useActualites';
 export { useRecentActualites } from './useActualites';
 export { useActualiteBySlug } from './useActualites';
 export { useActiveRessourcesHumaines } from './useRessourcesHumaines';
+export { useRessourceHumaineBySlug } from './useRessourcesHumaines';
+export { default as usePartenaires } from './usePartenaires';
+export { usePartenaireBySlug } from './usePartenaires';

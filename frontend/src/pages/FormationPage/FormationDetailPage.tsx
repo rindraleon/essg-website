@@ -4,7 +4,13 @@ import AutoStoriesRoundedIcon from '@mui/icons-material/AutoStoriesRounded';
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 import Button from '@mui/material/Button';
 import { Link as RouterLink, useParams } from 'react-router-dom';
-import { CtaSection, EmptyState, PageHero, FormationDetailContent } from '../../components';
+import {
+  CtaSection,
+  EmptyState,
+  PageHero,
+  Breadcrumb,
+  FormationDetailContent,
+} from '../../components';
 import { GREEN } from '../../constants/colors';
 import { useFormationBySlug, useScrollToTop } from '../../hooks';
 import { useTitle } from '../../hooks/useTitle';
@@ -25,11 +31,11 @@ const FormationDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-ink-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-green-600 border-r-transparent"></div>
-            <p className="text-gray-500">Chargement de la formation...</p>
+            <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-brand-600 border-r-transparent"></div>
+            <p className="text-ink-500">Chargement de la formation...</p>
           </div>
         </div>
       </div>
@@ -38,7 +44,7 @@ const FormationDetailPage: React.FC = () => {
 
   if (error || !formation) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-ink-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <EmptyState
             icon={<AutoStoriesRoundedIcon sx={{ fontSize: 40, color: GREEN[400] }} />}
@@ -75,7 +81,7 @@ const FormationDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-ink-50">
       <PageHero
         image={getFormationImage(formation.image, formation.slug)}
         imageAlt={formation.titre}
@@ -86,52 +92,10 @@ const FormationDetailPage: React.FC = () => {
         minHeight="50vh"
       />
 
-      {/* Breadcrumb amélioré */}
-      <div className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 sm:px-6 lg:px-8">
-          <Button
-            component={RouterLink}
-            to="/"
-            variant="text"
-            sx={{
-              textTransform: 'none',
-              fontWeight: 500,
-              color: 'gray.600',
-              fontSize: '0.875rem',
-              '&:hover': {
-                backgroundColor: GREEN[50],
-                color: GREEN[600],
-              },
-            }}
-          >
-            Accueil
-          </Button>
-
-          <span className="text-gray-400">›</span>
-
-          <Button
-            component={RouterLink}
-            to="/formations"
-            variant="text"
-            sx={{
-              textTransform: 'none',
-              fontWeight: 500,
-              color: 'gray.600',
-              fontSize: '0.875rem',
-              '&:hover': {
-                backgroundColor: GREEN[50],
-                color: GREEN[600],
-              },
-            }}
-          >
-            Formations
-          </Button>
-
-          <span className="text-gray-400">›</span>
-
-          <span className="truncate text-sm font-medium text-gray-900">{formation.titre}</span>
-        </div>
-      </div>
+      {/* Fil d'Ariane */}
+      <Breadcrumb
+        items={[{ label: 'Formations', to: '/formations' }, { label: formation.titre }]}
+      />
 
       {/* Contenu principal */}
       <FormationDetailContent formation={formation} />

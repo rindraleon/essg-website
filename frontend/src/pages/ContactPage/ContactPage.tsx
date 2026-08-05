@@ -10,7 +10,7 @@ import { Toaster } from 'react-hot-toast';
 import PageHero from '../../components/common/PageHero';
 import { GREEN } from '../../constants/colors';
 import type { ContactPageProps } from '../../types/contact.types';
-import { ContactForm, ContactInfoCards, MapEmbed } from '../../components';
+import { ContactForm, ContactInfoCards, MapEmbed, Breadcrumb, CtaSection } from '../../components';
 import { useScrollToTop } from '../../hooks';
 
 const HERO_IMAGE =
@@ -69,7 +69,7 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-ink-50">
       <Toaster
         position="top-right"
         toastOptions={{
@@ -109,6 +109,8 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
         ]}
       />
 
+      <Breadcrumb items={[{ label: 'Contact' }]} />
+
       {/* Formulaire et Infos */}
       <section className="py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -125,12 +127,22 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
       </section>
 
       {/* Carte */}
-      <section className="bg-white py-12">
+      <section className="bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-6 text-2xl font-bold text-gray-900">Localisation</h2>
+          <h2 className="mb-6 text-2xl font-bold text-ink-900">Localisation</h2>
           <MapEmbed lat={mapLat} lng={mapLng} label={mapLabel} adresse={mapAdresse} zoom="city" />
         </div>
       </section>
+
+      <CtaSection
+        icon={<ContactIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
+        title="Un projet, une question ?"
+        description="Notre équipe vous répond dans les plus brefs délais. Contactez-nous ou découvrez nos formations."
+        primaryLabel="Voir les formations"
+        primaryLink="/formations"
+        secondaryLabel="Questions fréquentes"
+        secondaryLink="/faq"
+      />
     </div>
   );
 };

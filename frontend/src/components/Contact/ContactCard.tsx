@@ -22,9 +22,10 @@ const ContactCard: React.FC<ContactCardProps> = (props: Readonly<ContactCardProp
   return (
     <Card
       sx={{
-        borderRadius: '1rem',
+        borderRadius: '1.25rem',
         border: `1px solid ${GREEN[200]}`,
         backgroundColor: GREEN[50],
+        boxShadow: '0 1px 2px rgba(15, 33, 30, 0.04), 0 8px 24px -12px rgba(46, 106, 95, 0.2)',
       }}
     >
       <CardContent className="p-6 sm:p-8">
@@ -37,9 +38,9 @@ const ContactCard: React.FC<ContactCardProps> = (props: Readonly<ContactCardProp
           </div>
 
           <div className="flex-1">
-            <h3 className="mb-2 text-lg font-semibold text-gray-900">{title}</h3>
+            <h3 className="mb-2 text-lg font-semibold text-ink-900">{title}</h3>
 
-            <p className="mb-4 text-gray-700">{description}</p>
+            <p className="mb-5 leading-6 text-ink-500">{description}</p>
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button

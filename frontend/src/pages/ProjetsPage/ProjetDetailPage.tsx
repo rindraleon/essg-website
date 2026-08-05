@@ -7,11 +7,19 @@ import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded';
 import FlagRoundedIcon from '@mui/icons-material/FlagRounded';
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 import MapRoundedIcon from '@mui/icons-material/MapRounded';
+import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { Link as RouterLink, useParams } from 'react-router-dom';
-import { CtaSection, EmptyState, PageHero, MapEmbed } from '../../components';
+import {
+  CtaSection,
+  EmptyState,
+  PageHero,
+  Breadcrumb,
+  MapEmbed,
+  ProjetGallery,
+} from '../../components';
 import { GREEN } from '../../constants/colors';
 import { useProjetById } from '../../hooks/useProjets';
 import { useScrollToTop } from '../../hooks';
@@ -49,11 +57,11 @@ const ProjetDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-ink-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-green-600 border-r-transparent"></div>
-            <p className="text-gray-500">Chargement du projet...</p>
+            <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-brand-600 border-r-transparent"></div>
+            <p className="text-ink-500">Chargement du projet...</p>
           </div>
         </div>
       </div>
@@ -62,7 +70,7 @@ const ProjetDetailPage: React.FC = () => {
 
   if (error || !projet) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-ink-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <EmptyState
             icon={<RocketLaunchRoundedIcon sx={{ fontSize: 40, color: GREEN[400] }} />}
@@ -103,7 +111,7 @@ const ProjetDetailPage: React.FC = () => {
     projet.statut.toLowerCase() === 'terminé' || projet.statut.toLowerCase() === 'terminee';
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-ink-50">
       <PageHero
         image={imageUrl}
         imageAlt={projet.titre}
@@ -114,63 +122,19 @@ const ProjetDetailPage: React.FC = () => {
         minHeight="50vh"
       />
 
-      {/* Breadcrumb */}
-      <div className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 sm:px-6 lg:px-8">
-          <Button
-            component={RouterLink}
-            to="/"
-            variant="text"
-            sx={{
-              textTransform: 'none',
-              fontWeight: 500,
-              color: 'gray.600',
-              fontSize: '0.875rem',
-              '&:hover': {
-                backgroundColor: GREEN[50],
-                color: GREEN[600],
-              },
-            }}
-          >
-            Accueil
-          </Button>
-
-          <span className="text-gray-400">›</span>
-
-          <Button
-            component={RouterLink}
-            to="/projets"
-            variant="text"
-            sx={{
-              textTransform: 'none',
-              fontWeight: 500,
-              color: 'gray.600',
-              fontSize: '0.875rem',
-              '&:hover': {
-                backgroundColor: GREEN[50],
-                color: GREEN[600],
-              },
-            }}
-          >
-            Projets
-          </Button>
-
-          <span className="text-gray-400">›</span>
-
-          <span className="truncate text-sm font-medium text-gray-900">{projet.titre}</span>
-        </div>
-      </div>
+      {/* Fil d'Ariane */}
+      <Breadcrumb items={[{ label: 'Projets', to: '/projets' }, { label: projet.titre }]} />
 
       {/* Contenu principal */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* En-tête avec badges et titre */}
         <div className="mb-8">
           <div className="mb-4 flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white">
+            <span className="inline-flex items-center rounded-full bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-card">
               {projet.type}
             </span>
 
-            <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700">
+            <span className="inline-flex items-center gap-2 rounded-full border border-ink-100 bg-white px-4 py-2 text-sm text-ink-700">
               <CalendarTodayRoundedIcon sx={{ fontSize: 14 }} />
               {projet.annee}
             </span>
@@ -186,8 +150,8 @@ const ProjetDetailPage: React.FC = () => {
             </span>
           </div>
 
-          <h1 className="text-2xl font-semibold text-gray-900 sm:text-3xl">{projet.titre}</h1>
-          <p className="mt-2 text-base text-gray-600">{projet.description}</p>
+          <h1 className="text-2xl font-semibold text-ink-900 sm:text-3xl">{projet.titre}</h1>
+          <p className="mt-2 text-base text-ink-600">{projet.description}</p>
         </div>
 
         {/* Grille principale : sidebar gauche + contenu droit */}
@@ -197,13 +161,15 @@ const ProjetDetailPage: React.FC = () => {
             {/* Carte Informations clés */}
             <Card
               sx={{
-                borderRadius: '1rem',
-                border: '1px solid #e5e7eb',
-                boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)',
+                borderRadius: '1.25rem',
+                border: '1px solid',
+                borderColor: 'divider',
+                boxShadow:
+                  '0 1px 2px rgba(15, 33, 30, 0.04), 0 4px 16px -4px rgba(15, 33, 30, 0.08)',
               }}
             >
               <CardContent className="p-6">
-                <h3 className="mb-5 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <h3 className="mb-5 text-xs font-semibold uppercase tracking-wider text-ink-500">
                   Informations clés
                 </h3>
 
@@ -224,7 +190,7 @@ const ProjetDetailPage: React.FC = () => {
                       />
                     </div>
                     <div className="flex-1">
-                      <div className="text-sm text-gray-500">Statut</div>
+                      <div className="text-sm text-ink-500">Statut</div>
                       <span
                         className="mt-1 inline-block rounded-md px-2 py-0.5 text-xs font-semibold uppercase"
                         style={{
@@ -239,12 +205,12 @@ const ProjetDetailPage: React.FC = () => {
 
                   {/* Année */}
                   <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-green-100">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-brand-100">
                       <CalendarTodayRoundedIcon sx={{ color: GREEN[600], fontSize: 20 }} />
                     </div>
                     <div className="flex-1">
-                      <div className="text-sm text-gray-500">Année de livraison</div>
-                      <div className="mt-0.5 text-base font-semibold text-gray-900">
+                      <div className="text-sm text-ink-500">Année de livraison</div>
+                      <div className="mt-0.5 text-base font-semibold text-ink-900">
                         {projet.annee}
                       </div>
                     </div>
@@ -253,16 +219,16 @@ const ProjetDetailPage: React.FC = () => {
                   {/* Localisation */}
                   {projet.location && (
                     <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-100">
-                        <LocationOnRoundedIcon sx={{ color: '#2563eb', fontSize: 20 }} />
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-brand-50">
+                        <LocationOnRoundedIcon sx={{ color: '#2e6a5f', fontSize: 20 }} />
                       </div>
                       <div className="flex-1">
-                        <div className="text-sm text-gray-500">Localisation</div>
-                        <div className="mt-0.5 text-base font-semibold text-gray-900">
+                        <div className="text-sm text-ink-500">Localisation</div>
+                        <div className="mt-0.5 text-base font-semibold text-ink-900">
                           {projet.location.ville}, {projet.location.pays}
                         </div>
                         {projet.location.adresse && (
-                          <div className="mt-0.5 text-sm text-gray-500">
+                          <div className="mt-0.5 text-sm text-ink-500">
                             {projet.location.adresse}
                           </div>
                         )}
@@ -273,13 +239,28 @@ const ProjetDetailPage: React.FC = () => {
                   {/* Budget (optionnel) */}
                   {projet.budget && (
                     <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-green-100">
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-brand-100">
                         <AttachMoneyRoundedIcon sx={{ color: GREEN[600], fontSize: 20 }} />
                       </div>
                       <div className="flex-1">
-                        <div className="text-sm text-gray-500">Budget</div>
-                        <div className="mt-0.5 text-base font-semibold text-gray-900">
+                        <div className="text-sm text-ink-500">Budget</div>
+                        <div className="mt-0.5 text-base font-semibold text-ink-900">
                           {projet.budget}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Source de données */}
+                  {projet.sourceDonnees && (
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-sage-100">
+                        <StorageRoundedIcon sx={{ color: '#4f6834', fontSize: 20 }} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-sm text-ink-500">Source de données</div>
+                        <div className="mt-0.5 text-sm leading-6 text-ink-900">
+                          {projet.sourceDonnees}
                         </div>
                       </div>
                     </div>
@@ -292,15 +273,17 @@ const ProjetDetailPage: React.FC = () => {
             {projet.partenaires && projet.partenaires.length > 0 && (
               <Card
                 sx={{
-                  borderRadius: '1rem',
-                  border: '1px solid #e5e7eb',
-                  boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)',
+                  borderRadius: '1.25rem',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  boxShadow:
+                    '0 1px 2px rgba(15, 33, 30, 0.04), 0 4px 16px -4px rgba(15, 33, 30, 0.08)',
                 }}
               >
                 <CardContent className="p-6">
                   <div className="mb-5 flex items-center gap-3">
                     <div className="h-6 w-1 rounded-full" style={{ backgroundColor: GREEN[600] }} />
-                    <h3 className="text-lg font-semibold text-gray-900">Partenaires</h3>
+                    <h3 className="text-lg font-semibold text-ink-900">Partenaires</h3>
                   </div>
 
                   <div className="space-y-3">
@@ -311,13 +294,13 @@ const ProjetDetailPage: React.FC = () => {
                       return (
                         <div
                           key={nom + index}
-                          className="flex items-center gap-3 rounded-xl bg-blue-50/50 p-3"
+                          className="flex items-center gap-3 rounded-xl bg-brand-50/60 ring-1 ring-brand-100/60 p-3"
                         >
                           <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white shadow-sm">
                             <SchoolRoundedIcon sx={{ color: GREEN[600], fontSize: 20 }} />
                           </div>
                           <div className="flex-1">
-                            <div className="text-sm font-semibold text-gray-900">{nom}</div>
+                            <div className="text-sm font-semibold text-ink-900">{nom}</div>
                           </div>
                         </div>
                       );
@@ -333,21 +316,23 @@ const ProjetDetailPage: React.FC = () => {
             {projet.location && (
               <Card
                 sx={{
-                  borderRadius: '1rem',
-                  border: '1px solid #e5e7eb',
+                  borderRadius: '1.25rem',
+                  border: '1px solid',
+                  borderColor: 'divider',
                   overflow: 'hidden',
-                  boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)',
+                  boxShadow:
+                    '0 1px 2px rgba(15, 33, 30, 0.04), 0 4px 16px -4px rgba(15, 33, 30, 0.08)',
                 }}
               >
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-100">
                       <MapRoundedIcon sx={{ color: GREEN[600], fontSize: 20 }} />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900">Localisation du projet</h3>
+                    <h3 className="text-lg font-semibold text-ink-900">Localisation du projet</h3>
                   </div>
 
-                  <div className="overflow-hidden rounded-lg border border-gray-200 bg-gray-100 shadow-sm">
+                  <div className="overflow-hidden rounded-xl border border-ink-100 bg-ink-100 shadow-card">
                     <MapEmbed
                       lat={projet.location.lat}
                       lng={projet.location.lng}
@@ -357,12 +342,12 @@ const ProjetDetailPage: React.FC = () => {
                     />
 
                     {/* Étiquette overlay en bas */}
-                    <div className="flex items-center justify-center gap-2 border-t border-gray-200 bg-white px-4 py-3 text-center">
+                    <div className="flex items-center justify-center gap-2 border-t border-ink-100 bg-white px-4 py-3 text-center">
                       <span
                         className="h-2 w-2 rounded-full"
                         style={{ backgroundColor: GREEN[600] }}
                       />
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-sm font-medium text-ink-900">
                         {projet.location.adresse ||
                           `${projet.location.ville}, ${projet.location.pays}`}
                       </span>
@@ -376,33 +361,40 @@ const ProjetDetailPage: React.FC = () => {
             {projet.objectifs && projet.objectifs.length > 0 && (
               <Card
                 sx={{
-                  borderRadius: '1rem',
-                  border: '1px solid #e5e7eb',
-                  boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)',
+                  borderRadius: '1.25rem',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  boxShadow:
+                    '0 1px 2px rgba(15, 33, 30, 0.04), 0 4px 16px -4px rgba(15, 33, 30, 0.08)',
                 }}
               >
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-3">
                     <div className="h-6 w-1 rounded-full" style={{ backgroundColor: GREEN[600] }} />
-                    <h3 className="text-lg font-semibold text-gray-900">Objectifs du projet</h3>
+                    <h3 className="text-lg font-semibold text-ink-900">Objectifs du projet</h3>
                   </div>
 
                   <div className="grid gap-3 sm:grid-cols-2">
                     {projet.objectifs.map((objectif: string, index: number) => (
                       <div
                         key={objectif + index}
-                        className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50 p-4"
+                        className="flex items-start gap-3 rounded-xl border border-ink-100 bg-ink-50/60 p-4"
                       >
                         <span
                           className="mt-1.5 h-2.5 w-2.5 flex-shrink-0 rounded-full"
                           style={{ backgroundColor: GREEN[600] }}
                         />
-                        <span className="text-sm leading-6 text-gray-700">{objectif}</span>
+                        <span className="text-sm leading-6 text-ink-700">{objectif}</span>
                       </div>
                     ))}
                   </div>
                 </CardContent>
               </Card>
+            )}
+
+            {/* Galerie d'images */}
+            {projet.galerie && projet.galerie.length > 0 && (
+              <ProjetGallery images={projet.galerie} alt={projet.titre} />
             )}
 
             {/* Bouton retour */}

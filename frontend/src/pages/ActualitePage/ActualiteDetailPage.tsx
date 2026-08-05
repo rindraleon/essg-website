@@ -11,7 +11,7 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { Link as RouterLink, useParams } from 'react-router-dom';
-import { CtaSection, EmptyState, PageHero, CategoryChip } from '../../components';
+import { CtaSection, EmptyState, PageHero, Breadcrumb, CategoryChip } from '../../components';
 import { GREEN } from '../../constants/colors';
 import { formatDate } from '../../utils/date.utils';
 import { useActualiteBySlug, useScrollToTop } from '../../hooks';
@@ -56,11 +56,11 @@ const ActualiteDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-ink-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-green-600 border-r-transparent"></div>
-            <p className="text-gray-500">Chargement de l'article...</p>
+            <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-brand-600 border-r-transparent"></div>
+            <p className="text-ink-500">Chargement de l'article...</p>
           </div>
         </div>
       </div>
@@ -69,7 +69,7 @@ const ActualiteDetailPage: React.FC = () => {
 
   if (error || !actualite) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-ink-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <EmptyState
             icon={<NewspaperRoundedIcon sx={{ fontSize: 40, color: GREEN[400] }} />}
@@ -106,7 +106,7 @@ const ActualiteDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-ink-50">
       <PageHero
         image={getActualiteImage(actualite.id.toString())}
         imageAlt={actualite.titre}
@@ -116,31 +116,10 @@ const ActualiteDetailPage: React.FC = () => {
         minHeight="50vh"
       />
 
-      {/* Breadcrumb */}
-      <div className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-4 sm:px-6 lg:px-8">
-          <Button
-            component={RouterLink}
-            to="/actualites"
-            variant="text"
-            startIcon={<ArrowBackRoundedIcon />}
-            sx={{
-              textTransform: 'none',
-              fontWeight: 600,
-              color: GREEN[600],
-              '&:hover': {
-                backgroundColor: GREEN[50],
-              },
-            }}
-          >
-            Toutes les actualités
-          </Button>
-
-          <span className="text-sm text-gray-400">/</span>
-
-          <span className="truncate text-sm font-medium text-gray-700">{actualite.titre}</span>
-        </div>
-      </div>
+      {/* Fil d'Ariane */}
+      <Breadcrumb
+        items={[{ label: 'Actualités', to: '/actualites' }, { label: actualite.titre }]}
+      />
 
       {/* Contenu */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -149,8 +128,9 @@ const ActualiteDetailPage: React.FC = () => {
           <div className="lg:col-span-2">
             <Card
               sx={{
-                borderRadius: '1rem',
-                border: '1px solid #e5e7eb',
+                borderRadius: '1.25rem',
+                border: '1px solid',
+                borderColor: 'divider',
               }}
             >
               <CardContent className="p-6 sm:p-8">
@@ -166,12 +146,12 @@ const ActualiteDetailPage: React.FC = () => {
                     }}
                   />
 
-                  <div className="flex items-center gap-1 text-sm text-gray-500">
+                  <div className="flex items-center gap-1 text-sm text-ink-500">
                     <CalendarTodayRoundedIcon sx={{ fontSize: 14 }} />
                     {formatDate(actualite.date)}
                   </div>
 
-                  <div className="flex items-center gap-1 text-sm text-gray-500">
+                  <div className="flex items-center gap-1 text-sm text-ink-500">
                     <PersonRoundedIcon sx={{ fontSize: 14 }} />
                     {actualite.auteur}
                   </div>
@@ -193,7 +173,7 @@ const ActualiteDetailPage: React.FC = () => {
                 <Divider className="mb-6" />
 
                 {/* Contenu de l'article */}
-                <div className="prose max-w-none text-gray-700">
+                <div className="prose max-w-none text-ink-700">
                   <p className="mb-4 text-lg font-medium leading-relaxed">{actualite.resume}</p>
 
                   {actualite.contenu ? (
@@ -221,12 +201,13 @@ const ActualiteDetailPage: React.FC = () => {
             {/* Infos auteur */}
             <Card
               sx={{
-                borderRadius: '1rem',
-                border: '1px solid #e5e7eb',
+                borderRadius: '1.25rem',
+                border: '1px solid',
+                borderColor: 'divider',
               }}
             >
               <CardContent className="p-6">
-                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-900">
+                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-ink-900">
                   Auteur
                 </h3>
                 <div className="flex items-center gap-3">
@@ -239,8 +220,8 @@ const ActualiteDetailPage: React.FC = () => {
                     <PersonRoundedIcon sx={{ color: GREEN[600] }} />
                   </div>
                   <div>
-                    <div className="font-semibold text-gray-900">{actualite.auteur}</div>
-                    <div className="text-sm text-gray-500">ESSG</div>
+                    <div className="font-semibold text-ink-900">{actualite.auteur}</div>
+                    <div className="text-sm text-ink-500">ESSG</div>
                   </div>
                 </div>
               </CardContent>

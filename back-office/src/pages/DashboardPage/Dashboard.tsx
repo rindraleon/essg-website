@@ -83,14 +83,8 @@ const Dashboard = () => {
 
       {/* Quick Actions and Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <QuickActions />
+        
         <RecentActivity activities={activities} loading={loading} />
-      </div>
-
-      {/* News Section */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Actualités</h2>
-        <NewsList />
       </div>
     </div>
   );

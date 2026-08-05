@@ -17,6 +17,8 @@ export type ProjetItem = {
   partenaires: string[];
   objectifs?: string[];
   image?: string;
+  sourceDonnees?: string;
+  galerie?: string[];
   location?: ProjetLocation;
 };
 
@@ -58,13 +60,13 @@ export type FeaturedProjetItem = {
   image?: string;
   budget?: string;
   objectifs?: string[];
+  sourceDonnees?: string;
+  galerie?: string[];
   location?: ProjetLocation;
 };
 
 export type FeaturedProjetsSectionProps = {
   title?: string;
   description?: string;
-  ctaLabel?: string;
-  ctaLink?: string;
   featuredProjets?: FeaturedProjetItem[];
 };

@@ -1,15 +1,22 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Skeleton from '@mui/material/Skeleton';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import type { SelectChangeEvent } from '@mui/material/Select';
 
 import CtaSection from '../../components/common/CtaSection';
 import EmptyState from '../../components/common/EmptyState';
 import FilterToolbar from '../../components/common/FilterToolbar';
 import PageHero from '../../components/common/PageHero';
+import Breadcrumb from '../../components/common/Breadcrumb';
 import PartenaireCard from '../../components/PartenaireComponents/PartenaireCard';
 
 import { GREEN } from '../../constants/colors';
@@ -41,7 +48,16 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [typeFilter, setTypeFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (showSearch && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [showSearch]);
 
   useEffect(() => {
     const loadPartenaires = async () => {
@@ -77,14 +93,20 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
     loadPartenaires();
   }, []);
 
-  const hasActiveFilters = typeFilter !== 'all';
-  const activeFilterCount = hasActiveFilters ? 1 : 0;
+  const hasActiveFilters = typeFilter !== 'all' || searchTerm !== '';
+  const activeFilterCount = typeFilter !== 'all' ? 1 : 0;
 
-  const filteredPartenaires = useMemo(
-    () =>
-      allPartenaires.filter((partenaire) => typeFilter === 'all' || partenaire.type === typeFilter),
-    [allPartenaires, typeFilter]
-  );
+  const filteredPartenaires = useMemo(() => {
+    const search = searchTerm.toLowerCase();
+    return allPartenaires.filter((partenaire) => {
+      const matchesSearch =
+        partenaire.nom.toLowerCase().includes(search) ||
+        (partenaire.secteur || '').toLowerCase().includes(search) ||
+        (partenaire.description || '').toLowerCase().includes(search);
+      const matchesType = typeFilter === 'all' || partenaire.type === typeFilter;
+      return matchesSearch && matchesType;
+    });
+  }, [allPartenaires, typeFilter, searchTerm]);
 
   const resultCount = filteredPartenaires.length;
   const resultText = `${resultCount} partenaire${resultCount > 1 ? 's' : ''} trouvé${resultCount > 1 ? 's' : ''}`;
@@ -93,23 +115,41 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
     setTypeFilter(event.target.value);
   };
 
+  const handleToggleSearch = () => {
+    setShowSearch((prev) => !prev);
+    if (showSearch) setSearchTerm('');
+  };
+
   const handleResetFilters = () => {
     setTypeFilter('all');
+    setSearchTerm('');
+    setShowSearch(false);
     setShowFilters(false);
   };
 
-  const activeFilterChips = hasActiveFilters
-    ? [
-        {
-          key: 'type',
-          label: `Type: ${typeFilter}`,
-          onDelete: () => setTypeFilter('all'),
-        },
-      ]
-    : [];
+  const activeFilterChips = [
+    ...(searchTerm
+      ? [
+          {
+            key: 'search',
+            label: `Recherche: "${searchTerm}"`,
+            onDelete: () => setSearchTerm(''),
+          },
+        ]
+      : []),
+    ...(typeFilter !== 'all'
+      ? [
+          {
+            key: 'type',
+            label: `Type: ${typeFilter}`,
+            onDelete: () => setTypeFilter('all'),
+          },
+        ]
+      : []),
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-ink-50">
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Partenaires ESSG"
@@ -124,6 +164,8 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
         ]}
       />
 
+      <Breadcrumb items={[{ label: 'Partenaires' }]} />
+
       <FilterToolbar
         resultText={resultText}
         showFilters={showFilters}
@@ -132,6 +174,42 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
         onToggleFilters={() => setShowFilters((prev) => !prev)}
         onResetFilters={handleResetFilters}
         activeFilterChips={activeFilterChips}
+        searchEnabled
+        showSearch={showSearch}
+        searchIsActive={searchTerm !== ''}
+        onToggleSearch={handleToggleSearch}
+        searchContent={
+          <TextField
+            inputRef={searchInputRef}
+            fullWidth
+            size="small"
+            placeholder="Rechercher un partenaire par nom, secteur ou description..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchRoundedIcon sx={{ color: GREEN[600] }} />
+                </InputAdornment>
+              ),
+              endAdornment: searchTerm && (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={() => setSearchTerm('')}>
+                    <CloseRoundedIcon sx={{ fontSize: 18 }} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '0.75rem',
+                '&.Mui-focused fieldset': {
+                  borderColor: GREEN[600],
+                },
+              },
+            }}
+          />
+        }
       >
         <div className="max-w-xs">
           <FormControl fullWidth size="small">
@@ -163,8 +241,17 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
       {loading && (
         <section className="py-12">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <p className="text-gray-500">Chargement des partenaires...</p>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card">
+                  <div className="mb-4 flex justify-center">
+                    <Skeleton variant="circular" width={80} height={80} />
+                  </div>
+                  <Skeleton variant="text" width="70%" className="mx-auto" />
+                  <Skeleton variant="text" width="40%" className="mx-auto" />
+                  <Skeleton variant="text" width="90%" className="mx-auto mt-4" />
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -174,7 +261,7 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
         <section className="py-12">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <p className="text-red-500">{error}</p>
+              <p className="text-red-600">{error}</p>
             </div>
           </div>
         </section>

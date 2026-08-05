@@ -18,9 +18,16 @@ const MobileCta: React.FC<MobileCtaProps> = ({ label, link }) => {
         fullWidth
         endIcon={<ArrowForwardRoundedIcon />}
         sx={{
-          borderRadius: '0.75rem',
+          borderRadius: '0.9rem',
+          py: 1.25,
           textTransform: 'none',
           fontWeight: 600,
+          borderColor: 'primary.main',
+          color: 'primary.main',
+          '&:hover': {
+            borderColor: 'primary.dark',
+            backgroundColor: 'primary.50',
+          },
         }}
       >
         {label}

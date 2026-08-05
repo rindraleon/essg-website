@@ -36,22 +36,27 @@ const AdmissionTimeline: React.FC<AdmissionTimelineProps> = (
   const { title = 'Calendrier des admissions 2026', steps = DEFAULT_STEPS } = props;
 
   return (
-    <section className="border-b border-gray-200 bg-white py-12">
+    <section className="border-b border-ink-100 bg-white py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-8 text-center text-2xl font-bold text-gray-900">{title}</h2>
+        <h2 className="mb-10 text-center text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
+          {title}
+        </h2>
 
         <div className="grid gap-6 md:grid-cols-4">
           {steps.map((etape) => (
             <Card
               key={etape.titre}
               sx={{
-                borderRadius: '1rem',
-                border: '1px solid #e5e7eb',
+                borderRadius: '1.25rem',
+                border: '1px solid',
+                borderColor: 'divider',
                 textAlign: 'center',
                 transition: 'all 0.3s ease',
                 '&:hover': {
-                  boxShadow: '0 8px 16px rgba(0,0,0,0.06)',
-                  transform: 'translateY(-2px)',
+                  boxShadow:
+                    '0 2px 4px rgba(15, 33, 30, 0.05), 0 16px 40px -12px rgba(15, 33, 30, 0.16)',
+                  transform: 'translateY(-4px)',
+                  borderColor: GREEN[200],
                 },
               }}
             >
@@ -67,7 +72,7 @@ const AdmissionTimeline: React.FC<AdmissionTimelineProps> = (
                   {etape.date}
                 </div>
 
-                <div className="font-semibold text-gray-900">{etape.titre}</div>
+                <div className="font-semibold text-ink-900">{etape.titre}</div>
               </CardContent>
             </Card>
           ))}

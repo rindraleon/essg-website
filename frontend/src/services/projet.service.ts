@@ -19,7 +19,7 @@ const transformProjet = (projet: ApiProjet): ProjetItem => ({
   titre: projet.titre,
   type: projet.type,
   statut: projet.statut || 'En cours',
-  annee: new Date(projet.date).getFullYear().toString(),
+  annee: new Date(projet.date ?? '').getFullYear().toString(),
   description: projet.description,
   partenaires:
     projet.partenaires?.map((partenaire) =>
@@ -28,11 +28,13 @@ const transformProjet = (projet: ApiProjet): ProjetItem => ({
   image: projet.image,
   budget: projet.budget,
   objectifs: projet.objectifs,
+  sourceDonnees: projet.sourceDonnees,
+  galerie: projet.galerie,
   location:
     projet.latitude && projet.longitude
       ? {
-          lat: Number.parseFloat(projet.latitude),
-          lng: Number.parseFloat(projet.longitude),
+          lat: Number.parseFloat(String(projet.latitude)),
+          lng: Number.parseFloat(String(projet.longitude)),
           ville: projet.ville || '',
           pays: projet.pays || '',
           adresse: projet.adresse,

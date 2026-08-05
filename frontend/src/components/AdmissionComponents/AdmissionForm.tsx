@@ -155,8 +155,11 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (props: Readonly<AdmissionFo
     <>
       <Card
         sx={{
-          borderRadius: '1rem',
-          border: '2px solid #e5e7eb',
+          borderRadius: '1.5rem',
+          border: '1px solid',
+          borderColor: 'divider',
+          boxShadow: '0 1px 2px rgba(15, 33, 30, 0.04), 0 4px 16px -4px rgba(15, 33, 30, 0.08)',
+          overflow: 'hidden',
         }}
       >
         {/* <div
@@ -167,8 +170,8 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (props: Readonly<AdmissionFo
                 /> */}
 
         <CardContent className="p-6 sm:p-8">
-          <h2 className="mb-2 text-2xl font-bold text-gray-900">Formulaire de candidature</h2>
-          <p className="mb-8 text-sm text-gray-600">
+          <h2 className="mb-2 text-2xl font-bold text-ink-900">Formulaire de candidature</h2>
+          <p className="mb-8 text-sm text-ink-500">
             Remplissez ce formulaire pour soumettre votre candidature. Assurez-vous de fournir des
             informations exactes.
           </p>
@@ -176,9 +179,7 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (props: Readonly<AdmissionFo
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Informations personnelles */}
             <div>
-              <h3 className="mb-4 text-lg font-semibold text-gray-900">
-                Informations personnelles
-              </h3>
+              <h3 className="mb-4 text-lg font-semibold text-ink-900">Informations personnelles</h3>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <TextField
@@ -247,7 +248,7 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (props: Readonly<AdmissionFo
 
             {/* Formation souhaitée */}
             <div>
-              <h3 className="mb-4 text-lg font-semibold text-gray-900">Formation souhaitée</h3>
+              <h3 className="mb-4 text-lg font-semibold text-ink-900">Formation souhaitée</h3>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <FormControl fullWidth size="small">
@@ -308,7 +309,7 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (props: Readonly<AdmissionFo
 
             {/* Parcours académique */}
             <div>
-              <h3 className="mb-4 text-lg font-semibold text-gray-900">Parcours académique</h3>
+              <h3 className="mb-4 text-lg font-semibold text-ink-900">Parcours académique</h3>
 
               <div className="space-y-4">
                 <TextField
@@ -324,7 +325,7 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (props: Readonly<AdmissionFo
                 />
 
                 <div>
-                  <label htmlFor="cv" className="mb-2 block text-sm font-medium text-gray-700">
+                  <label htmlFor="cv" className="mb-2 block text-sm font-medium text-ink-700">
                     CV (PDF) *
                   </label>
                   <Button
@@ -333,14 +334,15 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (props: Readonly<AdmissionFo
                     fullWidth
                     startIcon={<CloudUploadRoundedIcon />}
                     sx={{
-                      borderRadius: '0.75rem',
-                      borderColor: '#d1d5db',
-                      color: '#6b7280',
+                      borderRadius: '0.9rem',
+                      borderColor: 'divider',
+                      color: 'text.secondary',
                       textTransform: 'none',
                       justifyContent: 'flex-start',
                       py: 1.25,
+                      backgroundColor: '#ffffff',
                       '&:hover': {
-                        borderColor: GREEN[900],
+                        borderColor: GREEN[700],
                         backgroundColor: GREEN[50],
                       },
                     }}
@@ -358,7 +360,7 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (props: Readonly<AdmissionFo
                 </div>
 
                 <div>
-                  <label htmlFor="lettre" className="mb-2 block text-sm font-medium text-gray-700">
+                  <label htmlFor="lettre" className="mb-2 block text-sm font-medium text-ink-700">
                     Lettre de motivation (PDF) *
                   </label>
                   <Button
@@ -367,14 +369,15 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (props: Readonly<AdmissionFo
                     fullWidth
                     startIcon={<CloudUploadRoundedIcon />}
                     sx={{
-                      borderRadius: '0.75rem',
-                      borderColor: '#d1d5db',
-                      color: '#6b7280',
+                      borderRadius: '0.9rem',
+                      borderColor: 'divider',
+                      color: 'text.secondary',
                       textTransform: 'none',
                       justifyContent: 'flex-start',
                       py: 1.25,
+                      backgroundColor: '#ffffff',
                       '&:hover': {
-                        borderColor: GREEN[900],
+                        borderColor: GREEN[700],
                         backgroundColor: GREEN[50],
                       },
                     }}
@@ -416,10 +419,10 @@ const AdmissionForm: React.FC<AdmissionFormProps> = (props: Readonly<AdmissionFo
                 }
                 label={
                   <div>
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium text-ink-900">
                       J&apos;accepte les conditions générales *
                     </span>
-                    <p className="mt-1 text-sm text-gray-600">
+                    <p className="mt-1 text-sm text-ink-500">
                       Je certifie que les informations fournies sont exactes et je comprends que
                       toute fausse déclaration peut entraîner le rejet de ma candidature.
                     </p>

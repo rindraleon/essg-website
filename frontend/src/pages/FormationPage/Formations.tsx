@@ -15,7 +15,14 @@ import Select from '@mui/material/Select';
 import Skeleton from '@mui/material/Skeleton';
 import TextField from '@mui/material/TextField';
 import type { SelectChangeEvent } from '@mui/material/Select';
-import { CtaSection, EmptyState, PageHero, FilterToolbar, FormationCard } from '../../components';
+import {
+  CtaSection,
+  EmptyState,
+  PageHero,
+  Breadcrumb,
+  FilterToolbar,
+  FormationCard,
+} from '../../components';
 import { GREEN } from '../../constants/colors';
 import { useFormations, useScrollToTop } from '../../hooks';
 import type { Formation } from '../../types/formations.types';
@@ -156,7 +163,7 @@ const FormationsPage: React.FC = () => {
   const activeFilterCount = (niveauFilter !== 'all' ? 1 : 0) + (domaineFilter !== 'all' ? 1 : 0);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-ink-50">
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Campus ESSG"
@@ -167,6 +174,7 @@ const FormationsPage: React.FC = () => {
         stats={HERO_STATS}
         minHeight="70vh"
       />
+      <Breadcrumb items={[{ label: 'Formations' }]} />
 
       <FilterToolbar
         resultText={resultText}
@@ -268,7 +276,7 @@ const FormationsPage: React.FC = () => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Erreur */}
           {error && (
-            <div className="text-center py-10 text-red-500">
+            <div className="text-center py-10 text-red-600">
               <p>Erreur : {error}</p>
             </div>
           )}
@@ -279,7 +287,7 @@ const FormationsPage: React.FC = () => {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm"
+                  className="rounded-2xl overflow-hidden border border-ink-100 shadow-card"
                 >
                   <Skeleton variant="rectangular" height={200} />
                   <div className="p-5 space-y-3">

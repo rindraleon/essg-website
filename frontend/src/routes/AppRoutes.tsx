@@ -1,9 +1,12 @@
 import { Route, Routes } from 'react-router-dom';
 import {
   Home,
+  AboutPage,
   FormationsPage,
   FormationDetailPage,
   PartenairesPage,
+  PartenaireDetailPage,
+  RessourceHumaineDetailPage,
   ProjetsPage,
   ProjetDetailPage,
   ActualitesPage,
@@ -18,11 +21,14 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path={routesStatic.home} element={<Home />} />
+      <Route path={routesStatic.about} element={<AboutPage />} />
       <Route path={routesStatic.formations} element={<FormationsPage />} />
       <Route path={routesStatic.formationDetail} element={<FormationDetailPage />} />
       <Route path={routesStatic.actualites} element={<ActualitesPage />} />
       <Route path={routesStatic.actualiteDetail} element={<ActualiteDetailPage />} />
       <Route path={routesStatic.partenaires} element={<PartenairesPage />} />
+      <Route path={routesStatic.partenaireDetail} element={<PartenaireDetailPage />} />
+      <Route path={routesStatic.ressourceHumaineDetail} element={<RessourceHumaineDetailPage />} />
       <Route path={routesStatic.projets} element={<ProjetsPage />} />
       <Route path={routesStatic.projetDetail} element={<ProjetDetailPage />} />
       <Route path={routesStatic.faq} element={<FaqPage />} />

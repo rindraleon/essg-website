@@ -13,8 +13,6 @@ export { default as LocalisationSection } from './HomeComponents/LocalisationSec
 export { default as AdmissionSection } from './HomeComponents/AdmissionSection';
 export { default as ActualitesSection } from './HomeComponents/ActualitesSection';
 export { default as RessourceHumaineSection } from './HomeComponents/RessourceHumaineSection';
-// Example components
-export { default as ExampleComponents } from './ExampleComponents/ExampleComponents';
 
 // Formation components
 export { default as FormationCard } from './FormationComponents/FormationCard';
@@ -25,8 +23,10 @@ export { default as CtaSection } from './common/CtaSection';
 export { default as EmptyState } from './common/EmptyState';
 export { default as PageHero } from './common/PageHero';
 export { default as FilterToolbar } from './common/FilterToolbar';
+export { default as Breadcrumb } from './common/Breadcrumb';
 export { default as CategoryChip } from './common/CategoryChip';
 export { default as SectionHeader } from './common/SectionHeader';
+export { default as SectionCta } from './common/SectionCta';
 export { default as SectionContent } from './common/SectionContent';
 export { default as ScrollableCardGrid } from './common/ScrollableCardGrid';
 export { default as MobileCta } from './common/MobileCta';
@@ -51,4 +51,5 @@ export { default as ContactInfoCards } from './Contact/ContactInfoCards';
 
 //projet components
 export { default as ProjetCard } from './ProjetComponents/ProjetCard';
+export { default as ProjetGallery } from './ProjetComponents/ProjetGallery';
 export { default as MapEmbed } from './ProjetComponents/MapEmbed';

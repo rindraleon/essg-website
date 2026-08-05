@@ -24,6 +24,13 @@ const partenaireService = {
     return res.json();
   },
 
+  async findBySlug(slug: string): Promise<PartenaireItem> {
+    const res = await fetch(`${BASE_URL}/slug/${slug}`);
+    if (!res.ok) throw new Error('Partenaire non trouvé');
+    const data = await res.json();
+    return data.data || data;
+  },
+
   async search(query: string): Promise<PartenaireItem[]> {
     const res = await fetch(`${BASE_URL}/search?q=${encodeURIComponent(query)}`);
     if (!res.ok) throw new Error('Erreur lors de la recherche');

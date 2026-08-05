@@ -45,11 +45,11 @@ const ScrollableCardGrid: React.FC<ScrollableCardGridProps> = ({
 
   return (
     <div className={`w-full ${className}`}>
-      <div className="mb-4 flex justify-end gap-2">
+      <div className="mb-2 flex justify-end gap-2">
         <button
           onClick={() => scroll('left')}
           disabled={isAtStart}
-          className="hidden lg:flex items-center justify-center rounded-full border border-gray-200 bg-white p-2 text-gray-800 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30"
+          className="hidden lg:flex items-center justify-center rounded-full border border-ink-100 bg-white p-2 text-ink-700 shadow-card transition-all duration-200 hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-ink-100 disabled:hover:bg-white disabled:hover:text-ink-700"
           aria-label="Défiler vers la gauche"
         >
           <KeyboardArrowLeftRoundedIcon sx={{ fontSize: 28 }} />
@@ -58,7 +58,7 @@ const ScrollableCardGrid: React.FC<ScrollableCardGridProps> = ({
         <button
           onClick={() => scroll('right')}
           disabled={isAtEnd}
-          className="hidden lg:flex items-center justify-center rounded-full border border-gray-200 bg-white p-2 text-gray-800 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30"
+          className="hidden lg:flex items-center justify-center rounded-full border border-ink-100 bg-white p-2 text-ink-700 shadow-card transition-all duration-200 hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-ink-100 disabled:hover:bg-white disabled:hover:text-ink-700"
           aria-label="Défiler vers la droite"
         >
           <KeyboardArrowRightRoundedIcon sx={{ fontSize: 28 }} />

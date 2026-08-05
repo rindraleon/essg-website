@@ -39,9 +39,11 @@ const SectionContent: React.FC<SectionContentProps> = ({
         {loading ? (
           loadingSkeletons
         ) : error ? (
-          <div className="py-10 text-center text-red-600">{errorMessage}</div>
+          <div className="py-14 text-center">
+            <p className="text-ink-500">{errorMessage}</p>
+          </div>
         ) : isEmpty ? (
-          <div className="py-10 text-center text-gray-500">{emptyMessage}</div>
+          <div className="py-14 text-center text-ink-500">{emptyMessage}</div>
         ) : (
           children
         )}
