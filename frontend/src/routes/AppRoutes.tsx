@@ -6,6 +6,7 @@ import {
   FormationDetailPage,
   PartenairesPage,
   PartenaireDetailPage,
+  RessourcesHumainesPage,
   RessourceHumaineDetailPage,
   ProjetsPage,
   ProjetDetailPage,
@@ -28,6 +29,7 @@ const AppRoutes = () => {
       <Route path={routesStatic.actualiteDetail} element={<ActualiteDetailPage />} />
       <Route path={routesStatic.partenaires} element={<PartenairesPage />} />
       <Route path={routesStatic.partenaireDetail} element={<PartenaireDetailPage />} />
+      <Route path={routesStatic.ressourcesHumaines} element={<RessourcesHumainesPage />} />
       <Route path={routesStatic.ressourceHumaineDetail} element={<RessourceHumaineDetailPage />} />
       <Route path={routesStatic.projets} element={<ProjetsPage />} />
       <Route path={routesStatic.projetDetail} element={<ProjetDetailPage />} />

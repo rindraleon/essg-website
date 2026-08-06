@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SectionCta } from '../../components';
 import partenaireService from '../../services/partenaire.service';
 import { getImageUrl } from '../../utils/image.utils';
@@ -14,6 +15,7 @@ const PartenairesSection = ({
 }: PartenairesSectionProps) => {
   const [partenaires, setPartenaires] = useState<PartenaireItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadPartenaires = async () => {
@@ -72,23 +74,40 @@ const PartenairesSection = ({
             <div className="flex animate-scroll">
               {duplicatedPartenaires.map((partenaire, index) => {
                 const logoUrl = getLogoUrl(partenaire);
+                const handleClick = () => {
+                  const slug = partenaire.slug || String(partenaire.id);
+                  navigate(`/partenaires/${slug}`);
+                };
+
                 return (
                   <div
                     key={`${partenaire.id}-${index}`}
                     className="flex-shrink-0 mx-8 w-32 h-32 flex items-center justify-center"
                   >
                     {logoUrl ? (
-                      <img
-                        src={logoUrl}
-                        alt={`${partenaire.nom} logo`}
-                        className="max-w-full max-h-full object-contain"
-                      />
+                      <button
+                        type="button"
+                        aria-label={`Voir la page de ${partenaire.nom}`}
+                        className="flex h-full w-full items-center justify-center rounded-2xl bg-transparent p-0"
+                        onClick={handleClick}
+                      >
+                        <img
+                          src={logoUrl}
+                          alt={`${partenaire.nom} logo`}
+                          className="max-w-full max-h-full object-contain cursor-pointer hover:opacity-80 transition-opacity"
+                        />
+                      </button>
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-brand-50 rounded-2xl border border-brand-100">
+                      <button
+                        type="button"
+                        aria-label={`Voir la page de ${partenaire.nom}`}
+                        className="w-full h-full flex items-center justify-center bg-brand-50 rounded-2xl border border-brand-100 cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={handleClick}
+                      >
                         <span className="text-xs text-ink-500 text-center px-2">
                           {partenaire.nom}
                         </span>
-                      </div>
+                      </button>
                     )}
                   </div>
                 );

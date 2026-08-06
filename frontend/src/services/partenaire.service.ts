@@ -1,7 +1,7 @@
 import type { PartenaireItem } from '../types/partenaire.types';
 
-const API_BASE_URL = import.meta.env.VITE_APP_URL || 'http://localhost:3000';
-const BASE_URL = `${API_BASE_URL.replace(/\/api\/?$/, '')}/partners`;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+const BASE_URL = `${API_BASE_URL.replace(/\/$/, '')}/partners`;
 
 const partenaireService = {
   async findAll(): Promise<PartenaireItem[]> {
@@ -25,7 +25,7 @@ const partenaireService = {
   },
 
   async findBySlug(slug: string): Promise<PartenaireItem> {
-    const res = await fetch(`${BASE_URL}/slug/${slug}`);
+    const res = await fetch(`${BASE_URL}/slug/${encodeURIComponent(slug)}`);
     if (!res.ok) throw new Error('Partenaire non trouvé');
     const data = await res.json();
     return data.data || data;

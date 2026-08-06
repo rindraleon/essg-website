@@ -34,6 +34,9 @@ export { default as MobileCta } from './common/MobileCta';
 // Partenaires components
 export { default as PartenaireCard } from './PartenaireComponents/PartenaireCard';
 
+// Ressources Humaines components
+export { default as RessourceHumaineCard } from './RessourceHumaineComponents/RessourceHumaineCard';
+
 // Actualité components
 export { default as ActualiteCard } from './ActualiteCompnent/ActualiteCard';
 

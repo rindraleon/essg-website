@@ -58,7 +58,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
           <div className="mt-8 text-center">
             <Button
               component={RouterLink}
-              to="/"
+              to="/RessourceHumaineDetailPage"
               variant="outlined"
               startIcon={<ArrowBackRoundedIcon />}
               sx={{
@@ -81,7 +81,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
     );
   }
 
-  const fullName = `${ressourceHumaine.prenom} ${ressourceHumaine.nom}`;
+  const fullName = `${ressourceHumaine.nom} ${ressourceHumaine.prenom}`;
   const photoUrl = ressourceHumaine.photo ? getImageUrl(ressourceHumaine.photo) : '';
 
   const infoItems = [
@@ -121,13 +121,12 @@ const RessourceHumaineDetailPage: React.FC = () => {
         minHeight="50vh"
       />
 
-      {/* Fil d'Ariane */}
-      <Breadcrumb items={[{ label: 'Équipe', to: '/' }, { label: fullName }]} />
+     
+      <Breadcrumb items={[{ label: 'Ressources Humaines', to: '/RessourcesHumainesPage' }, { label: fullName }]} />
 
-      {/* Contenu principal */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-3">
-          {/* Colonne latérale */}
+          
           <div className="lg:col-span-1">
             <div className="overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-card">
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink-100">
@@ -143,8 +142,8 @@ const RessourceHumaineDetailPage: React.FC = () => {
                 ) : (
                   <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-100 to-brand-200">
                     <span className="text-6xl font-bold text-brand-600">
-                      {ressourceHumaine.prenom[0]}
                       {ressourceHumaine.nom[0]}
+                      {ressourceHumaine.prenom[0]}
                     </span>
                   </div>
                 )}
@@ -159,7 +158,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Colonne principale */}
+          
           <div className="lg:col-span-2">
             <div className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card sm:p-8">
               <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-ink-900">
@@ -211,7 +210,6 @@ const RessourceHumaineDetailPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Section CTA */}
       <CtaSection
         icon={<GroupsRoundedIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
         title="Une question pour notre équipe ?"

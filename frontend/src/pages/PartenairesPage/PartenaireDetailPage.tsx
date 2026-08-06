@@ -10,7 +10,7 @@ import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 import Button from '@mui/material/Button';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import { CtaSection, EmptyState, PageHero, Breadcrumb } from '../../components';
-import { GREEN } from '../../constants/colors';
+import { BRAND, SAGE } from '../../constants/colors';
 import { usePartenaireBySlug, useScrollToTop } from '../../hooks';
 import { useTitle } from '../../hooks/useTitle';
 import { getImageUrl } from '../../utils/image.utils';
@@ -19,7 +19,7 @@ const FALLBACK_HERO =
   'https://images.unsplash.com/photo-1497366754035-f200968a6e72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
 
 const getTypeIcon = (type: string) => {
-  const sx = { fontSize: 24, color: GREEN[600] };
+  const sx = { fontSize: 24, color: BRAND[600] };
   switch (type) {
     case 'Entreprise':
       return <ApartmentRoundedIcon sx={sx} />;
@@ -54,11 +54,11 @@ const PartenaireDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-ink-50">
+      <div className="min-h-screen bg-neutral-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-brand-600 border-r-transparent"></div>
-            <p className="text-ink-500">Chargement du partenaire...</p>
+            <p className="text-slate-500" style={{ fontFamily: 'Inter, sans-serif' }}>Chargement du partenaire...</p>
           </div>
         </div>
       </div>
@@ -67,10 +67,10 @@ const PartenaireDetailPage: React.FC = () => {
 
   if (error || !partenaire) {
     return (
-      <div className="min-h-screen bg-ink-50">
+      <div className="min-h-screen bg-neutral-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <EmptyState
-            icon={<HandshakeRoundedIcon sx={{ fontSize: 40, color: GREEN[400] }} />}
+            icon={<HandshakeRoundedIcon sx={{ fontSize: 40, color: SAGE[400] }} />}
             title="Partenaire introuvable"
             description="Le partenaire que vous recherchez n'existe pas ou a été supprimé."
             actionLabel="Retour aux partenaires"
@@ -84,14 +84,14 @@ const PartenaireDetailPage: React.FC = () => {
               variant="outlined"
               startIcon={<ArrowBackRoundedIcon />}
               sx={{
-                borderRadius: '0.75rem',
+                borderRadius: '0.5rem',
                 textTransform: 'none',
                 fontWeight: 600,
-                borderColor: GREEN[600],
-                color: GREEN[600],
+                borderColor: BRAND[600],
+                color: BRAND[600],
                 '&:hover': {
-                  borderColor: GREEN[700],
-                  backgroundColor: GREEN[50],
+                  borderColor: BRAND[700],
+                  backgroundColor: BRAND[50],
                 },
               }}
             >
@@ -107,29 +107,29 @@ const PartenaireDetailPage: React.FC = () => {
 
   const infoItems = [
     partenaire.secteur && {
-      icon: <ApartmentRoundedIcon sx={{ fontSize: 20, color: GREEN[600] }} />,
+      icon: <ApartmentRoundedIcon sx={{ fontSize: 20, color: BRAND[600] }} />,
       label: 'Secteur',
       value: partenaire.secteur,
     },
     partenaire.pays && {
-      icon: <PublicRoundedIcon sx={{ fontSize: 20, color: GREEN[600] }} />,
+      icon: <PublicRoundedIcon sx={{ fontSize: 20, color: BRAND[600] }} />,
       label: 'Pays',
       value: partenaire.pays,
     },
     partenaire.contact && {
-      icon: <MailRoundedIcon sx={{ fontSize: 20, color: GREEN[600] }} />,
+      icon: <MailRoundedIcon sx={{ fontSize: 20, color: BRAND[600] }} />,
       label: 'Contact',
       value: partenaire.contact,
     },
     partenaire.dateDebut && {
-      icon: <CalendarTodayRoundedIcon sx={{ fontSize: 20, color: GREEN[600] }} />,
+      icon: <CalendarTodayRoundedIcon sx={{ fontSize: 20, color: BRAND[600] }} />,
       label: 'Date de début',
       value: formatDate(partenaire.dateDebut),
     },
   ].filter(Boolean) as { icon: React.ReactNode; label: string; value: string }[];
 
   return (
-    <div className="min-h-screen bg-ink-50">
+    <div className="min-h-screen bg-neutral-50">
       <PageHero
         image={FALLBACK_HERO}
         imageAlt={partenaire.nom}
@@ -141,20 +141,18 @@ const PartenaireDetailPage: React.FC = () => {
       />
 
       {/* Fil d'Ariane */}
-      <Breadcrumb
-        items={[{ label: 'Partenaires', to: '/partenaires' }, { label: partenaire.nom }]}
-      />
+      <Breadcrumb items={[{ label: 'Partenaires', to: '/partenaires' }, { label: partenaire.nom }]} />
 
       {/* Contenu principal */}
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Colonne latérale */}
           <div className="lg:col-span-1">
-            <div className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card">
+            <div className="rounded-lg border border-neutral-200 bg-white p-6" style={{ boxShadow: '0 4px 20px rgba(95, 99, 105, 0.08)' }}>
               <div className="mb-5 flex items-center justify-center">
                 <div
-                  className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-2xl border-2 bg-brand-50"
-                  style={{ borderColor: GREEN[100] }}
+                  className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-lg border-2 bg-sage-50"
+                  style={{ borderColor: SAGE[200] }}
                 >
                   {logoUrl ? (
                     <img
@@ -174,7 +172,7 @@ const PartenaireDetailPage: React.FC = () => {
               </div>
 
               <div className="mb-5 flex justify-center">
-                <span className="inline-flex items-center rounded-full border border-brand-100 bg-brand-50 px-3.5 py-1 text-xs font-semibold text-brand-700">
+                <span className="inline-flex items-center rounded-full border border-sage-200 bg-sage-50 px-3.5 py-1 text-xs font-semibold text-sage-700">
                   {partenaire.type}
                 </span>
               </div>
@@ -193,14 +191,14 @@ const PartenaireDetailPage: React.FC = () => {
                   fullWidth
                   startIcon={<LanguageRoundedIcon />}
                   sx={{
-                    borderRadius: '0.75rem',
+                    borderRadius: '0.5rem',
                     textTransform: 'none',
                     fontWeight: 600,
-                    borderColor: GREEN[600],
-                    color: GREEN[600],
+                    borderColor: BRAND[600],
+                    color: BRAND[600],
                     '&:hover': {
-                      borderColor: GREEN[700],
-                      backgroundColor: GREEN[50],
+                      borderColor: BRAND[700],
+                      backgroundColor: BRAND[50],
                     },
                   }}
                 >
@@ -212,12 +210,13 @@ const PartenaireDetailPage: React.FC = () => {
 
           {/* Colonne principale */}
           <div className="lg:col-span-2">
-            <div className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card sm:p-8">
-              <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-ink-900">
-                <HandshakeRoundedIcon sx={{ color: GREEN[700] }} />À propos de ce partenaire
+            <div className="rounded-lg border border-neutral-200 bg-white p-6 sm:p-8" style={{ boxShadow: '0 4px 20px rgba(95, 99, 105, 0.08)' }}>
+              <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-slate-800">
+                <HandshakeRoundedIcon sx={{ color: BRAND[700] }} />
+                <span style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}>À propos de ce partenaire</span>
               </h2>
 
-              <p className="mb-8 leading-7 text-ink-600">
+              <p className="mb-8 leading-7 text-slate-600" style={{ fontFamily: 'Inter, sans-serif' }}>
                 {partenaire.description ||
                   `${partenaire.nom} est un partenaire de type « ${partenaire.type} » collaborant avec l'ESSG pour la formation, la recherche et l'innovation en sciences géomatiques.`}
               </p>
@@ -227,16 +226,16 @@ const PartenaireDetailPage: React.FC = () => {
                   {infoItems.map((item) => (
                     <div
                       key={item.label}
-                      className="flex items-start gap-3 rounded-xl border border-ink-100 bg-ink-50/60 p-4"
+                      className="flex items-start gap-3 rounded-lg border border-neutral-200 bg-neutral-50 p-4"
                     >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 ring-1 ring-brand-100">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sage-50 ring-1 ring-sage-200">
                         {item.icon}
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xs font-semibold uppercase tracking-wide text-ink-400">
+                        <div className="text-xs font-semibold uppercase tracking-wide text-slate-500" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
                           {item.label}
                         </div>
-                        <div className="mt-0.5 break-words text-sm font-semibold text-ink-900">
+                        <div className="mt-0.5 break-words text-sm font-semibold text-slate-900" style={{ fontFamily: 'Inter, sans-serif' }}>
                           {item.value}
                         </div>
                       </div>
@@ -251,7 +250,7 @@ const PartenaireDetailPage: React.FC = () => {
 
       {/* Section CTA */}
       <CtaSection
-        icon={<HandshakeRoundedIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
+        icon={<HandshakeRoundedIcon sx={{ fontSize: 48, color: SAGE[400] }} />}
         title="Devenir partenaire de l'ESSG"
         description="Rejoignez notre réseau de partenaires prestigieux et contribuez à former les talents de demain en sciences géomatiques."
         primaryLabel="Contactez-nous"

@@ -11,8 +11,8 @@ type ApiProjet = Omit<ProjetItem, 'id' | 'annee' | 'location' | 'partenaires'> &
   partenaires?: Array<string | { nom: string }>;
 };
 
-const API_BASE_URL = import.meta.env.VITE_APP_URL || 'http://localhost:3000';
-const BASE_URL = `${API_BASE_URL.replace(/\/api\/?$/, '')}/projects`;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+const BASE_URL = `${API_BASE_URL.replace(/\/$/, '')}/projects`;
 
 const transformProjet = (projet: ApiProjet): ProjetItem => ({
   id: String(projet.id),

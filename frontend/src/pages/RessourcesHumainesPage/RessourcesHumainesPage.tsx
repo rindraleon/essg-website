@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
+import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -17,12 +17,13 @@ import EmptyState from '../../components/common/EmptyState';
 import FilterToolbar from '../../components/common/FilterToolbar';
 import PageHero from '../../components/common/PageHero';
 import Breadcrumb from '../../components/common/Breadcrumb';
-import PartenaireCard from '../../components/PartenaireComponents/PartenaireCard';
+
 
 import { GREEN } from '../../constants/colors';
-import { partenaireService } from '../../services';
+import { ressourceHumaineService } from '../../services';
 import { useScrollToTop } from '../../hooks';
-import type { PartenairesPageProps, PartenaireItem } from '../../types/partenaire.types';
+import type { RessourceHumaine } from '../../types/ressource-humaine.types';
+import { RessourceHumaineCard } from '../../components';
 
 // Fonction pour générer un slug à partir d'une chaîne
 const generateSlug = (text: string): string => {
@@ -38,27 +39,22 @@ const generateSlug = (text: string): string => {
 const HERO_IMAGE =
   'https://images.unsplash.com/photo-1521737711867-e3b97375f902?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
 
-const TYPES = [
-  { value: 'all', label: 'Tous les types' },
-  { value: 'Entreprise', label: 'Entreprise' },
-  { value: 'Institution', label: 'Institution' },
-  { value: 'Organisation', label: 'Organisation' },
+const POSTES = [
+  { value: 'all', label: 'Tous les postes' },
+  { value: 'Enseignant', label: 'Enseignant' },
+  { value: 'Administratif', label: 'Administratif' },
+  { value: 'Direction', label: 'Direction' },
+  { value: 'Recherche', label: 'Recherche' },
   { value: 'Autre', label: 'Autre' },
 ];
 
-const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<PartenairesPageProps>) => {
+const RessourcesHumainesPage: React.FC = () => {
   useScrollToTop();
 
-  const {
-    pageTitle = 'Nos Partenaires',
-    pageSubtitle = 'ESSG — Réseau & Coopération',
-    pageDescription = 'Des collaborations prestigieuses au niveau national et international pour une excellence partagée.',
-  } = props;
-
-  const [allPartenaires, setAllPartenaires] = useState<PartenaireItem[]>([]);
+  const [allRessourcesHumaines, setAllRessourcesHumaines] = useState<RessourceHumaine[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [typeFilter, setTypeFilter] = useState('all');
+  const [posteFilter, setPosteFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -71,59 +67,61 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
   }, [showSearch]);
 
   useEffect(() => {
-    const loadPartenaires = async () => {
+    const loadRessourcesHumaines = async () => {
       try {
         setLoading(true);
-        const data = await partenaireService.findAllPaginated(1, 100);
+        const data = await ressourceHumaineService.findAll(1, 100);
 
-        const transformedPartenaires: PartenaireItem[] = data.map((partenaire: PartenaireItem) => ({
-          id: partenaire.id,
-          slug: partenaire.slug || generateSlug(partenaire.nom),
-          nom: partenaire.nom,
-          type: partenaire.type,
-          secteur: partenaire.secteur,
-          description: partenaire.description,
-          siteWeb: partenaire.siteWeb,
-          logo: partenaire.logo,
-          contact: partenaire.contact,
-          dateDebut: partenaire.dateDebut,
-          creeLe: partenaire.creeLe,
-          misAJourLe: partenaire.misAJourLe,
+        const transformedRessourcesHumaines: RessourceHumaine[] = data.data.map((rh: RessourceHumaine) => ({
+          id: rh.id,
+          slug: rh.slug || generateSlug(`${rh.nom} ${rh.prenom}`),
+          nom: rh.nom,
+          prenom: rh.prenom,
+          poste: rh.poste,
+          description: rh.description,
+          email: rh.email,
+          telephone: rh.telephone,
+          photo: rh.photo,
+          actif: rh.actif,
+          ordre: rh.ordre,
+          creeLe: rh.creeLe,
+          misAJourLe: rh.misAJourLe,
         }));
 
-        setAllPartenaires(transformedPartenaires);
+        setAllRessourcesHumaines(transformedRessourcesHumaines);
         setError(null);
       } catch (err) {
-        console.error('Erreur lors du chargement des partenaires:', err);
-        setError('Impossible de charger les partenaires');
+        console.error('Erreur lors du chargement des ressources humaines:', err);
+        setError('Impossible de charger les membres de l\'équipe');
       } finally {
         setLoading(false);
       }
     };
 
-    loadPartenaires();
+    loadRessourcesHumaines();
   }, []);
 
-  const hasActiveFilters = typeFilter !== 'all' || searchTerm !== '';
-  const activeFilterCount = typeFilter !== 'all' ? 1 : 0;
+  const hasActiveFilters = posteFilter !== 'all' || searchTerm !== '';
+  const activeFilterCount = posteFilter !== 'all' ? 1 : 0;
 
-  const filteredPartenaires = useMemo(() => {
+  const filteredRessourcesHumaines = useMemo(() => {
     const search = searchTerm.toLowerCase();
-    return allPartenaires.filter((partenaire) => {
+    return allRessourcesHumaines.filter((rh) => {
       const matchesSearch =
-        partenaire.nom.toLowerCase().includes(search) ||
-        (partenaire.secteur || '').toLowerCase().includes(search) ||
-        (partenaire.description || '').toLowerCase().includes(search);
-      const matchesType = typeFilter === 'all' || partenaire.type === typeFilter;
-      return matchesSearch && matchesType;
+        rh.nom.toLowerCase().includes(search) ||
+        rh.prenom.toLowerCase().includes(search) ||
+        (rh.poste || '').toLowerCase().includes(search) ||
+        (rh.description || '').toLowerCase().includes(search);
+      const matchesPoste = posteFilter === 'all' || rh.poste === posteFilter;
+      return matchesSearch && matchesPoste;
     });
-  }, [allPartenaires, typeFilter, searchTerm]);
+  }, [allRessourcesHumaines, posteFilter, searchTerm]);
 
-  const resultCount = filteredPartenaires.length;
-  const resultText = `${resultCount} partenaire${resultCount > 1 ? 's' : ''} trouvé${resultCount > 1 ? 's' : ''}`;
+  const resultCount = filteredRessourcesHumaines.length;
+  const resultText = `${resultCount} membre${resultCount > 1 ? 's' : ''} trouvé${resultCount > 1 ? 's' : ''}`;
 
-  const handleTypeChange = (event: SelectChangeEvent) => {
-    setTypeFilter(event.target.value);
+  const handlePosteChange = (event: SelectChangeEvent) => {
+    setPosteFilter(event.target.value);
   };
 
   const handleToggleSearch = () => {
@@ -132,7 +130,7 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
   };
 
   const handleResetFilters = () => {
-    setTypeFilter('all');
+    setPosteFilter('all');
     setSearchTerm('');
     setShowSearch(false);
     setShowFilters(false);
@@ -148,12 +146,12 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
           },
         ]
       : []),
-    ...(typeFilter !== 'all'
+    ...(posteFilter !== 'all'
       ? [
           {
-            key: 'type',
-            label: `Type: ${typeFilter}`,
-            onDelete: () => setTypeFilter('all'),
+            key: 'poste',
+            label: `Poste: ${posteFilter}`,
+            onDelete: () => setPosteFilter('all'),
           },
         ]
       : []),
@@ -163,19 +161,19 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
     <div className="min-h-screen bg-ink-50">
       <PageHero
         image={HERO_IMAGE}
-        imageAlt="Partenaires ESSG"
-        badgeIcon={<HandshakeRoundedIcon />}
-        badgeLabel={pageSubtitle}
-        title={pageTitle}
-        description={pageDescription}
+        imageAlt="Équipe ESSG"
+        badgeIcon={<GroupsRoundedIcon />}
+        badgeLabel="Notre Équipe"
+        title="Ressources Humaines"
+        description="Découvrez les hommes et femmes qui font de l'ESSG une institution d'excellence en sciences géomatiques."
         stats={[
-          { value: `${allPartenaires.length}+`, label: 'Partenaires' },
-          { value: '30+', label: 'Pays' },
-          { value: '100+', label: 'Projets communs' },
+          { value: `${allRessourcesHumaines.length}+`, label: 'Membres' },
+          { value: '50+', label: 'Années d\'expérience' },
+          { value: '15+', label: 'Partenaires internationaux' },
         ]}
       />
 
-      <Breadcrumb items={[{ label: 'Partenaires' }]} />
+      <Breadcrumb items={[{ label: 'Ressources Humaines' }]} />
 
       <FilterToolbar
         resultText={resultText}
@@ -194,7 +192,7 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
             inputRef={searchInputRef}
             fullWidth
             size="small"
-            placeholder="Rechercher un partenaire par nom, secteur ou description..."
+            placeholder="Rechercher un membre par nom, prénom ou poste..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             slotProps={{
@@ -226,14 +224,14 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
       >
         <div className="max-w-xs">
           <FormControl fullWidth size="small">
-            <InputLabel id="type-label" sx={{ '&.Mui-focused': { color: GREEN[600] } }}>
-              Type de partenaire
+            <InputLabel id="poste-label" sx={{ '&.Mui-focused': { color: GREEN[600] } }}>
+              Poste
             </InputLabel>
             <Select
-              labelId="type-label"
-              label="Type de partenaire"
-              value={typeFilter}
-              onChange={handleTypeChange}
+              labelId="poste-label"
+              label="Poste"
+              value={posteFilter}
+              onChange={handlePosteChange}
               sx={{
                 borderRadius: '0.75rem',
                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
@@ -241,7 +239,7 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
                 },
               }}
             >
-              {TYPES.map((item) => (
+              {POSTES.map((item) => (
                 <MenuItem key={item.value} value={item.value}>
                   {item.label}
                 </MenuItem>
@@ -285,15 +283,15 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {resultCount === 0 ? (
               <EmptyState
-                icon={<HandshakeRoundedIcon sx={{ fontSize: 40, color: GREEN[400] }} />}
-                title="Aucun partenaire trouvé"
+                icon={<GroupsRoundedIcon sx={{ fontSize: 40, color: GREEN[400] }} />}
+                title="Aucun membre trouvé"
                 description="Essayez de modifier vos critères de filtrage."
                 onAction={handleResetFilters}
               />
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredPartenaires.map((partenaire) => (
-                  <PartenaireCard key={partenaire.slug || partenaire.id} partenaire={partenaire} />
+                {filteredRessourcesHumaines.map((rh) => (
+                  <RessourceHumaineCard key={rh.slug || rh.id} ressourceHumaine={rh} />
                 ))}
               </div>
             )}
@@ -302,15 +300,16 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
       )}
 
       <CtaSection
-        icon={<HandshakeRoundedIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
-        title="Devenir partenaire de l'ESSG"
-        description="Rejoignez notre réseau de partenaires prestigieux et contribuez à former les talents de demain."
-        primaryLabel="Contactez-nous"
-        primaryLink="partenariats@essg.mg"
-        primaryIsMailto
+        icon={<GroupsRoundedIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
+        title="Rejoignez notre équipe"
+        description="L'ESSG recherche des talents passionnés par les sciences géomatiques. Consultez nos offres d'emploi."
+        primaryLabel="Nous contacter"
+        primaryLink="/contact"
+        secondaryLabel="Voir les formations"
+        secondaryLink="/formations"
       />
     </div>
   );
 };
 
-export default PartenairesPage;
+export default RessourcesHumainesPage;

@@ -1,7 +1,7 @@
 import type { Formation, PaginationResponse } from '../types/formations.types';
 
-const API_BASE_URL = import.meta.env.VITE_APP_URL || 'http://localhost:3000';
-const BASE_URL = `${API_BASE_URL.replace(/\/api\/?$/, '')}/formations`;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+const BASE_URL = `${API_BASE_URL.replace(/\/$/, '')}/formations`;
 
 const formationService = {
   async findAll(page = 1, limit = 10): Promise<PaginationResponse<Formation>> {

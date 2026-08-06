@@ -42,7 +42,13 @@ export function usePartenaireBySlug(slug: string) {
       try {
         setLoading(true);
         setError(null);
-        const data = await partenaireService.findBySlug(slug);
+        
+        // Si le slug est un nombre, utiliser findOne au lieu de findBySlug
+        const isNumeric = /^\d+$/.test(slug);
+        const data = isNumeric 
+          ? await partenaireService.findOne(Number(slug))
+          : await partenaireService.findBySlug(slug);
+        
         if (!cancelled) setPartenaire(data);
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Erreur inconnue');

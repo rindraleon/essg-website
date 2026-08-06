@@ -1,8 +1,8 @@
 import type { RessourceHumaine } from '../types/ressource-humaine.types';
 import type { PaginationResponse } from '../types/formations.types';
 
-const API_BASE_URL = import.meta.env.VITE_APP_URL || 'http://localhost:3000';
-const BASE_URL = `${API_BASE_URL.replace(/\/api\/?$/, '')}/ressources-humaines`;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+const BASE_URL = `${API_BASE_URL.replace(/\/$/, '')}/ressources-humaines`;
 
 const ressourceHumaineService = {
   async findAll(
