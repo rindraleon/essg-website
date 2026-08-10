@@ -21,13 +21,13 @@ interface ProjetViewDialogProps {
 const getTypeBadgeDarkClass = (typeColor: string) => {
   switch (typeColor) {
     case 'primary':
-      return 'bg-blue-500 text-white';
+      return 'bg-brand-500 text-white';
     case 'success':
       return 'bg-emerald-500 text-white';
     case 'secondary':
       return 'bg-violet-500 text-white';
     case 'warning':
-      return 'bg-amber-500 text-white';
+      return 'bg-sage-500 text-white';
     default:
       return 'border border-white/20 bg-white/10 text-white';
   }
@@ -36,15 +36,15 @@ const getTypeBadgeDarkClass = (typeColor: string) => {
 const getTypeBadgeLightClass = (typeColor: string) => {
   switch (typeColor) {
     case 'primary':
-      return 'border-0 bg-blue-100 text-blue-700 hover:bg-blue-100';
+      return 'border-0 bg-brand-100 text-brand-700 hover:bg-brand-100';
     case 'success':
       return 'border-0 bg-emerald-100 text-emerald-700 hover:bg-emerald-100';
     case 'secondary':
       return 'border-0 bg-violet-100 text-violet-700 hover:bg-violet-100';
     case 'warning':
-      return 'border-0 bg-amber-100 text-amber-700 hover:bg-amber-100';
+      return 'border-0 bg-sage-100 text-sage-600 hover:bg-sage-100';
     default:
-      return 'border-0 bg-slate-100 text-slate-700 hover:bg-slate-100';
+      return 'border-0 bg-ink-100 text-ink-700 hover:bg-ink-100';
   }
 };
 
@@ -56,10 +56,10 @@ interface SectionCardProps {
 }
 
 const SectionCard: React.FC<SectionCardProps> = ({ title, icon, children, className = '' }) => (
-  <div className={`rounded-2xl border border-slate-200 bg-white p-4 shadow-sm ${className}`}>
+  <div className={`rounded-2xl border border-ink-100 bg-white p-4 shadow-sm ${className}`}>
     <div className="mb-3 flex items-center gap-2">
       {icon}
-      <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-700">{title}</h3>
+      <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-700">{title}</h3>
     </div>
     {children}
   </div>
@@ -78,10 +78,10 @@ const ProjectImageCard: React.FC<ProjectImageCardProps> = ({ image, title, dark 
   return (
     <div
       className={`overflow-hidden rounded-2xl border shadow-[0_12px_30px_rgba(0,0,0,0.12)] ${
-        dark ? 'border-white/10 bg-slate-800' : 'border-slate-200 bg-white shadow-sm'
+        dark ? 'border-white/10 bg-ink-800' : 'border-ink-100 bg-white shadow-sm'
       }`}
     >
-      <div className={`aspect-[16/9] w-full ${dark ? 'bg-slate-800' : 'bg-slate-100'}`}>
+      <div className={`aspect-[16/9] w-full ${dark ? 'bg-ink-800' : 'bg-ink-100'}`}>
         {showImage ? (
           <img
             src={getImageUrl(image!)}
@@ -93,17 +93,15 @@ const ProjectImageCard: React.FC<ProjectImageCardProps> = ({ image, title, dark 
           <div
             className={`flex h-full w-full items-center justify-center ${
               dark
-                ? 'bg-gradient-to-br from-slate-800 to-slate-900'
-                : 'bg-gradient-to-br from-slate-100 to-slate-200'
+                ? 'bg-gradient-to-br from-ink-800 to-ink-900'
+                : 'bg-gradient-to-br from-ink-100 to-ink-100'
             }`}
           >
             <div className="text-center">
               <ImageOutlinedIcon
-                className={`mx-auto mb-2 h-12 w-12 ${dark ? 'text-slate-500' : 'text-slate-400'}`}
+                className={`mx-auto mb-2 h-12 w-12 ${dark ? 'text-ink-500' : 'text-ink-400'}`}
               />
-              <p className={`text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>
-                Aucune image
-              </p>
+              <p className={`text-sm ${dark ? 'text-ink-400' : 'text-ink-500'}`}>Aucune image</p>
             </div>
           </div>
         )}
@@ -132,21 +130,22 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
       <DialogContent
         className="
           !w-[96vw]
-          !max-w-6xl
+          !max-w-[calc(100%-1rem)]
+          sm:!max-w-6xl
           !h-[90vh]
           !max-h-[90vh]
           gap-0
           overflow-hidden
           rounded-[30px]
-          border border-slate-200
-          bg-gradient-to-br from-white via-slate-50 to-slate-100
+          border border-ink-100
+          bg-gradient-to-br from-white via-ink-50 to-ink-100
           p-0
           shadow-[0_24px_80px_rgba(15,23,42,0.35)]
           [&>button]:hidden
         "
       >
         <div className="grid h-full min-h-0 lg:grid-cols-[360px_minmax(0,1fr)]">
-          <aside className="hidden min-h-0 flex-col border-r border-slate-200 bg-slate-950 p-5 text-white lg:flex">
+          <aside className="hidden min-h-0 flex-col border-r border-ink-100 bg-ink-950 p-5 text-white lg:flex">
             <ProjectImageCard image={projet.image} title={projet.titre} dark />
 
             <div className="mt-5 space-y-4">
@@ -182,13 +181,13 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
           </aside>
 
           <section className="flex min-h-0 flex-col">
-            <DialogHeader className="shrink-0 border-b border-slate-200 bg-white px-5 py-4 lg:px-6">
+            <DialogHeader className="shrink-0 border-b border-ink-100 bg-white px-5 py-4 lg:px-6">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <DialogTitle className="text-xl font-bold text-slate-900">
+                  <DialogTitle className="text-xl font-bold text-ink-900">
                     Détails du projet
                   </DialogTitle>
-                  <p className="mt-1 text-sm text-slate-500">Présentation complète du projet</p>
+                  <p className="mt-1 text-sm text-ink-500">Présentation complète du projet</p>
                 </div>
 
                 <Button
@@ -196,7 +195,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
                   variant="ghost"
                   size="icon"
                   onClick={onClose}
-                  className="h-10 w-10 shrink-0 rounded-full border border-slate-200 bg-white hover:bg-slate-100"
+                  className="h-10 w-10 shrink-0 rounded-full border border-ink-100 bg-white hover:bg-ink-100"
                   aria-label="Fermer"
                 >
                   <CloseIcon className="h-4 w-4" />
@@ -206,11 +205,11 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
 
             <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 lg:px-6">
               <div className="mb-5 lg:hidden">
-                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <div className="overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-sm">
                   <ProjectImageCard image={projet.image} title={projet.titre} />
 
                   <div className="p-4">
-                    <h2 className="mb-3 text-2xl font-bold text-slate-900">{projet.titre}</h2>
+                    <h2 className="mb-3 text-2xl font-bold text-ink-900">{projet.titre}</h2>
 
                     <div className="mb-3 flex flex-wrap gap-2">
                       <Badge className={`rounded-full ${getTypeBadgeLightClass(typeColor)}`}>
@@ -219,7 +218,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
                       </Badge>
                     </div>
 
-                    <div className="space-y-2 text-sm text-slate-600">
+                    <div className="space-y-2 text-sm text-ink-600">
                       <div className="flex items-center gap-2">
                         <CalendarTodayIcon className="h-4 w-4" />
                         <span>{formatDateLong(projet.date)}</span>
@@ -241,7 +240,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
                 {/* Colonne principale */}
                 <div className="space-y-5">
                   <SectionCard title="Description">
-                    <p className="whitespace-pre-wrap break-words text-sm leading-7 text-slate-600">
+                    <p className="whitespace-pre-wrap break-words text-sm leading-7 text-ink-600">
                       {projet.description}
                     </p>
                   </SectionCard>
@@ -264,9 +263,9 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
                   {hasAddressBlock && (
                     <SectionCard
                       title="Adresse"
-                      icon={<LocationOnIcon className="h-4 w-4 text-slate-500" />}
+                      icon={<LocationOnIcon className="h-4 w-4 text-ink-500" />}
                     >
-                      <div className="space-y-1 text-sm text-slate-600">
+                      <div className="space-y-1 text-sm text-ink-600">
                         {projet.adresse && <p className="break-words">{projet.adresse}</p>}
                         {locationText && <p>{locationText}</p>}
                       </div>
@@ -276,9 +275,9 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
                   {hasLocation && (
                     <SectionCard
                       title="Localisation"
-                      icon={<LocationOnIcon className="h-4 w-4 text-slate-500" />}
+                      icon={<LocationOnIcon className="h-4 w-4 text-ink-500" />}
                     >
-                      <div className="w-full overflow-hidden rounded-xl border border-slate-200 aspect-[16/9]">
+                      <div className="w-full overflow-hidden rounded-xl border border-ink-100 aspect-[16/9]">
                         <MapPicker
                           latitude={Number(projet.latitude)}
                           longitude={Number(projet.longitude)}
@@ -293,7 +292,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
             </div>
 
             {/* Footer fixe */}
-            <div className="flex shrink-0 items-center justify-end border-t border-slate-200 bg-white px-5 py-4 lg:px-6">
+            <div className="flex shrink-0 items-center justify-end border-t border-ink-100 bg-white px-5 py-4 lg:px-6">
               <Button type="button" onClick={onClose} variant="outline" className="rounded-xl">
                 Fermer
               </Button>

@@ -153,7 +153,7 @@ export const ArrayField: React.FC<ArrayFieldProps> = ({
 
   return (
     <div className="w-full">
-      <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+      <label className="flex items-center gap-2 text-sm font-medium text-ink-700 mb-2">
         {icon}
         {label}
         {error && touched && <span className="text-red-500 text-xs ml-1">{error}</span>}
@@ -222,14 +222,14 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
   return (
     <div className="w-full">
-      <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+      <label className="block text-sm font-medium text-ink-700 mb-2">{label}</label>
 
       {imageUrl && (
         <Box className="mb-3">
           <img
             src={imageUrl}
             alt="Aperçu"
-            className="w-full h-48 object-cover rounded-lg border border-gray-300"
+            className="w-full h-48 object-cover rounded-lg border border-ink-300"
             onError={() => onImageChange('')}
           />
         </Box>
@@ -251,17 +251,15 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           disabled={uploading}
           size="small"
           sx={{
-            backgroundColor: '#3b82f6',
+            backgroundColor: '#3d8376',
             '&:hover': {
-              backgroundColor: '#2563eb',
+              backgroundColor: '#2e6a5f',
             },
           }}
         >
           {uploading ? '⏳ Upload en cours...' : '📁 Sélectionner une image'}
         </Button>
-        <p className="text-xs text-gray-500 mt-2">
-          Formats acceptés: JPG, PNG, GIF, WebP (max 5MB)
-        </p>
+        <p className="text-xs text-ink-500 mt-2">Formats acceptés: JPG, PNG, GIF, WebP (max 5MB)</p>
       </Box>
 
       <input
@@ -289,11 +287,11 @@ export const FormCheckbox: React.FC<FormCheckboxProps> = ({ label, checked, onCh
         id={label.toLowerCase().replace(/\s+/g, '-')}
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+        className="w-4 h-4 text-brand-600 rounded focus:ring-2 focus:ring-brand-500"
       />
       <label
         htmlFor={label.toLowerCase().replace(/\s+/g, '-')}
-        className="text-sm font-medium text-gray-700 cursor-pointer"
+        className="text-sm font-medium text-ink-700 cursor-pointer"
       >
         {label}
       </label>

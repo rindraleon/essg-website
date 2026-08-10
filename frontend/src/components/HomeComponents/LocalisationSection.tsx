@@ -88,7 +88,7 @@ const LocalisationSection: React.FC<LocalisationSectionProps> = (
               center={[latitude, longitude]}
               zoom={15}
               scrollWheelZoom={false}
-              className="h-full w-full"
+              className="h-full w-full z-0"
             >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

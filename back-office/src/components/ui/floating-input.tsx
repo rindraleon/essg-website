@@ -18,8 +18,8 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
           type={type}
           placeholder=" "
           className={cn(
-            'peer h-12 rounded-md border border-gray-300 px-3 pt-5 pb-2 text-base',
-            'focus-visible:border-green-800',
+            'peer h-12 rounded-md border border-ink-300 px-3 pt-5 pb-2 text-base',
+            'focus-visible:border-brand-800',
             'focus-visible:ring-0',
             'focus-visible:ring-offset-0',
             error && 'border-red-500',
@@ -32,7 +32,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
           htmlFor={id}
           className={cn(
             'pointer-events-none absolute left-[10px] -top-[10px] z-10',
-            'bg-background px-1 text-xs font-bold text-green-700',
+            'bg-background px-1 text-xs font-bold text-brand-700',
             'transition-all duration-200',
             'peer-placeholder-shown:top-[10px]',
             'peer-placeholder-shown:left-[10px]',
@@ -40,14 +40,14 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
             'peer-placeholder-shown:px-0',
             'peer-placeholder-shown:text-base',
             'peer-placeholder-shown:font-normal',
-            'peer-placeholder-shown:text-gray-400',
+            'peer-placeholder-shown:text-ink-400',
             'peer-focus:-top-[10px]',
             'peer-focus:left-2',
             'peer-focus:bg-background',
             'peer-focus:px-1',
             'peer-focus:text-xs',
             'peer-focus:font-bold',
-            'peer-focus:text-green-800',
+            'peer-focus:text-brand-800',
             error && 'text-red-500 peer-focus:text-red-500'
           )}
         >

@@ -47,10 +47,10 @@ const Breadcrumb: React.FC = () => {
   }
 
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm text-gray-500 mb-4">
+    <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm text-ink-500 mb-4">
       <Link
         to={routesStatic.home}
-        className="flex items-center hover:text-indigo-600 transition-colors"
+        className="flex items-center hover:text-brand-600 transition-colors"
       >
         <HomeIcon sx={{ fontSize: 16, mr: 0.5 }} />
         Accueil
@@ -59,13 +59,13 @@ const Breadcrumb: React.FC = () => {
         <React.Fragment key={crumb.to}>
           <ChevronRightIcon sx={{ fontSize: 16 }} />
           {crumb.isLast ? (
-            <span className="text-gray-900 font-medium truncate max-w-[200px]" aria-current="page">
+            <span className="text-ink-900 font-medium truncate max-w-[200px]" aria-current="page">
               {crumb.label}
             </span>
           ) : (
             <Link
               to={crumb.to}
-              className="hover:text-indigo-600 transition-colors truncate max-w-[150px]"
+              className="hover:text-brand-600 transition-colors truncate max-w-[150px]"
             >
               {crumb.label}
             </Link>

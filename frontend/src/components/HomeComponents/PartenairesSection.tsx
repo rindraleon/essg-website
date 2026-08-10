@@ -56,9 +56,9 @@ const PartenairesSection = ({
     <section className="bg-gradient-to-b from-ink-50 to-white py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-14 text-center">
-          <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
+          {/* <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
             Réseau mondial
-          </span>
+          </span> */}
           <h2 className="mb-3 text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
             {title}
           </h2>

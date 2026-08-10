@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Card, CardContent, Typography, Box, Button } from '@mui/material';
 import { toast, Toaster } from 'sonner';
 import {
@@ -8,13 +8,15 @@ import {
   ProjetViewDialog,
   ConfirmDialog,
   SearchInput,
-  StatsCard,
 } from '../../components';
-import { usePagination, useProjetFilter } from '../../hooks';
+import { usePagination, useProjetFilter, useScrollToTop } from '../../hooks';
 import type { ProjetFormData, Projet } from '../../types';
 import { getAllProjets, createProjet, updateProjet, deleteProjet } from '../../services';
+import { useTitle } from '@/hooks/useTitle';
 
 const Projets: React.FC = () => {
+  useScrollToTop();
+  useTitle('Projets');
   // Data state
   const [data, setData] = useState<Projet[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -135,38 +137,19 @@ const Projets: React.FC = () => {
     setFiltersOpen((prev) => !prev);
   }, []);
 
-  // Stats - Memoized
-  const stats = useMemo(() => {
-    const totalCount = data.length;
-    const internationalCount = data.filter((p) => p.type === 'International').length;
-    const rechercheCount = data.filter((p) => p.type === 'Recherche').length;
-    const partenariatCount = data.filter((p) => p.type === 'Partenariat').length;
-    const servicePublicCount = data.filter((p) => p.type === 'Service public').length;
-
-    return { totalCount, internationalCount, rechercheCount, partenariatCount, servicePublicCount };
-  }, [data]);
 
   return (
     <div className="space-y-2 p-2 sm:p-6 lg:p-8">
       <Toaster position="top-right" richColors />
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <StatsCard title="Total projets" value={stats.totalCount} color="gray" />
-        <StatsCard title="International" value={stats.internationalCount} color="blue" />
-        <StatsCard title="Recherche" value={stats.rechercheCount} color="green" />
-        <StatsCard title="Partenariat" value={stats.partenariatCount} color="amber" />
-        <StatsCard title="Service public" value={stats.servicePublicCount} color="gray" />
-      </div>
 
       {/* Search + Add Button */}
       <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
         <CardContent>
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-              <Typography variant="h6" className="font-bold text-gray-800 whitespace-nowrap">
+              <Typography variant="h6" className="font-bold text-ink-800 whitespace-nowrap">
                 Liste des projets
-                <Box component="span" className="ml-2 text-sm font-normal text-gray-500">
+                <Box component="span" className="ml-2 text-sm font-normal text-ink-500">
                   ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
                 </Box>
               </Typography>
@@ -201,9 +184,9 @@ const Projets: React.FC = () => {
                   borderRadius: '8px',
                   textTransform: 'none',
                   whiteSpace: 'nowrap',
-                  backgroundColor: '#2563eb',
+                  backgroundColor: '#2e6a5f',
                   '&:hover': {
-                    backgroundColor: '#1d4ed8',
+                    backgroundColor: '#27564e',
                   },
                 }}
               >

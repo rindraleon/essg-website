@@ -22,9 +22,9 @@ const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, FloatingTextareaP
           className={cn(
             'peer w-full rounded-md border bg-white px-3 pt-5 pb-2 text-sm',
             'outline-none transition-all resize-none',
-            'focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500',
+            'focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500',
             'placeholder-transparent',
-            error ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : 'border-gray-300',
+            error ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : 'border-ink-300',
             className
           )}
           {...props}
@@ -33,17 +33,17 @@ const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, FloatingTextareaP
           htmlFor={id}
           className={cn(
             'absolute left-3 transition-all duration-200 pointer-events-none',
-            'text-gray-500 origin-[0]',
+            'text-ink-500 origin-[0]',
             hasValue ? 'top-1.5 text-[10px] font-medium' : 'top-3 text-sm',
             'peer-focus:top-1.5 peer-focus:text-[10px] peer-focus:font-medium',
             'peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-medium',
-            error ? 'text-red-500 peer-focus:text-red-500' : 'peer-focus:text-blue-600'
+            error ? 'text-red-500 peer-focus:text-red-500' : 'peer-focus:text-brand-600'
           )}
         >
           {label}
         </label>
         {(error || hint) && (
-          <p className={cn('mt-1 text-[11px]', error ? 'text-red-500' : 'text-gray-400')}>
+          <p className={cn('mt-1 text-[11px]', error ? 'text-red-500' : 'text-ink-400')}>
             {error || hint}
           </p>
         )}

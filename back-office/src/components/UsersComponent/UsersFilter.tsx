@@ -38,9 +38,9 @@ const UsersFilter: React.FC<UsersFilterProps> = ({
 }) => {
   return (
     <div className={open ? '' : 'hidden'}>
-      <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+      <div className="mt-4 p-4 bg-ink-50 rounded-xl border border-ink-100">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-semibold text-gray-700">Filtres avancés</span>
+          <span className="text-sm font-semibold text-ink-700">Filtres avancés</span>
           <Button variant="ghost" size="icon" onClick={onToggle} className="h-8 w-8">
             <CloseIcon className="h-4 w-4" />
           </Button>
@@ -50,7 +50,7 @@ const UsersFilter: React.FC<UsersFilterProps> = ({
           <div className="space-y-2">
             <Label htmlFor="search">Recherche</Label>
             <div className="relative">
-              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-400" />
               <Input
                 id="search"
                 placeholder="Nom, prénom, email..."

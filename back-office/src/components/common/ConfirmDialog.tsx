@@ -32,11 +32,11 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       case 'error':
         return <ErrorOutlineIcon className={`${iconClass} text-red-500`} />;
       case 'warning':
-        return <WarningAmberIcon className={`${iconClass} text-amber-500`} />;
+        return <WarningAmberIcon className={`${iconClass} text-sage-500`} />;
       case 'info':
-        return <InfoIcon className={`${iconClass} text-blue-500`} />;
+        return <InfoIcon className={`${iconClass} text-brand-500`} />;
       default:
-        return <WarningAmberIcon className={`${iconClass} text-amber-500`} />;
+        return <WarningAmberIcon className={`${iconClass} text-sage-500`} />;
     }
   };
 
@@ -44,11 +44,12 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onCancel()}>
       <DialogContent
         className="
-          !max-w-md
+          !max-w-[calc(100%-1rem)]
+          sm:!max-w-md
           gap-0
           overflow-hidden
           rounded-2xl
-          border border-slate-200
+          border border-ink-100
           bg-white
           p-0
           shadow-lg
@@ -56,10 +57,10 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         "
       >
         <div className="flex min-h-0 flex-col">
-          <DialogHeader className="shrink-0 border-b border-slate-200 bg-white px-5 py-4 lg:px-6">
+          <DialogHeader className="shrink-0 border-b border-ink-100 bg-white px-5 py-4 lg:px-6">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <DialogTitle className="flex items-center gap-2 text-xl font-bold text-slate-900">
+                <DialogTitle className="flex items-center gap-2 text-xl font-bold text-ink-900">
                   {getIcon()}
                   {title}
                 </DialogTitle>
@@ -68,10 +69,10 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           </DialogHeader>
 
           <div className="px-6 py-4">
-            <div className="text-base leading-relaxed text-slate-700">{message}</div>
+            <div className="text-base leading-relaxed text-ink-700">{message}</div>
           </div>
 
-          <div className="flex shrink-0 items-center justify-end border-t border-slate-200 bg-white px-5 py-4 lg:px-6">
+          <div className="flex shrink-0 items-center justify-end border-t border-ink-100 bg-white px-5 py-4 lg:px-6">
             <div className="flex justify-end gap-2">
               <Button onClick={onCancel} variant="outline" className="rounded-xl">
                 {cancelLabel}

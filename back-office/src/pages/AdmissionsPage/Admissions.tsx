@@ -178,43 +178,16 @@ const Admissions = () => {
     setFiltersOpen((prev) => !prev);
   }, []);
 
-  const stats = {
-    total: admissions.length,
-    enAttente: admissions.filter((a) => a.statut === 'en_attente').length,
-    enCours: admissions.filter((a) => a.statut === 'en_cours_etude').length,
-    acceptes: admissions.filter((a) => a.statut === 'accepte').length,
-    refuses: admissions.filter((a) => a.statut === 'refuse').length,
-  };
-
   return (
     <div className="max-w-7xl mx-auto space-y-2 p-2 sm:p-6 lg:p-8">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-3xl font-bold text-gray-900">{stats.total}</div>
-          <div className="text-sm text-gray-500">Total</div>
-        </div>
-        <div className="bg-yellow-50 rounded-lg border border-yellow-200 p-4 text-center">
-          <div className="text-3xl font-bold text-yellow-900">{stats.enAttente}</div>
-          <div className="text-sm text-yellow-700">En attente</div>
-        </div>
-        <div className="bg-green-50 rounded-lg border border-green-200 p-4 text-center">
-          <div className="text-3xl font-bold text-green-900">{stats.acceptes}</div>
-          <div className="text-sm text-green-700">Acceptés</div>
-        </div>
-        <div className="bg-red-50 rounded-lg border border-red-200 p-4 text-center">
-          <div className="text-3xl font-bold text-red-900">{stats.refuses}</div>
-          <div className="text-sm text-red-700">Refusés</div>
-        </div>
-      </div>
 
       {/* Search + Filters */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <div className="bg-white rounded-xl border border-ink-100 p-4 shadow-card">
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-            <h2 className="text-lg font-bold text-gray-800 whitespace-nowrap">
+            <h2 className="text-lg font-bold text-ink-800 whitespace-nowrap">
               Liste des admissions
-              <span className="ml-2 text-sm font-normal text-gray-500">
+              <span className="ml-2 text-sm font-normal text-ink-500">
                 ({filteredAdmissions.length} résultat{filteredAdmissions.length !== 1 ? 's' : ''})
               </span>
             </h2>
@@ -291,11 +264,11 @@ const Admissions = () => {
       {showStatusModal && selectedAdmission && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900">Modifier le statut</h2>
+            <div className="px-6 py-4 border-b border-ink-100 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-ink-900">Modifier le statut</h2>
               <button
                 onClick={() => setShowStatusModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-ink-400 hover:text-ink-600"
                 disabled={updating}
               >
                 ✕
@@ -303,21 +276,21 @@ const Admissions = () => {
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-ink-700 mb-2">
                   Candidat: {selectedAdmission.prenom} {selectedAdmission.nom}
                 </label>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-ink-700 mb-2">
                   Formation: {selectedAdmission.formation}
                 </label>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-ink-700 mb-2">
                   Nouveau statut
                 </label>
                 <select
                   value={newStatus}
                   onChange={(e) => setNewStatus(e.target.value as AdmissionStatus)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-ink-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                   disabled={updating}
                 >
                   <option value="en_attente">En attente</option>
@@ -327,14 +300,14 @@ const Admissions = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-ink-700 mb-2">
                   Commentaire (optionnel)
                 </label>
                 <textarea
                   value={commentaire}
                   onChange={(e) => setCommentaire(e.target.value)}
                   rows={4}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-ink-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                   placeholder="Ajoutez un commentaire..."
                   disabled={updating}
                 />
@@ -343,7 +316,7 @@ const Admissions = () => {
                 <button
                   onClick={handleSaveStatus}
                   disabled={updating}
-                  className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 transition-colors disabled:bg-ink-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {updating ? (
                     <>
@@ -357,7 +330,7 @@ const Admissions = () => {
                 <button
                   onClick={() => setShowStatusModal(false)}
                   disabled={updating}
-                  className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors disabled:bg-gray-100"
+                  className="flex-1 bg-ink-100 text-ink-800 px-4 py-2 rounded-lg hover:bg-ink-300 transition-colors disabled:bg-ink-100"
                 >
                   Annuler
                 </button>

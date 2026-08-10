@@ -76,7 +76,7 @@ const RessourceHumaineFilter: React.FC<RessourceHumaineFilterProps> = ({
       {/* Active Filters & Reset */}
       {activeFilterCount > 0 && (
         <Box className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">Filtres actifs:</span>
+          <span className="text-sm text-ink-600">Filtres actifs:</span>
           {filters.poste && (
             <Chip
               label={`Poste: ${filters.poste}`}

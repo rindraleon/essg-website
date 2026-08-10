@@ -12,8 +12,12 @@ import PersonIcon from '@mui/icons-material/Person';
 import BadgeIcon from '@mui/icons-material/Badge';
 import SecurityIcon from '@mui/icons-material/Security';
 import { getImageUrl } from '../../utils/image.utils';
+import { useTitle } from '@/hooks/useTitle';
+import useScrollToTop from '@/hooks/useScrollToTop';
 
 const Profil: React.FC = () => {
+  useScrollToTop();
+  useTitle('Profil');
   const { user } = useAuth();
 
   if (!user) {
@@ -40,7 +44,7 @@ const Profil: React.FC = () => {
       case 'admin':
         return '#dc2626';
       case 'editeur':
-        return '#2563eb';
+        return '#2e6a5f';
       case 'lecteur':
         return '#6b7280';
       default:
@@ -59,7 +63,7 @@ const Profil: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-ink-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* En-tête du profil */}
         <Card className="mb-6 shadow-sm">
@@ -79,7 +83,7 @@ const Profil: React.FC = () => {
                 {(avatarError || !user.avatar) && `${user.prenom[0]}${user.nom[0]}`.toUpperCase()}
               </Avatar>
               <div className="text-center sm:text-left flex-1">
-                <Typography variant="h4" className="font-bold text-gray-900 mb-2">
+                <Typography variant="h4" className="font-bold text-ink-900 mb-2">
                   {user.prenom} {user.nom}
                 </Typography>
                 <Box
@@ -88,7 +92,7 @@ const Profil: React.FC = () => {
                 >
                   {getRoleLabel(user.role)}
                 </Box>
-                <Typography variant="body2" className="text-gray-600">
+                <Typography variant="body2" className="text-ink-600">
                   Membre depuis le {formatDate(user.creeLe)}
                 </Typography>
               </div>
@@ -101,60 +105,60 @@ const Profil: React.FC = () => {
           <CardContent className="p-6">
             <Typography
               variant="h6"
-              className="font-semibold text-gray-900 mb-4 flex items-center gap-2"
+              className="font-semibold text-ink-900 mb-4 flex items-center gap-2"
             >
-              <PersonIcon className="text-indigo-600" />
+              <PersonIcon className="text-brand-600" />
               Informations personnelles
             </Typography>
             <Divider className="mb-4" />
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <Box className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <BadgeIcon className="text-gray-500 mt-1" fontSize="small" />
+                <Box className="flex items-start gap-3 p-3 bg-ink-50 rounded-lg">
+                  <BadgeIcon className="text-ink-500 mt-1" fontSize="small" />
                   <Box className="flex-1">
-                    <Typography variant="caption" className="text-gray-500 block mb-1">
+                    <Typography variant="caption" className="text-ink-500 block mb-1">
                       Nom
                     </Typography>
-                    <Typography variant="body1" className="font-medium text-gray-900">
+                    <Typography variant="body1" className="font-medium text-ink-900">
                       {user.nom}
                     </Typography>
                   </Box>
                 </Box>
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <Box className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <PersonIcon className="text-gray-500 mt-1" fontSize="small" />
+                <Box className="flex items-start gap-3 p-3 bg-ink-50 rounded-lg">
+                  <PersonIcon className="text-ink-500 mt-1" fontSize="small" />
                   <Box className="flex-1">
-                    <Typography variant="caption" className="text-gray-500 block mb-1">
+                    <Typography variant="caption" className="text-ink-500 block mb-1">
                       Prénom
                     </Typography>
-                    <Typography variant="body1" className="font-medium text-gray-900">
+                    <Typography variant="body1" className="font-medium text-ink-900">
                       {user.prenom}
                     </Typography>
                   </Box>
                 </Box>
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <Box className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <EmailIcon className="text-gray-500 mt-1" fontSize="small" />
+                <Box className="flex items-start gap-3 p-3 bg-ink-50 rounded-lg">
+                  <EmailIcon className="text-ink-500 mt-1" fontSize="small" />
                   <Box className="flex-1">
-                    <Typography variant="caption" className="text-gray-500 block mb-1">
+                    <Typography variant="caption" className="text-ink-500 block mb-1">
                       Email
                     </Typography>
-                    <Typography variant="body1" className="font-medium text-gray-900">
+                    <Typography variant="body1" className="font-medium text-ink-900">
                       {user.email}
                     </Typography>
                   </Box>
                 </Box>
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <Box className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <SecurityIcon className="text-gray-500 mt-1" fontSize="small" />
+                <Box className="flex items-start gap-3 p-3 bg-ink-50 rounded-lg">
+                  <SecurityIcon className="text-ink-500 mt-1" fontSize="small" />
                   <Box className="flex-1">
-                    <Typography variant="caption" className="text-gray-500 block mb-1">
+                    <Typography variant="caption" className="text-ink-500 block mb-1">
                       Rôle
                     </Typography>
-                    <Typography variant="body1" className="font-medium text-gray-900">
+                    <Typography variant="body1" className="font-medium text-ink-900">
                       {getRoleLabel(user.role)}
                     </Typography>
                   </Box>

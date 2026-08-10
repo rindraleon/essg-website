@@ -1,8 +1,6 @@
 import React from 'react';
 import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import {
-  Home,
-  Example,
   Login,
   Dashboard,
   Actualites,
@@ -22,7 +20,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 // Loading Spinner
 const LoadingScreen = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gray-950">
+  <div className="min-h-screen flex items-center justify-center bg-ink-950">
     <div className="flex flex-col items-center gap-4">
       <div className="relative w-16 h-16">
         <div
@@ -43,7 +41,7 @@ const LoadingScreen = () => (
           }}
         />
       </div>
-      <p className="text-lime-400/60 text-sm tracking-widest animate-pulse">Vérification...</p>
+      <p className="text-sage-300/60 text-sm tracking-widest animate-pulse">Vérification...</p>
     </div>
     <style>{`
       @keyframes spin {
@@ -94,25 +92,8 @@ const AppRoutes = () => {
       />
 
       <Route
-        path={routesStatic.home}
-        element={
-          <Layout>
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          </Layout>
-        }
-      />
-
-      <Route
-        path={routesStatic.example}
-        element={
-          <Layout>
-            <ProtectedRoute>
-              <Example />
-            </ProtectedRoute>
-          </Layout>
-        }
+        path="/"
+        element={<Navigate to={routesStatic.login} replace />}
       />
 
       <Route

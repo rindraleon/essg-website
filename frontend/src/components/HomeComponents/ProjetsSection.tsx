@@ -5,6 +5,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import type { FeaturedProjetsSectionProps, FeaturedProjetItem } from '../../types/projets.types';
 import { projetService } from '../../services';
 import { getImageUrl } from '../../utils/image.utils';
+import { generateSlug } from '../../utils/slug.utils';
 import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../utils/component.utils';
 import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid } from '../../components';
 import { TEXT_LINK_BUTTON } from '../../constants/styles';
@@ -53,6 +54,7 @@ const ProjetsSection = ({
           return {
             id: String(projet.id),
             titre: projet.titre,
+            slug: projet.slug || generateSlug(projet.titre),
             statut: projet.statut || 'En cours',
             type: projet.type,
             annee: projet.date ? new Date(projet.date).getFullYear().toString() : '',
@@ -98,7 +100,10 @@ const ProjetsSection = ({
   }, []);
 
   const headerContent = (
-    <SectionHeader eyebrow="Recherche & Innovation" title={title} description={description} />
+    <SectionHeader 
+    // eyebrow="Recherche & Innovation" 
+    title={title} 
+    description={description} />
   );
 
   const loadingSkeletons = (
@@ -168,7 +173,7 @@ const ProjetsSection = ({
 
                 <Button
                   component={RouterLink}
-                  to={`/projets/${projet.titre.replace(/\s+/g, '-').toLowerCase()}`}
+                  to={`/projets/${projet.slug}`}
                   variant="text"
                   endIcon={<ArrowForwardRoundedIcon />}
                   aria-label={`Voir le projet ${projet.titre}`}

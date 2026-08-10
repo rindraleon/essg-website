@@ -21,7 +21,7 @@ import {
   ProjetGallery,
 } from '../../components';
 import { GREEN } from '../../constants/colors';
-import { useProjetById } from '../../hooks/useProjets';
+import { useProjetBySlug } from '../../hooks/useProjets';
 import { useScrollToTop } from '../../hooks';
 import { useTitle } from '../../hooks/useTitle';
 import { getImageUrl } from '../../utils/image.utils';
@@ -44,7 +44,7 @@ const getProjetImage = (image: string | undefined, slug: string): string => {
 
 const ProjetDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { projet, loading, error } = useProjetById(slug || '');
+  const { projet, loading, error } = useProjetBySlug(slug || '');
   const { setTitle } = useTitle();
 
   useScrollToTop();
@@ -106,7 +106,7 @@ const ProjetDetailPage: React.FC = () => {
     );
   }
 
-  const imageUrl = getProjetImage(projet.image, projet.id);
+  const imageUrl = getProjetImage(projet.image, projet.slug);
   const isFinished =
     projet.statut.toLowerCase() === 'terminé' || projet.statut.toLowerCase() === 'terminee';
 

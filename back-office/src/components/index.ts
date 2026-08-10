@@ -4,15 +4,6 @@ export { default as Header } from './Layout/Header';
 export { default as Footer } from './Layout/Footer';
 export { default as Sidebar } from './Layout/Sidebar';
 
-// Home components
-export { default as TemplateNotice } from './HomeComponents/TemplateNotice';
-export { default as SectionOne } from './HomeComponents/SectionOne';
-export { default as SectionTwo } from './HomeComponents/SectionTwo';
-export { default as DependenciesExplanation } from './HomeComponents/DependenciesExplanation';
-
-// Example components
-export { default as ExampleComponents } from './ExampleComponents/ExampleComponents';
-
 // Dashboard components
 export { default as StatCard } from './DashboardComponents/StatCard';
 export { default as RecentActivity } from './DashboardComponents/RecentActivity';

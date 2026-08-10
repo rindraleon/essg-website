@@ -6,6 +6,10 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HelpIcon from '@mui/icons-material/Help';
 
+const ACTION_STYLES = {
+  iconBg: 'bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white',
+};
+
 const QuickActions: React.FC = () => {
   const navigate = useNavigate();
 
@@ -17,17 +21,23 @@ const QuickActions: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Actions Rapides</h3>
-      <div className="space-y-3">
+    <div className="rounded-xl border border-ink-100 bg-white p-5 shadow-card">
+      <h3 className="mb-4 text-lg font-semibold text-ink-900">Actions Rapides</h3>
+      <div className="grid gap-2 sm:grid-cols-2">
         {actions.map((action) => (
           <button
             key={action.label}
             onClick={() => (action.onClick ? action.onClick() : navigate(action.path))}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 hover:border-indigo-300 transition-colors text-left"
+            className="group flex items-center gap-3 rounded-xl border border-ink-100 px-4 py-3 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:bg-brand-50/50 hover:shadow-card"
           >
-            <span className="text-indigo-600 text-xl">{action.icon}</span>
-            <span className="text-sm font-medium text-gray-700">{action.label}</span>
+            <span
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors ${ACTION_STYLES.iconBg}`}
+            >
+              {action.icon}
+            </span>
+            <span className="text-sm font-medium text-ink-700 group-hover:text-brand-800">
+              {action.label}
+            </span>
           </button>
         ))}
       </div>

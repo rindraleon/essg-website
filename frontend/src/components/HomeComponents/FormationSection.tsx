@@ -69,7 +69,10 @@ const FormationsSection = ({
   }, [propFeaturedFormations]);
 
   const headerContent = (
-    <SectionHeader eyebrow="Nos programmes" title={title} description={description} />
+    <SectionHeader 
+    // eyebrow="Nos programmes" 
+    title={title} 
+    description={description} />
   );
 
   const loadingSkeletons = (

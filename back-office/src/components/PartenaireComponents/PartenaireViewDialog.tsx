@@ -42,13 +42,14 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
       <DialogContent
         className="
           !w-[96vw]
-          !max-w-6xl
+          !max-w-[calc(100%-1rem)]
+          sm:!max-w-6xl
           !h-[90vh]
           !max-h-[90vh]
           gap-0
           overflow-hidden
           rounded-[30px]
-          border-2 border-slate-200
+          border-2 border-ink-100
           bg-white
           p-0
           shadow-[0_24px_80px_rgba(15,23,42,0.35)]
@@ -56,10 +57,10 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
         "
       >
         <div className="flex min-h-0 flex-col">
-          <DialogHeader className="shrink-0 border-b border-slate-200 bg-white px-5 py-4 lg:px-6">
+          <DialogHeader className="shrink-0 border-b border-ink-100 bg-white px-5 py-4 lg:px-6">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <DialogTitle className="text-xl font-bold text-slate-900">
+                <DialogTitle className="text-xl font-bold text-ink-900">
                   Détail du partenaire
                 </DialogTitle>
               </div>
@@ -68,7 +69,7 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
                 variant="ghost"
                 size="icon"
                 onClick={onClose}
-                className="h-10 w-10 shrink-0 rounded-full border border-slate-200 bg-white hover:bg-slate-100"
+                className="h-10 w-10 shrink-0 rounded-full border border-ink-100 bg-white hover:bg-ink-100"
                 aria-label="Fermer"
               >
                 <CloseIcon className="h-4 w-4" />
@@ -90,7 +91,7 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
                     }}
                   />
                 ) : (
-                  <AvatarFallback className="bg-gray-100 text-gray-700 text-3xl">
+                  <AvatarFallback className="bg-ink-100 text-ink-700 text-3xl">
                     {partenaire.logo}
                   </AvatarFallback>
                 )}
@@ -105,12 +106,12 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
 
             {/* Metadata */}
             <div className="flex flex-wrap gap-4 mb-4">
-              <div className="flex items-center gap-1 text-gray-600 text-sm">
+              <div className="flex items-center gap-1 text-ink-600 text-sm">
                 <LabelIcon fontSize="small" />
                 <span className="font-medium">Secteur:</span>
                 <span>{partenaire.secteur}</span>
               </div>
-              <div className="flex items-center gap-1 text-gray-600 text-sm">
+              <div className="flex items-center gap-1 text-ink-600 text-sm">
                 <CalendarTodayIcon fontSize="small" />
                 <span className="font-medium">Depuis:</span>
                 <span>{formatDate(partenaire.dateDebut)}</span>
@@ -121,8 +122,8 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
 
             {/* Description */}
             <div className="mb-4">
-              <h4 className="font-semibold text-gray-700 mb-2">Description</h4>
-              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+              <h4 className="font-semibold text-ink-700 mb-2">Description</h4>
+              <p className="text-ink-700 leading-relaxed whitespace-pre-wrap">
                 {partenaire.description}
               </p>
             </div>
@@ -133,14 +134,14 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
             <div className="space-y-3">
               {partenaire.siteWeb && (
                 <div className="flex items-center gap-2">
-                  <LanguageIcon fontSize="small" className="text-gray-600" />
-                  <span className="text-sm text-gray-700">
+                  <LanguageIcon fontSize="small" className="text-ink-600" />
+                  <span className="text-sm text-ink-700">
                     <span className="font-semibold">Site web:</span>{' '}
                     <a
                       href={partenaire.siteWeb}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline"
+                      className="text-brand-600 hover:underline"
                     >
                       {partenaire.siteWeb}
                     </a>
@@ -150,8 +151,8 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
 
               {partenaire.contact && (
                 <div className="flex items-center gap-2">
-                  <ContactMailIcon fontSize="small" className="text-gray-600" />
-                  <span className="text-sm text-gray-700">
+                  <ContactMailIcon fontSize="small" className="text-ink-600" />
+                  <span className="text-sm text-ink-700">
                     <span className="font-semibold">Contact:</span> {partenaire.contact}
                   </span>
                 </div>
@@ -159,13 +160,13 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
             </div>
 
             {/* Logo Info */}
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <h4 className="font-semibold text-gray-700 mb-2">Logo</h4>
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+            <div className="mt-4 pt-4 border-t border-ink-100">
+              <h4 className="font-semibold text-ink-700 mb-2">Logo</h4>
+              <div className="bg-ink-50 p-3 rounded-lg border border-ink-100">
                 {partenaire.logo &&
                 (partenaire.logo.startsWith('/uploads/') || partenaire.logo.startsWith('http')) ? (
                   <div>
-                    <p className="text-sm text-gray-600 block mb-2">
+                    <p className="text-sm text-ink-600 block mb-2">
                       <span className="font-semibold">Image:</span> {partenaire.logo}
                     </p>
                     <img
@@ -178,7 +179,7 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
                     />
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-ink-600">
                     <span className="font-semibold">Emoji:</span> {partenaire.logo || 'Aucun'}
                   </p>
                 )}
@@ -186,7 +187,7 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
             </div>
           </div>
 
-          <div className="flex shrink-0 items-center justify-end border-t border-slate-200 bg-white px-5 py-4 lg:px-6">
+          <div className="flex shrink-0 items-center justify-end border-t border-ink-100 bg-white px-5 py-4 lg:px-6">
             <Button type="button" onClick={onClose} variant="outline" className="rounded-xl">
               Fermer
             </Button>

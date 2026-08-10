@@ -10,7 +10,7 @@ import {
   SearchInput,
 } from '../../components';
 import { useRessourceHumaineFilter } from '../../hooks/useRessourceHumaineFilter';
-import { usePagination } from '../../hooks';
+import { usePagination, useScrollToTop } from '../../hooks';
 import type {
   RessourceHumaineFormData,
   RessourceHumaineItem,
@@ -23,8 +23,11 @@ import {
   updateRessourceHumaine,
   deleteRessourceHumaine,
 } from '../../services';
+import { useTitle } from '@/hooks/useTitle';
 
 const RessourcesHumaines: React.FC = () => {
+  useScrollToTop();
+  useTitle('Ressources humaines');
   // Data state
   const [data, setData] = useState<RessourceHumaineItem[]>(initialRessourcesHumaines);
   const [searchTerm, setSearchTerm] = useState('');
@@ -150,57 +153,18 @@ const RessourcesHumaines: React.FC = () => {
     setFiltersOpen((prev) => !prev);
   }, []);
 
-  // Stats
-  const totalCount = data.length;
-  const activeCount = data.filter((r) => r.actif).length;
-  const inactiveCount = data.filter((r) => !r.actif).length;
-
   return (
     <div className="space-y-2 p-2 sm:p-6 lg:p-8">
       <Toaster position="top-right" richColors />
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
-          <CardContent className="flex flex-col items-center py-4">
-            <Typography variant="h4" className="font-bold text-gray-900">
-              {totalCount}
-            </Typography>
-            <Typography variant="body2" className="text-gray-500">
-              Total
-            </Typography>
-          </CardContent>
-        </Card>
-        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
-          <CardContent className="flex flex-col items-center py-4">
-            <Typography variant="h4" className="font-bold text-green-600">
-              {activeCount}
-            </Typography>
-            <Typography variant="body2" className="text-gray-500">
-              Actifs
-            </Typography>
-          </CardContent>
-        </Card>
-        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
-          <CardContent className="flex flex-col items-center py-4">
-            <Typography variant="h4" className="font-bold text-gray-600">
-              {inactiveCount}
-            </Typography>
-            <Typography variant="body2" className="text-gray-500">
-              Inactifs
-            </Typography>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Search + Add Button */}
       <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
         <CardContent>
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-              <Typography variant="h6" className="font-bold text-gray-800 whitespace-nowrap">
+              <Typography variant="h6" className="font-bold text-ink-800 whitespace-nowrap">
                 Liste des ressources humaines
-                <Box component="span" className="ml-2 text-sm font-normal text-gray-500">
+                <Box component="span" className="ml-2 text-sm font-normal text-ink-500">
                   ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
                 </Box>
               </Typography>
@@ -235,9 +199,9 @@ const RessourcesHumaines: React.FC = () => {
                   borderRadius: '8px',
                   textTransform: 'none',
                   whiteSpace: 'nowrap',
-                  backgroundColor: '#2563eb',
+                  backgroundColor: '#2e6a5f',
                   '&:hover': {
-                    backgroundColor: '#1d4ed8',
+                    backgroundColor: '#27564e',
                   },
                 }}
               >

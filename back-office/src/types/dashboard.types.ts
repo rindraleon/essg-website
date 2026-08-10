@@ -3,10 +3,19 @@ export interface DashboardStats {
   totalFormations: number;
   totalNews: number;
   totalProjects: number;
-  usersChange: string;
-  formationsChange: string;
-  newsChange: string;
-  projectsChange: string;
+  totalPartnerships?: number;
+  totalPartners?: number;
+  totalResources: number;
+  totalAdmissions: number;
+  totalContacts?: number;
+  usersChange?: string;
+  formationsChange?: string;
+  newsChange?: string;
+  projectsChange?: string;
+  partnershipsChange?: string;
+  resourcesChange?: string;
+  admissionsChange?: string;
+  contactsChange?: string;
 }
 
 export interface Activity {

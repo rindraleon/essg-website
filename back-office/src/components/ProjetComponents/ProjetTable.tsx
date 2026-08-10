@@ -42,8 +42,8 @@ const ProjetTable: React.FC<ProjetTableProps> = ({
         minWidth: 200,
         render: (row) => (
           <div className="max-w-xs">
-            <span className="font-semibold text-gray-900 line-clamp-1">{row.titre}</span>
-            <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">{row.description}</p>
+            <span className="font-semibold text-ink-900 line-clamp-1">{row.titre}</span>
+            <p className="text-xs text-ink-500 line-clamp-1 mt-0.5">{row.description}</p>
           </div>
         ),
       },
@@ -86,9 +86,9 @@ const ProjetTable: React.FC<ProjetTableProps> = ({
         minWidth: 140,
         label: 'Localisation',
         render: (row) => (
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-ink-600">
             {row.ville && <div>{row.ville}</div>}
-            {row.pays && <div className="text-xs text-gray-500">{row.pays}</div>}
+            {row.pays && <div className="text-xs text-ink-500">{row.pays}</div>}
           </div>
         ),
       },
@@ -96,7 +96,7 @@ const ProjetTable: React.FC<ProjetTableProps> = ({
         id: 'date',
         label: 'Date',
         minWidth: 100,
-        render: (row) => <span className="text-sm text-gray-600">{formatDate(row.date)}</span>,
+        render: (row) => <span className="text-sm text-ink-600">{formatDate(row.date)}</span>,
       },
       {
         id: 'actions',

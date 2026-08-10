@@ -63,10 +63,10 @@ const UsersTable: React.FC<UsersTableProps> = ({
   const columns: Column<User>[] = [
     {
       id: 'avatar',
-      label: 'Avatar',
+      label: 'Profil',
       minWidth: 80,
       render: (user) => (
-        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold text-sm">
+        <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-semibold text-sm">
           {user.avatar ? (
             <img
               src={getImageUrl(user.avatar)}
@@ -89,7 +89,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
       minWidth: 200,
       render: (user) => (
         <div>
-          <span className="font-semibold text-gray-900">
+          <span className="font-semibold text-ink-900">
             {user.nom} {user.prenom}
           </span>
         </div>
@@ -99,7 +99,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
       id: 'email',
       label: 'Email',
       minWidth: 220,
-      render: (user) => <span className="text-sm text-gray-600">{user.email}</span>,
+      render: (user) => <span className="text-sm text-ink-600">{user.email}</span>,
     },
     {
       id: 'role',

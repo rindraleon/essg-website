@@ -252,13 +252,13 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
 
       {/* Logo */}
       <div className="space-y-2">
-        <Label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Logo</Label>
+        <Label className="text-xs font-semibold text-ink-600 uppercase tracking-wide">Logo</Label>
         <div className="flex items-start gap-3">
           {logoPreview && (
             <img
               src={logoPreview}
               alt="Aperçu"
-              className="w-20 h-20 object-cover rounded-md border border-gray-200 shrink-0"
+              className="w-20 h-20 object-cover rounded-md border border-ink-100 shrink-0"
               onError={() => setLogoPreview('')}
             />
           )}
@@ -281,7 +281,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
               <CloudUploadIcon className="h-3.5 w-3.5" />
               {uploadingImage ? 'Upload...' : logoPreview ? 'Changer le logo' : 'Ajouter un logo'}
             </Button>
-            <span className="text-[10px] text-gray-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
+            <span className="text-[10px] text-ink-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
           </div>
         </div>
 
@@ -336,8 +336,8 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
         "
       >
         {/* ─── Header + Stepper ─── */}
-        <DialogHeader className="px-5 pt-4 pb-3 border-b bg-gray-50/80">
-          <DialogTitle className="text-lg font-bold text-gray-900">{dialogTitle}</DialogTitle>
+        <DialogHeader className="px-5 pt-4 pb-3 border-b bg-ink-50/80">
+          <DialogTitle className="text-lg font-bold text-ink-900">{dialogTitle}</DialogTitle>
 
           <div className="flex items-center justify-center gap-1 mt-3">
             {STEPS.map((step, index) => {
@@ -349,7 +349,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                   {index > 0 && (
                     <div
                       className={`hidden sm:block h-px w-8 transition-colors ${
-                        isCompleted ? 'bg-blue-500' : 'bg-gray-300'
+                        isCompleted ? 'bg-brand-500' : 'bg-ink-300'
                       }`}
                     />
                   )}
@@ -361,10 +361,10 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                       text-xs font-medium transition-all
                       ${
                         isActive
-                          ? 'bg-blue-600 text-white shadow-sm'
+                          ? 'bg-brand-600 text-white shadow-sm'
                           : isCompleted
-                            ? 'bg-blue-50 text-blue-700 hover:bg-blue-100'
-                            : 'bg-gray-100 text-gray-400'
+                            ? 'bg-brand-50 text-brand-700 hover:bg-brand-100'
+                            : 'bg-ink-100 text-ink-400'
                       }
                     `}
                   >
@@ -382,9 +382,9 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
         <div className="px-5 py-4 overflow-y-auto max-h-[58vh]">{stepRenderers[activeStep]()}</div>
 
         {/* ─── Footer ─── */}
-        <DialogFooter className="px-5 py-3 mb-4 mx-4 border-t bg-gray-50/80">
+        <DialogFooter className="px-5 py-3 mb-4 mx-4 border-t bg-ink-50/80">
           <div className="flex items-center justify-between w-full">
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-ink-400">
               {activeStep + 1}/{STEPS.length}
             </span>
 
@@ -394,7 +394,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
-                className="text-gray-500 h-8"
+                className="text-ink-500 h-8"
               >
                 Annuler
               </Button>
@@ -417,7 +417,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                   type="button"
                   size="sm"
                   onClick={handleNext}
-                  className="gap-1 h-8 bg-blue-600 hover:bg-blue-700"
+                  className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
                   Suivant
                   <ArrowForwardIcon className="h-3.5 w-3.5" />
@@ -427,7 +427,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                   type="button"
                   size="sm"
                   onClick={handleSubmit}
-                  className="gap-1 h-8 bg-blue-600 hover:bg-blue-700"
+                  className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
                   <CheckCircleIcon className="h-3.5 w-3.5" />
                   {mode === 'create' ? 'Créer' : 'Enregistrer'}

@@ -28,8 +28,40 @@ export default function useProjets() {
   return { projets, loading, error, refetch: fetch };
 }
 
+// Hook pour un projet par ID (legacy, conservé pour compatibilité)
+export function useProjetById(id: string) {
+  const [projet, setProjet] = useState<ProjetItem | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await projetService.findOne(Number(id));
+        if (!cancelled) setProjet(data);
+      } catch (err) {
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Erreur inconnue');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+
+  return { projet, loading, error };
+}
+
 // Hook pour un projet par slug
-export function useProjetById(slug: string) {
+export function useProjetBySlug(slug: string) {
   const [projet, setProjet] = useState<ProjetItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

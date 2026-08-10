@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Button } from '@mui/material';
 import { toast, Toaster } from 'sonner';
 import {
@@ -9,7 +9,7 @@ import {
   ConfirmDialog,
   SearchInput,
 } from '../../components';
-import { usePagination, usePartenaireFilter } from '../../hooks';
+import { usePagination, usePartenaireFilter, useScrollToTop } from '../../hooks';
 import type { PartenaireFormData, Partenaire } from '../../types';
 import {
   getAllPartenaires,
@@ -17,8 +17,11 @@ import {
   updatePartenaire,
   deletePartenaire,
 } from '../../services';
+import { useTitle } from '@/hooks/useTitle';
 
 const Partenaires: React.FC = () => {
+  useScrollToTop();
+  useTitle('Partenaires');
   const [data, setData] = useState<Partenaire[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -134,49 +137,17 @@ const Partenaires: React.FC = () => {
     setFiltersOpen((prev) => !prev);
   }, []);
 
-  const stats = useMemo(() => {
-    const totalCount = data.length;
-    const entrepriseCount = data.filter((p) => p.type === 'Entreprise').length;
-    const institutionCount = data.filter((p) => p.type === 'Institution').length;
-    const organisationCount = data.filter((p) => p.type === 'Organisation').length;
-    const autreCount = data.filter((p) => p.type === 'Autre').length;
-
-    return { totalCount, entrepriseCount, institutionCount, organisationCount, autreCount };
-  }, [data]);
 
   return (
     <div className="space-y-2 p-2 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       <Toaster position="top-right" richColors />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-3xl font-bold text-gray-900">{stats.totalCount}</div>
-          <div className="text-sm text-gray-500">Total</div>
-        </div>
-        <div className="bg-blue-50 rounded-lg border border-blue-200 p-4 text-center">
-          <div className="text-3xl font-bold text-blue-900">{stats.entrepriseCount}</div>
-          <div className="text-sm text-blue-700">Entreprises</div>
-        </div>
-        <div className="bg-green-50 rounded-lg border border-green-200 p-4 text-center">
-          <div className="text-3xl font-bold text-green-900">{stats.institutionCount}</div>
-          <div className="text-sm text-green-700">Institutions</div>
-        </div>
-        <div className="bg-amber-50 rounded-lg border border-amber-200 p-4 text-center">
-          <div className="text-3xl font-bold text-amber-900">{stats.organisationCount}</div>
-          <div className="text-sm text-amber-700">Organisations</div>
-        </div>
-        <div className="bg-gray-50 rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-3xl font-bold text-gray-900">{stats.autreCount}</div>
-          <div className="text-sm text-gray-500">Autres</div>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <div className="bg-white rounded-xl border border-ink-100 p-4 shadow-card">
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-            <h2 className="text-lg font-bold text-gray-800 whitespace-nowrap">
+            <h2 className="text-lg font-bold text-ink-800 whitespace-nowrap">
               Liste des partenaires
-              <span className="ml-2 text-sm font-normal text-gray-500">
+              <span className="ml-2 text-sm font-normal text-ink-500">
                 ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
               </span>
             </h2>
@@ -187,10 +158,36 @@ const Partenaires: React.FC = () => {
             />
           </div>
           <div className="flex items-center gap-3 w-full lg:w-auto">
-            <Button variant="outlined" onClick={handleToggleFilters} className="rounded-lg">
+            <Button
+              variant="outlined"
+              onClick={handleToggleFilters}
+              sx={{
+                borderRadius: '8px',
+                textTransform: 'none',
+                whiteSpace: 'nowrap',
+                borderColor: '#e5e7eb',
+                color: '#374151',
+                '&:hover': {
+                  borderColor: '#d1d5db',
+                  backgroundColor: '#f9fafb',
+                },
+              }}
+            >
               {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
             </Button>
-            <Button onClick={handleOpenCreate} className="bg-blue-600 hover:bg-blue-700">
+            <Button
+                variant="contained"
+                onClick={handleOpenCreate}
+                sx={{
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  whiteSpace: 'nowrap',
+                  backgroundColor: '#2e6a5f',
+                  '&:hover': {
+                    backgroundColor: '#27564e',
+                  },
+                }}
+              >
               + Nouveau partenaire
             </Button>
           </div>
@@ -198,7 +195,7 @@ const Partenaires: React.FC = () => {
       </div>
 
       {filtersOpen && (
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-white rounded-xl border border-ink-100 p-4 shadow-card">
           <PartenaireFilters
             filters={filters}
             onUpdateFilter={updateFilter}

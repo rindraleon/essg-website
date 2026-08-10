@@ -3,15 +3,16 @@ import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import RoomRoundedIcon from '@mui/icons-material/RoomRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
-import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import { Link as RouterLink } from 'react-router-dom';
 import { GREEN } from '../../constants/colors';
 import MapEmbed from './MapEmbed';
 import { getImageUrl } from '../../utils/image.utils';
+import { generateSlug } from '../../utils/slug.utils';
 import type { ProjetCardProps } from '../../types/projets.types';
 
 const PROJECT_IMAGES: Record<string, string> = {
@@ -37,7 +38,8 @@ const getStatutColor = (statut: string): string => {
 };
 
 const ProjetCard: React.FC<ProjetCardProps> = (props: Readonly<ProjetCardProps>) => {
-  const { projet, onViewDetail } = props;
+  const { projet, detailLinkBase = '/projets' } = props;
+  const slug = projet.slug || generateSlug(projet.titre);
 
   return (
     <Card
@@ -50,7 +52,6 @@ const ProjetCard: React.FC<ProjetCardProps> = (props: Readonly<ProjetCardProps>)
         transition: 'all 0.3s ease',
         '&:hover': {
           boxShadow: '0 2px 4px rgba(15, 33, 30, 0.05), 0 16px 40px -12px rgba(15, 33, 30, 0.16)',
-          transform: 'translateY(-3px)',
         },
         '&:hover .projet-overlay': {
           opacity: 1,
@@ -88,27 +89,6 @@ const ProjetCard: React.FC<ProjetCardProps> = (props: Readonly<ProjetCardProps>)
           />
         </div>
 
-        {/* Overlay hover */}
-        <div className="projet-overlay absolute inset-0 flex items-center justify-center bg-black/25 opacity-0 transition-opacity">
-          <Button
-            variant="contained"
-            startIcon={<VisibilityRoundedIcon />}
-            onClick={() => onViewDetail(projet)}
-            sx={{
-              borderRadius: '0.75rem',
-              backgroundColor: '#ffffff',
-              color: GREEN[900],
-              fontWeight: 600,
-              textTransform: 'none',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-              '&:hover': {
-                backgroundColor: GREEN[50],
-              },
-            }}
-          >
-            Voir le détail
-          </Button>
-        </div>
       </div>
 
       <CardContent className="p-6">
@@ -122,7 +102,8 @@ const ProjetCard: React.FC<ProjetCardProps> = (props: Readonly<ProjetCardProps>)
           <Tooltip title="Voir le détail">
             <IconButton
               size="small"
-              onClick={() => onViewDetail(projet)}
+              component={RouterLink}
+              to={`${detailLinkBase}/${slug}`}
               sx={{
                 color: 'gray',
                 '&:hover': {
@@ -154,7 +135,7 @@ const ProjetCard: React.FC<ProjetCardProps> = (props: Readonly<ProjetCardProps>)
               label={`${projet.location.ville}, ${projet.location.pays}`}
               adresse={projet.location.adresse}
               zoom="city"
-              height={280}
+              height={200}
             />
           </div>
         )}

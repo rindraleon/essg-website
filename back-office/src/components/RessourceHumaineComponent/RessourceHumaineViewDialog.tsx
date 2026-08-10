@@ -29,13 +29,14 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
       <DialogContent
         className="
           !w-[96vw]
-          !max-w-6xl
+          !max-w-[calc(100%-1rem)]
+          sm:!max-w-6xl
           !h-[90vh]
           !max-h-[90vh]
           gap-0
           overflow-hidden
           rounded-[30px]
-          border-2 border-slate-200
+          border-2 border-ink-100
           bg-white
           p-0
           shadow-[0_24px_80px_rgba(15,23,42,0.35)]
@@ -44,11 +45,11 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
       >
         <div className="grid h-full min-h-0 lg:grid-cols-[360px_minmax(0,1fr)]">
           {/* Colonne gauche desktop */}
-          <aside className="hidden min-h-0 flex-col border-r border-slate-200 bg-slate-950 p-5 text-white lg:flex">
+          <aside className="hidden min-h-0 flex-col border-r border-ink-100 bg-ink-950 p-5 text-white lg:flex">
             {/* Avatar en haut gauche */}
             <div className="w-full self-start">
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-slate-800 shadow-[0_12px_30px_rgba(0,0,0,0.35)]">
-                <div className="aspect-[16/9] w-full bg-slate-800">
+              <div className="overflow-hidden rounded-2xl border border-white/10 bg-ink-800 shadow-[0_12px_30px_rgba(0,0,0,0.35)]">
+                <div className="aspect-[16/9] w-full bg-ink-800">
                   {ressource.photo ? (
                     <img
                       src={getImageUrl(ressource.photo)}
@@ -59,10 +60,10 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                       }}
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900">
+                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-ink-800 to-ink-900">
                       <div className="text-center">
-                        <ImageOutlinedIcon className="mx-auto mb-2 h-12 w-12 text-slate-500" />
-                        <p className="text-sm text-slate-400">Aucune photo</p>
+                        <ImageOutlinedIcon className="mx-auto mb-2 h-12 w-12 text-ink-500" />
+                        <p className="text-sm text-ink-400">Aucune photo</p>
                       </div>
                     </div>
                   )}
@@ -77,7 +78,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
 
                 <Badge
                   className={`rounded-full px-3 py-1 text-white ${
-                    ressource.actif ? 'bg-emerald-500' : 'bg-gray-500'
+                    ressource.actif ? 'bg-emerald-500' : 'bg-ink-500'
                   }`}
                 >
                   {ressource.actif ? 'Actif' : 'Inactif'}
@@ -89,7 +90,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                   {ressource.prenom} {ressource.nom}
                 </h2>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <Badge className="rounded-full bg-white text-slate-900">
+                  <Badge className="rounded-full bg-white text-ink-900">
                     <PersonOutlineOutlinedIcon className="mr-1 h-3.5 w-3.5" />
                     {ressource.poste}
                   </Badge>
@@ -130,13 +131,13 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
           {/* Colonne droite */}
           <section className="flex min-h-0 flex-col">
             {/* Header */}
-            <DialogHeader className="shrink-0 border-b border-slate-200 bg-white px-5 py-4 lg:px-6">
+            <DialogHeader className="shrink-0 border-b border-ink-100 bg-white px-5 py-4 lg:px-6">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <DialogTitle className="text-xl font-bold text-slate-900">
+                  <DialogTitle className="text-xl font-bold text-ink-900">
                     Détail de la ressource humaine
                   </DialogTitle>
-                  <p className="mt-1 text-sm text-slate-500">Informations complètes du membre</p>
+                  <p className="mt-1 text-sm text-ink-500">Informations complètes du membre</p>
                 </div>
 
                 <Button
@@ -144,7 +145,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                   variant="ghost"
                   size="icon"
                   onClick={onClose}
-                  className="h-10 w-10 shrink-0 rounded-full border border-slate-200 bg-white hover:bg-slate-100"
+                  className="h-10 w-10 shrink-0 rounded-full border border-ink-100 bg-white hover:bg-ink-100"
                   aria-label="Fermer"
                 >
                   <CloseIcon className="h-4 w-4" />
@@ -156,7 +157,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
             <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 lg:px-6">
               {/* Version mobile */}
               <div className="mb-5 lg:hidden">
-                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <div className="overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-sm">
                   <div className="p-4">
                     <div className="flex items-start gap-4 mb-4">
                       <Avatar className="h-16 w-16">
@@ -169,14 +170,14 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                             }}
                           />
                         ) : (
-                          <AvatarFallback className="bg-gray-100 text-gray-700 text-xl">
+                          <AvatarFallback className="bg-ink-100 text-ink-700 text-xl">
                             {ressource.prenom[0]}
                             {ressource.nom[0]}
                           </AvatarFallback>
                         )}
                       </Avatar>
                       <div className="flex-1">
-                        <h2 className="mb-2 text-xl font-bold text-slate-900">
+                        <h2 className="mb-2 text-xl font-bold text-ink-900">
                           {ressource.prenom} {ressource.nom}
                         </h2>
                         <Badge className="mb-2">{ressource.poste}</Badge>
@@ -191,14 +192,14 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
 
                     <div className="space-y-2">
                       {ressource.email && (
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <EmailOutlinedIcon className="h-4 w-4 text-gray-400" />
+                        <div className="flex items-center gap-2 text-ink-600">
+                          <EmailOutlinedIcon className="h-4 w-4 text-ink-400" />
                           <span className="text-sm">{ressource.email}</span>
                         </div>
                       )}
                       {ressource.telephone && (
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <PhoneOutlinedIcon className="h-4 w-4 text-gray-400" />
+                        <div className="flex items-center gap-2 text-ink-600">
+                          <PhoneOutlinedIcon className="h-4 w-4 text-ink-400" />
                           <span className="text-sm">{ressource.telephone}</span>
                         </div>
                       )}
@@ -211,11 +212,11 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                 {/* Colonne principale */}
                 <div className="space-y-5">
                   {ressource.description && (
-                    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">
+                    <div className="rounded-2xl border border-ink-100 bg-white p-5 shadow-sm">
+                      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-700">
                         Description
                       </h3>
-                      <p className="whitespace-pre-wrap break-words text-sm leading-7 text-slate-600">
+                      <p className="whitespace-pre-wrap break-words text-sm leading-7 text-ink-600">
                         {ressource.description}
                       </p>
                     </div>
@@ -224,43 +225,41 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
 
                 {/* Colonne secondaire */}
                 <div className="grid content-start gap-4 sm:grid-cols-2 xl:grid-cols-1">
-                  <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                    <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">
+                  <div className="rounded-2xl border border-ink-100 bg-white p-4 shadow-sm">
+                    <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-700">
                       Informations
                     </h3>
                     <div className="space-y-3">
                       <div>
-                        <p className="text-xs text-slate-500">Nom complet</p>
-                        <p className="text-sm font-medium text-slate-900">
+                        <p className="text-xs text-ink-500">Nom complet</p>
+                        <p className="text-sm font-medium text-ink-900">
                           {ressource.prenom} {ressource.nom}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500">Poste</p>
-                        <p className="text-sm font-medium text-slate-900">{ressource.poste}</p>
+                        <p className="text-xs text-ink-500">Poste</p>
+                        <p className="text-sm font-medium text-ink-900">{ressource.poste}</p>
                       </div>
                       {ressource.email && (
                         <div>
-                          <p className="text-xs text-slate-500">Email</p>
-                          <p className="text-sm font-medium text-slate-900 break-all">
+                          <p className="text-xs text-ink-500">Email</p>
+                          <p className="text-sm font-medium text-ink-900 break-all">
                             {ressource.email}
                           </p>
                         </div>
                       )}
                       {ressource.telephone && (
                         <div>
-                          <p className="text-xs text-slate-500">Téléphone</p>
-                          <p className="text-sm font-medium text-slate-900">
-                            {ressource.telephone}
-                          </p>
+                          <p className="text-xs text-ink-500">Téléphone</p>
+                          <p className="text-sm font-medium text-ink-900">{ressource.telephone}</p>
                         </div>
                       )}
                       <div>
-                        <p className="text-xs text-slate-500">Ordre</p>
-                        <p className="text-sm font-medium text-slate-900">{ressource.ordre}</p>
+                        <p className="text-xs text-ink-500">Ordre</p>
+                        <p className="text-sm font-medium text-ink-900">{ressource.ordre}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500">Statut</p>
+                        <p className="text-xs text-ink-500">Statut</p>
                         <div className="mt-1">
                           <Badge variant={ressource.actif ? 'default' : 'secondary'}>
                             {ressource.actif ? 'Actif' : 'Inactif'}
@@ -274,7 +273,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="flex shrink-0 items-center justify-end border-t border-slate-200 bg-white px-5 py-4 lg:px-6">
+            <div className="flex shrink-0 items-center justify-end border-t border-ink-100 bg-white px-5 py-4 lg:px-6">
               <Button type="button" onClick={onClose} variant="outline" className="rounded-xl">
                 Fermer
               </Button>

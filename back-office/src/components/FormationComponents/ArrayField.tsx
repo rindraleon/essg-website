@@ -48,7 +48,7 @@ const ArrayField: React.FC<ArrayFieldProps> = ({
     <Box className="w-full">
       <label
         className={`flex items-center gap-2 text-sm font-medium mb-2 ${
-          hasError ? 'text-red-600' : 'text-gray-700'
+          hasError ? 'text-red-600' : 'text-ink-700'
         }`}
       >
         {icon && <span className="flex-shrink-0">{icon}</span>}
@@ -67,9 +67,9 @@ const ArrayField: React.FC<ArrayFieldProps> = ({
             error={hasError && !item.trim()}
             sx={{
               '& .MuiOutlinedInput-root': {
-                backgroundColor: !item.trim() && touched ? '#eff6ff' : 'transparent',
+                backgroundColor: !item.trim() && touched ? '#eff7f4' : 'transparent',
                 '&.Mui-focused': {
-                  backgroundColor: !item.trim() && touched ? '#dbeafe' : 'transparent',
+                  backgroundColor: !item.trim() && touched ? '#d9ece7' : 'transparent',
                 },
               },
             }}

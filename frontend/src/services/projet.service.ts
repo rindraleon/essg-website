@@ -1,4 +1,5 @@
 import type { ProjetItem } from '../types/projets.types';
+import { generateSlug } from '../utils/slug.utils';
 
 type ApiProjet = Omit<ProjetItem, 'id' | 'annee' | 'location' | 'partenaires'> & {
   id: number | string;
@@ -17,6 +18,7 @@ const BASE_URL = `${API_BASE_URL.replace(/\/$/, '')}/projects`;
 const transformProjet = (projet: ApiProjet): ProjetItem => ({
   id: String(projet.id),
   titre: projet.titre,
+  slug: projet.slug || generateSlug(projet.titre),
   type: projet.type,
   statut: projet.statut || 'En cours',
   annee: new Date(projet.date ?? '').getFullYear().toString(),

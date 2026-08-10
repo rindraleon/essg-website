@@ -12,6 +12,7 @@ export type ProjetItem = {
   type: string;
   statut: string;
   annee: string;
+  slug: string;
   description: string;
   budget?: string;
   partenaires: string[];
@@ -24,7 +25,7 @@ export type ProjetItem = {
 
 export type ProjetCardProps = {
   projet: ProjetItem;
-  onViewDetail: (projet: ProjetItem) => void;
+  detailLinkBase?: string;
 };
 
 export type ProjetDetailModalProps = {
@@ -57,6 +58,7 @@ export type FeaturedProjetItem = {
   annee: string;
   description: string;
   partenaires: string[];
+  slug: string;
   image?: string;
   budget?: string;
   objectifs?: string[];

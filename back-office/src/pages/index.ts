@@ -1,5 +1,3 @@
-export { default as Home } from './HomePage/Home';
-export { default as Example } from './ExamplePage/Example';
 export { default as Login } from './LoginPage/Login';
 export { default as Dashboard } from './DashboardPage/Dashboard';
 export { default as Actualites } from './ActualitesPage/Actualites';

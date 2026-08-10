@@ -44,7 +44,7 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
           {row.photo ? (
             <AvatarImage src={getImageUrl(row.photo)} alt={`${row.nom} ${row.prenom}`} />
           ) : (
-            <AvatarFallback className="bg-gray-100 text-gray-700 text-xs">
+            <AvatarFallback className="bg-ink-100 text-ink-700 text-xs">
               {row.prenom[0]}
               {row.nom[0]}
             </AvatarFallback>
@@ -58,10 +58,10 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
       minWidth: 180,
       render: (row) => (
         <div>
-          <span className="font-semibold text-gray-900">
+          <span className="font-semibold text-ink-900">
             {row.nom} {row.prenom}
           </span>
-          <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">{row.poste}</p>
+          <p className="text-xs text-ink-500 line-clamp-1 mt-0.5">{row.poste}</p>
         </div>
       ),
     },
@@ -75,13 +75,13 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
       id: 'email',
       label: 'Email',
       minWidth: 180,
-      render: (row) => <span className="text-sm text-gray-600">{row.email || '-'}</span>,
+      render: (row) => <span className="text-sm text-ink-600">{row.email || '-'}</span>,
     },
     {
       id: 'telephone',
       label: 'Téléphone',
       minWidth: 120,
-      render: (row) => <span className="text-sm text-gray-600">{row.telephone || '-'}</span>,
+      render: (row) => <span className="text-sm text-ink-600">{row.telephone || '-'}</span>,
     },
     {
       id: 'actif',

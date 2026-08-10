@@ -52,14 +52,12 @@ const PartenaireTable: React.FC<PartenaireTableProps> = ({
                   {isImageLogo ? (
                     <AvatarImage src={getImageUrl(row.logo)} alt={row.nom} />
                   ) : (
-                    <AvatarFallback className="bg-gray-100 text-gray-700">
-                      {row.logo}
-                    </AvatarFallback>
+                    <AvatarFallback className="bg-ink-100 text-ink-700">{row.logo}</AvatarFallback>
                   )}
                 </Avatar>
                 <div>
-                  <span className="font-semibold text-gray-900 line-clamp-1">{row.nom}</span>
-                  <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">{row.secteur}</p>
+                  <span className="font-semibold text-ink-900 line-clamp-1">{row.nom}</span>
+                  <p className="text-xs text-ink-500 line-clamp-1 mt-0.5">{row.secteur}</p>
                 </div>
               </div>
             </div>
@@ -90,14 +88,14 @@ const PartenaireTable: React.FC<PartenaireTableProps> = ({
         label: 'Contact',
         minWidth: 180,
         render: (row) => (
-          <span className="text-sm text-gray-600">{row.contact || row.siteWeb || '-'}</span>
+          <span className="text-sm text-ink-600">{row.contact || row.siteWeb || '-'}</span>
         ),
       },
       {
         id: 'dateDebut',
         label: 'Date début',
         minWidth: 120,
-        render: (row) => <span className="text-sm text-gray-600">{formatDate(row.dateDebut)}</span>,
+        render: (row) => <span className="text-sm text-ink-600">{formatDate(row.dateDebut)}</span>,
       },
       {
         id: 'actions',

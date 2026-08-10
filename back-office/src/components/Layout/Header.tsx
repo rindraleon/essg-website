@@ -107,13 +107,13 @@ const Header: React.FC = () => {
       case 'en_attente':
         return 'bg-yellow-100 text-yellow-800 border-yellow-300';
       case 'en_cours_etude':
-        return 'bg-blue-100 text-blue-800 border-blue-300';
+        return 'bg-brand-100 text-brand-800 border-brand-300';
       case 'accepte':
-        return 'bg-green-100 text-green-800 border-green-300';
+        return 'bg-brand-100 text-brand-800 border-brand-300';
       case 'refuse':
         return 'bg-red-100 text-red-800 border-red-300';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-300';
+        return 'bg-ink-100 text-ink-800 border-ink-300';
     }
   };
 
@@ -139,7 +139,7 @@ const Header: React.FC = () => {
         <div className="flex items-center justify-between">
           {/* Brand */}
           <div className="flex items-center gap-4">
-            <p className="text-gray-600 text-sm">
+            <p className="text-ink-600 text-sm">
               Bienvenue dans l'espace d'administration de l'ESSG
             </p>
           </div>
@@ -156,7 +156,7 @@ const Header: React.FC = () => {
                         <Button
                           variant="default"
                           size="icon"
-                          className="text-gray-700 hover:text-indigo-600 relative"
+                          className="text-ink-700 hover:text-brand-600 relative"
                           aria-label="messages"
                         >
                           <Badge
@@ -175,14 +175,14 @@ const Header: React.FC = () => {
 
                 <DropdownMenuContent
                   align="end"
-                  className="w-80 shadow-none ring-0 bg-white border border-gray-200"
+                  className="w-80 shadow-none ring-0 bg-white border border-ink-100"
                 >
-                  <div className="px-3 py-2 border-b border-gray-200">
-                    <h3 className="text-sm font-semibold text-gray-900">Messages</h3>
+                  <div className="px-3 py-2 border-b border-ink-100">
+                    <h3 className="text-sm font-semibold text-ink-900">Messages</h3>
                   </div>
                   <div className="max-h-96 overflow-y-auto">
                     {recentMessages.length === 0 ? (
-                      <div className="px-3 py-4 text-sm text-gray-500 text-center">
+                      <div className="px-3 py-4 text-sm text-ink-500 text-center">
                         Aucun message
                       </div>
                     ) : (
@@ -194,15 +194,15 @@ const Header: React.FC = () => {
                         >
                           <div className="flex items-start justify-between w-full">
                             <div className="flex-1">
-                              <p className="text-sm font-medium text-gray-900">
+                              <p className="text-sm font-medium text-ink-900">
                                 {message.prenom} {message.nom}
                               </p>
-                              <p className="text-xs text-gray-500 mt-1">{message.email}</p>
-                              <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                              <p className="text-xs text-ink-500 mt-1">{message.email}</p>
+                              <p className="text-xs text-ink-600 mt-1 line-clamp-2">
                                 {message.message}
                               </p>
                               {!message.lu && (
-                                <span className="inline-block mt-2 px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 border border-blue-300">
+                                <span className="inline-block mt-2 px-2 py-1 text-xs font-medium rounded-full bg-brand-100 text-brand-800 border border-brand-300">
                                   Non lu
                                 </span>
                               )}
@@ -215,7 +215,7 @@ const Header: React.FC = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={() => navigate(routesStatic.contacts)}
-                    className="text-center text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                    className="text-center text-sm font-medium text-brand-600 hover:text-brand-700"
                   >
                     Voir plus
                   </DropdownMenuItem>
@@ -231,7 +231,7 @@ const Header: React.FC = () => {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="text-gray-700 hover:text-indigo-600 relative"
+                          className="text-ink-700 hover:text-brand-600 relative"
                           aria-label="notifications"
                         >
                           <Badge
@@ -250,14 +250,14 @@ const Header: React.FC = () => {
 
                 <DropdownMenuContent
                   align="end"
-                  className="w-80 shadow-none ring-0 bg-white border border-gray-200"
+                  className="w-80 shadow-none ring-0 bg-white border border-ink-100"
                 >
-                  <div className="px-3 py-2 border-b border-gray-200">
-                    <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
+                  <div className="px-3 py-2 border-b border-ink-100">
+                    <h3 className="text-sm font-semibold text-ink-900">Notifications</h3>
                   </div>
                   <div className="max-h-96 overflow-y-auto">
                     {recentAdmissions.length === 0 ? (
-                      <div className="px-3 py-4 text-sm text-gray-500 text-center">
+                      <div className="px-3 py-4 text-sm text-ink-500 text-center">
                         Aucune notification
                       </div>
                     ) : (
@@ -269,10 +269,10 @@ const Header: React.FC = () => {
                         >
                           <div className="flex items-start justify-between w-full">
                             <div className="flex-1">
-                              <p className="text-sm font-medium text-gray-900">
+                              <p className="text-sm font-medium text-ink-900">
                                 {admission.prenom} {admission.nom}
                               </p>
-                              <p className="text-xs text-gray-500 mt-1">
+                              <p className="text-xs text-ink-500 mt-1">
                                 Formation: {admission.formation}
                               </p>
                               <span
@@ -289,7 +289,7 @@ const Header: React.FC = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={() => navigate(routesStatic.admissions)}
-                    className="text-center text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                    className="text-center text-sm font-medium text-brand-600 hover:text-brand-700"
                   >
                     Voir plus
                   </DropdownMenuItem>
@@ -305,7 +305,7 @@ const Header: React.FC = () => {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="text-gray-700 hover:text-indigo-600"
+                          className="text-ink-700 hover:text-brand-600"
                           aria-label="aide"
                         >
                           <HelpOutlineIcon className="h-5 w-5" />
@@ -316,7 +316,7 @@ const Header: React.FC = () => {
                   </Tooltip>
                 </TooltipProvider>
 
-                <DropdownMenuContent align="end" className="w-48 shadow-none ring-0 bg-white border border-gray-200">
+                <DropdownMenuContent align="end" className="w-48 shadow-none ring-0 bg-white border border-ink-100">
                   <DropdownMenuItem>Centre d'aide</DropdownMenuItem>
                   <DropdownMenuItem>Documentation</DropdownMenuItem>
                   <DropdownMenuItem>Contactez-nous</DropdownMenuItem>
@@ -332,7 +332,8 @@ const Header: React.FC = () => {
                     <TooltipTrigger asChild>
                       <DropdownMenuTrigger>
                         <button
-                          className="flex items-center gap-2 ml-2 pl-2 pr-1 py-1 rounded-full hover:bg-gray-50 transition-colors outline-none"
+                          type="button"
+                          className="flex items-center gap-2 ml-2 pl-2 pr-1 py-1 rounded-full hover:bg-ink-50 transition-colors outline-none"
                           aria-label="profil"
                         >
                           <Avatar className="h-8 w-8">
@@ -343,12 +344,12 @@ const Header: React.FC = () => {
                                 e.currentTarget.style.display = 'none';
                               }}
                             />
-                            <AvatarFallback className="bg-indigo-600 text-white text-xs">
+                            <AvatarFallback className="bg-brand-600 text-white text-xs">
                               {getInitials(prenom)}
                             </AvatarFallback>
                           </Avatar>
                           <div className="hidden lg:flex flex-col items-start mr-1">
-                            <p className="text-xs font-medium text-gray-900 leading-tight">
+                            <p className="text-xs font-medium text-ink-900 leading-tight">
                               {prenom}
                             </p>
                           </div>
@@ -361,7 +362,7 @@ const Header: React.FC = () => {
 
                 <DropdownMenuContent
                   align="end"
-                  className="w-48 shadow-none ring-0 bg-white border border-gray-200"
+                  className="w-48 shadow-none ring-0 bg-white border border-ink-100"
                 >
                   <DropdownMenuItem onClick={() => navigate(routesStatic.profil)}>
                     <PersonIcon className="h-4 w-4 mr-2" />
@@ -390,7 +391,7 @@ const Header: React.FC = () => {
               variant="ghost"
               size="icon"
               onClick={() => setOpen((s) => !s)}
-              className="text-gray-700"
+              className="text-ink-700"
               aria-label="Toggle menu"
             >
               {open ? <CloseIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
@@ -405,7 +406,7 @@ const Header: React.FC = () => {
           <div className="px-4 sm:px-6 py-4 flex flex-col gap-4">
             {/* Profil mobile */}
             {isAuthenticated && (
-              <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+              <div className="flex items-center justify-between pb-4 border-b border-ink-100">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-10 w-10">
                     <AvatarImage
@@ -415,13 +416,13 @@ const Header: React.FC = () => {
                         e.currentTarget.style.display = 'none';
                       }}
                     />
-                    <AvatarFallback className="bg-indigo-600 text-white text-sm">
+                    <AvatarFallback className="bg-brand-600 text-white text-sm">
                       {getInitials(prenom)}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{prenom}</p>
-                    <p className="text-xs text-gray-500">Administrateur</p>
+                    <p className="text-sm font-medium text-ink-900">{prenom}</p>
+                    <p className="text-xs text-ink-500">Administrateur</p>
                   </div>
                 </div>
               </div>
@@ -430,50 +431,93 @@ const Header: React.FC = () => {
             {/* Navigation mobile */}
             <nav className="flex flex-col gap-1">
               <NavLink
-                to={routesStatic.home}
-                onClick={() => setOpen(false)}
-                className={({ isActive }) =>
-                  `py-2.5 px-3 rounded-md text-sm font-medium ${
-                    isActive ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'
-                  }`
-                }
-              >
-                Accueil
-              </NavLink>
-
-              <NavLink
-                to={routesStatic.example}
-                onClick={() => setOpen(false)}
-                className={({ isActive }) =>
-                  `py-2.5 px-3 rounded-md text-sm font-medium ${
-                    isActive ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'
-                  }`
-                }
-              >
-                Example
-              </NavLink>
-
-              <NavLink
                 to={routesStatic.dashboard}
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
                   `py-2.5 px-3 rounded-md text-sm font-medium ${
-                    isActive ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50'
+                    isActive ? 'bg-brand-50 text-brand-600' : 'text-ink-700 hover:bg-ink-50'
                   }`
                 }
               >
                 Dashboard
+              </NavLink>
+              <NavLink
+                to={routesStatic.admissions}
+                onClick={() => setOpen(false)}
+                className={({ isActive }) =>
+                  `py-2.5 px-3 rounded-md text-sm font-medium ${
+                    isActive ? 'bg-brand-50 text-brand-600' : 'text-ink-700 hover:bg-ink-50'
+                  }`
+                }
+              >
+                Admissions
+              </NavLink>
+              <NavLink
+                to={routesStatic.contacts}
+                onClick={() => setOpen(false)}
+                className={({ isActive }) =>
+                  `py-2.5 px-3 rounded-md text-sm font-medium ${
+                    isActive ? 'bg-brand-50 text-brand-600' : 'text-ink-700 hover:bg-ink-50'
+                  }`
+                }
+              >
+                Contacts
+              </NavLink>
+              <NavLink
+                to={routesStatic.projets}
+                onClick={() => setOpen(false)}
+                className={({ isActive }) =>
+                  `py-2.5 px-3 rounded-md text-sm font-medium ${
+                    isActive ? 'bg-brand-50 text-brand-600' : 'text-ink-700 hover:bg-ink-50'
+                  }`
+                }
+              >
+                Projets
+                </NavLink>
+              <NavLink
+                to={routesStatic.formations}
+                onClick={() => setOpen(false)}
+                className={({ isActive }) =>
+                  `py-2.5 px-3 rounded-md text-sm font-medium ${
+                    isActive ? 'bg-brand-50 text-brand-600' : 'text-ink-700 hover:bg-ink-50'
+                  }`
+                }
+              >
+                Formations
+              </NavLink>
+              <NavLink
+                to={routesStatic.partenaires}
+                onClick={() => setOpen(false)}
+                className={({ isActive }) =>
+                  `py-2.5 px-3 rounded-md text-sm font-medium ${
+                    isActive ? 'bg-brand-50 text-brand-600' : 'text-ink-700 hover:bg-ink-50'
+                  }`
+                }
+              >
+                Partenaires
+                </NavLink>
+                <NavLink
+                to={routesStatic.actualites}
+                onClick={() => setOpen(false)}
+                className={({ isActive }) =>
+                  `py-2.5 px-3 rounded-md text-sm font-medium ${
+                    isActive ? 'bg-brand-50 text-brand-600' : 'text-ink-700 hover:bg-ink-50'
+                  }`
+                }
+              >
+                Actualités
               </NavLink>
             </nav>
 
             {/* Actions mobile */}
             {isAuthenticated && (
               <>
-                <hr className="border-gray-200" />
+                <hr className="border-ink-100" />
                 <div className="flex flex-col gap-1">
                   <button
+                  type='button'
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
                     <NotificationsIcon fontSize="small" />
                     <span>Notifications</span>
@@ -483,8 +527,9 @@ const Header: React.FC = () => {
                   </button>
 
                   <button
+                    type='button'
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
                     <MailIcon fontSize="small" />
                     <span>Messages</span>
@@ -494,35 +539,39 @@ const Header: React.FC = () => {
                   </button>
 
                   <button
+                    type='button'
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
                     <HelpOutlineIcon fontSize="small" />
                     <span>Aide</span>
                   </button>
 
                   <button
+                    type='button'
                     onClick={() => {
                       navigate(routesStatic.profil);
                       setOpen(false);
                     }}
-                    className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
                     <PersonIcon fontSize="small" />
                     <span>Mon profil</span>
                   </button>
 
                   <button
+                    type='button'
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
                     <SettingsIcon fontSize="small" />
                     <span>Paramètres</span>
                   </button>
 
                   <button
+                    type='button'
                     onClick={handleLogoutClick}
-                    className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-red-600 hover:bg-gray-50"
+                    className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-red-600 hover:bg-ink-50"
                   >
                     <LogoutIcon fontSize="small" />
                     <span>Déconnexion</span>
@@ -536,14 +585,14 @@ const Header: React.FC = () => {
 
       {/* Dialog de confirmation de déconnexion */}
       <Dialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
-        <DialogContent className="bg-white border-2 border-gray-200 shadow-2xl">
-          <DialogHeader className="bg-gradient-to-r from-indigo-500 to-purple-600 -mx-4 -mt-4 px-6 py-4 rounded-t-xl">
+        <DialogContent className="bg-white border-2 border-ink-100 shadow-2xl">
+          <DialogHeader className="bg-gradient-to-r from-brand-500 to-purple-600 -mx-4 -mt-4 px-6 py-4 rounded-t-xl">
             <DialogTitle className="text-white text-xl font-bold">
               Confirmer la déconnexion
             </DialogTitle>
           </DialogHeader>
           <div className="py-4">
-            <p className="text-sm text-gray-700">
+            <p className="text-sm text-ink-700">
               Êtes-vous sûr de vouloir vous déconnecter ? Vous devrez vous reconnecter pour accéder
               à l'espace d'administration.
             </p>
@@ -552,7 +601,7 @@ const Header: React.FC = () => {
             <Button
               variant="outline"
               onClick={handleLogoutCancel}
-              className="border-2 border-gray-300 hover:bg-gray-50"
+              className="border-2 border-ink-300 hover:bg-ink-50"
             >
               Annuler
             </Button>

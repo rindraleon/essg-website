@@ -12,7 +12,6 @@ import IconButton from '@mui/material/IconButton';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import type { SelectChangeEvent } from '@mui/material/Select';
-
 import CtaSection from '../../components/common/CtaSection';
 import EmptyState from '../../components/common/EmptyState';
 import FilterToolbar from '../../components/common/FilterToolbar';
@@ -23,6 +22,7 @@ import { GREEN } from '../../constants/colors';
 import { projetService } from '../../services';
 import { useScrollToTop } from '../../hooks';
 import type { ProjetsPageProps, ProjetItem } from '../../types/projets.types';
+import { generateSlug } from '../../utils/slug.utils';
 
 const HERO_IMAGE =
   'https://images.unsplash.com/photo-1451187580459-43490279c0fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
@@ -120,11 +120,6 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
     setSearchTerm('');
     setShowSearch(false);
     setShowFilters(false);
-  };
-
-  const handleViewDetail = (projet: ProjetItem) => {
-    // Navigation vers la page de détail via le slug
-    window.location.href = `/projets/${projet.id}`;
   };
 
   const activeFilterChips = [
@@ -310,9 +305,15 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
                 onAction={handleResetFilters}
               />
             ) : (
-              <div className="grid gap-8 md:grid-cols-2">
+              <div className="grid gap-8 md:grid-cols-3">
                 {filteredProjets.map((projet) => (
-                  <ProjetCard key={projet.id} projet={projet} onViewDetail={handleViewDetail} />
+                  <ProjetCard 
+                    key={projet.id} 
+                    projet={{
+                      ...projet,
+                      slug: projet.slug || generateSlug(projet.titre)
+                    }} 
+                  />
                 ))}
               </div>
             )}

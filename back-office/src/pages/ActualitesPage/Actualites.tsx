@@ -9,7 +9,7 @@ import {
   SearchInput,
 } from '../../components';
 import { useFilter } from '../../hooks/useFilter';
-import { usePagination } from '../../hooks';
+import { usePagination, useScrollToTop } from '../../hooks';
 import type { ActualiteFormData, ActualiteItem } from '../../types';
 import { initialActualites } from '../../data/mockData';
 import {
@@ -19,8 +19,11 @@ import {
   deleteActualite,
 } from '../../services';
 import { Button } from '@/components/ui/button';
+import { useTitle } from '@/hooks/useTitle';
 
 const Actualites: React.FC = () => {
+  useScrollToTop();
+  useTitle('Actualités');
   // Data state
   const [data, setData] = useState<ActualiteItem[]>(initialActualites);
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,6 +51,7 @@ const Actualites: React.FC = () => {
     handleChangeRowsPerPage,
     resetPage,
   } = usePagination({ data: filteredData, initialRowsPerPage: 5 });
+
 
   // Load data from backend
   useEffect(() => {
@@ -140,38 +144,17 @@ const Actualites: React.FC = () => {
     setFiltersOpen((prev) => !prev);
   }, []);
 
-  // Stats
-  const totalCount = data.length;
-  const publishedCount = data.filter((a) => a.statut === 'publie').length;
-  const draftCount = data.filter((a) => a.statut === 'brouillon').length;
-
   return (
     <div className="space-y-2 p-2 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       <Toaster position="top-right" richColors />
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-3xl font-bold text-gray-900">{totalCount}</div>
-          <div className="text-sm text-gray-500">Total</div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-3xl font-bold text-green-600">{publishedCount}</div>
-          <div className="text-sm text-gray-500">Publiées</div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-3xl font-bold text-amber-500">{draftCount}</div>
-          <div className="text-sm text-gray-500">Brouillons</div>
-        </div>
-      </div>
-
       {/* Search + Add Button */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <div className="bg-white rounded-xl border border-ink-100 p-4 shadow-card">
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-            <h2 className="text-lg font-bold text-gray-800 whitespace-nowrap">
+            <h2 className="text-lg font-bold text-ink-800 whitespace-nowrap">
               Liste des actualités
-              <span className="ml-2 text-sm font-normal text-gray-500">
+              <span className="ml-2 text-sm font-normal text-ink-500">
                 ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
               </span>
             </h2>
@@ -185,7 +168,7 @@ const Actualites: React.FC = () => {
             <Button variant="outline" onClick={handleToggleFilters} className="rounded-lg">
               {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
             </Button>
-            <Button onClick={handleOpenCreate} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleOpenCreate} className="bg-brand-600 hover:bg-brand-700">
               + Nouvelle actualité
             </Button>
           </div>
@@ -194,7 +177,7 @@ const Actualites: React.FC = () => {
 
       {/* Filters - Full Width Below */}
       {filtersOpen && (
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
+        <div className="bg-white rounded-xl border border-ink-100 p-4 shadow-card">
           <ActualiteFilters
             filters={filters}
             onUpdateFilter={(key, value) => {

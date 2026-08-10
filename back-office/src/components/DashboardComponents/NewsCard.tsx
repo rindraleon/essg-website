@@ -24,7 +24,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ actualite, onView }) => {
     <Card className="h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <CardContent className="flex-1">
         <div className="flex items-start gap-4 mb-3">
-          <div className="text-2xl w-[60px] h-[60px] flex items-center justify-center bg-indigo-50 rounded-lg flex-shrink-0">
+          <div className="text-2xl w-[60px] h-[60px] flex items-center justify-center bg-brand-50 rounded-lg flex-shrink-0">
             {actualite.image ? (
               <img
                 src={getImageUrl(actualite.image)}
@@ -36,16 +36,14 @@ const NewsCard: React.FC<NewsCardProps> = ({ actualite, onView }) => {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">{actualite.titre}</h3>
+            <h3 className="text-lg font-semibold text-ink-900 mb-1">{actualite.titre}</h3>
             <div className="flex gap-2 mb-1 flex-wrap items-center">
               <Badge variant="outline">{actualite.categorie}</Badge>
-              <span className="text-xs text-gray-500">{formatDate(actualite.date)}</span>
+              <span className="text-xs text-ink-500">{formatDate(actualite.date)}</span>
             </div>
           </div>
         </div>
-        <p className="text-sm text-gray-600 line-clamp-3">
-          {actualite.resume || actualite.contenu}
-        </p>
+        <p className="text-sm text-ink-600 line-clamp-3">{actualite.resume || actualite.contenu}</p>
       </CardContent>
       {onView && (
         <CardFooter className="flex justify-end px-4 pb-4">

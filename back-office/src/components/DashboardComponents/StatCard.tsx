@@ -13,31 +13,43 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon, loading
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="rounded-xl border border-ink-100 bg-white p-5 shadow-card">
         <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-          <div className="h-8 bg-gray-200 rounded w-3/4 mb-2"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+          <div className="mb-2 h-4 w-1/2 rounded bg-ink-100"></div>
+          <div className="mb-2 h-8 w-3/4 rounded bg-ink-100"></div>
+          <div className="h-4 w-1/4 rounded bg-ink-100"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mb-2">{value}</p>
+    <div className="group relative overflow-hidden rounded-sm border border-ink-100 bg-white p-5  transition-all duration-200 hover:shadow-card-hover">
+      <span className="absolute inset-x-0 top-0 h-1 opacity-80" />
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="mb-1 text-sm font-medium text-ink-500">{title}</p>
+          <p className="mb-2 text-2xl font-bold tracking-tight text-ink-900">{value}</p>
           {change && (
             <span
-              className={`text-sm font-medium ${isPositive ? 'text-green-600' : 'text-red-600'}`}
+              className={`inline-flex items-center gap-1 text-sm font-semibold ${
+                isPositive ? 'text-brand-600' : 'text-red-600'
+              }`}
             >
+              <span aria-hidden="true">{isPositive ? '↗' : '↘'}</span>
               {change}
             </span>
           )}
         </div>
-        {icon && <div className="ml-4">{icon}</div>}
+        {icon && (
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm bg-brand-20 text-brand-600 ring-1 ring-brand-100 transition-transform duration-200 group-hover:scale-105">
+            {React.isValidElement(icon)
+              ? React.cloneElement(icon, {
+                  sx: { fontSize: 24 },
+                } as React.SVGProps<SVGSVGElement>)
+              : icon}
+          </div>
+        )}
       </div>
     </div>
   );

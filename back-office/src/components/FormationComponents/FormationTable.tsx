@@ -40,8 +40,8 @@ const FormationTable: React.FC<FormationTableProps> = ({
       minWidth: 250,
       render: (row) => (
         <div className="max-w-md">
-          <span className="font-semibold text-gray-900 line-clamp-1">{row.titre}</span>
-          <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">{row.domaine.join(', ')}</p>
+          <span className="font-semibold text-ink-900 line-clamp-1">{row.titre}</span>
+          <p className="text-xs text-ink-500 line-clamp-1 mt-0.5">{row.domaine.join(', ')}</p>
         </div>
       ),
     },
@@ -66,14 +66,14 @@ const FormationTable: React.FC<FormationTableProps> = ({
       id: 'duree',
       label: 'Durée',
       minWidth: 100,
-      render: (row) => <span className="text-sm text-gray-600">{row.duree}</span>,
+      render: (row) => <span className="text-sm text-ink-600">{row.duree}</span>,
     },
     {
       id: 'credits',
       label: 'Crédits',
       minWidth: 80,
       align: 'center',
-      render: (row) => <span className="text-sm font-medium text-gray-700">{row.credits}</span>,
+      render: (row) => <span className="text-sm font-medium text-ink-700">{row.credits}</span>,
     },
     {
       id: 'enVedette',
@@ -84,7 +84,7 @@ const FormationTable: React.FC<FormationTableProps> = ({
         row.enVedette ? (
           <StarIcon sx={{ color: '#f59e0b', fontSize: 20 }} />
         ) : (
-          <span className="text-sm text-gray-400">-</span>
+          <span className="text-sm text-ink-400">-</span>
         ),
     },
     {

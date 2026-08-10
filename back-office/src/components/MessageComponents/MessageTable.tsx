@@ -71,19 +71,17 @@ const MessageTable: React.FC<MessageTableProps> = ({
             <div className="flex items-center gap-3">
               <div
                 className={`h-10 w-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  row.lu ? 'bg-gray-100' : 'bg-indigo-100'
+                  row.lu ? 'bg-ink-100' : 'bg-brand-100'
                 }`}
               >
                 <MailIcon sx={{ fontSize: 20, color: row.lu ? '#6b7280' : '#4f46e5' }} />
               </div>
               <div className="min-w-0">
-                <span
-                  className={`font-semibold block ${row.lu ? 'text-gray-900' : 'text-gray-900'}`}
-                >
+                <span className={`font-semibold block ${row.lu ? 'text-ink-900' : 'text-ink-900'}`}>
                   {row.prenom} {row.nom}
                 </span>
-                <p className="text-xs text-gray-500 truncate">{row.email}</p>
-                {row.telephone && <p className="text-xs text-gray-500">{row.telephone}</p>}
+                <p className="text-xs text-ink-500 truncate">{row.email}</p>
+                {row.telephone && <p className="text-xs text-ink-500">{row.telephone}</p>}
               </div>
             </div>
           </div>
@@ -98,7 +96,7 @@ const MessageTable: React.FC<MessageTableProps> = ({
             <Badge variant={getSujetColor(row.sujet)} className="text-xs mb-1">
               {getSujetLabel(row.sujet)}
             </Badge>
-            <p className="text-sm text-gray-600 line-clamp-2 mt-1">{row.message}</p>
+            <p className="text-sm text-ink-600 line-clamp-2 mt-1">{row.message}</p>
           </div>
         ),
       },
@@ -123,7 +121,7 @@ const MessageTable: React.FC<MessageTableProps> = ({
         label: 'Date',
         minWidth: 150,
         render: (row) => (
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-ink-600">
             {new Intl.DateTimeFormat('fr-FR', {
               day: '2-digit',
               month: '2-digit',
@@ -193,10 +191,10 @@ const MessageTable: React.FC<MessageTableProps> = ({
 
   if (loading) {
     return (
-      <div className="border border-gray-200 rounded-xl overflow-hidden bg-white p-8">
+      <div className="border border-ink-100 rounded-xl overflow-hidden bg-white p-8">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-green-600"></div>
-          <p className="mt-2 text-gray-600">Chargement des messages...</p>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-ink-300 border-t-brand-600"></div>
+          <p className="mt-2 text-ink-600">Chargement des messages...</p>
         </div>
       </div>
     );

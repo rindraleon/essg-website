@@ -25,7 +25,7 @@ const Contacts = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
@@ -37,7 +37,7 @@ const Contacts = () => {
       setLoading(true);
       let response: PaginationResponse<Message>;
 
-      if (query && query.trim()) {
+      if (query?.trim()) {
         response = await searchMessages(query, {
           page,
           limit: ITEMS_PER_PAGE,
@@ -152,34 +152,16 @@ const Contacts = () => {
     return labels[sujet] || sujet;
   };
 
-  // Stats
-  const unreadCount = messages.filter((m) => !m.lu).length;
-
   return (
     <div className="space-y-2 p-2 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-3xl font-bold text-gray-900">{totalItems}</div>
-          <div className="text-sm text-gray-500">Total messages</div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-3xl font-bold text-green-600">{totalItems - unreadCount}</div>
-          <div className="text-sm text-gray-500">Lus</div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-3xl font-bold text-amber-500">{unreadCount}</div>
-          <div className="text-sm text-gray-500">Non lus</div>
-        </div>
-      </div>
 
       {/* Search + Actions */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <div className="bg-white rounded-xl border border-ink-100 p-4 shadow-card">
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-            <h2 className="text-lg font-bold text-gray-800 whitespace-nowrap">
+            <h2 className="text-lg font-bold text-ink-800 whitespace-nowrap">
               Messages de contact
-              <span className="ml-2 text-sm font-normal text-gray-500">
+              <span className="ml-2 text-sm font-normal text-ink-500">
                 ({totalItems} message{totalItems !== 1 ? 's' : ''})
               </span>
             </h2>
@@ -203,7 +185,7 @@ const Contacts = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-lg border border-gray-200">
+      <div className="bg-white rounded-lg border border-ink-100">
         <MessageTable
           data={messages}
           totalCount={totalItems}
@@ -228,23 +210,23 @@ const Contacts = () => {
             <div className="space-y-4 text-left">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">
+                  <h3 className="text-xl font-bold text-ink-900">
                     {selectedMessage.prenom} {selectedMessage.nom}
                   </h3>
-                  <div className="space-y-1 text-sm text-gray-600 mt-2">
+                  <div className="space-y-1 text-sm text-ink-600 mt-2">
                     <p>📧 {selectedMessage.email}</p>
                     {selectedMessage.telephone && <p>📞 {selectedMessage.telephone}</p>}
                     <p>🕐 {formatDate(selectedMessage.creeLe)}</p>
                   </div>
                 </div>
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-ink-100 text-ink-800">
                   {getSujetLabel(selectedMessage.sujet)}
                 </span>
               </div>
-              <div className="border-t border-gray-200 pt-4">
-                <h4 className="font-semibold text-gray-900 mb-2">Message :</h4>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-gray-700 whitespace-pre-wrap">{selectedMessage.message}</p>
+              <div className="border-t border-ink-100 pt-4">
+                <h4 className="font-semibold text-ink-900 mb-2">Message :</h4>
+                <div className="bg-ink-50 rounded-lg p-4">
+                  <p className="text-ink-700 whitespace-pre-wrap">{selectedMessage.message}</p>
                 </div>
               </div>
             </div>

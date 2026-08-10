@@ -36,9 +36,9 @@ const ProjetFilters: React.FC<ProjetFiltersProps> = ({
   return (
     <div>
       <Collapse in={open}>
-        <Box className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+        <Box className="mt-4 p-4 bg-ink-50 rounded-xl border border-ink-100">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-semibold text-gray-700">Filtres avancés</span>
+            <span className="text-sm font-semibold text-ink-700">Filtres avancés</span>
             <IconButton size="small" onClick={onToggle}>
               <CloseIcon />
             </IconButton>

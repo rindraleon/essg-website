@@ -181,8 +181,8 @@ const UsersForm: React.FC<UsersFormProps> = ({ open, onClose, onSubmit, initialD
           [&>button]:hidden
         "
       >
-        <DialogHeader className="px-5 pt-4 pb-3 border-b bg-gray-50/80">
-          <DialogTitle className="text-lg font-bold text-gray-900">{dialogTitle}</DialogTitle>
+        <DialogHeader className="px-5 pt-4 pb-3 border-b bg-ink-50/80">
+          <DialogTitle className="text-lg font-bold text-ink-900">{dialogTitle}</DialogTitle>
         </DialogHeader>
 
         <div className="px-5 py-4 overflow-y-auto max-h-[58vh]">
@@ -191,7 +191,7 @@ const UsersForm: React.FC<UsersFormProps> = ({ open, onClose, onSubmit, initialD
               <div className="flex flex-col items-center gap-2">
                 <div className="relative">
                   <div
-                    className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border-2 border-gray-300"
+                    className="w-24 h-24 rounded-full bg-ink-100 flex items-center justify-center overflow-hidden border-2 border-ink-300"
                     style={{ backgroundColor: avatarPreview ? 'transparent' : undefined }}
                   >
                     {avatarPreview ? (
@@ -202,7 +202,7 @@ const UsersForm: React.FC<UsersFormProps> = ({ open, onClose, onSubmit, initialD
                         onError={() => setAvatarPreview(null)}
                       />
                     ) : (
-                      <span className="text-2xl font-semibold text-gray-600">{getInitials()}</span>
+                      <span className="text-2xl font-semibold text-ink-600">{getInitials()}</span>
                     )}
                   </div>
                   {avatarPreview && (
@@ -242,7 +242,7 @@ const UsersForm: React.FC<UsersFormProps> = ({ open, onClose, onSubmit, initialD
                     <CloudUpload className="h-3.5 w-3.5" />
                     {avatarPreview ? 'Changer' : 'Ajouter'}
                   </Button>
-                  <span className="text-[10px] text-gray-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
+                  <span className="text-[10px] text-ink-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
                 </div>
               </div>
 
@@ -312,7 +312,7 @@ const UsersForm: React.FC<UsersFormProps> = ({ open, onClose, onSubmit, initialD
           </div>
         </div>
 
-        <DialogFooter className="px-5 py-3 mb-4 mx-4 border-t bg-gray-50/80">
+        <DialogFooter className="px-5 py-3 mb-4 mx-4 border-t bg-ink-50/80">
           <div className="flex items-center justify-end gap-2 w-full">
             <Button
               type="button"
@@ -320,7 +320,7 @@ const UsersForm: React.FC<UsersFormProps> = ({ open, onClose, onSubmit, initialD
               size="sm"
               onClick={onClose}
               disabled={uploading}
-              className="text-gray-500 h-8"
+              className="text-ink-500 h-8"
             >
               Annuler
             </Button>
@@ -329,7 +329,7 @@ const UsersForm: React.FC<UsersFormProps> = ({ open, onClose, onSubmit, initialD
               size="sm"
               onClick={handleSubmit}
               disabled={uploading}
-              className="gap-1 h-8 bg-blue-600 hover:bg-blue-700"
+              className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
             >
               {buttonText}
             </Button>

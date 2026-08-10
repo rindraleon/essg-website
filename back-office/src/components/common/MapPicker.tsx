@@ -104,9 +104,9 @@ const MapPicker: React.FC<MapPickerProps> = ({
 
   return (
     <div className="w-full space-y-3">
-      {label && <p className="font-semibold text-gray-700 mb-2">{label}</p>}
+      {label && <p className="font-semibold text-ink-700 mb-2">{label}</p>}
 
-      <div className="rounded-xl overflow-hidden border border-gray-200">
+      <div className="rounded-xl overflow-hidden border border-ink-100">
         <MapContainer center={position} zoom={13} style={{ height: '300px', width: '100%' }}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -117,7 +117,7 @@ const MapPicker: React.FC<MapPickerProps> = ({
             <Popup>
               <div>
                 <p className="font-semibold text-sm">Emplacement sélectionné</p>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-ink-600">
                   {position[0].toFixed(5)}, {position[1].toFixed(5)}
                 </p>
               </div>
@@ -126,10 +126,10 @@ const MapPicker: React.FC<MapPickerProps> = ({
         </MapContainer>
       </div>
 
-      <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div className="mt-3 p-3 bg-ink-50 rounded-lg border border-ink-100">
         <div className="flex items-center gap-2 mb-2">
-          <EditIcon fontSize="small" className="text-gray-600" />
-          <p className="font-semibold text-gray-700 text-sm">Saisie manuelle des coordonnées</p>
+          <EditIcon fontSize="small" className="text-ink-600" />
+          <p className="font-semibold text-ink-700 text-sm">Saisie manuelle des coordonnées</p>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <FloatingInput
@@ -165,14 +165,14 @@ const MapPicker: React.FC<MapPickerProps> = ({
 
       <div className="mt-2 flex items-center gap-3 text-sm">
         <div className="flex items-center gap-1">
-          <LocationOnIcon fontSize="small" className="text-gray-500" />
-          <span className="text-gray-600">
+          <LocationOnIcon fontSize="small" className="text-ink-500" />
+          <span className="text-ink-600">
             <span className="font-semibold">Lat:</span> {position[0].toFixed(5)}
           </span>
         </div>
         <div className="flex items-center gap-1">
-          <LocationOnIcon fontSize="small" className="text-gray-500" />
-          <span className="text-gray-600">
+          <LocationOnIcon fontSize="small" className="text-ink-500" />
+          <span className="text-ink-600">
             <span className="font-semibold">Lng:</span> {position[1].toFixed(5)}
           </span>
         </div>
@@ -183,7 +183,7 @@ const MapPicker: React.FC<MapPickerProps> = ({
           title="Utiliser ma position actuelle"
           className="h-8 w-8"
         >
-          <MyLocationIcon fontSize="small" className="text-blue-600" />
+          <MyLocationIcon fontSize="small" className="text-brand-600" />
         </Button>
       </div>
     </div>

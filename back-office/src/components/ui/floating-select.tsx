@@ -37,8 +37,8 @@ const FloatingSelect: React.FC<FloatingSelectProps> = ({
         <SelectTrigger
           className={cn(
             'w-full bg-white pt-5 pb-1.5 px-3 h-auto min-h-[48px] text-sm',
-            'focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500',
-            error ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : 'border-gray-300',
+            'focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500',
+            error ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : 'border-ink-300',
             className
           )}
         >
@@ -46,7 +46,7 @@ const FloatingSelect: React.FC<FloatingSelectProps> = ({
         </SelectTrigger>
         <SelectContent className="bg-white">
           {options.map((opt) => (
-            <SelectItem key={opt.value} value={opt.value} className="hover:bg-gray-100">
+            <SelectItem key={opt.value} value={opt.value} className="hover:bg-ink-100">
               {opt.label}
             </SelectItem>
           ))}
@@ -57,7 +57,7 @@ const FloatingSelect: React.FC<FloatingSelectProps> = ({
           'absolute left-3 transition-all duration-200 pointer-events-none',
           'origin-[0]',
           hasValue ? 'top-1.5 text-[10px] font-medium' : 'top-1/2 -translate-y-1/2 text-sm',
-          error ? 'text-red-500' : 'text-gray-500'
+          error ? 'text-red-500' : 'text-ink-500'
         )}
       >
         {label}

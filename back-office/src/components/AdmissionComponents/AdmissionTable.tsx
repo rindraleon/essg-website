@@ -81,8 +81,8 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
         render: (row) => (
           <div className="max-w-md">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                <span className="text-sm font-semibold text-indigo-600">
+              <div className="h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center flex-shrink-0">
+                <span className="text-sm font-semibold text-brand-600">
                   {row.nom
                     .split(' ')
                     .map((n) => n[0])
@@ -90,11 +90,11 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
                 </span>
               </div>
               <div className="min-w-0">
-                <span className="font-semibold text-gray-900 block">
+                <span className="font-semibold text-ink-900 block">
                   {row.nom} {row.prenom}
                 </span>
-                <p className="text-xs text-gray-500 truncate">{row.email}</p>
-                <p className="text-xs text-gray-500">{row.telephone}</p>
+                <p className="text-xs text-ink-500 truncate">{row.email}</p>
+                <p className="text-xs text-ink-500">{row.telephone}</p>
               </div>
             </div>
           </div>
@@ -106,8 +106,8 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
         minWidth: 200,
         render: (row) => (
           <div>
-            <span className="text-sm text-gray-900 font-medium">{row.formation}</span>
-            <p className="text-xs text-gray-500 capitalize">{row.niveau}</p>
+            <span className="text-sm text-ink-900 font-medium">{row.formation}</span>
+            <p className="text-xs text-ink-500 capitalize">{row.niveau}</p>
           </div>
         ),
       },
@@ -142,7 +142,7 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
                         window.open(row.cvPath, '_blank', 'noopener,noreferrer');
                         return false;
                       }}
-                      className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+                      className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-ink-100 transition-colors cursor-pointer"
                     >
                       <PictureAsPdfIcon className="h-4 w-4 text-red-600" />
                     </button>
@@ -164,9 +164,9 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
                         window.open(row.lettreMotivationPath, '_blank', 'noopener,noreferrer');
                         return false;
                       }}
-                      className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+                      className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-ink-100 transition-colors cursor-pointer"
                     >
-                      <PictureAsPdfIcon className="h-4 w-4 text-blue-600" />
+                      <PictureAsPdfIcon className="h-4 w-4 text-brand-600" />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>Lettre de motivation</TooltipContent>
@@ -174,7 +174,7 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
               </TooltipProvider>
             )}
             {!row.cvPath && !row.lettreMotivationPath && (
-              <span className="text-xs text-gray-400">-</span>
+              <span className="text-xs text-ink-400">-</span>
             )}
           </div>
         ),
@@ -184,7 +184,7 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
         label: 'Date',
         minWidth: 100,
         render: (row) => (
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-ink-600">
             {new Date(row.creeLe).toLocaleDateString('fr-FR')}
           </span>
         ),
@@ -246,10 +246,10 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
 
   if (loading) {
     return (
-      <div className="border border-gray-200 rounded-xl overflow-hidden bg-white p-8">
+      <div className="border border-ink-100 rounded-xl overflow-hidden bg-white p-8">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-green-600"></div>
-          <p className="mt-2 text-gray-600">Chargement des admissions...</p>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-ink-300 border-t-brand-600"></div>
+          <p className="mt-2 text-ink-600">Chargement des admissions...</p>
         </div>
       </div>
     );

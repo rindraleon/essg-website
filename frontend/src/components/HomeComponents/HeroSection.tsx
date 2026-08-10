@@ -51,9 +51,9 @@ const OUTLINED_BUTTON_STYLES = {
 } as const;
 
 const HeroSection = ({
-  badge = 'Excellence académique',
+  //badge = 'Excellence académique',
   title = 'Ecole Supérieure des Sciences Géomatiques',
-  description = 'L\'École Supérieure de Sciences Géomatiques (ESSG) de l\'Université de Fianarantsoa, Madagascar, est un établissement d\'enseignement supérieur spécialisé dans la formation, la recherche et l\'innovation en géomatique, cartographie, télédétection et systèmes d\'information géographique (SIG).',
+  description = 'lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   primaryButton,
   secondaryButton,
 }: HeroSectionProps) => {
@@ -82,8 +82,8 @@ const HeroSection = ({
       />
 
       <div className="relative flex h-full w-full flex-col items-center justify-between p-0">
-        <div className="w-full max-w-4xl text-center px-4 py-32 sm:px-6 lg:px-8 lg:py-44">
-          {badge && (
+        <div className="w-full max-w-4xl text-center px-4 py-32 sm:px-6 lg:px-8 lg:py-40">
+          {/* {badge && (
             <div className="mb-7 flex justify-center animate-fade-in-up">
               <Chip
                 icon={<AutoAwesomeRoundedIcon />}
@@ -92,7 +92,7 @@ const HeroSection = ({
                 sx={CHIP_STYLES}
               />
             </div>
-          )}
+          )} */}
 
           <h1 className="mb-5 text-4xl font-bold leading-tight drop-shadow-md sm:text-5xl lg:text-6xl animate-fade-in-up [animation-delay:80ms]">
             {title}

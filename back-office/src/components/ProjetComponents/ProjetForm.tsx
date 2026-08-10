@@ -81,6 +81,10 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
         required: true,
         minLength: { value: 5, message: 'Le titre doit contenir au moins 5 caractères' },
       },
+      slug: {
+        required: true,
+        minLength: { value: 3, message: 'Le slug doit contenir au moins 3 caractères' },
+      },
       description: {
         required: true,
         minLength: { value: 20, message: 'La description doit contenir au moins 20 caractères' },
@@ -97,6 +101,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
         const imageUrl = initialData.image || '';
         setFormData({
           titre: initialData.titre,
+          slug: initialData.slug,
           type: initialData.type,
           date: initialData.date,
           description: initialData.description,
@@ -177,7 +182,8 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
   /* ─── Step 0 : Informations générales ─── */
   const renderStep0 = () => (
     <div className="space-y-4">
-      <FloatingInput
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <FloatingInput
         id="titre"
         label="Titre *"
         value={formData.titre}
@@ -185,6 +191,17 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
         onBlur={() => handleBlur('titre')}
         error={errors.titre}
       />
+      <FloatingInput
+        id="slug"
+        label="Slug *"
+        value={formData.slug}
+        onChange={(e) => handleChange('slug', e.target.value)}
+        onBlur={() => handleBlur('slug')}
+        error={errors.slug}
+      />
+        
+      </div>
+      
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <FloatingSelect
@@ -223,8 +240,8 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
 
       <div>
         <div className="flex items-center gap-1.5 mb-2">
-          <WorkIcon className="h-4 w-4 text-gray-400" />
-          <Label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+          <WorkIcon className="h-4 w-4 text-ink-400" />
+          <Label className="text-xs font-semibold text-ink-600 uppercase tracking-wide">
             Partenaires
           </Label>
         </div>
@@ -255,7 +272,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
           {formData.partenaires.map((partenaire, index) => (
             <span
               key={index}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-brand-50 text-brand-700 border border-brand-200"
             >
               {partenaire}
               <button
@@ -277,7 +294,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
     <div className="space-y-4">
       {/* Image */}
       <div className="space-y-2">
-        <Label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+        <Label className="text-xs font-semibold text-ink-600 uppercase tracking-wide">
           Image de couverture
         </Label>
         <div className="flex items-start gap-3">
@@ -285,7 +302,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
             <img
               src={imagePreview}
               alt="Aperçu"
-              className="w-28 h-20 object-cover rounded-md border border-gray-200 shrink-0"
+              className="w-28 h-20 object-cover rounded-md border border-ink-100 shrink-0"
               onError={() => setImagePreview('')}
             />
           )}
@@ -308,7 +325,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
               <CloudUploadIcon className="h-3.5 w-3.5" />
               {uploadingImage ? 'Upload...' : 'Choisir une image'}
             </Button>
-            <span className="text-[10px] text-gray-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
+            <span className="text-[10px] text-ink-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
           </div>
         </div>
       </div>
@@ -316,8 +333,8 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
       {/* Localisation */}
       <div className="space-y-3">
         <div className="flex items-center gap-1.5 mb-2">
-          <PublicIcon className="h-4 w-4 text-gray-400" />
-          <Label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+          <PublicIcon className="h-4 w-4 text-ink-400" />
+          <Label className="text-xs font-semibold text-ink-600 uppercase tracking-wide">
             Localisation (optionnel)
           </Label>
         </div>
@@ -386,8 +403,8 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
         "
       >
         {/* ─── Header + Stepper ─── */}
-        <DialogHeader className="px-5 pt-4 pb-3 border-b bg-gray-50/80">
-          <DialogTitle className="text-lg font-bold text-gray-900">{dialogTitle}</DialogTitle>
+        <DialogHeader className="px-5 pt-4 pb-3 border-b bg-ink-50/80">
+          <DialogTitle className="text-lg font-bold text-ink-900">{dialogTitle}</DialogTitle>
 
           <div className="flex items-center justify-center gap-1 mt-3">
             {STEPS.map((step, index) => {
@@ -399,7 +416,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
                   {index > 0 && (
                     <div
                       className={`hidden sm:block h-px w-8 transition-colors ${
-                        isCompleted ? 'bg-blue-500' : 'bg-gray-300'
+                        isCompleted ? 'bg-brand-500' : 'bg-ink-300'
                       }`}
                     />
                   )}
@@ -411,10 +428,10 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
                       text-xs font-medium transition-all
                       ${
                         isActive
-                          ? 'bg-blue-600 text-white shadow-sm'
+                          ? 'bg-brand-600 text-white shadow-sm'
                           : isCompleted
-                            ? 'bg-blue-50 text-blue-700 hover:bg-blue-100'
-                            : 'bg-gray-100 text-gray-400'
+                            ? 'bg-brand-50 text-brand-700 hover:bg-brand-100'
+                            : 'bg-ink-100 text-ink-400'
                       }
                     `}
                   >
@@ -432,9 +449,9 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
         <div className="px-5 py-4 overflow-y-auto max-h-[58vh]">{stepRenderers[activeStep]()}</div>
 
         {/* ─── Footer ─── */}
-        <DialogFooter className="px-5 py-3 mb-4 mx-4 border-t bg-gray-50/80">
+        <DialogFooter className="px-5 py-3 mb-4 mx-4 border-t bg-ink-50/80">
           <div className="flex items-center justify-between w-full">
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-ink-400">
               {activeStep + 1}/{STEPS.length}
             </span>
 
@@ -444,7 +461,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
-                className="text-gray-500 h-8"
+                className="text-ink-500 h-8"
               >
                 Annuler
               </Button>
@@ -467,7 +484,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
                   type="button"
                   size="sm"
                   onClick={handleNext}
-                  className="gap-1 h-8 bg-blue-600 hover:bg-blue-700"
+                  className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
                   Suivant
                   <ArrowForwardIcon className="h-3.5 w-3.5" />
@@ -477,7 +494,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
                   type="button"
                   size="sm"
                   onClick={handleSubmit}
-                  className="gap-1 h-8 bg-blue-600 hover:bg-blue-700"
+                  className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
                   <CheckCircleIcon className="h-3.5 w-3.5" />
                   {mode === 'create' ? 'Créer' : 'Enregistrer'}

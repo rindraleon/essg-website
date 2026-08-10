@@ -40,8 +40,8 @@ const ActualiteTable: React.FC<ActualiteTableProps> = ({
       minWidth: 200,
       render: (row) => (
         <div className="max-w-xs">
-          <span className="font-semibold text-gray-900 line-clamp-1">{row.titre}</span>
-          <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">{row.contenu}</p>
+          <span className="font-semibold text-ink-900 line-clamp-1">{row.titre}</span>
+          <p className="text-xs text-ink-500 line-clamp-1 mt-0.5">{row.contenu}</p>
         </div>
       ),
     },
@@ -59,14 +59,14 @@ const ActualiteTable: React.FC<ActualiteTableProps> = ({
       id: 'auteur',
       label: 'Auteur',
       minWidth: 130,
-      render: (row) => <span className="text-sm text-gray-600">{row.auteur}</span>,
+      render: (row) => <span className="text-sm text-ink-600">{row.auteur}</span>,
     },
     {
       id: 'date',
       label: 'Date',
       minWidth: 110,
       render: (row) => (
-        <span className="text-sm text-gray-600">
+        <span className="text-sm text-ink-600">
           {new Date(row.date).toLocaleDateString('fr-FR')}
         </span>
       ),

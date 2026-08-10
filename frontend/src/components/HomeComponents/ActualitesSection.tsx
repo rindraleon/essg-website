@@ -17,7 +17,7 @@ const ActualitesSection = () => {
 
   const headerContent = (
     <SectionHeader
-      eyebrow="Vie de l'école"
+      // eyebrow="Vie de l'école"
       title="Dernières Actualités"
       description="Restez informé de la vie de l'ESSG"
     />

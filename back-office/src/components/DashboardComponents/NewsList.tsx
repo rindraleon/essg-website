@@ -31,7 +31,7 @@ const NewsList: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[300px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ink-900"></div>
       </div>
     );
   }
@@ -53,7 +53,7 @@ const NewsList: React.FC = () => {
   if (news.length === 0) {
     return (
       <div className="text-center py-8">
-        <h6 className="text-gray-500 text-lg">Aucune actualité disponible pour le moment</h6>
+        <h6 className="text-ink-500 text-lg">Aucune actualité disponible pour le moment</h6>
       </div>
     );
   }

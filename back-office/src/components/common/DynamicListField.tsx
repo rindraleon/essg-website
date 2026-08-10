@@ -26,7 +26,7 @@ const DynamicListField = ({
   return (
     <div className="w-full space-y-2">
       <div className="mb-2 flex items-center justify-between">
-        <Label className="text-sm font-medium text-slate-700">{label}</Label>
+        <Label className="text-sm font-medium text-ink-700">{label}</Label>
 
         <Button size="sm" onClick={onAdd} className="normal-case">
           <AddIcon className="h-4 w-4 mr-1" />

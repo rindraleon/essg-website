@@ -51,13 +51,14 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
       <DialogContent
         className="
           !w-[96vw]
-          !max-w-6xl
+          !max-w-[calc(100%-1rem)]
+          sm:!max-w-6xl
           !h-[90vh]
           !max-h-[90vh]
           gap-0
           overflow-hidden
           rounded-[30px]
-          border-2 border-slate-200
+          border-2 border-ink-100
           bg-white
           p-0
           shadow-[0_24px_80px_rgba(15,23,42,0.35)]
@@ -66,11 +67,11 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
       >
         <div className="grid h-full min-h-0 lg:grid-cols-[360px_minmax(0,1fr)]">
           {/* Colonne gauche desktop */}
-          <aside className="hidden min-h-0 flex-col border-r border-slate-200 bg-slate-950 p-5 text-white lg:flex">
+          <aside className="hidden min-h-0 flex-col border-r border-ink-100 bg-ink-950 p-5 text-white lg:flex">
             {/* Avatar en haut gauche */}
             <div className="w-full self-start">
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-slate-800 shadow-[0_12px_30px_rgba(0,0,0,0.35)]">
-                <div className="aspect-[16/9] w-full bg-slate-800">
+              <div className="overflow-hidden rounded-2xl border border-white/10 bg-ink-800 shadow-[0_12px_30px_rgba(0,0,0,0.35)]">
+                <div className="aspect-[16/9] w-full bg-ink-800">
                   {user.avatar ? (
                     <img
                       src={getImageUrl(user.avatar)}
@@ -81,10 +82,10 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                       }}
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900">
+                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-ink-800 to-ink-900">
                       <div className="text-center">
-                        <ImageOutlinedIcon className="mx-auto mb-2 h-12 w-12 text-slate-500" />
-                        <p className="text-sm text-slate-400">Aucune photo</p>
+                        <ImageOutlinedIcon className="mx-auto mb-2 h-12 w-12 text-ink-500" />
+                        <p className="text-sm text-ink-400">Aucune photo</p>
                       </div>
                     </div>
                   )}
@@ -99,7 +100,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
 
                 <Badge
                   className={`rounded-full px-3 py-1 text-white ${
-                    user.estActif ? 'bg-emerald-500' : 'bg-gray-500'
+                    user.estActif ? 'bg-emerald-500' : 'bg-ink-500'
                   }`}
                 >
                   {user.estActif ? 'Actif' : 'Inactif'}
@@ -111,7 +112,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                   {user.prenom} {user.nom}
                 </h2>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <Badge className="rounded-full bg-white text-slate-900">
+                  <Badge className="rounded-full bg-white text-ink-900">
                     <PersonOutlineOutlinedIcon className="mr-1 h-3.5 w-3.5" />
                     {getRoleLabel(user.role)}
                   </Badge>
@@ -147,13 +148,13 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
           {/* Colonne droite */}
           <section className="flex min-h-0 flex-col">
             {/* Header */}
-            <DialogHeader className="shrink-0 border-b border-slate-200 bg-white px-5 py-4 lg:px-6">
+            <DialogHeader className="shrink-0 border-b border-ink-100 bg-white px-5 py-4 lg:px-6">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <DialogTitle className="text-xl font-bold text-slate-900">
+                  <DialogTitle className="text-xl font-bold text-ink-900">
                     Détails de l'utilisateur
                   </DialogTitle>
-                  <p className="mt-1 text-sm text-slate-500">Informations complètes du compte</p>
+                  <p className="mt-1 text-sm text-ink-500">Informations complètes du compte</p>
                 </div>
 
                 <Button
@@ -161,7 +162,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                   variant="ghost"
                   size="icon"
                   onClick={onClose}
-                  className="h-10 w-10 shrink-0 rounded-full border border-slate-200 bg-white hover:bg-slate-100"
+                  className="h-10 w-10 shrink-0 rounded-full border border-ink-100 bg-white hover:bg-ink-100"
                   aria-label="Fermer"
                 >
                   <CloseIcon className="h-4 w-4" />
@@ -173,7 +174,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
             <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 lg:px-6">
               {/* Version mobile */}
               <div className="mb-5 lg:hidden">
-                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <div className="overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-sm">
                   <div className="p-4">
                     <div className="flex items-start gap-4 mb-4">
                       <Avatar className="h-16 w-16">
@@ -181,15 +182,15 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                           src={user.avatar ? getImageUrl(user.avatar) : undefined}
                           alt="Avatar"
                         />
-                        <AvatarFallback className="bg-gray-100 text-gray-700 text-xl">
+                        <AvatarFallback className="bg-ink-100 text-ink-700 text-xl">
                           {getInitials()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <h2 className="mb-2 text-xl font-bold text-slate-900">
+                        <h2 className="mb-2 text-xl font-bold text-ink-900">
                           {user.prenom} {user.nom}
                         </h2>
-                        <p className="text-sm text-gray-500 mb-2">{user.email}</p>
+                        <p className="text-sm text-ink-500 mb-2">{user.email}</p>
                         <div className="flex flex-wrap gap-2">
                           <Badge variant={user.estActif ? 'default' : 'secondary'}>
                             {user.estActif ? 'Actif' : 'Inactif'}
@@ -205,37 +206,37 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
               <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
                 {/* Colonne principale */}
                 <div className="space-y-5">
-                  <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">
+                  <div className="rounded-2xl border border-ink-100 bg-white p-5 shadow-sm">
+                    <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-700">
                       Informations personnelles
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div className="p-3 bg-slate-50 rounded-lg">
-                        <p className="text-xs text-slate-500 mb-1">Prénom</p>
-                        <p className="text-sm font-medium text-slate-900">{user.prenom}</p>
+                      <div className="p-3 bg-ink-50 rounded-lg">
+                        <p className="text-xs text-ink-500 mb-1">Prénom</p>
+                        <p className="text-sm font-medium text-ink-900">{user.prenom}</p>
                       </div>
-                      <div className="p-3 bg-slate-50 rounded-lg">
-                        <p className="text-xs text-slate-500 mb-1">Nom</p>
-                        <p className="text-sm font-medium text-slate-900">{user.nom}</p>
+                      <div className="p-3 bg-ink-50 rounded-lg">
+                        <p className="text-xs text-ink-500 mb-1">Nom</p>
+                        <p className="text-sm font-medium text-ink-900">{user.nom}</p>
                       </div>
                     </div>
 
-                    <div className="mt-3 p-3 bg-slate-50 rounded-lg">
-                      <p className="text-xs text-slate-500 mb-1">Email</p>
-                      <p className="text-sm font-medium text-slate-900">{user.email}</p>
+                    <div className="mt-3 p-3 bg-ink-50 rounded-lg">
+                      <p className="text-xs text-ink-500 mb-1">Email</p>
+                      <p className="text-sm font-medium text-ink-900">{user.email}</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Colonne secondaire */}
                 <div className="grid content-start gap-4 sm:grid-cols-2 xl:grid-cols-1">
-                  <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                    <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">
+                  <div className="rounded-2xl border border-ink-100 bg-white p-4 shadow-sm">
+                    <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-700">
                       Informations
                     </h3>
                     <div className="space-y-3">
                       <div>
-                        <p className="text-xs text-slate-500">Rôle</p>
+                        <p className="text-xs text-ink-500">Rôle</p>
                         <div className="mt-1">
                           <Badge
                             variant={
@@ -251,7 +252,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                         </div>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500">Statut</p>
+                        <p className="text-xs text-ink-500">Statut</p>
                         <div className="mt-1">
                           <Badge variant={user.estActif ? 'default' : 'outline'}>
                             {user.estActif ? 'Actif' : 'Inactif'}
@@ -259,14 +260,14 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                         </div>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500">Créé le</p>
-                        <p className="text-sm font-medium text-slate-900">
+                        <p className="text-xs text-ink-500">Créé le</p>
+                        <p className="text-sm font-medium text-ink-900">
                           {formatDate(user.creeLe)}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500">Mis à jour le</p>
-                        <p className="text-sm font-medium text-slate-900">
+                        <p className="text-xs text-ink-500">Mis à jour le</p>
+                        <p className="text-sm font-medium text-ink-900">
                           {formatDate(user.misAJourLe)}
                         </p>
                       </div>
@@ -277,7 +278,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
             </div>
 
             {/* Footer */}
-            <div className="flex shrink-0 items-center justify-end border-t border-slate-200 bg-white px-5 py-4 lg:px-6">
+            <div className="flex shrink-0 items-center justify-end border-t border-ink-100 bg-white px-5 py-4 lg:px-6">
               <Button type="button" onClick={onClose} variant="outline" className="rounded-xl">
                 Fermer
               </Button>
