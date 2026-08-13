@@ -1,15 +1,13 @@
+import { ArrowLeft, ArrowRight, Briefcase, CircleCheck, Globe, Info, Upload } from 'lucide-react';
 import React, { useRef, useState, useEffect } from 'react';
-import InfoIcon from '@mui/icons-material/Info';
-import WorkIcon from '@mui/icons-material/Work';
-import PublicIcon from '@mui/icons-material/Public';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { toast } from 'sonner';
 import { uploadImage } from '../../services';
+import { getImageUrl } from '../../utils/image.utils';
+import { generateSlug } from '../../utils/slug.utils';
 import type { Projet, ProjetFormData } from '../../types/projet.types';
 import { PROJET_TYPES, DEFAULT_FORM_DATA } from '../../constants/projet.constants';
 import { useFormValidation } from '../../hooks/useFormValidation';
+import { useAutoSlug } from '../../hooks/useAutoSlug';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -22,11 +20,12 @@ import {
 import { FloatingInput } from '@/components/ui/floating-input';
 import { FloatingTextarea } from '@/components/ui/floating-textarea';
 import { FloatingSelect } from '@/components/ui/floating-select';
+import MultiImageUpload from '../common/MultiImageUpload';
 
 interface ProjetFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: ProjetFormData) => void;
+  onSubmit: (data: ProjetFormData) => void | Promise<void>;
   initialData?: Projet | null;
   mode: 'create' | 'edit';
 }
@@ -35,24 +34,24 @@ const STEPS = [
   {
     id: 0,
     label: 'Informations',
-    icon: <InfoIcon className="h-4 w-4" />,
+    icon: <Info className="h-4 w-4" />,
   },
   {
     id: 1,
     label: 'Détails',
-    icon: <WorkIcon className="h-4 w-4" />,
+    icon: <Briefcase className="h-4 w-4" />,
   },
   {
     id: 2,
     label: 'Publication',
-    icon: <PublicIcon className="h-4 w-4" />,
+    icon: <Globe className="h-4 w-4" />,
   },
 ];
 
 type ProjetField = keyof ProjetFormData;
 
 const STEP_FIELDS_MAP: Record<number, ProjetField[]> = {
-  0: ['titre', 'type', 'date'],
+  0: ['titre', 'slug', 'type', 'date'],
   1: ['description'],
   2: ['ville', 'pays', 'adresse'],
 };
@@ -62,6 +61,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
   const [imagePreview, setImagePreview] = useState<string>('');
   const [partenairesInput, setPartenairesInput] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
+  const { reset: resetSlug, fromTitle, lock: lockSlug } = useAutoSlug();
 
   const {
     formData,
@@ -69,6 +69,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
     activeStep,
     setActiveStep,
     handleChange,
+    handleChanges,
     handleBlur,
     validateStep,
     validateAllSteps,
@@ -95,43 +96,50 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
     stepFields: STEP_FIELDS_MAP,
   });
 
+  const initialId = initialData?.id ?? '';
+
   useEffect(() => {
-    if (open) {
-      if (mode === 'edit' && initialData) {
-        const imageUrl = initialData.image || '';
-        setFormData({
-          titre: initialData.titre,
-          slug: initialData.slug,
-          type: initialData.type,
-          date: initialData.date,
-          description: initialData.description,
-          partenaires: initialData.partenaires,
-          image: imageUrl,
-          latitude: initialData.latitude,
-          longitude: initialData.longitude,
-          ville: initialData.ville,
-          pays: initialData.pays,
-          adresse: initialData.adresse,
-        });
-        setImagePreview(imageUrl);
-      } else {
-        resetForm();
-        setImagePreview('');
-      }
-      setPartenairesInput('');
+    if (!open) return;
+    if (mode === 'edit' && initialData) {
+      const imageUrl = initialData.image || '';
+      setFormData({
+        titre: initialData.titre,
+        slug: initialData.slug,
+        type: initialData.type,
+        date: initialData.date,
+        description: initialData.description,
+        partenaires: initialData.partenaires,
+        image: imageUrl,
+        galerie: initialData.galerie ?? [],
+        latitude: initialData.latitude,
+        longitude: initialData.longitude,
+        ville: initialData.ville,
+        pays: initialData.pays,
+        adresse: initialData.adresse,
+      });
+      setImagePreview(imageUrl ? getImageUrl(imageUrl) : '');
+      resetSlug(initialData.slug);
+    } else {
+      resetForm();
+      setImagePreview('');
+      resetSlug();
     }
-  }, [open, mode, initialData, setFormData, resetForm]);
+    setPartenairesInput('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, mode, initialId]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingImage(true);
     try {
-      const url = await uploadImage(file);
+      const url = await uploadImage(file, 'projects');
       handleChange('image', url);
       setImagePreview(url);
+      toast.success('Image téléversée avec succès');
     } catch (err) {
-      console.error("Erreur lors de l'upload:", err);
+      const message = err instanceof Error ? err.message : "Échec du téléversement de l'image.";
+      toast.error(message);
     } finally {
       setUploadingImage(false);
     }
@@ -173,37 +181,56 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
     }
   };
 
-  const handleSubmit = () => {
-    if (validateAllSteps()) onSubmit(formData);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (submitting || !validateAllSteps()) return;
+    setSubmitting(true);
+    try {
+      await onSubmit(formData);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const dialogTitle = mode === 'create' ? 'Nouveau projet' : 'Modifier le projet';
 
   /* ─── Step 0 : Informations générales ─── */
   const renderStep0 = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <FloatingInput
+    <div className="space-y-1">
+      <FloatingInput
         id="titre"
         label="Titre *"
+        autoComplete="off"
         value={formData.titre}
-        onChange={(e) => handleChange('titre', e.target.value)}
+        onChange={(e) => {
+          const titre = e.target.value;
+          const nextSlug = fromTitle(titre);
+          if (nextSlug !== undefined) {
+            handleChanges({ titre, slug: nextSlug });
+          } else {
+            handleChange('titre', titre);
+          }
+        }}
         onBlur={() => handleBlur('titre')}
         error={errors.titre}
       />
       <FloatingInput
         id="slug"
-        label="Slug *"
+        label="Slug (auto)"
+        autoComplete="off"
         value={formData.slug}
-        onChange={(e) => handleChange('slug', e.target.value)}
+        onChange={(e) => {
+          lockSlug();
+          handleChange('slug', generateSlug(e.target.value) || e.target.value);
+        }}
         onBlur={() => handleBlur('slug')}
         error={errors.slug}
+        hint="Généré automatiquement à partir du titre"
       />
-        
-      </div>
       
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
         <FloatingSelect
           label="Type *"
           value={formData.type}
@@ -240,29 +267,31 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
 
       <div>
         <div className="flex items-center gap-1.5 mb-2">
-          <WorkIcon className="h-4 w-4 text-ink-400" />
+          <Briefcase className="h-4 w-4 text-ink-400" />
           <Label className="text-xs font-semibold text-ink-600 uppercase tracking-wide">
             Partenaires
           </Label>
         </div>
-        <div className="flex gap-2 mb-2">
-          <FloatingInput
-            id="partenaire"
-            label="Nouveau partenaire"
-            value={partenairesInput}
-            onChange={(e) => setPartenairesInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                handleAddPartenaire();
-              }
-            }}
-          />
+        <div className="flex items-start gap-2">
+          <div className="min-w-0 flex-1">
+            <FloatingInput
+              id="partenaire"
+              label="Nouveau partenaire"
+              value={partenairesInput}
+              onChange={(e) => setPartenairesInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddPartenaire();
+                }
+              }}
+            />
+          </div>
           <Button
             type="button"
             variant="outline"
             onClick={handleAddPartenaire}
-            className="mt-6"
+            className="mt-2 h-12"
             size="sm"
           >
             Ajouter
@@ -322,7 +351,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
               size="sm"
               className="gap-1.5 bg-white text-xs h-8"
             >
-              <CloudUploadIcon className="h-3.5 w-3.5" />
+              <Upload className="h-3.5 w-3.5" />
               {uploadingImage ? 'Upload...' : 'Choisir une image'}
             </Button>
             <span className="text-[10px] text-ink-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
@@ -330,10 +359,18 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
         </div>
       </div>
 
+      <MultiImageUpload
+        label="Galerie du projet"
+        folder="projects"
+        value={formData.galerie ?? []}
+        onChange={(urls) => handleChange('galerie', urls)}
+        disabled={uploadingImage}
+      />
+
       {/* Localisation */}
       <div className="space-y-3">
         <div className="flex items-center gap-1.5 mb-2">
-          <PublicIcon className="h-4 w-4 text-ink-400" />
+          <Globe className="h-4 w-4 text-ink-400" />
           <Label className="text-xs font-semibold text-ink-600 uppercase tracking-wide">
             Localisation (optionnel)
           </Label>
@@ -435,7 +472,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
                       }
                     `}
                   >
-                    {isCompleted ? <CheckCircleIcon className="h-4 w-4" /> : step.icon}
+                    {isCompleted ? <CircleCheck className="h-4 w-4" /> : step.icon}
                     <span className="hidden sm:inline">{step.label}</span>
                     <span className="sm:hidden">{index + 1}</span>
                   </button>
@@ -461,6 +498,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
+                disabled={submitting}
                 className="text-ink-500 h-8"
               >
                 Annuler
@@ -472,9 +510,10 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
                   variant="outline"
                   size="sm"
                   onClick={handleBack}
+                  disabled={submitting}
                   className="gap-1 h-8"
                 >
-                  <ArrowBackIcon className="h-3.5 w-3.5" />
+                  <ArrowLeft className="h-3.5 w-3.5" />
                   Précédent
                 </Button>
               )}
@@ -484,20 +523,22 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
                   type="button"
                   size="sm"
                   onClick={handleNext}
+                  disabled={submitting}
                   className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
                   Suivant
-                  <ArrowForwardIcon className="h-3.5 w-3.5" />
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               ) : (
                 <Button
                   type="button"
                   size="sm"
                   onClick={handleSubmit}
+                  disabled={submitting}
                   className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
-                  <CheckCircleIcon className="h-3.5 w-3.5" />
-                  {mode === 'create' ? 'Créer' : 'Enregistrer'}
+                  <CircleCheck className="h-3.5 w-3.5" />
+                  {submitting ? 'Enregistrement...' : mode === 'create' ? 'Créer' : 'Enregistrer'}
                 </Button>
               )}
             </div>

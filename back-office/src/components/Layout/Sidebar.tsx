@@ -2,10 +2,13 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import EssG from '../../assets/files/images/logo/EssG.png';
 
-import { NAV_ITEMS, isNavActive } from '../../constants/navigation';
+import { getVisibleNavItems, isNavActive } from '../../constants/navigation';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
+  const { user } = useAuth();
+  const items = getVisibleNavItems(user?.role);
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-ink-100 bg-white lg:flex">
@@ -22,7 +25,7 @@ const Sidebar: React.FC = () => {
         aria-label="Navigation principale"
       >
 
-        {NAV_ITEMS.map((item) => {
+        {items.map((item) => {
           const Icon = item.icon;
           const active = isNavActive(item.href, location.pathname);
 
@@ -43,7 +46,7 @@ const Sidebar: React.FC = () => {
                     : 'text-ink-500 group-hover:bg-brand-100 group-hover:text-brand-700'
                 }`}
               >
-                <Icon sx={{ fontSize: 20 }} />
+                <Icon className="size-5" />
               </span>
               <span className="truncate">{item.name}</span>
             </Link>

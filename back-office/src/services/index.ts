@@ -47,11 +47,13 @@ export {
   deleteUser,
   uploadAvatar,
 } from './users.service';
+export { getActivityLogs, getActivityLogById, type ActivityLog } from './activity-logs.service';
 export {
   getAllMessages,
   searchMessages,
   getMessageById,
   updateMessage,
+  replyToMessage,
   deleteMessage,
   type Message,
   type PaginationResponse,

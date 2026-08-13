@@ -1,14 +1,8 @@
-import { useEffect, useState } from 'react';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import Button from '@mui/material/Button';
-import { Link as RouterLink } from 'react-router-dom';
-import type { FeaturedProjetsSectionProps, FeaturedProjetItem } from '../../types/projets.types';
-import { projetService } from '../../services';
+import type { FeaturedProjetsSectionProps } from '../../types/projets.types';
+import { useProjets } from '../../hooks';
 import { getImageUrl } from '../../utils/image.utils';
-import { generateSlug } from '../../utils/slug.utils';
 import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../utils/component.utils';
-import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid } from '../../components';
-import { TEXT_LINK_BUTTON } from '../../constants/styles';
+import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid, ViewDetailsButton } from '../../components';
 
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
@@ -19,85 +13,7 @@ const ProjetsSection = ({
   title = "Projets d'Excellence",
   description = "L'ESSG s'engage dans des projets innovants au service du développement et de la recherche",
 }: FeaturedProjetsSectionProps) => {
-  const [projets, setProjets] = useState<FeaturedProjetItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadProjets = async () => {
-      try {
-        if (isMounted) {
-          setLoading(true);
-          setError(null);
-        }
-
-        const data = await projetService.findAll();
-
-        // Champs bruts optionnels reçus de l'API (déjà normalisés par le service) :
-        // conservés uniquement pour préserver le comportement d'origine.
-        type RawProjetFields = {
-          date?: string;
-          latitude?: string | number;
-          longitude?: string | number;
-          ville?: string;
-          pays?: string;
-          adresse?: string;
-          sourceDonnees?: string;
-          galerie?: string[];
-        };
-
-        const transformedProjets = data.map((item) => {
-          const projet = item as typeof item & Partial<RawProjetFields>;
-
-          return {
-            id: String(projet.id),
-            titre: projet.titre,
-            slug: projet.slug || generateSlug(projet.titre),
-            statut: projet.statut || 'En cours',
-            type: projet.type,
-            annee: projet.date ? new Date(projet.date).getFullYear().toString() : '',
-            description: projet.description,
-            partenaires: projet.partenaires || [],
-            image: projet.image,
-            budget: projet.budget,
-            objectifs: projet.objectifs,
-            location:
-              projet.latitude && projet.longitude
-                ? {
-                    lat: Number.parseFloat(String(projet.latitude)),
-                    lng: Number.parseFloat(String(projet.longitude)),
-                    ville: projet.ville || '',
-                    pays: projet.pays || '',
-                    adresse: projet.adresse,
-                  }
-                : undefined,
-          };
-        });
-
-        if (isMounted) {
-          setProjets(transformedProjets);
-        }
-      } catch (err) {
-        console.error('Erreur lors du chargement des projets :', err);
-
-        if (isMounted) {
-          setError('Impossible de charger les projets');
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadProjets();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { projets, loading, error } = useProjets();
 
   const headerContent = (
     <SectionHeader 
@@ -144,6 +60,7 @@ const ProjetsSection = ({
           return (
             <article
               key={projet.id}
+              data-gsap
               className={`${CARD_WIDTH_CLASS} group rounded-xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col`}
             >
               <div className="relative aspect-[16/9] overflow-hidden bg-ink-100">
@@ -171,16 +88,10 @@ const ProjetsSection = ({
                   {projet.description}
                 </p>
 
-                <Button
-                  component={RouterLink}
+                <ViewDetailsButton
                   to={`/projets/${projet.slug}`}
-                  variant="text"
-                  endIcon={<ArrowForwardRoundedIcon />}
-                  aria-label={`Voir le projet ${projet.titre}`}
-                  sx={TEXT_LINK_BUTTON}
-                >
-                  Voir le projet
-                </Button>
+                  ariaLabel={`Voir le détail de ${projet.titre}`}
+                />
               </div>
             </article>
           );

@@ -1,16 +1,9 @@
+import { ArrowLeft, Building2, Calendar, Globe, GraduationCap, Handshake, Mail } from 'lucide-react';
 import React, { useEffect } from 'react';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
-import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
-import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
-import LanguageRoundedIcon from '@mui/icons-material/LanguageRounded';
-import MailRoundedIcon from '@mui/icons-material/MailRounded';
-import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
-import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
-import Button from '@mui/material/Button';
+import Button from '@/components/compat/button';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import { CtaSection, EmptyState, PageHero, Breadcrumb } from '../../components';
-import { BRAND, SAGE } from '../../constants/colors';
+import { SAGE } from '../../constants/colors';
 import { usePartenaireBySlug, useScrollToTop } from '../../hooks';
 import { useTitle } from '../../hooks/useTitle';
 import { getImageUrl } from '../../utils/image.utils';
@@ -19,16 +12,15 @@ const FALLBACK_HERO =
   'https://images.unsplash.com/photo-1497366754035-f200968a6e72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
 
 const getTypeIcon = (type: string) => {
-  const sx = { fontSize: 24, color: BRAND[600] };
   switch (type) {
     case 'Entreprise':
-      return <ApartmentRoundedIcon sx={sx} />;
+      return <Building2 className="size-6 text-brand-600" />;
     case 'Institution':
-      return <PublicRoundedIcon sx={sx} />;
+      return <Globe className="size-4" />;
     case 'Organisation':
-      return <SchoolRoundedIcon sx={sx} />;
+      return <GraduationCap className="size-4" />;
     default:
-      return <PublicRoundedIcon sx={sx} />;
+      return <Globe className="size-4" />;
   }
 };
 
@@ -70,7 +62,7 @@ const PartenaireDetailPage: React.FC = () => {
       <div className="min-h-screen bg-neutral-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <EmptyState
-            icon={<HandshakeRoundedIcon sx={{ fontSize: 40, color: SAGE[400] }} />}
+            icon={<Handshake />}
             title="Partenaire introuvable"
             description="Le partenaire que vous recherchez n'existe pas ou a été supprimé."
             actionLabel="Retour aux partenaires"
@@ -82,18 +74,7 @@ const PartenaireDetailPage: React.FC = () => {
               component={RouterLink}
               to="/partenaires"
               variant="outlined"
-              startIcon={<ArrowBackRoundedIcon />}
-              sx={{
-                borderRadius: '0.5rem',
-                textTransform: 'none',
-                fontWeight: 600,
-                borderColor: BRAND[600],
-                color: BRAND[600],
-                '&:hover': {
-                  borderColor: BRAND[700],
-                  backgroundColor: BRAND[50],
-                },
-              }}
+              startIcon={<ArrowLeft className="size-4" />}
             >
               Tous les partenaires
             </Button>
@@ -107,22 +88,22 @@ const PartenaireDetailPage: React.FC = () => {
 
   const infoItems = [
     partenaire.secteur && {
-      icon: <ApartmentRoundedIcon sx={{ fontSize: 20, color: BRAND[600] }} />,
+      icon: <Building2 />,
       label: 'Secteur',
       value: partenaire.secteur,
     },
     partenaire.pays && {
-      icon: <PublicRoundedIcon sx={{ fontSize: 20, color: BRAND[600] }} />,
+      icon: <Globe />,
       label: 'Pays',
       value: partenaire.pays,
     },
     partenaire.contact && {
-      icon: <MailRoundedIcon sx={{ fontSize: 20, color: BRAND[600] }} />,
+      icon: <Mail />,
       label: 'Contact',
       value: partenaire.contact,
     },
     partenaire.dateDebut && {
-      icon: <CalendarTodayRoundedIcon sx={{ fontSize: 20, color: BRAND[600] }} />,
+      icon: <Calendar />,
       label: 'Date de début',
       value: formatDate(partenaire.dateDebut),
     },
@@ -133,7 +114,7 @@ const PartenaireDetailPage: React.FC = () => {
       <PageHero
         image={FALLBACK_HERO}
         imageAlt={partenaire.nom}
-        badgeIcon={<HandshakeRoundedIcon />}
+        badgeIcon={<Handshake className="size-4" />}
         badgeLabel={partenaire.type}
         title={partenaire.nom}
         description={partenaire.description || partenaire.secteur || ''}
@@ -189,18 +170,7 @@ const PartenaireDetailPage: React.FC = () => {
                   rel="noreferrer"
                   variant="outlined"
                   fullWidth
-                  startIcon={<LanguageRoundedIcon />}
-                  sx={{
-                    borderRadius: '0.5rem',
-                    textTransform: 'none',
-                    fontWeight: 600,
-                    borderColor: BRAND[600],
-                    color: BRAND[600],
-                    '&:hover': {
-                      borderColor: BRAND[700],
-                      backgroundColor: BRAND[50],
-                    },
-                  }}
+                  startIcon={<Globe className="size-4" />}
                 >
                   Visiter le site
                 </Button>
@@ -212,7 +182,7 @@ const PartenaireDetailPage: React.FC = () => {
           <div className="lg:col-span-2">
             <div className="rounded-lg border border-neutral-200 bg-white p-6 sm:p-8" style={{ boxShadow: '0 4px 20px rgba(95, 99, 105, 0.08)' }}>
               <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-slate-800">
-                <HandshakeRoundedIcon sx={{ color: BRAND[700] }} />
+                <Handshake />
                 <span style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}>À propos de ce partenaire</span>
               </h2>
 
@@ -250,7 +220,7 @@ const PartenaireDetailPage: React.FC = () => {
 
       {/* Section CTA */}
       <CtaSection
-        icon={<HandshakeRoundedIcon sx={{ fontSize: 48, color: SAGE[400] }} />}
+        icon={<Handshake />}
         title="Devenir partenaire de l'ESSG"
         description="Rejoignez notre réseau de partenaires prestigieux et contribuez à former les talents de demain en sciences géomatiques."
         primaryLabel="Contactez-nous"

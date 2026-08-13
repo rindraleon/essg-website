@@ -1,4 +1,4 @@
-import axiosConfig from '../config/axios.config';
+import { apiClient } from '../api/client/http';
 
 export interface Message {
   id: number;
@@ -9,6 +9,12 @@ export interface Message {
   sujet: string;
   message: string;
   lu: boolean;
+  luLe?: string | null;
+  luPar?: string | null;
+  reponse?: string | null;
+  reponseSujet?: string | null;
+  reponduLe?: string | null;
+  reponduPar?: string | null;
   creeLe: string;
   misAJourLe: string;
 }
@@ -25,59 +31,68 @@ export interface PaginationQuery {
   limit?: number;
   sortBy?: string;
   sortOrder?: 'ASC' | 'DESC';
+  q?: string;
+  sujet?: string;
+  lu?: boolean;
+  dateDebut?: string;
+  dateFin?: string;
 }
 
-export const getAllMessages = async (
-  query: PaginationQuery = {}
-): Promise<PaginationResponse<Message>> => {
-  const params = new URLSearchParams();
-  if (query.page) params.append('page', String(query.page));
-  if (query.limit) params.append('limit', String(query.limit));
-  if (query.sortBy) params.append('sortBy', query.sortBy);
-  if (query.sortOrder) params.append('sortOrder', query.sortOrder);
+function toLegacy<T>(result: { data: T[]; meta: { total: number; page: number; limit: number } }): PaginationResponse<T> {
+  return {
+    data: result.data,
+    total: result.meta.total,
+    page: result.meta.page,
+    limit: result.meta.limit,
+  };
+}
 
-  const response = await axiosConfig.get(`/messages?${params.toString()}`);
-  return response.data;
+function toMessageParams(query: PaginationQuery, q?: string) {
+  return {
+    page: query.page ?? 1,
+    limit: query.limit ?? 10,
+    sortBy: query.sortBy ?? 'creeLe',
+    sortOrder: query.sortOrder ?? 'DESC',
+    q: q ?? query.q,
+    sujet: query.sujet && query.sujet !== 'all' ? query.sujet : undefined,
+    lu: query.lu,
+    dateDebut: query.dateDebut || undefined,
+    dateFin: query.dateFin || undefined,
+  };
+}
+
+export const getAllMessages = async (query: PaginationQuery = {}): Promise<PaginationResponse<Message>> => {
+  const result = await apiClient.getList<Message>('/messages', toMessageParams(query));
+  return toLegacy(result);
 };
 
 export const searchMessages = async (
   q: string,
-  query: PaginationQuery = {}
+  query: PaginationQuery = {},
 ): Promise<PaginationResponse<Message>> => {
-  const params = new URLSearchParams();
-  params.append('q', q);
-  if (query.page) params.append('page', String(query.page));
-  if (query.limit) params.append('limit', String(query.limit));
-  if (query.sortBy) params.append('sortBy', query.sortBy);
-  if (query.sortOrder) params.append('sortOrder', query.sortOrder);
-
-  const response = await axiosConfig.get(`/messages/search?${params.toString()}`);
-  return response.data;
+  const result = await apiClient.getList<Message>('/messages/search', toMessageParams(query, q));
+  return toLegacy(result);
 };
 
 export const getMessageById = async (id: number): Promise<Message> => {
-  const response = await axiosConfig.get(`/messages/${id}`);
-  return response.data;
+  return apiClient.get<Message>(`/messages/${id}`);
 };
 
 export const updateMessage = async (id: number, lu: boolean): Promise<Message> => {
-  const response = await axiosConfig.put(`/messages/${id}`, { lu });
-  return response.data;
+  return apiClient.put<Message>(`/messages/${id}`, { lu });
+};
+
+export const replyToMessage = async (
+  id: number,
+  payload: { sujet?: string; message: string },
+): Promise<Message> => {
+  return apiClient.post<Message>(`/messages/${id}/reply`, payload);
 };
 
 export const deleteMessage = async (id: number): Promise<void> => {
-  await axiosConfig.delete(`/messages/${id}`);
+  await apiClient.delete(`/messages/${id}`);
 };
 
-export const getRecentMessages = async (
-  limit: number = 4
-): Promise<PaginationResponse<Message>> => {
-  const params = new URLSearchParams();
-  params.append('page', '1');
-  params.append('limit', String(limit));
-  params.append('sortBy', 'creeLe');
-  params.append('sortOrder', 'DESC');
-
-  const response = await axiosConfig.get(`/messages?${params.toString()}`);
-  return response.data;
+export const getRecentMessages = async (limit = 4): Promise<PaginationResponse<Message>> => {
+  return getAllMessages({ page: 1, limit, sortBy: 'creeLe', sortOrder: 'DESC' });
 };

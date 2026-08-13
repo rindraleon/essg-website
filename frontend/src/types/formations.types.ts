@@ -20,13 +20,7 @@ export interface Formation {
   modules?: FormationModule[];
 }
 
-export interface PaginationResponse<T> {
-  data: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
+export type { PaginatedResult as PaginationResponse } from '@/api/types/api';
 
 export type FormationModule = {
   semestre: string;

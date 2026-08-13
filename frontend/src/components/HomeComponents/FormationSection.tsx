@@ -1,14 +1,8 @@
-import { useEffect, useState } from 'react';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import Button from '@mui/material/Button';
-import { Link as RouterLink } from 'react-router-dom';
-
 import { getImageUrl } from '../../utils/image.utils';
 import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../utils/component.utils';
-import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid } from '../../components';
-import { formationService } from '../../services';
-import { TEXT_LINK_BUTTON } from '../../constants/styles';
-import type { FeaturedFormationsSectionProps, Formation } from '../../types';
+import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid, ViewDetailsButton } from '../../components';
+import { useFeaturedFormations } from '../../hooks';
+import type { FeaturedFormationsSectionProps } from '../../types';
 
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1523050854058-8df90110a6f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
@@ -20,53 +14,14 @@ const FormationsSection = ({
   description = "Des programmes d'excellence reconnus internationalement",
   featuredFormations: propFeaturedFormations,
 }: FeaturedFormationsSectionProps) => {
-  const [formations, setFormations] = useState<Formation[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchFeaturedFormations = async () => {
-      if (propFeaturedFormations !== undefined) {
-        if (isMounted) {
-          setFormations(propFeaturedFormations);
-          setLoading(false);
-          setError(null);
-        }
-        return;
-      }
-
-      try {
-        if (isMounted) {
-          setLoading(true);
-          setError(null);
-        }
-
-        const data = await formationService.findFeatured();
-
-        if (isMounted) {
-          setFormations(data as Formation[]);
-        }
-      } catch (err) {
-        console.error('Erreur lors du chargement des formations :', err);
-
-        if (isMounted) {
-          setError(err instanceof Error ? err.message : 'Erreur lors du chargement des formations');
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchFeaturedFormations();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [propFeaturedFormations]);
+  const featuredQuery = useFeaturedFormations(6);
+  const formations = propFeaturedFormations ?? featuredQuery.formations;
+  const loading = propFeaturedFormations ? false : featuredQuery.loading;
+  const error = propFeaturedFormations
+    ? null
+    : featuredQuery.error instanceof Error
+      ? featuredQuery.error.message
+      : featuredQuery.error;
 
   const headerContent = (
     <SectionHeader 
@@ -116,6 +71,7 @@ const FormationsSection = ({
           return (
             <article
               key={formation.id}
+              data-gsap
               className={`${CARD_WIDTH_CLASS} group rounded-xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col`}
             >
               <div className="relative aspect-[16/9] overflow-hidden bg-ink-100">
@@ -143,16 +99,11 @@ const FormationsSection = ({
                   {formation.description || "Découvrez cette formation d'excellence."}
                 </p>
 
-                <Button
-                  component={RouterLink}
+                <ViewDetailsButton
                   to={formationLink}
-                  variant="text"
-                  endIcon={<ArrowForwardRoundedIcon />}
-                  aria-label={`En savoir plus sur ${formation.titre}`}
-                  sx={TEXT_LINK_BUTTON}
-                >
-                  En savoir plus
-                </Button>
+                  ariaLabel={`Voir le détail de ${formation.titre}`}
+                  className="mt-3"
+                />
               </div>
             </article>
           );

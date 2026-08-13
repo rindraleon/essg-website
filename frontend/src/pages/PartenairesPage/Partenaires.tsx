@@ -1,16 +1,7 @@
+import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, Skeleton, TextField } from '@/components/compat/mui';
+import { Handshake, Search, X } from 'lucide-react';
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Skeleton from '@mui/material/Skeleton';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import type { SelectChangeEvent } from '@mui/material/Select';
+import type { SelectChangeEvent } from '@/components/compat/mui';
 
 import CtaSection from '../../components/common/CtaSection';
 import EmptyState from '../../components/common/EmptyState';
@@ -19,24 +10,13 @@ import PageHero from '../../components/common/PageHero';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import PartenaireCard from '../../components/PartenaireComponents/PartenaireCard';
 
-import { GREEN } from '../../constants/colors';
-import { partenaireService } from '../../services';
-import { useScrollToTop } from '../../hooks';
+import { usePartenaires, useScrollToTop } from '../../hooks';
+import { generateSlug } from '../../utils/slug.utils';
 import type { PartenairesPageProps, PartenaireItem } from '../../types/partenaire.types';
 
-// Fonction pour générer un slug à partir d'une chaîne
-const generateSlug = (text: string): string => {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Supprimer les accents
-    .replace(/[^a-z0-9]/g, '-') // Remplacer chaque caractère non alphanumérique par un tiret
-    .replace(/-+/g, '-') // Remplacer les tirets multiples par un seul tiret
-    .replace(/^-+|-+$/g, ''); // Supprimer les tirets en début et fin
-};
+import { SITE_HERO_IMAGE } from '../../constants/media';
 
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1521737711867-e3b97375f902?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
+const HERO_IMAGE = SITE_HERO_IMAGE;
 
 const TYPES = [
   { value: 'all', label: 'Tous les types' },
@@ -55,9 +35,7 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
     pageDescription = 'Des collaborations prestigieuses au niveau national et international pour une excellence partagée.',
   } = props;
 
-  const [allPartenaires, setAllPartenaires] = useState<PartenaireItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { partenaires, loading, error } = usePartenaires();
   const [typeFilter, setTypeFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [showSearch, setShowSearch] = useState(false);
@@ -70,39 +48,14 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
     }
   }, [showSearch]);
 
-  useEffect(() => {
-    const loadPartenaires = async () => {
-      try {
-        setLoading(true);
-        const data = await partenaireService.findAllPaginated(1, 100);
-
-        const transformedPartenaires: PartenaireItem[] = data.map((partenaire: PartenaireItem) => ({
-          id: partenaire.id,
-          slug: partenaire.slug || generateSlug(partenaire.nom),
-          nom: partenaire.nom,
-          type: partenaire.type,
-          secteur: partenaire.secteur,
-          description: partenaire.description,
-          siteWeb: partenaire.siteWeb,
-          logo: partenaire.logo,
-          contact: partenaire.contact,
-          dateDebut: partenaire.dateDebut,
-          creeLe: partenaire.creeLe,
-          misAJourLe: partenaire.misAJourLe,
-        }));
-
-        setAllPartenaires(transformedPartenaires);
-        setError(null);
-      } catch (err) {
-        console.error('Erreur lors du chargement des partenaires:', err);
-        setError('Impossible de charger les partenaires');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadPartenaires();
-  }, []);
+  const allPartenaires = useMemo<PartenaireItem[]>(
+    () =>
+      partenaires.map((partenaire) => ({
+        ...partenaire,
+        slug: partenaire.slug || generateSlug(partenaire.nom),
+      })),
+    [partenaires],
+  );
 
   const hasActiveFilters = typeFilter !== 'all' || searchTerm !== '';
   const activeFilterCount = typeFilter !== 'all' ? 1 : 0;
@@ -164,7 +117,7 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Partenaires ESSG"
-        badgeIcon={<HandshakeRoundedIcon />}
+        badgeIcon={<Handshake className="size-4" />}
         badgeLabel={pageSubtitle}
         title={pageTitle}
         description={pageDescription}
@@ -201,24 +154,16 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchRoundedIcon sx={{ color: GREEN[600] }} />
+                    <Search />
                   </InputAdornment>
                 ),
                 endAdornment: searchTerm && (
                   <InputAdornment position="end">
                     <IconButton size="small" onClick={() => setSearchTerm('')}>
-                      <CloseRoundedIcon sx={{ fontSize: 18 }} />
+                      <X />
                     </IconButton>
                   </InputAdornment>
                 ),
-              },
-            }}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '0.75rem',
-                '&.Mui-focused fieldset': {
-                  borderColor: GREEN[600],
-                },
               },
             }}
           />
@@ -226,7 +171,7 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
       >
         <div className="max-w-xs">
           <FormControl fullWidth size="small">
-            <InputLabel id="type-label" sx={{ '&.Mui-focused': { color: GREEN[600] } }}>
+            <InputLabel id="type-label">
               Type de partenaire
             </InputLabel>
             <Select
@@ -234,12 +179,6 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
               label="Type de partenaire"
               value={typeFilter}
               onChange={handleTypeChange}
-              sx={{
-                borderRadius: '0.75rem',
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: GREEN[600],
-                },
-              }}
             >
               {TYPES.map((item) => (
                 <MenuItem key={item.value} value={item.value}>
@@ -285,7 +224,7 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {resultCount === 0 ? (
               <EmptyState
-                icon={<HandshakeRoundedIcon sx={{ fontSize: 40, color: GREEN[400] }} />}
+                icon={<Handshake />}
                 title="Aucun partenaire trouvé"
                 description="Essayez de modifier vos critères de filtrage."
                 onAction={handleResetFilters}
@@ -302,7 +241,7 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
       )}
 
       <CtaSection
-        icon={<HandshakeRoundedIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
+        icon={<Handshake />}
         title="Devenir partenaire de l'ESSG"
         description="Rejoignez notre réseau de partenaires prestigieux et contribuez à former les talents de demain."
         primaryLabel="Contactez-nous"

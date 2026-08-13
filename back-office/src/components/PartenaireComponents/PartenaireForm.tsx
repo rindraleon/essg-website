@@ -1,12 +1,8 @@
+import { ArrowLeft, ArrowRight, Briefcase, CircleCheck, Globe, Info, Upload } from 'lucide-react';
 import React, { useRef, useState, useEffect } from 'react';
-import InfoIcon from '@mui/icons-material/Info';
-import WorkIcon from '@mui/icons-material/Work';
-import PublicIcon from '@mui/icons-material/Public';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { toast } from 'sonner';
 import { getImageUrl } from '../../utils/image.utils';
+import { toUpperName } from '../../utils/slug.utils';
 import { uploadImage } from '../../services';
 import type { Partenaire, PartenaireFormData } from '../../types';
 import {
@@ -30,7 +26,7 @@ import { FloatingSelect } from '@/components/ui/floating-select';
 interface PartenaireFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: PartenaireFormData) => void;
+  onSubmit: (data: PartenaireFormData) => void | Promise<void>;
   initialData?: Partenaire | null;
   mode: 'create' | 'edit';
 }
@@ -39,17 +35,17 @@ const STEPS = [
   {
     id: 0,
     label: 'Informations',
-    icon: <InfoIcon className="h-4 w-4" />,
+    icon: <Info className="h-4 w-4" />,
   },
   {
     id: 1,
     label: 'Détails',
-    icon: <WorkIcon className="h-4 w-4" />,
+    icon: <Briefcase className="h-4 w-4" />,
   },
   {
     id: 2,
     label: 'Publication',
-    icon: <PublicIcon className="h-4 w-4" />,
+    icon: <Globe className="h-4 w-4" />,
   },
 ];
 
@@ -102,43 +98,47 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
     stepFields: STEP_FIELDS_MAP,
   });
 
+  const initialId = initialData?.id ?? '';
+
   useEffect(() => {
-    if (open) {
-      if (mode === 'edit' && initialData) {
-        setFormData({
-          nom: initialData.nom || '',
-          type: initialData.type || 'Entreprise',
-          secteur: initialData.secteur || '',
-          dateDebut: initialData.dateDebut || new Date().toISOString().split('T')[0],
-          description: initialData.description || '',
-          logo: initialData.logo || '',
-          siteWeb: initialData.siteWeb || '',
-          contact: initialData.contact || '',
-        });
-        if (initialData.logo) {
-          setLogoPreview(getImageUrl(initialData.logo));
-        } else {
-          setLogoPreview('');
-        }
+    if (!open) return;
+    if (mode === 'edit' && initialData) {
+      setFormData({
+        nom: initialData.nom || '',
+        type: initialData.type || 'Entreprise',
+        secteur: initialData.secteur || '',
+        dateDebut: initialData.dateDebut || new Date().toISOString().split('T')[0],
+        description: initialData.description || '',
+        logo: initialData.logo || '',
+        siteWeb: initialData.siteWeb || '',
+        contact: initialData.contact || '',
+      });
+      if (initialData.logo) {
+        setLogoPreview(getImageUrl(initialData.logo));
       } else {
-        resetForm();
         setLogoPreview('');
       }
-      setLogoFile(null);
+    } else {
+      resetForm();
+      setLogoPreview('');
     }
-  }, [open, mode, initialData, setFormData, resetForm]);
+    setLogoFile(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, mode, initialId]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingImage(true);
     try {
-      const url = await uploadImage(file);
+      const url = await uploadImage(file, 'partners');
       handleChange('logo', url);
       setLogoPreview(url);
       setLogoFile(null);
+      toast.success('Logo téléversé avec succès');
     } catch (err) {
-      console.error("Erreur lors de l'upload:", err);
+      const message = err instanceof Error ? err.message : "Échec du téléversement du logo.";
+      toast.error(message);
     } finally {
       setUploadingImage(false);
     }
@@ -172,8 +172,12 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
     }
   };
 
+  const [submitting, setSubmitting] = useState(false);
+
   const handleSubmit = async () => {
-    if (validateAllSteps()) {
+    if (submitting || !validateAllSteps()) return;
+    setSubmitting(true);
+    try {
       if (logoFile) {
         const formDataObj = new FormData();
         formDataObj.append('nom', formData.nom);
@@ -184,10 +188,12 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
         formDataObj.append('logo', logoFile);
         if (formData.siteWeb) formDataObj.append('siteWeb', formData.siteWeb);
         if (formData.contact) formDataObj.append('contact', formData.contact);
-        await onSubmit(formDataObj as any);
+        await onSubmit(formDataObj as unknown as PartenaireFormData);
       } else {
         await onSubmit(formData);
       }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -200,7 +206,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
         id="nom"
         label="Nom *"
         value={formData.nom}
-        onChange={(e) => handleChange('nom', e.target.value)}
+        onChange={(e) => handleChange('nom', toUpperName(e.target.value))}
         onBlur={() => handleBlur('nom')}
         error={errors.nom}
       />
@@ -278,7 +284,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
               size="sm"
               className="gap-1.5 bg-white text-xs h-8"
             >
-              <CloudUploadIcon className="h-3.5 w-3.5" />
+              <Upload className="h-3.5 w-3.5" />
               {uploadingImage ? 'Upload...' : logoPreview ? 'Changer le logo' : 'Ajouter un logo'}
             </Button>
             <span className="text-[10px] text-ink-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
@@ -301,21 +307,24 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
 
   /* ─── Step 2 : Publication ─── */
   const renderStep2 = () => (
-    <div className="space-y-4">
+    <div className="space-y-1">
       <FloatingInput
         id="siteWeb"
         label="Site web"
+        type="url"
+        autoComplete="url"
         value={formData.siteWeb}
         onChange={(e) => handleChange('siteWeb', e.target.value)}
-        placeholder="https://exemple.com"
+        hint="https://exemple.com"
       />
 
       <FloatingInput
         id="contact"
         label="Contact"
+        autoComplete="email"
         value={formData.contact}
         onChange={(e) => handleChange('contact', e.target.value)}
-        placeholder="Email ou téléphone"
+        hint="Email ou téléphone"
       />
     </div>
   );
@@ -368,7 +377,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                       }
                     `}
                   >
-                    {isCompleted ? <CheckCircleIcon className="h-4 w-4" /> : step.icon}
+                    {isCompleted ? <CircleCheck className="h-4 w-4" /> : step.icon}
                     <span className="hidden sm:inline">{step.label}</span>
                     <span className="sm:hidden">{index + 1}</span>
                   </button>
@@ -407,7 +416,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                   onClick={handleBack}
                   className="gap-1 h-8"
                 >
-                  <ArrowBackIcon className="h-3.5 w-3.5" />
+                  <ArrowLeft className="h-3.5 w-3.5" />
                   Précédent
                 </Button>
               )}
@@ -420,7 +429,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                   className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
                   Suivant
-                  <ArrowForwardIcon className="h-3.5 w-3.5" />
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               ) : (
                 <Button
@@ -429,7 +438,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                   onClick={handleSubmit}
                   className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
-                  <CheckCircleIcon className="h-3.5 w-3.5" />
+                  <CircleCheck className="h-3.5 w-3.5" />
                   {mode === 'create' ? 'Créer' : 'Enregistrer'}
                 </Button>
               )}

@@ -1,8 +1,6 @@
+import { ArrowLeft, BookOpen, GraduationCap } from 'lucide-react';
 import React, { useEffect } from 'react';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import AutoStoriesRoundedIcon from '@mui/icons-material/AutoStoriesRounded';
-import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
-import Button from '@mui/material/Button';
+import Button from '@/components/compat/button';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import {
   CtaSection,
@@ -11,7 +9,6 @@ import {
   Breadcrumb,
   FormationDetailContent,
 } from '../../components';
-import { GREEN } from '../../constants/colors';
 import { useFormationBySlug, useScrollToTop } from '../../hooks';
 import { useTitle } from '../../hooks/useTitle';
 import { getFormationImage } from '../../utils/image.utils';
@@ -47,7 +44,7 @@ const FormationDetailPage: React.FC = () => {
       <div className="min-h-screen bg-ink-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <EmptyState
-            icon={<AutoStoriesRoundedIcon sx={{ fontSize: 40, color: GREEN[400] }} />}
+            icon={<BookOpen />}
             title="Formation introuvable"
             description="La formation que vous recherchez n'existe pas ou a été supprimée."
             actionLabel="Retour aux formations"
@@ -59,18 +56,7 @@ const FormationDetailPage: React.FC = () => {
               component={RouterLink}
               to="/formations"
               variant="outlined"
-              startIcon={<ArrowBackRoundedIcon />}
-              sx={{
-                borderRadius: '0.75rem',
-                textTransform: 'none',
-                fontWeight: 600,
-                borderColor: GREEN[600],
-                color: GREEN[600],
-                '&:hover': {
-                  borderColor: GREEN[700],
-                  backgroundColor: GREEN[50],
-                },
-              }}
+              startIcon={<ArrowLeft className="size-4" />}
             >
               Toutes les formations
             </Button>
@@ -85,7 +71,7 @@ const FormationDetailPage: React.FC = () => {
       <PageHero
         image={getFormationImage(formation.image, formation.slug)}
         imageAlt={formation.titre}
-        badgeIcon={<AutoStoriesRoundedIcon />}
+        badgeIcon={<BookOpen className="size-4" />}
         badgeLabel={formation.niveau}
         title={formation.titre}
         description={formation.description}
@@ -102,7 +88,7 @@ const FormationDetailPage: React.FC = () => {
 
       {/* Section CTA */}
       <CtaSection
-        icon={<SchoolRoundedIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
+        icon={<GraduationCap />}
         title="Intéressé par cette formation ?"
         description="Contactez-nous pour obtenir plus d'informations ou postulez dès maintenant pour rejoindre l'ESSG."
         primaryLabel="Postuler maintenant"

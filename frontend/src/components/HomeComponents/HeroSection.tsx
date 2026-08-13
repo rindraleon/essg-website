@@ -1,139 +1,115 @@
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import { Link as RouterLink } from 'react-router-dom';
+import { ArrowDown, ArrowRight, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { buttonVariants } from '../ui/button';
+import { cn } from '@/lib/utils';
+import { SITE_HERO_ALT, SITE_HERO_IMAGE } from '../../constants/media';
+import useGsapHero from '../../hooks/useGsapHero';
+import AnimatedBackground from '../animations/AnimatedBackground';
+import SplitTitle from '../animations/SplitTitle';
 import type { HeroSectionProps } from '../../types';
 
-const HERO_BACKGROUND_IMAGE =
-  'https://images.unsplash.com/photo-1664273891579-22f28332f3c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
-
-const CHIP_STYLES = {
-  color: '#f0fdf4',
-  borderColor: 'rgba(255, 255, 255, 0.35)',
-  backgroundColor: 'rgba(255, 255, 255, 0.10)',
-  fontWeight: 500,
-  backdropFilter: 'blur(4px)',
-  '& .MuiChip-icon': { color: '#d9f0c5' },
-} as const;
-
-const PRIMARY_BUTTON_STYLES = {
-  px: 3.5,
-  py: 1.5,
-  borderRadius: '0.9rem',
-  backgroundColor: '#ffffff',
-  color: '#1e3a35',
-  fontWeight: 600,
-  textTransform: 'none',
-  boxShadow: '0 8px 24px -8px rgba(0,0,0,0.35)',
-  transition: 'all 0.25s ease',
-  '&:hover': {
-    backgroundColor: '#eff7f4',
-    boxShadow: '0 12px 32px -10px rgba(0,0,0,0.4)',
-    transform: 'translateY(-2px)',
-  },
-} as const;
-
-const OUTLINED_BUTTON_STYLES = {
-  px: 3.5,
-  py: 1.5,
-  borderRadius: '0.9rem',
-  borderColor: 'rgba(255,255,255,0.75)',
-  color: '#ffffff',
-  fontWeight: 600,
-  textTransform: 'none',
-  transition: 'all 0.25s ease',
-  '&:hover': {
-    borderColor: '#ffffff',
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    transform: 'translateY(-2px)',
-  },
-} as const;
-
 const HeroSection = ({
-  //badge = 'Excellence académique',
-  title = 'Ecole Supérieure des Sciences Géomatiques',
-  description = 'lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-  primaryButton,
-  secondaryButton,
+  badge = 'Université de Fianarantsoa',
+  title = 'École Supérieure de Sciences Géomatiques',
+  description = "Formez-vous à la géomatique, à la topographie et à l'aménagement du territoire. Une école d'excellence, au service des territoires de Madagascar.",
+  primaryButton = { text: 'Découvrir les formations', link: '/formations' },
+  secondaryButton = { text: 'Candidater', link: '/admission' },
 }: HeroSectionProps) => {
+  const heroRef = useGsapHero<HTMLElement>();
+
   return (
-    <section className="relative m-0 w-full h-screen overflow-hidden bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 text-white">
+    <section
+      ref={heroRef}
+      className="relative m-0 h-screen w-full overflow-hidden bg-brand-950 text-white"
+    >
+      <img
+        data-hero="media"
+        src={SITE_HERO_IMAGE}
+        alt={SITE_HERO_ALT}
+        className="absolute inset-0 h-full w-full object-cover object-center will-change-transform"
+      />
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-cover bg-center opacity-25"
-        style={{ backgroundImage: `url("${HERO_BACKGROUND_IMAGE}")` }}
+        className="absolute inset-0 bg-gradient-to-b from-brand-950/35 via-brand-950/20 to-brand-950/78"
       />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(15,33,30,0.15)_0%,rgba(15,33,30,0.45)_78%)]"
+      />
+      <div
+        data-hero="shine"
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/18 to-transparent blur-2xl will-change-transform"
+      />
+      <AnimatedBackground variant="hero" />
 
-      
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-r from-brand-950/70 via-brand-900/40 to-brand-950/70"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-32 top-1/4 h-96 w-96 rounded-full opacity-20 blur-3xl"
-        style={{ background: 'radial-gradient(closest-side, #98c070, transparent)' }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-24 bottom-0 h-80 w-80 rounded-full opacity-15 blur-3xl"
-        style={{ background: 'radial-gradient(closest-side, #5ba092, transparent)' }}
-      />
-
-      <div className="relative flex h-full w-full flex-col items-center justify-between p-0">
-        <div className="w-full max-w-4xl text-center px-4 py-32 sm:px-6 lg:px-8 lg:py-40">
-          {/* {badge && (
-            <div className="mb-7 flex justify-center animate-fade-in-up">
-              <Chip
-                icon={<AutoAwesomeRoundedIcon />}
-                label={badge}
-                variant="outlined"
-                sx={CHIP_STYLES}
-              />
+      <div className="relative flex h-full w-full flex-col items-center justify-center px-4 py-28 text-center sm:px-6 lg:px-8">
+        <div className="w-full max-w-4xl">
+          {badge && (
+            <div data-hero="badge" className="mb-6 flex justify-center">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-sage-300/50 bg-white/10 px-3.5 py-1 text-sm font-medium text-sage-100 shadow-[0_0_24px_rgba(152,192,112,0.18)] backdrop-blur-md">
+                <Sparkles className="size-3.5 text-sage-300" />
+                {badge}
+              </span>
             </div>
-          )} */}
+          )}
 
-          <h1 className="mb-5 text-4xl font-bold leading-tight drop-shadow-md sm:text-5xl lg:text-6xl animate-fade-in-up [animation-delay:80ms]">
-            {title}
-          </h1>
+          <SplitTitle
+            data-hero="title"
+            text={title}
+            className="mb-4 text-4xl font-bold leading-tight drop-shadow-[0_2px_16px_rgba(15,33,30,0.45)] sm:text-5xl lg:text-6xl"
+          />
+          <div
+            data-hero="accent"
+            aria-hidden="true"
+            className="mx-auto mb-6 h-1 w-24 origin-center rounded-full bg-sage-400 shadow-[0_0_18px_rgba(152,192,112,0.65)]"
+          />
 
           {description && (
-            <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-sage-100/90 drop-shadow-md sm:text-xl animate-fade-in-up [animation-delay:160ms]">
+            <p
+              data-hero="description"
+              className="mx-auto mb-9 max-w-2xl text-lg leading-relaxed text-white/92 drop-shadow-md sm:text-xl"
+            >
               {description}
             </p>
           )}
 
           {(primaryButton || secondaryButton) && (
-            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row animate-fade-in-up [animation-delay:240ms]">
+            <div
+              data-hero="actions"
+              className="flex flex-col items-center justify-center gap-4 sm:flex-row"
+            >
               {primaryButton && (
-                <Button
-                  component={RouterLink}
+                <Link
                   to={primaryButton.link}
-                  variant="contained"
-                  size="large"
-                  endIcon={<ArrowForwardRoundedIcon />}
-                  sx={PRIMARY_BUTTON_STYLES}
+                  className={cn(buttonVariants({ variant: 'inverted', size: 'lg' }), 'shadow-lg shadow-brand-950/30')}
                 >
                   {primaryButton.text}
-                </Button>
+                  <ArrowRight className="size-4" />
+                </Link>
               )}
-
               {secondaryButton && (
-                <Button
-                  component={RouterLink}
+                <Link
                   to={secondaryButton.link}
-                  variant="outlined"
-                  size="large"
-                  sx={OUTLINED_BUTTON_STYLES}
+                  className={cn(buttonVariants({ variant: 'invertedOutline', size: 'lg' }))}
                 >
                   {secondaryButton.text}
-                </Button>
+                </Link>
               )}
             </div>
           )}
         </div>
       </div>
+
+      <a
+        href="#contenu"
+        data-hero="scroll"
+        className="absolute bottom-7 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1 text-white/80 transition-colors hover:text-white"
+        aria-label="Défiler vers le contenu"
+      >
+        <span className="text-[10px] font-semibold uppercase tracking-[0.2em]">Découvrir</span>
+        <ArrowDown className="size-4" />
+      </a>
     </section>
   );
 };

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 
 export interface ValidationRule<T> {
-  validate: (value: T, formData: Record<string, any>) => string | undefined;
+  validate: (value: T, formData: Record<string, unknown>) => string | undefined;
 }
 
 export interface FieldConfig<T> {
@@ -10,7 +10,7 @@ export interface FieldConfig<T> {
   minLength?: { value: number; message: string };
   maxLength?: { value: number; message: string };
   pattern?: { regex: RegExp; message: string };
-  custom?: (value: T, formData: Record<string, any>) => string | undefined;
+  custom?: (value: T, formData: Record<string, unknown>) => string | undefined;
 }
 
 export type FieldValidators<T> = {
@@ -31,7 +31,8 @@ export interface UseFormValidationReturn<T> {
   touched: Record<string, boolean>;
   activeStep: number;
   setActiveStep: (step: number | ((prev: number) => number)) => void;
-  handleChange: (field: keyof T, value: any) => void;
+  handleChange: (field: keyof T, value: unknown) => void;
+  handleChanges: (patch: Partial<T>) => void;
   handleBlur: (field: keyof T) => void;
   validateField: (field: keyof T) => string | undefined;
   validateStep: (step: number) => boolean;
@@ -40,7 +41,65 @@ export interface UseFormValidationReturn<T> {
   resetForm: () => void;
 }
 
-export function useFormValidation<T extends Record<string, any>>(
+function computeFieldError<T extends Record<string, unknown> | object>(
+  field: keyof T,
+  data: T,
+  validators: FieldValidators<T>
+): string | undefined {
+  const config = validators[field];
+  if (!config) return undefined;
+
+  const value = data[field];
+  const fieldName = String(field);
+
+  if (config.required) {
+    if (value === undefined || value === null || value === '') {
+      return `Le champ ${fieldName} est requis`;
+    }
+    if (typeof value === 'string' && !value.trim()) {
+      return `Le champ ${fieldName} est requis`;
+    }
+  }
+
+  if (!config.required && (value === undefined || value === null || value === '')) {
+    return undefined;
+  }
+
+  if (config.minLength && typeof value === 'string') {
+    if (value.length < config.minLength.value) {
+      return config.minLength.message;
+    }
+  }
+
+  if (config.maxLength && typeof value === 'string') {
+    if (value.length > config.maxLength.value) {
+      return config.maxLength.message;
+    }
+  }
+
+  if (config.pattern && typeof value === 'string') {
+    if (!config.pattern.regex.test(value)) {
+      return config.pattern.message;
+    }
+  }
+
+  const asRecord = data as unknown as Record<string, unknown>;
+
+  if (config.custom) {
+    return config.custom(value as T[keyof T], asRecord);
+  }
+
+  if (config.rules) {
+    for (const rule of config.rules) {
+      const error = rule.validate(value as T[keyof T], asRecord);
+      if (error) return error;
+    }
+  }
+
+  return undefined;
+}
+
+export function useFormValidation<T extends object>(
   options: UseFormValidationOptions<T>
 ): UseFormValidationReturn<T> {
   const {
@@ -56,65 +115,25 @@ export function useFormValidation<T extends Record<string, any>>(
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [activeStep, setActiveStep] = useState(0);
 
-  const validateField = useCallback(
-    (field: keyof T): string | undefined => {
-      const config = validators[field];
-      if (!config) return undefined;
-
-      const value = formData[field];
-      const fieldName = String(field);
-
-      // Required check
-      if (config.required) {
-        if (value === undefined || value === null || value === '') {
-          return `Le champ ${fieldName} est requis`;
-        }
-        if (typeof value === 'string' && !value.trim()) {
-          return `Le champ ${fieldName} est requis`;
-        }
+  const applyChangeErrors = useCallback(
+    (next: T, fields: (keyof T)[]) => {
+      if (!validateOnChange) return;
+      const nextErrors: Record<string, string | undefined> = {};
+      let shouldUpdate = false;
+      fields.forEach((field) => {
+        if (!touched[String(field)]) return;
+        shouldUpdate = true;
+        nextErrors[String(field)] = computeFieldError(field, next, validators);
+      });
+      if (shouldUpdate) {
+        setErrors((prev) => ({ ...prev, ...nextErrors }));
       }
-
-      // Skip other validations if empty and not required
-      if (!config.required && (value === undefined || value === null || value === '')) {
-        return undefined;
-      }
-
-      // Min length check
-      if (config.minLength && typeof value === 'string') {
-        if (value.length < config.minLength.value) {
-          return config.minLength.message;
-        }
-      }
-
-      // Max length check
-      if (config.maxLength && typeof value === 'string') {
-        if (value.length > config.maxLength.value) {
-          return config.maxLength.message;
-        }
-      }
-
-      // Pattern check
-      if (config.pattern && typeof value === 'string') {
-        if (!config.pattern.regex.test(value)) {
-          return config.pattern.message;
-        }
-      }
-
-      // Custom validation
-      if (config.custom) {
-        return config.custom(value, formData);
-      }
-
-      // Rules validation
-      if (config.rules) {
-        for (const rule of config.rules) {
-          const error = rule.validate(value, formData);
-          if (error) return error;
-        }
-      }
-
-      return undefined;
     },
+    [validateOnChange, touched, validators]
+  );
+
+  const validateField = useCallback(
+    (field: keyof T): string | undefined => computeFieldError(field, formData, validators),
     [formData, validators]
   );
 
@@ -126,7 +145,7 @@ export function useFormValidation<T extends Record<string, any>>(
       let hasError = false;
 
       fields.forEach((field) => {
-        const error = validateField(field);
+        const error = computeFieldError(field, formData, validators);
         if (error) {
           stepErrors[String(field)] = error;
           hasError = true;
@@ -135,7 +154,7 @@ export function useFormValidation<T extends Record<string, any>>(
       });
 
       setTouched((prev) => ({ ...prev, ...touchedFields }));
-      setErrors((prev: Record<string, string | undefined>) => {
+      setErrors((prev) => {
         const updated = { ...prev };
         fields.forEach((f) => {
           const fieldStr = String(f);
@@ -150,17 +169,16 @@ export function useFormValidation<T extends Record<string, any>>(
 
       return !hasError;
     },
-    [validateField, stepFields]
+    [formData, validators, stepFields]
   );
 
   const validateAllSteps = useCallback((): boolean => {
     const allErrors: Record<string, string | undefined> = {};
     const allTouched: Record<string, boolean> = {};
 
-    // Validate all fields
     Object.keys(validators).forEach((field) => {
       const key = field as keyof T;
-      const error = validateField(key);
+      const error = computeFieldError(key, formData, validators);
       if (error) {
         allErrors[field] = error;
       }
@@ -171,7 +189,6 @@ export function useFormValidation<T extends Record<string, any>>(
     setErrors(allErrors);
 
     if (Object.keys(allErrors).length > 0) {
-      // Find first step with errors
       const steps = Object.keys(stepFields)
         .map(Number)
         .sort((a, b) => a - b);
@@ -186,22 +203,28 @@ export function useFormValidation<T extends Record<string, any>>(
     }
 
     return true;
-  }, [validateField, validators, stepFields]);
+  }, [formData, validators, stepFields]);
 
   const handleChange = useCallback(
-    (field: keyof T, value: any) => {
-      const newData = { ...formData, [field]: value };
-      setFormDataState(newData);
-
-      if (validateOnChange && touched[String(field)]) {
-        const error = validateField(field);
-        setErrors((prev: Record<string, string | undefined>) => ({
-          ...prev,
-          [field]: error,
-        }));
-      }
+    (field: keyof T, value: unknown) => {
+      setFormDataState((prev) => {
+        const next = { ...prev, [field]: value } as T;
+        applyChangeErrors(next, [field]);
+        return next;
+      });
     },
-    [formData, touched, validateField, validateOnChange]
+    [applyChangeErrors]
+  );
+
+  const handleChanges = useCallback(
+    (patch: Partial<T>) => {
+      setFormDataState((prev) => {
+        const next = { ...prev, ...patch };
+        applyChangeErrors(next, Object.keys(patch) as (keyof T)[]);
+        return next;
+      });
+    },
+    [applyChangeErrors]
   );
 
   const handleBlur = useCallback(
@@ -210,14 +233,14 @@ export function useFormValidation<T extends Record<string, any>>(
       setTouched((prev) => ({ ...prev, [fieldName]: true }));
 
       if (validateOnBlur) {
-        const error = validateField(field);
-        setErrors((prev: Record<string, string | undefined>) => ({
+        const error = computeFieldError(field, formData, validators);
+        setErrors((prev) => ({
           ...prev,
           [field]: error,
         }));
       }
     },
-    [validateField, validateOnBlur]
+    [formData, validators, validateOnBlur]
   );
 
   const setFormData = useCallback((data: T | ((prev: T) => T)) => {
@@ -242,6 +265,7 @@ export function useFormValidation<T extends Record<string, any>>(
     activeStep,
     setActiveStep,
     handleChange,
+    handleChanges,
     handleBlur,
     validateField,
     validateStep,

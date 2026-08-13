@@ -1,11 +1,11 @@
+import { Globe, MapPin } from 'lucide-react';
 import React from 'react';
-import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
-import RoomRoundedIcon from '@mui/icons-material/RoomRounded';
-import Button from '@mui/material/Button';
+import Button from '@/components/compat/button';
 import { Link as RouterLink } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import useGsapReveal from '../../hooks/useGsapReveal';
 import type { LocalisationSectionProps } from '../../types/sectionone.types';
 
 // Fix pour l'icône par défaut de Leaflet
@@ -31,11 +31,13 @@ const LocalisationSection: React.FC<LocalisationSectionProps> = (
     longitude = 47.107401,
   } = props;
 
+  const revealRef = useGsapReveal<HTMLElement>();
+
   return (
-    <section className="py-20">
+    <section ref={revealRef} className="py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div>
+          <div data-gsap>
             <h2 className="mb-4 text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
               {title}
             </h2>
@@ -44,7 +46,7 @@ const LocalisationSection: React.FC<LocalisationSectionProps> = (
 
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <RoomRoundedIcon color="primary" sx={{ mt: 0.25 }} />
+                <MapPin color="primary" />
 
                 <div>
                   <div className="font-semibold text-ink-900">{addressLabel}</div>
@@ -53,7 +55,7 @@ const LocalisationSection: React.FC<LocalisationSectionProps> = (
               </div>
 
               <div className="flex items-start gap-3">
-                <PublicRoundedIcon color="primary" sx={{ mt: 0.25 }} />
+                <Globe color="primary" />
 
                 <div>
                   <div className="font-semibold text-ink-900">{contactLabel}</div>
@@ -69,21 +71,13 @@ const LocalisationSection: React.FC<LocalisationSectionProps> = (
                 component={RouterLink}
                 to="/contact"
                 variant="contained"
-                sx={{
-                  borderRadius: '0.9rem',
-                  px: 3.5,
-                  py: 1.25,
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  boxShadow: '0 10px 24px -10px rgba(46, 106, 95, 0.5)',
-                }}
               >
                 Nous contacter
               </Button>
             </div>
           </div>
 
-          <div className="aspect-video overflow-hidden rounded-2xl bg-ink-100 shadow-card ring-1 ring-ink-100 lg:h-96 lg:aspect-auto">
+          <div data-gsap className="aspect-video overflow-hidden rounded-2xl bg-ink-100 shadow-card ring-1 ring-ink-100 lg:h-96 lg:aspect-auto">
             <MapContainer
               center={[latitude, longitude]}
               zoom={15}

@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Card, CardContent, Typography, Box, Button } from '@mui/material';
+import React, { useState, useCallback } from 'react';
 import { toast, Toaster } from 'sonner';
+import { Button } from '@/components/ui/button';
 import {
   FormationFilters,
   FormationForm,
@@ -10,20 +10,22 @@ import {
   SearchInput,
 } from '../../components';
 import { usePagination, useFormationFilter, useScrollToTop } from '../../hooks';
-import type { FormationFormData, Formation } from '../../types';
 import {
-  getAllFormations,
-  createFormation,
-  updateFormation,
-  deleteFormation,
-} from '../../services';
+  useCreateFormation,
+  useDeleteFormation,
+  useFormationsQuery,
+  useUpdateFormation,
+} from '../../hooks/queries';
+import type { FormationFormData, Formation } from '../../types';
 import { useTitle } from '@/hooks/useTitle';
 
 const Formations: React.FC = () => {
   useScrollToTop();
   useTitle('Formations');
-  // Data state
-  const [data, setData] = useState<Formation[]>([]);
+  const { data = [] } = useFormationsQuery();
+  const createMutation = useCreateFormation();
+  const updateMutation = useUpdateFormation();
+  const deleteMutation = useDeleteFormation();
   const [searchTerm, setSearchTerm] = useState('');
 
   // UI state
@@ -50,21 +52,6 @@ const Formations: React.FC = () => {
     handleChangeRowsPerPage,
     resetPage,
   } = usePagination({ data: filteredData, initialRowsPerPage: 5 });
-
-  // Load data from backend
-  useEffect(() => {
-    const loadFormations = async () => {
-      try {
-        const formations = await getAllFormations();
-        setData(formations);
-      } catch (error) {
-        console.error('Failed to load formations from backend:', error);
-        toast.error('Erreur lors du chargement des formations');
-      }
-    };
-
-    loadFormations();
-  }, []);
 
   // Handlers
   const handleSearchChange = useCallback(
@@ -100,8 +87,7 @@ const Formations: React.FC = () => {
   const handleConfirmDelete = useCallback(async () => {
     if (formationToDelete) {
       try {
-        await deleteFormation(formationToDelete.id);
-        setData((prev) => prev.filter((item) => item.id !== formationToDelete.id));
+        await deleteMutation.mutateAsync(formationToDelete.id);
         toast.success(`"${formationToDelete.titre}" a été supprimée avec succès`);
         setDeleteDialogOpen(false);
         setFormationToDelete(null);
@@ -110,20 +96,16 @@ const Formations: React.FC = () => {
         console.error('Error deleting formation:', error);
       }
     }
-  }, [formationToDelete]);
+  }, [formationToDelete, deleteMutation]);
 
   const handleFormSubmit = useCallback(
     async (formData: FormationFormData) => {
       try {
         if (formMode === 'create') {
-          const newFormation = await createFormation(formData);
-          setData((prev) => [newFormation, ...prev]);
+          await createMutation.mutateAsync(formData);
           toast.success('Formation créée avec succès');
         } else if (selectedFormation) {
-          const updatedFormation = await updateFormation(selectedFormation.id, formData);
-          setData((prev) =>
-            prev.map((item) => (item.id === selectedFormation.id ? updatedFormation : item))
-          );
+          await updateMutation.mutateAsync({ id: selectedFormation.id, data: formData });
           toast.success('Formation modifiée avec succès');
         }
         // Close the dialog only after successful API call
@@ -133,7 +115,7 @@ const Formations: React.FC = () => {
         console.error('Error saving formation:', error);
       }
     },
-    [formMode, selectedFormation]
+    [formMode, selectedFormation, createMutation, updateMutation]
   );
 
   const handleResetFilters = useCallback(() => {
@@ -150,77 +132,45 @@ const Formations: React.FC = () => {
       <Toaster position="top-right" richColors />
 
       {/* Search + Add Button */}
-      <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
-        <CardContent>
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-              <Typography variant="h6" className="font-bold text-ink-800 whitespace-nowrap">
-                Liste des formations
-                <Box component="span" className="ml-2 text-sm font-normal text-ink-500">
-                  ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
-                </Box>
-              </Typography>
-              <SearchInput
-                value={searchTerm}
-                onChange={handleSearchChange}
-                placeholder="Rechercher par titre, domaine..."
-              />
-            </div>
-            <div className="flex items-center gap-3 w-full lg:w-auto">
-              <Button
-                variant="outlined"
-                onClick={handleToggleFilters}
-                sx={{
-                  borderRadius: 'sm',
-                  textTransform: 'none',
-                  whiteSpace: 'nowrap',
-                  borderColor: '#e5e7eb',
-                  color: '#374151',
-                  '&:hover': {
-                    borderColor: '#d1d5db',
-                    backgroundColor: '#f9fafb',
-                  },
-                }}
-              >
-                {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleOpenCreate}
-                sx={{
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  whiteSpace: 'nowrap',
-                  backgroundColor: '#2e6a5f',
-                  '&:hover': {
-                    backgroundColor: '#27564e',
-                  },
-                }}
-              >
-                + Nouvelle formation
-              </Button>
-            </div>
+      <div className="rounded-xl border border-ink-100 bg-white p-4 shadow-card">
+        <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
+          <div className="flex flex-1 flex-col items-start gap-4 sm:flex-row sm:items-center">
+            <h2 className="whitespace-nowrap text-lg font-bold text-ink-800">
+              Liste des formations
+              <span className="ml-2 text-sm font-normal text-ink-500">
+                ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
+              </span>
+            </h2>
+            <SearchInput
+              value={searchTerm}
+              onChange={handleSearchChange}
+              placeholder="Rechercher par titre, domaine..."
+            />
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex w-full items-center gap-3 lg:w-auto">
+            <Button variant="outline" onClick={handleToggleFilters}>
+              {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
+            </Button>
+            <Button onClick={handleOpenCreate}>+ Nouvelle formation</Button>
+          </div>
+        </div>
+      </div>
 
       {/* Filters - Full Width Below */}
       {filtersOpen && (
-        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
-          <CardContent>
-            <FormationFilters
-              filters={filters}
-              onUpdateFilter={(key, value) => {
-                updateFilter(key, value);
-                resetPage();
-              }}
-              onResetFilters={handleResetFilters}
-              activeFilterCount={activeFilterCount}
-              open={filtersOpen}
-              onToggle={handleToggleFilters}
-            />
-          </CardContent>
-        </Card>
+        <div className="rounded-xl border border-ink-100 bg-white p-4 shadow-card">
+          <FormationFilters
+            filters={filters}
+            onUpdateFilter={(key, value) => {
+              updateFilter(key, value);
+              resetPage();
+            }}
+            onResetFilters={handleResetFilters}
+            activeFilterCount={activeFilterCount}
+            open={filtersOpen}
+            onToggle={handleToggleFilters}
+          />
+        </div>
       )}
 
       {/* Table */}

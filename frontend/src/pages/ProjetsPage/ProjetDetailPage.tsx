@@ -1,16 +1,8 @@
+import { Banknote } from 'lucide-react';
+import { Card, CardContent } from '@/components/compat/mui';
+import { ArrowLeft, Calendar, Database, Flag, GraduationCap, Map, MapPin, Rocket } from 'lucide-react';
 import React, { useEffect } from 'react';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import RocketLaunchRoundedIcon from '@mui/icons-material/RocketLaunchRounded';
-import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
-import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
-import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded';
-import FlagRoundedIcon from '@mui/icons-material/FlagRounded';
-import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
-import MapRoundedIcon from '@mui/icons-material/MapRounded';
-import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+import Button from '@/components/compat/button';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import {
   CtaSection,
@@ -73,7 +65,7 @@ const ProjetDetailPage: React.FC = () => {
       <div className="min-h-screen bg-ink-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <EmptyState
-            icon={<RocketLaunchRoundedIcon sx={{ fontSize: 40, color: GREEN[400] }} />}
+            icon={<Rocket />}
             title="Projet introuvable"
             description="Le projet que vous recherchez n'existe pas ou a été supprimé."
             actionLabel="Retour aux projets"
@@ -85,18 +77,7 @@ const ProjetDetailPage: React.FC = () => {
               component={RouterLink}
               to="/projets"
               variant="outlined"
-              startIcon={<ArrowBackRoundedIcon />}
-              sx={{
-                borderRadius: '0.75rem',
-                textTransform: 'none',
-                fontWeight: 600,
-                borderColor: GREEN[600],
-                color: GREEN[600],
-                '&:hover': {
-                  borderColor: GREEN[700],
-                  backgroundColor: GREEN[50],
-                },
-              }}
+              startIcon={<ArrowLeft className="size-4" />}
             >
               Tous les projets
             </Button>
@@ -115,7 +96,7 @@ const ProjetDetailPage: React.FC = () => {
       <PageHero
         image={imageUrl}
         imageAlt={projet.titre}
-        badgeIcon={<RocketLaunchRoundedIcon />}
+        badgeIcon={<Rocket className="size-4" />}
         badgeLabel={projet.type}
         title={projet.titre}
         description={projet.description}
@@ -135,7 +116,7 @@ const ProjetDetailPage: React.FC = () => {
             </span>
 
             <span className="inline-flex items-center gap-2 rounded-full border border-ink-100 bg-white px-4 py-2 text-sm text-ink-700">
-              <CalendarTodayRoundedIcon sx={{ fontSize: 14 }} />
+              <Calendar />
               {projet.annee}
             </span>
 
@@ -145,7 +126,7 @@ const ProjetDetailPage: React.FC = () => {
                 backgroundColor: isFinished ? '#059669' : '#f59e0b',
               }}
             >
-              <FlagRoundedIcon sx={{ fontSize: 14 }} />
+              <Flag />
               {projet.statut}
             </span>
           </div>
@@ -160,13 +141,6 @@ const ProjetDetailPage: React.FC = () => {
           <div className="space-y-6 lg:col-span-1">
             {/* Carte Informations clés */}
             <Card
-              sx={{
-                borderRadius: '1.25rem',
-                border: '1px solid',
-                borderColor: 'divider',
-                boxShadow:
-                  '0 1px 2px rgba(15, 33, 30, 0.04), 0 4px 16px -4px rgba(15, 33, 30, 0.08)',
-              }}
             >
               <CardContent className="p-6">
                 <h3 className="mb-5 text-xs font-semibold uppercase tracking-wider text-ink-500">
@@ -182,11 +156,7 @@ const ProjetDetailPage: React.FC = () => {
                         backgroundColor: isFinished ? '#d1fae5' : '#fef3c7',
                       }}
                     >
-                      <FlagRoundedIcon
-                        sx={{
-                          color: isFinished ? '#059669' : '#d97706',
-                          fontSize: 20,
-                        }}
+                      <Flag
                       />
                     </div>
                     <div className="flex-1">
@@ -206,7 +176,7 @@ const ProjetDetailPage: React.FC = () => {
                   {/* Année */}
                   <div className="flex items-start gap-3">
                     <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-brand-100">
-                      <CalendarTodayRoundedIcon sx={{ color: GREEN[600], fontSize: 20 }} />
+                      <Calendar />
                     </div>
                     <div className="flex-1">
                       <div className="text-sm text-ink-500">Année de livraison</div>
@@ -220,7 +190,7 @@ const ProjetDetailPage: React.FC = () => {
                   {projet.location && (
                     <div className="flex items-start gap-3">
                       <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-brand-50">
-                        <LocationOnRoundedIcon sx={{ color: '#2e6a5f', fontSize: 20 }} />
+                        <MapPin />
                       </div>
                       <div className="flex-1">
                         <div className="text-sm text-ink-500">Localisation</div>
@@ -240,7 +210,7 @@ const ProjetDetailPage: React.FC = () => {
                   {projet.budget && (
                     <div className="flex items-start gap-3">
                       <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-brand-100">
-                        <AttachMoneyRoundedIcon sx={{ color: GREEN[600], fontSize: 20 }} />
+                        <Banknote />
                       </div>
                       <div className="flex-1">
                         <div className="text-sm text-ink-500">Budget</div>
@@ -255,7 +225,7 @@ const ProjetDetailPage: React.FC = () => {
                   {projet.sourceDonnees && (
                     <div className="flex items-start gap-3">
                       <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-sage-100">
-                        <StorageRoundedIcon sx={{ color: '#4f6834', fontSize: 20 }} />
+                        <Database />
                       </div>
                       <div className="flex-1">
                         <div className="text-sm text-ink-500">Source de données</div>
@@ -272,13 +242,6 @@ const ProjetDetailPage: React.FC = () => {
             {/* Carte Partenaires */}
             {projet.partenaires && projet.partenaires.length > 0 && (
               <Card
-                sx={{
-                  borderRadius: '1.25rem',
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  boxShadow:
-                    '0 1px 2px rgba(15, 33, 30, 0.04), 0 4px 16px -4px rgba(15, 33, 30, 0.08)',
-                }}
               >
                 <CardContent className="p-6">
                   <div className="mb-5 flex items-center gap-3">
@@ -297,7 +260,7 @@ const ProjetDetailPage: React.FC = () => {
                           className="flex items-center gap-3 rounded-xl bg-brand-50/60 ring-1 ring-brand-100/60 p-3"
                         >
                           <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white shadow-sm">
-                            <SchoolRoundedIcon sx={{ color: GREEN[600], fontSize: 20 }} />
+                            <GraduationCap />
                           </div>
                           <div className="flex-1">
                             <div className="text-sm font-semibold text-ink-900">{nom}</div>
@@ -315,19 +278,11 @@ const ProjetDetailPage: React.FC = () => {
           <div className="space-y-6 lg:col-span-2">
             {projet.location && (
               <Card
-                sx={{
-                  borderRadius: '1.25rem',
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  overflow: 'hidden',
-                  boxShadow:
-                    '0 1px 2px rgba(15, 33, 30, 0.04), 0 4px 16px -4px rgba(15, 33, 30, 0.08)',
-                }}
               >
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-100">
-                      <MapRoundedIcon sx={{ color: GREEN[600], fontSize: 20 }} />
+                      <Map />
                     </div>
                     <h3 className="text-lg font-semibold text-ink-900">Localisation du projet</h3>
                   </div>
@@ -360,13 +315,6 @@ const ProjetDetailPage: React.FC = () => {
             {/* Objectifs (si présents) */}
             {projet.objectifs && projet.objectifs.length > 0 && (
               <Card
-                sx={{
-                  borderRadius: '1.25rem',
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  boxShadow:
-                    '0 1px 2px rgba(15, 33, 30, 0.04), 0 4px 16px -4px rgba(15, 33, 30, 0.08)',
-                }}
               >
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-3">
@@ -403,19 +351,7 @@ const ProjetDetailPage: React.FC = () => {
               to="/projets"
               variant="outlined"
               fullWidth
-              startIcon={<ArrowBackRoundedIcon />}
-              sx={{
-                borderRadius: '0.75rem',
-                textTransform: 'none',
-                fontWeight: 600,
-                py: 1.5,
-                borderColor: GREEN[600],
-                color: GREEN[600],
-                '&:hover': {
-                  borderColor: GREEN[700],
-                  backgroundColor: GREEN[50],
-                },
-              }}
+              startIcon={<ArrowLeft className="size-4" />}
             >
               Tous les projets
             </Button>
@@ -424,7 +360,7 @@ const ProjetDetailPage: React.FC = () => {
       </div>
 
       <CtaSection
-        icon={<RocketLaunchRoundedIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
+        icon={<Rocket />}
         title="Vous avez un projet de recherche ?"
         description="Collaborez avec l'ESSG pour vos projets de recherche, d'innovation ou de développement en sciences géomatiques."
         primaryLabel="Nous contacter"

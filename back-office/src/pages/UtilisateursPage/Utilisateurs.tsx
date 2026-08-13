@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Card, CardContent, Typography, Box, Button, IconButton } from '@mui/material';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import { Card, CardContent, Typography, Box, Button, IconButton } from '@/components/compat/mui';
+import { Filter } from 'lucide-react';
+import React, { useState, useCallback } from 'react';
 import { toast, Toaster } from 'sonner';
 import {
   UsersTable,
@@ -14,13 +14,16 @@ import type { UserFilters } from '../../components/UsersComponent/UsersFilter';
 import { usePagination, useScrollToTop } from '../../hooks';
 import { useAuth } from '../../contexts/AuthContext';
 import type { User, UserFormData } from '../../types';
-import { getAllUsers, createUser, updateUser, deleteUser, uploadAvatar } from '../../services';
+import { useCreateUser, useDeleteUser, useUpdateUser, useUsersQuery } from '../../hooks/queries';
 import { useTitle } from '@/hooks/useTitle';
 
 const Utilisateurs: React.FC = () => {
   useScrollToTop();
   useTitle('Utilisateurs');
-  const [data, setData] = useState<User[]>([]);
+  const { data = [] } = useUsersQuery();
+  const createMutation = useCreateUser();
+  const updateMutation = useUpdateUser();
+  const deleteMutation = useDeleteUser();
   const [filters, setFilters] = useState<UserFilters>({
     search: '',
     role: '',
@@ -61,20 +64,6 @@ const Utilisateurs: React.FC = () => {
     handleChangeRowsPerPage,
     resetPage,
   } = usePagination({ data: filteredData, initialRowsPerPage: 10 });
-
-  useEffect(() => {
-    loadUsers();
-  }, []);
-
-  const loadUsers = async () => {
-    try {
-      const response = await getAllUsers(1, 100);
-      setData(response.data);
-    } catch (error) {
-      toast.error('Erreur lors du chargement des utilisateurs');
-      console.error('Error loading users:', error);
-    }
-  };
 
   const handleSearchChange = useCallback(
     (value: string) => {
@@ -138,8 +127,7 @@ const Utilisateurs: React.FC = () => {
   const handleConfirmDelete = useCallback(async () => {
     if (userToDelete) {
       try {
-        await deleteUser(userToDelete.id);
-        setData((prev) => prev.filter((item) => item.id !== userToDelete.id));
+        await deleteMutation.mutateAsync(userToDelete.id);
         toast.success(`Utilisateur "${userToDelete.email}" supprimé avec succès`);
         setDeleteDialogOpen(false);
         setUserToDelete(null);
@@ -148,7 +136,7 @@ const Utilisateurs: React.FC = () => {
         console.error('Error deleting user:', error);
       }
     }
-  }, [userToDelete]);
+  }, [userToDelete, deleteMutation]);
 
   const handleFormSubmit = useCallback(
     async (formData: UserFormData) => {
@@ -159,30 +147,21 @@ const Utilisateurs: React.FC = () => {
             return;
           }
 
-          // Create user without avatar first
-          const { avatar, avatarFile, ...userDataWithoutAvatar } = formData;
-          const newUser = await createUser(
-            userDataWithoutAvatar as Parameters<typeof createUser>[0]
-          );
-
-          // Upload avatar if provided
-          if (avatarFile && newUser.id) {
-            try {
-              const updatedUser = await uploadAvatar(newUser.id, avatarFile);
-              setData((prev) => [updatedUser, ...prev]);
-              toast.success('Utilisateur créé avec succès avec avatar');
-            } catch (error) {
-              console.error("Erreur lors de l'upload de l'avatar:", error);
-              setData((prev) => [newUser, ...prev]);
-              toast.success('Utilisateur créé avec succès (avatar non uploadé)');
-            }
-          } else {
-            setData((prev) => [newUser, ...prev]);
-            toast.success('Utilisateur créé avec succès');
-          }
+          const { avatarFile, avatar: _avatar, ...userDataWithoutAvatar } = formData;
+          await createMutation.mutateAsync({
+            userData: {
+              email: userDataWithoutAvatar.email,
+              motDePasse: userDataWithoutAvatar.motDePasse as string,
+              prenom: userDataWithoutAvatar.prenom,
+              nom: userDataWithoutAvatar.nom,
+              role: userDataWithoutAvatar.role,
+              estActif: userDataWithoutAvatar.estActif,
+            },
+            avatarFile,
+          });
+          toast.success(avatarFile ? 'Utilisateur créé avec succès avec avatar' : 'Utilisateur créé avec succès');
         } else if (selectedUser) {
-          const updatedUser = await updateUser(selectedUser.id, formData);
-          setData((prev) => prev.map((item) => (item.id === selectedUser.id ? updatedUser : item)));
+          await updateMutation.mutateAsync({ id: selectedUser.id, data: formData });
           toast.success('Utilisateur modifié avec succès');
         }
         setFormOpen(false);
@@ -204,7 +183,7 @@ const Utilisateurs: React.FC = () => {
 
       {/* Stats Cards */}
       {/* <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
+        <Card variant="outlined">
           <CardContent className="flex flex-col items-center py-4">
             <Typography variant="h4" className="font-bold text-ink-900">
               {totalCount}
@@ -214,7 +193,7 @@ const Utilisateurs: React.FC = () => {
             </Typography>
           </CardContent>
         </Card>
-        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
+        <Card variant="outlined">
           <CardContent className="flex flex-col items-center py-4">
             <Typography variant="h4" className="font-bold text-brand-600">
               {activeCount}
@@ -224,7 +203,7 @@ const Utilisateurs: React.FC = () => {
             </Typography>
           </CardContent>
         </Card>
-        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
+        <Card variant="outlined">
           <CardContent className="flex flex-col items-center py-4">
             <Typography variant="h4" className="font-bold text-brand-600">
               {adminCount}
@@ -237,7 +216,7 @@ const Utilisateurs: React.FC = () => {
       </div> */}
 
       {/* Search + Add Button */}
-      <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
+      <Card variant="outlined">
         <CardContent>
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
@@ -256,26 +235,13 @@ const Utilisateurs: React.FC = () => {
             <Box className="flex gap-2">
               <IconButton
                 onClick={handleToggleFilters}
-                sx={{
-                  backgroundColor: filterOpen ? '#e5e7eb' : 'transparent',
-                  '&:hover': { backgroundColor: '#e5e7eb' },
-                }}
               >
-                <FilterListIcon />
+                <Filter className="size-4" />
               </IconButton>
               {isAdmin && (
                 <Button
                   variant="contained"
                   onClick={handleOpenCreate}
-                  sx={{
-                    borderRadius: '8px',
-                    textTransform: 'none',
-                    whiteSpace: 'nowrap',
-                    backgroundColor: '#2e6a5f',
-                    '&:hover': {
-                      backgroundColor: '#27564e',
-                    },
-                  }}
                 >
                   + Nouvel utilisateur
                 </Button>

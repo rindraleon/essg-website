@@ -1,9 +1,6 @@
+import { Fade, IconButton, Tooltip } from '@/components/compat/mui';
+import { ExternalLink, MapPin } from 'lucide-react';
 import React, { useState } from 'react';
-import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
-import RoomRoundedIcon from '@mui/icons-material/RoomRounded';
-import Fade from '@mui/material/Fade';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 import { GREEN } from '../../constants/colors';
 import type { MapEmbedProps } from '../../types/projets.types';
 
@@ -27,7 +24,7 @@ const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
     <div className="w-full">
       {/* {adresse && (
                 <p className="mb-3 flex items-center justify-center gap-1.5 text-center text-xs text-ink-500">
-                    <RoomRoundedIcon sx={{ fontSize: 14 }} />
+                    <MapPin />
                     {adresse}
                 </p>
             )} */}
@@ -39,7 +36,7 @@ const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
       >
         {/* Barre d'en-tête */}
         <div className="flex items-center gap-2 border-b border-ink-100 bg-ink-50/60 px-3 py-2.5">
-          <RoomRoundedIcon sx={{ fontSize: 16, color: GREEN[600] }} />
+          <MapPin />
           <span className="truncate text-xs font-medium text-ink-700">{label}</span>
 
           <Tooltip title="Ouvrir dans OpenStreetMap">
@@ -49,9 +46,8 @@ const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
               target="_blank"
               rel="noopener noreferrer"
               size="small"
-              sx={{ ml: 'auto' }}
             >
-              <OpenInNewRoundedIcon sx={{ fontSize: 16 }} />
+              <ExternalLink />
             </IconButton>
           </Tooltip>
         </div>
@@ -81,7 +77,7 @@ const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
                 style={{ backgroundColor: GREEN[50] }}
               >
-                <RoomRoundedIcon sx={{ fontSize: 22, color: GREEN[600] }} />
+                <MapPin />
               </div>
 
               <div className="min-w-0 flex-1">

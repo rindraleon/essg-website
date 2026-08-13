@@ -1,85 +1,47 @@
-// src/components/ActualiteCard.tsx
-import React from 'react';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
-import Button from '@mui/material/Button';
-import { Link as RouterLink } from 'react-router-dom';
+import { Calendar } from 'lucide-react';
 import type { Actualite } from '../../types/actualite.types';
 import CategoryChip from '../common/CategoryChip';
 import { formatDate } from '../../utils/date.utils';
 import { getImageUrl } from '../../utils/image.utils';
+import ViewDetailsButton from '../common/ViewDetailsButton';
 
 interface Props {
   actualite: Actualite;
 }
 
-const ActualiteCard: React.FC<Props> = ({ actualite }) => {
+const ActualiteCard = ({ actualite }: Props) => {
   const imageUrl = actualite.image
     ? getImageUrl(actualite.image)
     : 'https://images.unsplash.com/photo-1768117173988-5ebfdde4fdd3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 
   return (
-    <div className="group rounded-2xl overflow-hidden border border-ink-100 bg-white shadow-card flex flex-col">
-      {/* Image */}
-      <div className="relative h-48 overflow-hidden bg-ink-100">
-        <img
-          src={imageUrl}
-          alt={actualite.titre}
-          loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+    <article data-gsap className="group flex flex-col overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-100 hover:shadow-card-hover">
+      <div className="img-reveal relative h-48 overflow-hidden bg-ink-100">
+        <img src={imageUrl} alt={actualite.titre} loading="lazy" className="h-full w-full object-cover" />
       </div>
-
-      {/* Contenu */}
-      <div className="p-5 flex flex-col flex-1">
-        {/* Catégorie + Date */}
-        <div className="flex items-center gap-2 mb-3 flex-wrap">
+      <div className="flex flex-1 flex-col p-5">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
           <CategoryChip category={actualite.categorie} size="small" />
           <span className="flex items-center gap-1 text-xs text-ink-400">
-            <CalendarTodayRoundedIcon sx={{ fontSize: 12 }} />
+            <Calendar className="size-3" />
             {formatDate(actualite.date)}
           </span>
         </div>
-
-        {/* Titre */}
-        <h3 className="text-base font-semibold text-ink-900 mb-2 line-clamp-2 leading-snug">
+        <h3 className="mb-2 line-clamp-2 text-base font-semibold leading-snug text-ink-900">
           {actualite.titre}
         </h3>
-
-        {/* Résumé */}
-        <p className="text-sm text-ink-500 line-clamp-3 flex-1 leading-6">{actualite.resume}</p>
-
-        {/* Auteur */}
+        <p className="flex-1 text-sm leading-6 text-ink-500 line-clamp-3">{actualite.resume}</p>
         {actualite.auteur && (
-          <p className="text-xs text-ink-400 mt-2">
+          <p className="mt-2 text-xs text-ink-400">
             Par <span className="font-medium">{actualite.auteur}</span>
           </p>
         )}
-
-        {/* Bouton */}
-        <Button
-          component={RouterLink}
+        <ViewDetailsButton
           to={`/actualites/${actualite.slug}`}
-          variant="text"
-          endIcon={<ArrowForwardRoundedIcon />}
-          sx={{
-            mt: 2,
-            p: 0,
-            minWidth: 'auto',
-            color: '#2e6a5f',
-            fontWeight: 600,
-            textTransform: 'none',
-            justifyContent: 'flex-start',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              color: '#27564e',
-            },
-          }}
-        >
-          Lire la suite
-        </Button>
+          ariaLabel={`Voir le détail de ${actualite.titre}`}
+        />
       </div>
-    </div>
+    </article>
   );
 };
 

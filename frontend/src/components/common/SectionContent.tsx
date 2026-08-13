@@ -1,4 +1,5 @@
 import React from 'react';
+import useReveal from '../../hooks/useReveal';
 
 interface SectionContentProps {
   children: React.ReactNode;
@@ -27,12 +28,13 @@ const SectionContent: React.FC<SectionContentProps> = ({
   containerClassName = '',
   fluid = false,
 }) => {
+  const revealRef = useReveal<HTMLElement>();
   const wrapperClass = fluid
     ? 'w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12'
     : 'container mx-auto px-4 sm:px-6 lg:px-8';
 
   return (
-    <section className={sectionClassName}>
+    <section ref={revealRef} className={`reveal-section ${sectionClassName}`}>
       <div className={`${wrapperClass} ${containerClassName}`}>
         {headerContent}
 

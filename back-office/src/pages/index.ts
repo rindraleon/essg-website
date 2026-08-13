@@ -9,3 +9,4 @@ export { default as Partenaires } from './PartenairesPage/Partenaires';
 export { default as Contacts } from './ContactsPage/Contacts';
 export { default as Admissions } from './AdmissionsPage/Admissions';
 export { default as Profil } from './ProfilPage/Profil';
+export { default as ActivityLogs } from './ActivityLogsPage/ActivityLogs';

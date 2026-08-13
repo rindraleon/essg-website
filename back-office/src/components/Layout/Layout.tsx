@@ -15,14 +15,14 @@ const Layout: React.FC<LayoutProps> = ({
       {/* Sidebar : tablette (lg) et desktop uniquement */}
       {showSidebar && <Sidebar />}
 
-      <div className={`flex-1 flex flex-col ${showSidebar ? 'lg:ml-64' : ''}`}>
+      <div className={`flex min-w-0 flex-1 flex-col ${showSidebar ? 'lg:ml-64' : ''}`}>
         {showHeader && <Header />}
 
-        <main className="flex-1 w-full">
+        <main className="min-w-0 flex-1 w-full">
           <div
             className={
               showSidebar
-                ? 'w-full px-3 py-4 sm:px-5 lg:px-8 lg:py-6 lg:pb-8'
+                ? 'w-full min-w-0 px-3 py-4 sm:px-5 lg:px-8 lg:py-6 lg:pb-8'
                 : 'container mx-auto px-4 py-4'
             }
           >

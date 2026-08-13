@@ -1,17 +1,6 @@
+import { TextField, FormControl, InputLabel, Select, MenuItem, IconButton, Box, FormHelperText, Button } from '@/components/compat/mui';
+import { Plus, Trash2 } from 'lucide-react';
 import React from 'react';
-import {
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  IconButton,
-  Box,
-  FormHelperText,
-  Button,
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 // Composant pour un champ texte réutilisable
 interface FormTextFieldProps {
@@ -178,7 +167,7 @@ export const ArrayField: React.FC<ArrayFieldProps> = ({
             size="small"
             disabled={items.length === minItems}
           >
-            <DeleteIcon fontSize="small" />
+            <Trash2 className="size-4" />
           </IconButton>
         </div>
       ))}
@@ -187,7 +176,7 @@ export const ArrayField: React.FC<ArrayFieldProps> = ({
         onClick={handleAdd}
         variant="outlined"
         size="small"
-        startIcon={<AddIcon />}
+        startIcon={<Plus className="size-4" />}
       >
         Ajouter
       </Button>
@@ -250,12 +239,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
           size="small"
-          sx={{
-            backgroundColor: '#3d8376',
-            '&:hover': {
-              backgroundColor: '#2e6a5f',
-            },
-          }}
         >
           {uploading ? '⏳ Upload en cours...' : '📁 Sélectionner une image'}
         </Button>

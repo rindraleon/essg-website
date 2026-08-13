@@ -1,9 +1,6 @@
+import { Eye, Pencil, Star, Trash2 } from 'lucide-react';
 // src/components/FormationComponents/FormationTable.tsx
 import React from 'react';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import StarIcon from '@mui/icons-material/Star';
 import type { Formation } from '../../types/formation.types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
@@ -82,7 +79,7 @@ const FormationTable: React.FC<FormationTableProps> = ({
       align: 'center',
       render: (row) =>
         row.enVedette ? (
-          <StarIcon sx={{ color: '#f59e0b', fontSize: 20 }} />
+          <Star />
         ) : (
           <span className="text-sm text-ink-400">-</span>
         ),
@@ -95,10 +92,10 @@ const FormationTable: React.FC<FormationTableProps> = ({
       render: (row) => (
         <div className="flex justify-end gap-1">
           <Button size="icon" variant="ghost" onClick={() => onView(row)} className="h-8 w-8">
-            <VisibilityIcon fontSize="small" className="h-4 w-4" />
+            <Eye className="size-4 h-4 w-4" />
           </Button>
           <Button size="icon" variant="ghost" onClick={() => onEdit(row)} className="h-8 w-8">
-            <EditIcon fontSize="small" className="h-4 w-4" />
+            <Pencil className="size-4 h-4 w-4" />
           </Button>
           <Button
             size="icon"
@@ -106,7 +103,7 @@ const FormationTable: React.FC<FormationTableProps> = ({
             onClick={() => onDelete(row)}
             className="h-8 w-8 text-red-600 hover:text-red-700"
           >
-            <DeleteIcon fontSize="small" className="h-4 w-4" />
+            <Trash2 className="size-4 h-4 w-4" />
           </Button>
         </div>
       ),

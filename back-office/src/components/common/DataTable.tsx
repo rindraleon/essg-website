@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import InboxIcon from '@mui/icons-material/Inbox';
+import { Inbox } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export interface Column<T> {
@@ -57,15 +57,15 @@ function DataTableInner<T>({
 
   const renderEmpty = () => (
     <div className="flex flex-col items-center justify-center gap-2 px-6 py-16 text-ink-400">
-      <InboxIcon sx={{ fontSize: 48 }} />
+      <Inbox className="size-12" />
       <p className="text-base">{emptyMessage}</p>
     </div>
   );
 
   return (
-    <div className="space-y-3">
+    <div className="min-w-0 space-y-3">
       {/* ---------- Vue Desktop : tableau classique ---------- */}
-      <div className="hidden overflow-hidden rounded-xl border border-ink-100 bg-white shadow-card lg:block">
+      <div className="hidden max-w-full overflow-hidden rounded-xl border border-ink-100 bg-white shadow-card lg:block">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>

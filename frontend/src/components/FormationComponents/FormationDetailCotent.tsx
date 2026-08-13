@@ -1,17 +1,6 @@
+import { Card, CardContent, Divider } from '@/components/compat/mui';
+import { ArrowRight, BadgeCheck, BookOpen, Briefcase, CircleCheck, Clock, GraduationCap, Mail, Star, User } from 'lucide-react';
 import React from 'react';
-import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
-import StarRoundedIcon from '@mui/icons-material/StarRounded';
-import VerifiedRoundedIcon from '@mui/icons-material/VerifiedRounded';
-import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Divider from '@mui/material/Divider';
 import { GREEN } from '../../constants/colors';
 import { getImageUrl } from '../../utils/image.utils';
 import type { FormationDetailContentProps } from '../../types/formations.types';
@@ -27,11 +16,6 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
         {/* Colonne principale - 2/3 de la largeur */}
         <div className="lg:col-span-2">
           <Card
-            sx={{
-              borderRadius: '1.25rem',
-              border: '1px solid',
-              borderColor: 'divider',
-            }}
           >
             <CardContent className="p-6 sm:p-8">
               {/* Image de couverture — ratio fixe 16:9, object-fit cover */}
@@ -58,7 +42,7 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
               {/* Description */}
               <section className="mb-8">
                 <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-ink-900">
-                  <MenuBookRoundedIcon sx={{ color: GREEN[800] }} />
+                  <BookOpen />
                   Présentation
                 </h2>
                 <p className="leading-relaxed text-ink-700">{formation.description}</p>
@@ -70,19 +54,13 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
               {formation.objectifs && formation.objectifs.length > 0 && (
                 <section className="mb-8">
                   <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-ink-900">
-                    <SchoolRoundedIcon sx={{ color: GREEN[800] }} />
+                    <GraduationCap />
                     Objectifs de la formation
                   </h2>
                   <ul className="space-y-3">
                     {formation.objectifs.map((obj) => (
                       <li key={obj} className="flex items-start gap-3 text-ink-700">
-                        <CheckCircleRoundedIcon
-                          sx={{
-                            fontSize: 20,
-                            color: GREEN[900],
-                            mt: 0.25,
-                            flexShrink: 0,
-                          }}
+                        <CircleCheck
                         />
                         <span>{obj}</span>
                       </li>
@@ -97,7 +75,7 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
                   <Divider className="my-6" />
                   <section className="mb-8">
                     <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-ink-900">
-                      <StarRoundedIcon sx={{ color: GREEN[800] }} />
+                      <Star />
                       Compétences acquises
                     </h2>
                     <ul className="space-y-2">
@@ -118,7 +96,7 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
                   <Divider className="my-6" />
                   <section className="mb-8">
                     <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-ink-900">
-                      <MenuBookRoundedIcon sx={{ color: GREEN[800] }} />
+                      <BookOpen />
                       Programme de formation
                     </h2>
 
@@ -157,19 +135,13 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
                   <Divider className="my-6" />
                   <section className="mb-8">
                     <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-ink-900">
-                      <WorkRoundedIcon sx={{ color: GREEN[800] }} />
+                      <Briefcase />
                       Débouchés professionnels
                     </h2>
                     <ul className="space-y-2">
                       {formation.debouches?.map((debouche) => (
                         <li key={debouche} className="flex items-start gap-2 text-ink-700">
-                          <ArrowForwardRoundedIcon
-                            sx={{
-                              fontSize: 18,
-                              color: GREEN[900],
-                              mt: 0.25,
-                              flexShrink: 0,
-                            }}
+                          <ArrowRight
                           />
                           <span>{debouche}</span>
                         </li>
@@ -185,7 +157,7 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
                   <Divider className="my-6" />
                   <section>
                     <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-ink-900">
-                      <StarRoundedIcon sx={{ color: GREEN[800] }} />
+                      <Star />
                       Points forts de la formation
                     </h2>
                     <ul className="space-y-3">
@@ -211,16 +183,11 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
         {/* Colonne latérale - 1/3 de la largeur */}
         <div className="lg:col-span-1">
           <Card
-            sx={{
-              borderRadius: '1.25rem',
-              border: '1px solid',
-              borderColor: 'divider',
-            }}
           >
             <CardContent className="p-6">
               <section>
                 <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-ink-900">
-                  <VerifiedRoundedIcon sx={{ color: GREEN[800] }} />
+                  <BadgeCheck />
                   Informations clés
                 </h3>
 
@@ -232,11 +199,7 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
                         backgroundColor: GREEN[50],
                       }}
                     >
-                      <SchoolRoundedIcon
-                        sx={{
-                          fontSize: 20,
-                          color: GREEN[800],
-                        }}
+                      <GraduationCap
                       />
                     </div>
                     <div>
@@ -252,11 +215,7 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
                         backgroundColor: GREEN[50],
                       }}
                     >
-                      <AccessTimeRoundedIcon
-                        sx={{
-                          fontSize: 20,
-                          color: GREEN[800],
-                        }}
+                      <Clock
                       />
                     </div>
                     <div>
@@ -272,11 +231,7 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
                         backgroundColor: GREEN[50],
                       }}
                     >
-                      <MenuBookRoundedIcon
-                        sx={{
-                          fontSize: 20,
-                          color: GREEN[800],
-                        }}
+                      <BookOpen
                       />
                     </div>
                     <div>
@@ -297,11 +252,7 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
                           backgroundColor: GREEN[50],
                         }}
                       >
-                        <VerifiedRoundedIcon
-                          sx={{
-                            fontSize: 20,
-                            color: GREEN[800],
-                          }}
+                        <BadgeCheck
                         />
                       </div>
                       <div>
@@ -321,11 +272,7 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
                           backgroundColor: GREEN[50],
                         }}
                       >
-                        <PersonRoundedIcon
-                          sx={{
-                            fontSize: 20,
-                            color: GREEN[800],
-                          }}
+                        <User
                         />
                       </div>
                       <div>
@@ -343,11 +290,7 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
                           backgroundColor: GREEN[50],
                         }}
                       >
-                        <EmailRoundedIcon
-                          sx={{
-                            fontSize: 20,
-                            color: GREEN[800],
-                          }}
+                        <Mail
                         />
                       </div>
                       <div>
@@ -372,7 +315,7 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
                 {formation.conditions && formation.conditions.length > 0 && (
                   <div className="rounded-xl border border-brand-100 bg-brand-50 p-4">
                     <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-ink-900">
-                      <VerifiedRoundedIcon sx={{ fontSize: 20, color: GREEN[800] }} />
+                      <BadgeCheck />
                       Conditions d'admission
                     </h4>
                     <ul className="space-y-2">

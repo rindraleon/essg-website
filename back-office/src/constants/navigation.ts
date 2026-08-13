@@ -1,44 +1,46 @@
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ArticleIcon from '@mui/icons-material/Article';
-import SchoolIcon from '@mui/icons-material/School';
-import FolderIcon from '@mui/icons-material/Folder';
-import HandshakeIcon from '@mui/icons-material/Handshake';
-import MailIcon from '@mui/icons-material/Mail';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import PeopleIcon from '@mui/icons-material/People';
+import type { LucideIcon } from 'lucide-react';
+import {
+  Folder,
+  GraduationCap,
+  Handshake,
+  LayoutDashboard,
+  Mail,
+  Newspaper,
+  ScrollText,
+  UserCheck,
+  Users,
+} from 'lucide-react';
 import { routesStatic } from '../routes';
 
 export interface NavItem {
   name: string;
   label: string;
   href: string;
-  icon: typeof DashboardIcon;
+  icon: LucideIcon;
+  adminOnly?: boolean;
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { name: 'Tableau de bord', label: 'Accueil', href: routesStatic.dashboard, icon: DashboardIcon },
-  { name: 'Actualités', label: 'Actualités', href: routesStatic.actualites, icon: ArticleIcon },
-  { name: 'Formations', label: 'Formations', href: routesStatic.formations, icon: SchoolIcon },
-  { name: 'Projets', label: 'Projets', href: routesStatic.projets, icon: FolderIcon },
-  {
-    name: 'Partenaires',
-    label: 'Partenaires',
-    href: routesStatic.partenaires,
-    icon: HandshakeIcon,
-  },
-  { name: 'Contacts', label: 'Contacts', href: routesStatic.contacts, icon: MailIcon },
-  { name: 'Admissions', label: 'Admissions', href: routesStatic.admissions, icon: HowToRegIcon },
+  { name: 'Tableau de bord', label: 'Accueil', href: routesStatic.dashboard, icon: LayoutDashboard },
+  { name: 'Actualités', label: 'Actualités', href: routesStatic.actualites, icon: Newspaper },
+  { name: 'Formations', label: 'Formations', href: routesStatic.formations, icon: GraduationCap },
+  { name: 'Projets', label: 'Projets', href: routesStatic.projets, icon: Folder },
+  { name: 'Partenaires', label: 'Partenaires', href: routesStatic.partenaires, icon: Handshake },
+  { name: 'Contacts', label: 'Contacts', href: routesStatic.contacts, icon: Mail },
+  { name: 'Admissions', label: 'Admissions', href: routesStatic.admissions, icon: UserCheck },
   {
     name: 'Ressources Humaines',
     label: 'Ressources',
     href: routesStatic.ressourcesHumaines,
-    icon: PeopleIcon,
+    icon: Users,
   },
+  { name: 'Utilisateurs', label: 'Utilisateurs', href: routesStatic.utilisateurs, icon: Users },
   {
-    name: 'Utilisateurs',
-    label: 'Utilisateurs',
-    href: routesStatic.utilisateurs,
-    icon: PeopleIcon,
+    name: 'Journal',
+    label: 'Journal',
+    href: routesStatic.activityLogs,
+    icon: ScrollText,
+    adminOnly: true,
   },
 ];
 
@@ -49,5 +51,7 @@ export const isNavActive = (href: string, pathname: string): boolean => {
   return pathname.startsWith(href);
 };
 
-
 export const PRIMARY_NAV_LABELS = ['Tableau de bord', 'Formations', 'Actualités', 'Projets'];
+
+export const getVisibleNavItems = (role?: string): NavItem[] =>
+  NAV_ITEMS.filter((item) => !item.adminOnly || role === 'admin');

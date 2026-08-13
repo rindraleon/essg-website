@@ -1,11 +1,5 @@
+import { Clock, GraduationCap, Image, Mail, Sparkles, User, X } from 'lucide-react';
 import React from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import SchoolIcon from '@mui/icons-material/School';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import StarsIcon from '@mui/icons-material/Stars';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { getImageUrl } from '../../utils/image.utils';
 import type { Formation } from '../../types/formation.types';
 import { Button } from '@/components/ui/button';
@@ -59,7 +53,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({ open, onClose
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-ink-800 to-ink-900">
                       <div className="text-center">
-                        <ImageOutlinedIcon className="mx-auto mb-2 h-12 w-12 text-ink-500" />
+                        <Image className="mx-auto mb-2 h-12 w-12 text-ink-500" />
                         <p className="text-sm text-ink-400">Aucune image</p>
                       </div>
                     </div>
@@ -77,7 +71,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({ open, onClose
 
                 {formation.enVedette && (
                   <Badge className="rounded-full bg-sage-500 px-3 py-1 text-white">
-                    <StarsIcon className="mr-1 h-3.5 w-3.5" />
+                    <Sparkles className="mr-1 h-3.5 w-3.5" />
                     En vedette
                   </Badge>
                 )}
@@ -87,7 +81,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({ open, onClose
                 <h2 className="text-2xl font-bold leading-tight text-white">{formation.titre}</h2>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Badge className="rounded-full bg-white text-ink-900">
-                    <SchoolIcon className="mr-1 h-3.5 w-3.5" />
+                    <GraduationCap className="mr-1 h-3.5 w-3.5" />
                     {formation.niveau}
                   </Badge>
 
@@ -103,7 +97,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({ open, onClose
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="mb-2 flex items-center gap-2 text-white/80">
-                    <AccessTimeIcon className="h-4 w-4" />
+                    <Clock className="h-4 w-4" />
                     <span className="text-xs uppercase tracking-wide">Durée</span>
                   </div>
                   <p className="text-base font-semibold text-white">{formation.duree}</p>
@@ -111,7 +105,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({ open, onClose
 
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="mb-2 flex items-center gap-2 text-white/80">
-                    <StarsIcon className="h-4 w-4" />
+                    <Sparkles className="h-4 w-4" />
                     <span className="text-xs uppercase tracking-wide">Crédits</span>
                   </div>
                   <p className="text-base font-semibold text-white">{formation.credits} crédits</p>
@@ -124,14 +118,14 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({ open, onClose
 
                   {formation.responsable && (
                     <div className="mb-2 flex items-center gap-2">
-                      <PersonOutlineOutlinedIcon className="h-4 w-4 text-white/80" />
+                      <User className="h-4 w-4 text-white/80" />
                       <span className="text-sm text-white">{formation.responsable}</span>
                     </div>
                   )}
 
                   {formation.email && (
                     <div className="flex items-center gap-2">
-                      <EmailOutlinedIcon className="h-4 w-4 text-white/80" />
+                      <Mail className="h-4 w-4 text-white/80" />
                       <a
                         href={`mailto:${formation.email}`}
                         className="break-all text-sm text-white underline-offset-4 hover:underline"
@@ -165,7 +159,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({ open, onClose
                   className="h-10 w-10 shrink-0 rounded-full border border-ink-100 bg-white hover:bg-ink-100"
                   aria-label="Fermer"
                 >
-                  <CloseIcon className="h-4 w-4" />
+                  <X className="h-4 w-4" />
                 </Button>
               </div>
             </DialogHeader>
@@ -187,7 +181,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({ open, onClose
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-ink-100 to-ink-100">
-                        <ImageOutlinedIcon className="h-14 w-14 text-ink-400" />
+                        <Image className="h-14 w-14 text-ink-400" />
                       </div>
                     )}
                   </div>
@@ -197,7 +191,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({ open, onClose
 
                     <div className="mb-4 flex flex-wrap gap-2">
                       <Badge className="gap-1 rounded-full">
-                        <SchoolIcon className="h-3.5 w-3.5" />
+                        <GraduationCap className="h-3.5 w-3.5" />
                         {formation.niveau}
                       </Badge>
 
@@ -207,7 +201,7 @@ const FormationViewDialog: React.FC<FormationViewDialogProps> = ({ open, onClose
 
                       {formation.enVedette && (
                         <Badge className="gap-1 rounded-full bg-sage-500 text-white">
-                          <StarsIcon className="h-3.5 w-3.5" />
+                          <Sparkles className="h-3.5 w-3.5" />
                           En vedette
                         </Badge>
                       )}

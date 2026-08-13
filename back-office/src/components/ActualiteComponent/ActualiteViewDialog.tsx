@@ -1,10 +1,5 @@
+import { Calendar, Image, Star, Tag, User, X } from 'lucide-react';
 import React from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import PersonIcon from '@mui/icons-material/Person';
-import LabelIcon from '@mui/icons-material/Label';
-import StarIcon from '@mui/icons-material/Star';
-import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { getImageUrl } from '../../utils/image.utils';
 import type { ActualiteItem } from '../../types/actualite.types';
 import StatusBadge from '../common/StatusBadge';
@@ -59,7 +54,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-ink-800 to-ink-900">
                       <div className="text-center">
-                        <ImageOutlinedIcon className="mx-auto mb-2 h-12 w-12 text-ink-500" />
+                        <Image className="mx-auto mb-2 h-12 w-12 text-ink-500" />
                         <p className="text-sm text-ink-400">Aucune image</p>
                       </div>
                     </div>
@@ -75,7 +70,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose
 
                 {actualite.enVedette && (
                   <Badge className="rounded-full bg-sage-500 px-3 py-1 text-white">
-                    <StarIcon className="mr-1 h-3.5 w-3.5" />
+                    <Star className="mr-1 h-3.5 w-3.5" />
                     En vedette
                   </Badge>
                 )}
@@ -85,7 +80,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose
                 <h2 className="text-2xl font-bold leading-tight text-white">{actualite.titre}</h2>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Badge className="rounded-full bg-white text-ink-900">
-                    <LabelIcon className="mr-1 h-3.5 w-3.5" />
+                    <Tag className="mr-1 h-3.5 w-3.5" />
                     {actualite.categorie}
                   </Badge>
                 </div>
@@ -94,7 +89,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="mb-2 flex items-center gap-2 text-white/80">
-                    <PersonIcon className="h-4 w-4" />
+                    <User className="h-4 w-4" />
                     <span className="text-xs uppercase tracking-wide">Auteur</span>
                   </div>
                   <p className="text-base font-semibold text-white">{actualite.auteur}</p>
@@ -102,7 +97,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose
 
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="mb-2 flex items-center gap-2 text-white/80">
-                    <CalendarTodayIcon className="h-4 w-4" />
+                    <Calendar className="h-4 w-4" />
                     <span className="text-xs uppercase tracking-wide">Date</span>
                   </div>
                   <p className="text-base font-semibold text-white">
@@ -144,7 +139,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose
                   className="h-10 w-10 shrink-0 rounded-full border border-ink-100 bg-white hover:bg-ink-100"
                   aria-label="Fermer"
                 >
-                  <CloseIcon className="h-4 w-4" />
+                  <X className="h-4 w-4" />
                 </Button>
               </div>
             </DialogHeader>
@@ -166,7 +161,7 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-ink-100 to-ink-100">
-                        <ImageOutlinedIcon className="h-14 w-14 text-ink-400" />
+                        <Image className="h-14 w-14 text-ink-400" />
                       </div>
                     )}
                   </div>
@@ -176,13 +171,13 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose
 
                     <div className="mb-4 flex flex-wrap gap-2">
                       <Badge className="gap-1 rounded-full">
-                        <LabelIcon className="h-3.5 w-3.5" />
+                        <Tag className="h-3.5 w-3.5" />
                         {actualite.categorie}
                       </Badge>
 
                       {actualite.enVedette && (
                         <Badge className="gap-1 rounded-full bg-sage-500 text-white">
-                          <StarIcon className="h-3.5 w-3.5" />
+                          <Star className="h-3.5 w-3.5" />
                           En vedette
                         </Badge>
                       )}

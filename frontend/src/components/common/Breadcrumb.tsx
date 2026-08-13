@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import { ChevronRight, Home } from 'lucide-react';
 
 export interface BreadcrumbItem {
   label: string;
@@ -12,7 +11,6 @@ interface BreadcrumbProps {
   items: BreadcrumbItem[];
 }
 
-
 const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
   return (
     <nav aria-label="Fil d'Ariane" className="border-ink-100">
@@ -21,21 +19,15 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
           to="/"
           className="flex shrink-0 items-center gap-1.5 text-sm font-medium text-ink-600 transition-colors hover:text-brand-700"
         >
-          <HomeRoundedIcon sx={{ fontSize: 16 }} aria-hidden="true" />
+          <Home className="size-4" aria-hidden="true" />
           <span className="hidden sm:inline">Accueil</span>
         </Link>
 
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
-
           return (
             <React.Fragment key={`${item.label}-${index}`}>
-              <ChevronRightRoundedIcon
-                sx={{ fontSize: 16 }}
-                className="shrink-0 text-ink-300"
-                aria-hidden="true"
-              />
-
+              <ChevronRight className="size-4 shrink-0 text-ink-300" aria-hidden="true" />
               {isLast || !item.to ? (
                 <span
                   className="truncate text-sm font-medium text-ink-900"

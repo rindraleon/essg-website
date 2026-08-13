@@ -1,4 +1,3 @@
-// src/components/ui/floating-select.tsx
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import type { SelectRootChangeEventDetails } from '@base-ui/react/select';
@@ -16,6 +15,7 @@ export interface FloatingSelectProps {
   onValueChange: (value: string | null, eventDetails: SelectRootChangeEventDetails) => void;
   options: { label: string; value: string }[];
   error?: string;
+  hint?: string;
   placeholder?: string;
   className?: string;
 }
@@ -26,19 +26,20 @@ const FloatingSelect: React.FC<FloatingSelectProps> = ({
   onValueChange,
   options,
   error,
+  hint,
   placeholder = ' ',
   className,
 }) => {
-  const hasValue = !!value;
+  const hasValue = Boolean(value);
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full pt-2">
       <Select value={value} onValueChange={onValueChange}>
         <SelectTrigger
           className={cn(
-            'w-full bg-white pt-5 pb-1.5 px-3 h-auto min-h-[48px] text-sm',
-            'focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500',
-            error ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : 'border-ink-300',
+            'h-12 min-h-12 w-full bg-white px-3 pt-5 pb-2 text-sm',
+            'focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20',
+            error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : 'border-ink-300',
             className
           )}
         >
@@ -54,15 +55,16 @@ const FloatingSelect: React.FC<FloatingSelectProps> = ({
       </Select>
       <span
         className={cn(
-          'absolute left-3 transition-all duration-200 pointer-events-none',
-          'origin-[0]',
-          hasValue ? 'top-1.5 text-[10px] font-medium' : 'top-1/2 -translate-y-1/2 text-sm',
-          error ? 'text-red-500' : 'text-ink-500'
+          'pointer-events-none absolute left-3 origin-[0] transition-all duration-200',
+          hasValue ? 'top-0 bg-white px-1 text-xs font-bold text-brand-700' : 'top-[1.35rem] text-sm text-ink-400',
+          error && 'text-red-500'
         )}
       >
         {label}
       </span>
-      {error && <p className="mt-1 text-[11px] text-red-500">{error}</p>}
+      <p className={cn('mt-1 min-h-4 text-[11px]', error ? 'text-red-500' : 'text-ink-400')}>
+        {error || hint || '\u00a0'}
+      </p>
     </div>
   );
 };

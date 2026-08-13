@@ -9,6 +9,7 @@ export interface Actualite {
   auteur?: string;
   statut: boolean;
   image?: string;
+  galerie?: string[];
   enVedette: boolean;
   creeLe: string;
   misAJourLe: string;

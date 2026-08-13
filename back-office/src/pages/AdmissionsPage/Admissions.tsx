@@ -1,18 +1,17 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useScrollToTop } from '../../hooks/';
-import { useTitle } from '../../hooks/useTitle';
-import {
-  getAllAdmissions,
-  updateAdmissionStatus,
-  deleteAdmission,
-} from '../../services/admissions.service';
-import type { Admission, AdmissionStatus } from '../../types/admission.types';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { SearchInput, AdmissionFilters } from '../../components';
+import { ApiError } from '@/api/types/api';
+import { SearchInput, AdmissionFilters, ConfirmDialog } from '../../components';
 import AdmissionTable from '../../components/AdmissionComponents/AdmissionTable';
 import AdmissionDetailDialog from '../../components/AdmissionComponents/AdmissionDetailDialog';
-import usePagination from '../../hooks/usePagination';
+import AdmissionDecisionDialog from '../../components/AdmissionComponents/AdmissionDecisionDialog';
+import PdfPreviewDialog from '../../components/common/PdfPreviewDialog';
+import { useDebounce, useScrollToTop } from '../../hooks';
+import { useAdmissionsQuery, useDeleteAdmission, useUpdateAdmissionStatus } from '../../hooks/queries';
+import { getAdmissionDocumentBlob } from '../../services/admissions.service';
+import { useTitle } from '../../hooks/useTitle';
+import type { Admission, AdmissionStatus } from '../../types/admission.types';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -20,57 +19,59 @@ const Admissions = () => {
   useScrollToTop();
   useTitle('Admissions');
 
-  const [admissions, setAdmissions] = useState<Admission[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearch = useDebounce(searchTerm, 350);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [selectedAdmission, setSelectedAdmission] = useState<Admission | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
-  const [newStatus, setNewStatus] = useState<AdmissionStatus>('en_attente');
-  const [commentaire, setCommentaire] = useState('');
   const [updating, setUpdating] = useState(false);
+  const [preview, setPreview] = useState<{ admission: Admission; kind: 'cv' | 'lettre' } | null>(
+    null,
+  );
+  const [deleteTarget, setDeleteTarget] = useState<Admission | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(ITEMS_PER_PAGE);
 
-  // Filtres
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterNiveau, setFilterNiveau] = useState('all');
   const [filterFormation, setFilterFormation] = useState('all');
   const [filterDateDebut, setFilterDateDebut] = useState('');
 
-  const {
-    currentPage,
-    rowsPerPage,
-    paginatedData,
-    handleChangePage,
-    handleChangeRowsPerPage,
-    resetPage,
-  } = usePagination({ data: admissions, initialRowsPerPage: ITEMS_PER_PAGE });
+  const activeFilterCount = [
+    filterStatus !== 'all',
+    filterNiveau !== 'all',
+    filterFormation !== 'all',
+    Boolean(filterDateDebut),
+  ].filter(Boolean).length;
+
+  const { data, isLoading, isError, error, refetch } = useAdmissionsQuery({
+    page: currentPage + 1,
+    limit: rowsPerPage,
+    q: debouncedSearch || undefined,
+    statut: filterStatus,
+    niveau: filterNiveau,
+    formation: filterFormation,
+    dateDebut: filterDateDebut || undefined,
+  });
+  const updateStatusMutation = useUpdateAdmissionStatus();
+  const deleteMutation = useDeleteAdmission();
+  const admissions = data?.data ?? [];
+  const totalItems = data?.total ?? 0;
+  const loading = isLoading;
+  const niveaux = useMemo(
+    () => Array.from(new Set(admissions.map((item) => item.niveau))).sort((a, b) => a.localeCompare(b)),
+    [admissions],
+  );
+  const formations = useMemo(
+    () =>
+      Array.from(new Set(admissions.map((item) => item.formation))).sort((a, b) => a.localeCompare(b)),
+    [admissions],
+  );
 
   useEffect(() => {
-    loadAdmissions();
-  }, []);
-
-  useEffect(() => {
-    resetPage();
-  }, [searchTerm, filterStatus, filterNiveau, filterFormation, filterDateDebut, resetPage]);
-
-  const niveaux = useMemo(() => {
-    const uniqueNiveaux = Array.from(new Set(admissions.map((a) => a.niveau)));
-    return uniqueNiveaux.sort((a, b) => a.localeCompare(b));
-  }, [admissions]);
-
-  const formations = useMemo(() => {
-    const uniqueFormations = Array.from(new Set(admissions.map((a) => a.formation)));
-    return uniqueFormations.sort((a, b) => a.localeCompare(b));
-  }, [admissions]);
-
-  const activeFilterCount = useMemo(() => {
-    let count = 0;
-    if (filterStatus !== 'all') count++;
-    if (filterNiveau !== 'all') count++;
-    if (filterFormation !== 'all') count++;
-    if (filterDateDebut) count++;
-    return count;
-  }, [filterStatus, filterNiveau, filterFormation, filterDateDebut]);
+    setCurrentPage(0);
+  }, [debouncedSearch, filterStatus, filterNiveau, filterFormation, filterDateDebut]);
 
   const handleResetFilters = useCallback(() => {
     setSearchTerm('');
@@ -78,130 +79,81 @@ const Admissions = () => {
     setFilterNiveau('all');
     setFilterFormation('all');
     setFilterDateDebut('');
-    resetPage();
-  }, [resetPage]);
+    setCurrentPage(0);
+  }, []);
 
-  const loadAdmissions = async () => {
-    try {
-      const data = await getAllAdmissions();
-      setAdmissions(data);
-    } catch (error) {
-      console.error('Erreur lors du chargement des admissions:', error);
-      toast.error('Erreur lors du chargement des admissions');
-    }
-  };
-
-  const filteredAdmissions = admissions.filter((admission) => {
-    const matchesSearch =
-      !searchTerm ||
-      admission.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      admission.prenom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      admission.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      admission.formation.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesStatus = filterStatus === 'all' || admission.statut === filterStatus;
-    const matchesNiveau = filterNiveau === 'all' || admission.niveau === filterNiveau;
-    const matchesFormation = filterFormation === 'all' || admission.formation === filterFormation;
-    const matchesDateDebut =
-      !filterDateDebut || new Date(admission.creeLe) >= new Date(filterDateDebut);
-
-    return matchesSearch && matchesStatus && matchesNiveau && matchesFormation && matchesDateDebut;
-  });
-
-  const handleViewDetails = (admission: Admission) => {
-    setSelectedAdmission(admission);
-    setShowDetailModal(true);
-  };
-
-  const handleUpdateStatus = (admission: Admission) => {
-    setSelectedAdmission(admission);
-    setNewStatus(admission.statut);
-    setCommentaire(admission.commentaire || '');
-    setShowStatusModal(true);
-  };
-
-  const handleSaveStatus = async () => {
+  const handleSaveDecision = async (payload: {
+    statut: AdmissionStatus;
+    commentaire?: string;
+    reponseDate?: string;
+    reponseHeure?: string;
+    reponseLieu?: string;
+    reponseInstructions?: string;
+    reponseMessage?: string;
+  }) => {
     if (!selectedAdmission) return;
-
     setUpdating(true);
     try {
-      await updateAdmissionStatus(selectedAdmission.id, newStatus, commentaire);
-      await loadAdmissions();
+      await updateStatusMutation.mutateAsync({
+        id: selectedAdmission.id,
+        ...payload,
+      });
       setShowStatusModal(false);
+      setShowDetailModal(false);
       setSelectedAdmission(null);
-      setCommentaire('');
-      toast.success('Statut mis à jour avec succès');
+      toast.success(
+        payload.statut === 'accepte'
+          ? 'Admission validée. L’email a été transmis au candidat.'
+          : 'Décision enregistrée. L’email a été transmis au candidat.',
+      );
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du statut:', error);
-      toast.error('Une erreur est survenue lors de la mise à jour du statut.');
+      const message = error instanceof ApiError ? error.message : "Impossible d'envoyer l'email";
+      toast.error(message);
     } finally {
       setUpdating(false);
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?')) {
-      return;
-    }
+  const openPreview = (admission: Admission, kind: 'cv' | 'lettre') => {
+    setPreview({ admission, kind });
+  };
 
+  const loadPreview = useCallback(async () => {
+    if (!preview) throw new Error('Document introuvable');
+    return getAdmissionDocumentBlob(preview.admission.id, preview.kind);
+  }, [preview]);
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await deleteAdmission(id);
-      await loadAdmissions();
+      await deleteMutation.mutateAsync(deleteTarget.id);
       toast.success('Candidature supprimée avec succès');
-    } catch (error) {
-      console.error('Erreur lors de la suppression:', error);
+      setDeleteTarget(null);
+    } catch {
       toast.error('Une erreur est survenue lors de la suppression.');
     }
   };
 
-  const handleDownloadCV = (admission: Admission) => {
-    if (admission.cvPath) {
-      window.open(admission.cvPath, '_blank', 'noopener,noreferrer');
-    }
-  };
-
-  const handleDownloadLettre = (admission: Admission) => {
-    if (admission.lettreMotivationPath) {
-      window.open(admission.lettreMotivationPath, '_blank', 'noopener,noreferrer');
-    }
-  };
-
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      setSearchTerm(value);
-      resetPage();
-    },
-    [resetPage]
-  );
-
-  const handleToggleFilters = useCallback(() => {
-    setFiltersOpen((prev) => !prev);
-  }, []);
-
   return (
-    <div className="max-w-7xl mx-auto space-y-2 p-2 sm:p-6 lg:p-8">
-
-      {/* Search + Filters */}
-      <div className="bg-white rounded-xl border border-ink-100 p-4 shadow-card">
-        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-            <h2 className="text-lg font-bold text-ink-800 whitespace-nowrap">
+    <div className="mx-auto max-w-7xl space-y-2 p-2 sm:p-6 lg:p-8">
+      <div className="rounded-xl border border-ink-100 bg-white p-4 shadow-card">
+        <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
+          <div className="flex flex-1 flex-col items-start gap-4 sm:flex-row sm:items-center">
+            <h2 className="whitespace-nowrap text-lg font-bold text-ink-800">
               Liste des admissions
               <span className="ml-2 text-sm font-normal text-ink-500">
-                ({filteredAdmissions.length} résultat{filteredAdmissions.length !== 1 ? 's' : ''})
+                ({totalItems} résultat{totalItems !== 1 ? 's' : ''})
               </span>
             </h2>
             <SearchInput
               value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder="Rechercher par nom, prénom, email..."
+              onChange={setSearchTerm}
+              placeholder="Rechercher par nom, prénom, email, téléphone..."
             />
           </div>
-          <div className="flex items-center gap-3 w-full lg:w-auto">
-            <Button variant="outline" onClick={handleToggleFilters} className="rounded-lg">
-              {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
-            </Button>
-          </div>
+          <Button variant="outline" onClick={() => setFiltersOpen((prev) => !prev)} className="rounded-lg">
+            {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
+          </Button>
         </div>
       </div>
 
@@ -222,30 +174,49 @@ const Admissions = () => {
         onResetFilters={handleResetFilters}
         activeFilterCount={activeFilterCount}
         open={filtersOpen}
-        onToggle={handleToggleFilters}
+        onToggle={() => setFiltersOpen((prev) => !prev)}
         niveaux={niveaux}
         formations={formations}
       />
 
+      {isError && (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error instanceof Error ? error.message : 'Erreur lors du chargement des admissions'}
+          <Button variant="outline" size="sm" className="ml-3" onClick={() => void refetch()}>
+            Réessayer
+          </Button>
+        </div>
+      )}
+
       <AdmissionTable
-        data={paginatedData}
-        totalCount={filteredAdmissions.length}
+        data={admissions}
+        totalCount={totalItems}
         page={currentPage}
         rowsPerPage={rowsPerPage}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        onView={handleViewDetails}
-        onEdit={handleUpdateStatus}
-        onDelete={handleDelete}
-        onDownloadCV={handleDownloadCV}
-        onDownloadLettre={handleDownloadLettre}
+        onPageChange={setCurrentPage}
+        onRowsPerPageChange={(rows) => {
+          setRowsPerPage(rows);
+          setCurrentPage(0);
+        }}
+        onView={(admission) => {
+          setSelectedAdmission(admission);
+          setShowDetailModal(true);
+        }}
+        onEdit={(admission) => {
+          setSelectedAdmission(admission);
+          setShowStatusModal(true);
+        }}
+        onDelete={(id) => {
+          const admission = admissions.find((item) => item.id === id);
+          if (admission) setDeleteTarget(admission);
+        }}
+        onPreviewDocument={openPreview}
         emptyMessage={
-          searchTerm ||
-          filterStatus !== 'all' ||
-          filterNiveau !== 'all' ||
-          filterFormation !== 'all'
-            ? 'Aucun résultat trouvé'
-            : 'Aucune candidature trouvée'
+          loading
+            ? 'Chargement...'
+            : searchTerm || filterStatus !== 'all' || filterNiveau !== 'all' || filterFormation !== 'all'
+              ? 'Aucun résultat trouvé'
+              : 'Aucune candidature trouvée'
         }
       />
 
@@ -258,87 +229,51 @@ const Admissions = () => {
             setShowDetailModal(false);
             setShowStatusModal(true);
           }}
+          onPreviewDocument={(kind) => openPreview(selectedAdmission, kind)}
         />
       )}
 
-      {showStatusModal && selectedAdmission && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-            <div className="px-6 py-4 border-b border-ink-100 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-ink-900">Modifier le statut</h2>
-              <button
-                onClick={() => setShowStatusModal(false)}
-                className="text-ink-400 hover:text-ink-600"
-                disabled={updating}
-              >
-                ✕
-              </button>
-            </div>
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-ink-700 mb-2">
-                  Candidat: {selectedAdmission.prenom} {selectedAdmission.nom}
-                </label>
-                <label className="block text-sm font-medium text-ink-700 mb-2">
-                  Formation: {selectedAdmission.formation}
-                </label>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-ink-700 mb-2">
-                  Nouveau statut
-                </label>
-                <select
-                  value={newStatus}
-                  onChange={(e) => setNewStatus(e.target.value as AdmissionStatus)}
-                  className="w-full px-4 py-2 border border-ink-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                  disabled={updating}
-                >
-                  <option value="en_attente">En attente</option>
-                  <option value="en_cours_etude">En cours d'étude</option>
-                  <option value="accepte">Accepté</option>
-                  <option value="refuse">Refusé</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-ink-700 mb-2">
-                  Commentaire (optionnel)
-                </label>
-                <textarea
-                  value={commentaire}
-                  onChange={(e) => setCommentaire(e.target.value)}
-                  rows={4}
-                  className="w-full px-4 py-2 border border-ink-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                  placeholder="Ajoutez un commentaire..."
-                  disabled={updating}
-                />
-              </div>
-              <div className="flex gap-3 pt-4">
-                <button
-                  onClick={handleSaveStatus}
-                  disabled={updating}
-                  className="flex-1 bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 transition-colors disabled:bg-ink-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {updating ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      Enregistrement...
-                    </>
-                  ) : (
-                    'Enregistrer'
-                  )}
-                </button>
-                <button
-                  onClick={() => setShowStatusModal(false)}
-                  disabled={updating}
-                  className="flex-1 bg-ink-100 text-ink-800 px-4 py-2 rounded-lg hover:bg-ink-300 transition-colors disabled:bg-ink-100"
-                >
-                  Annuler
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      {selectedAdmission && (
+        <AdmissionDecisionDialog
+          admission={selectedAdmission}
+          open={showStatusModal}
+          submitting={updating}
+          onClose={() => setShowStatusModal(false)}
+          onSubmit={handleSaveDecision}
+        />
       )}
+
+      <PdfPreviewDialog
+        open={Boolean(preview)}
+        title={
+          preview
+            ? `${preview.kind === 'cv' ? 'CV' : 'Lettre de motivation'} — ${preview.admission.prenom} ${preview.admission.nom}`
+            : 'Aperçu PDF'
+        }
+        fileName={
+          preview
+            ? `${preview.kind === 'cv' ? 'CV' : 'Lettre'}-${preview.admission.nom}.pdf`
+            : 'document.pdf'
+        }
+        loadDocument={loadPreview}
+        onClose={() => setPreview(null)}
+      />
+
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        title="Supprimer la candidature"
+        message={
+          deleteTarget
+            ? `Êtes-vous sûr de vouloir supprimer la candidature de "${deleteTarget.prenom} ${deleteTarget.nom}" ? Cette action est irréversible.`
+            : ''
+        }
+        confirmLabel="Supprimer"
+        cancelLabel="Annuler"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+        severity="error"
+      />
+
     </div>
   );
 };

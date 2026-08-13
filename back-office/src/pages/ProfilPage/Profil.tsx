@@ -1,16 +1,7 @@
+import { Avatar, Card, CardContent, Typography, Box, Grid, Divider } from '@/components/compat/mui';
+import { IdCard, Mail, Shield, User } from 'lucide-react';
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import Avatar from '@mui/material/Avatar';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Divider from '@mui/material/Divider';
-import EmailIcon from '@mui/icons-material/Email';
-import PersonIcon from '@mui/icons-material/Person';
-import BadgeIcon from '@mui/icons-material/Badge';
-import SecurityIcon from '@mui/icons-material/Security';
 import { getImageUrl } from '../../utils/image.utils';
 import { useTitle } from '@/hooks/useTitle';
 import useScrollToTop from '@/hooks/useScrollToTop';
@@ -39,19 +30,6 @@ const Profil: React.FC = () => {
     }
   };
 
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case 'admin':
-        return '#dc2626';
-      case 'editeur':
-        return '#2e6a5f';
-      case 'lecteur':
-        return '#6b7280';
-      default:
-        return '#6b7280';
-    }
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {
       day: 'numeric',
@@ -72,13 +50,6 @@ const Profil: React.FC = () => {
               <Avatar
                 src={!avatarError && user.avatar ? getImageUrl(user.avatar) : undefined}
                 onError={() => setAvatarError(true)}
-                sx={{
-                  width: 120,
-                  height: 120,
-                  bgcolor: user.avatar && !avatarError ? 'transparent' : '#4f46e5',
-                  fontSize: '2.5rem',
-                  fontWeight: 600,
-                }}
               >
                 {(avatarError || !user.avatar) && `${user.prenom[0]}${user.nom[0]}`.toUpperCase()}
               </Avatar>
@@ -88,7 +59,6 @@ const Profil: React.FC = () => {
                 </Typography>
                 <Box
                   className="inline-block px-3 py-1 rounded-full text-sm font-medium text-white mb-3"
-                  sx={{ backgroundColor: getRoleColor(user.role) }}
                 >
                   {getRoleLabel(user.role)}
                 </Box>
@@ -107,14 +77,14 @@ const Profil: React.FC = () => {
               variant="h6"
               className="font-semibold text-ink-900 mb-4 flex items-center gap-2"
             >
-              <PersonIcon className="text-brand-600" />
+              <User className="text-brand-600" />
               Informations personnelles
             </Typography>
             <Divider className="mb-4" />
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <Box className="flex items-start gap-3 p-3 bg-ink-50 rounded-lg">
-                  <BadgeIcon className="text-ink-500 mt-1" fontSize="small" />
+                  <IdCard className="text-ink-500 mt-1 size-4" />
                   <Box className="flex-1">
                     <Typography variant="caption" className="text-ink-500 block mb-1">
                       Nom
@@ -127,7 +97,7 @@ const Profil: React.FC = () => {
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <Box className="flex items-start gap-3 p-3 bg-ink-50 rounded-lg">
-                  <PersonIcon className="text-ink-500 mt-1" fontSize="small" />
+                  <User className="text-ink-500 mt-1 size-4" />
                   <Box className="flex-1">
                     <Typography variant="caption" className="text-ink-500 block mb-1">
                       Prénom
@@ -140,7 +110,7 @@ const Profil: React.FC = () => {
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <Box className="flex items-start gap-3 p-3 bg-ink-50 rounded-lg">
-                  <EmailIcon className="text-ink-500 mt-1" fontSize="small" />
+                  <Mail className="text-ink-500 mt-1 size-4" />
                   <Box className="flex-1">
                     <Typography variant="caption" className="text-ink-500 block mb-1">
                       Email
@@ -153,7 +123,7 @@ const Profil: React.FC = () => {
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <Box className="flex items-start gap-3 p-3 bg-ink-50 rounded-lg">
-                  <SecurityIcon className="text-ink-500 mt-1" fontSize="small" />
+                  <Shield className="text-ink-500 mt-1 size-4" />
                   <Box className="flex-1">
                     <Typography variant="caption" className="text-ink-500 block mb-1">
                       Rôle

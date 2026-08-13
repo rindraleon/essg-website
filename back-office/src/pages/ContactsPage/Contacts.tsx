@@ -1,19 +1,19 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useScrollToTop } from '../../hooks/';
-import { useTitle } from '../../hooks/useTitle';
-import {
-  getAllMessages,
-  searchMessages,
-  updateMessage,
-  deleteMessage,
-  type Message,
-  type PaginationResponse,
-} from '../../services/messages.service';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { ApiError } from '@/api/types/api';
+import { ConfirmDialog, ContactFilters, SearchInput } from '../../components';
 import MessageTable from '../../components/MessageComponents/MessageTable';
-import { ConfirmDialog } from '../../components';
+import ContactReplyDialog from '../../components/MessageComponents/ContactReplyDialog';
+import { useDebounce, useScrollToTop } from '../../hooks';
+import {
+  useDeleteMessage,
+  useMarkMessageRead,
+  useMessagesQuery,
+  useReplyToMessage,
+} from '../../hooks/queries';
+import { useTitle } from '../../hooks/useTitle';
+import type { Message } from '../../services/messages.service';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -21,126 +21,140 @@ const Contacts = () => {
   useScrollToTop();
   useTitle('Messages de contact');
 
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedQuery = useDebounce(searchQuery, 350);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filterSujet, setFilterSujet] = useState('all');
+  const [filterStatut, setFilterStatut] = useState('all');
+  const [filterDateDebut, setFilterDateDebut] = useState('');
+  const [filterDateFin, setFilterDateFin] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalItems, setTotalItems] = useState(0);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState<Message | null>(null);
+  const [replyOpen, setReplyOpen] = useState(false);
+  const [replying, setReplying] = useState(false);
 
-  const loadMessages = async (page: number, query?: string) => {
-    try {
-      setLoading(true);
-      let response: PaginationResponse<Message>;
+  const activeFilterCount = [
+    filterSujet !== 'all',
+    filterStatut !== 'all',
+    Boolean(filterDateDebut),
+    Boolean(filterDateFin),
+  ].filter(Boolean).length;
 
-      if (query?.trim()) {
-        response = await searchMessages(query, {
-          page,
-          limit: ITEMS_PER_PAGE,
-          sortBy: 'creeLe',
-          sortOrder: 'DESC',
-        });
-      } else {
-        response = await getAllMessages({
-          page,
-          limit: ITEMS_PER_PAGE,
-          sortBy: 'creeLe',
-          sortOrder: 'DESC',
-        });
-      }
-
-      setMessages(response.data);
-      setTotalPages(Math.ceil(response.total / response.limit));
-      setTotalItems(response.total);
-      setCurrentPage(response.page);
-    } catch (error) {
-      toast.error('Erreur lors du chargement des messages');
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, isLoading, isError, error, refetch } = useMessagesQuery({
+    page: currentPage,
+    limit: ITEMS_PER_PAGE,
+    q: debouncedQuery,
+    sortBy: 'creeLe',
+    sortOrder: 'DESC',
+    sujet: filterSujet,
+    lu: filterStatut === 'lu' ? true : filterStatut === 'non_lu' ? false : undefined,
+    dateDebut: filterDateDebut || undefined,
+    dateFin: filterDateFin || undefined,
+  });
+  const markReadMutation = useMarkMessageRead();
+  const replyMutation = useReplyToMessage();
+  const deleteMutation = useDeleteMessage();
+  const messages = data?.data ?? [];
+  const totalItems = data?.total ?? 0;
+  const loading = isLoading;
 
   useEffect(() => {
-    loadMessages(1);
+    setCurrentPage(1);
+  }, [debouncedQuery, filterSujet, filterStatut, filterDateDebut, filterDateFin]);
+
+  const handleResetFilters = useCallback(() => {
+    setSearchQuery('');
+    setFilterSujet('all');
+    setFilterStatut('all');
+    setFilterDateDebut('');
+    setFilterDateFin('');
+    setCurrentPage(1);
   }, []);
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    loadMessages(1, searchQuery);
-  };
-
-  const handleClearSearch = () => {
-    setSearchQuery('');
-    loadMessages(1);
-  };
-
-  const handleMarkAsRead = async (id: number) => {
+  const handleMarkAsRead = async (id: number, silent = false) => {
     try {
-      await updateMessage(id, true);
-      toast.success('Message marqué comme lu');
-      loadMessages(currentPage, searchQuery || undefined);
-    } catch (error) {
-      toast.error('Erreur lors de la mise à jour du message');
-      console.error(error);
+      await markReadMutation.mutateAsync(id);
+      if (!silent) toast.success('Message marqué comme lu');
+    } catch {
+      if (!silent) toast.error('Erreur lors de la mise à jour du message');
     }
   };
 
-  const handleViewMessage = useCallback(
-    (message: Message) => {
-      setSelectedMessage(message);
-      setViewDialogOpen(true);
-      if (!message.lu) {
-        handleMarkAsRead(message.id);
-      }
-    },
-    [currentPage, searchQuery]
-  );
+  const handleViewMessage = useCallback((message: Message) => {
+    setSelectedMessage(message);
+    setViewDialogOpen(true);
+    if (!message.lu) {
+      void handleMarkAsRead(message.id, true);
+    }
+  }, []);
+
+  const handleReply = useCallback((message: Message) => {
+    setSelectedMessage(message);
+    setReplyOpen(true);
+    if (!message.lu) {
+      void handleMarkAsRead(message.id, true);
+    }
+  }, []);
+
+  const handleSendReply = async (payload: { sujet: string; message: string }) => {
+    if (!selectedMessage) return;
+    setReplying(true);
+    try {
+      await replyMutation.mutateAsync({
+        id: selectedMessage.id,
+        sujet: payload.sujet,
+        message: payload.message,
+      });
+      toast.success('Réponse envoyée au demandeur');
+      setReplyOpen(false);
+      setViewDialogOpen(false);
+      setSelectedMessage(null);
+    } catch (error) {
+      const message = error instanceof ApiError ? error.message : "Impossible d'envoyer l'email";
+      toast.error(message);
+    } finally {
+      setReplying(false);
+    }
+  };
 
   const handleDeleteRequest = useCallback(
     (id: number) => {
-      const message = messages.find((m) => m.id === id);
+      const message = messages.find((item) => item.id === id);
       if (message) {
         setMessageToDelete(message);
         setDeleteDialogOpen(true);
       }
     },
-    [messages]
+    [messages],
   );
 
   const handleConfirmDelete = useCallback(async () => {
-    if (messageToDelete) {
-      try {
-        await deleteMessage(messageToDelete.id);
-        toast.success('Message supprimé avec succès');
-        loadMessages(currentPage, searchQuery || undefined);
-        if (selectedMessage?.id === messageToDelete.id) {
-          setSelectedMessage(null);
-          setViewDialogOpen(false);
-        }
-        setDeleteDialogOpen(false);
-        setMessageToDelete(null);
-      } catch (error) {
-        toast.error('Erreur lors de la suppression du message');
-        console.error(error);
+    if (!messageToDelete) return;
+    try {
+      await deleteMutation.mutateAsync(messageToDelete.id);
+      toast.success('Message supprimé avec succès');
+      if (selectedMessage?.id === messageToDelete.id) {
+        setSelectedMessage(null);
+        setViewDialogOpen(false);
       }
+      setDeleteDialogOpen(false);
+      setMessageToDelete(null);
+    } catch {
+      toast.error('Erreur lors de la suppression du message');
     }
-  }, [messageToDelete, currentPage, searchQuery, selectedMessage]);
+  }, [messageToDelete, selectedMessage, deleteMutation]);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('fr-FR', {
+  const formatDate = (dateString: string) =>
+    new Intl.DateTimeFormat('fr-FR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-    }).format(date);
-  };
+    }).format(new Date(dateString));
 
   const getSujetLabel = (sujet: string) => {
     const labels: Record<string, string> = {
@@ -149,59 +163,79 @@ const Contacts = () => {
       partenariat: 'Partenariat',
       autre: 'Autre',
     };
-    return labels[sujet] || sujet;
+    return labels[sujet.toLowerCase()] || sujet;
   };
 
-  return (
-    <div className="space-y-2 p-2 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+  const hasActiveSearchOrFilter = Boolean(searchQuery) || activeFilterCount > 0;
 
-      {/* Search + Actions */}
-      <div className="bg-white rounded-xl border border-ink-100 p-4 shadow-card">
-        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-            <h2 className="text-lg font-bold text-ink-800 whitespace-nowrap">
+  return (
+    <div className="mx-auto max-w-7xl space-y-2 p-2 sm:p-6 lg:p-8">
+      <div className="rounded-xl border border-ink-100 bg-white p-4 shadow-card">
+        <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
+          <div className="flex min-w-0 flex-1 flex-col items-start gap-4 sm:flex-row sm:items-center">
+            <h2 className="whitespace-nowrap text-lg font-bold text-ink-800">
               Messages de contact
               <span className="ml-2 text-sm font-normal text-ink-500">
                 ({totalItems} message{totalItems !== 1 ? 's' : ''})
               </span>
             </h2>
-            <form onSubmit={handleSearch} className="flex gap-2 flex-1">
-              <Input
-                type="text"
-                placeholder="Rechercher par nom, email ou contenu..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1"
-              />
-              <Button type="submit">Rechercher</Button>
-              {searchQuery && (
-                <Button type="button" variant="outline" onClick={handleClearSearch}>
-                  Effacer
-                </Button>
-              )}
-            </form>
+            <SearchInput
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Rechercher par nom, email, téléphone..."
+            />
           </div>
+          <Button variant="outline" onClick={() => setFiltersOpen((prev) => !prev)} className="rounded-lg">
+            {filtersOpen ? 'Masquer les filtres' : activeFilterCount > 0 ? `Filtres (${activeFilterCount})` : 'Filtres'}
+          </Button>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-lg border border-ink-100">
+      <ContactFilters
+        filters={{
+          sujet: filterSujet,
+          statut: filterStatut,
+          dateDebut: filterDateDebut,
+          dateFin: filterDateFin,
+        }}
+        onUpdateFilter={(key, value) => {
+          if (key === 'sujet') setFilterSujet(value);
+          if (key === 'statut') setFilterStatut(value);
+          if (key === 'dateDebut') setFilterDateDebut(value);
+          if (key === 'dateFin') setFilterDateFin(value);
+        }}
+        onResetFilters={handleResetFilters}
+        activeFilterCount={activeFilterCount}
+        open={filtersOpen}
+        onToggle={() => setFiltersOpen((prev) => !prev)}
+      />
+
+      {isError && (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error instanceof Error ? error.message : 'Erreur lors du chargement des messages'}
+          <Button variant="outline" size="sm" className="ml-3" onClick={() => void refetch()}>
+            Réessayer
+          </Button>
+        </div>
+      )}
+
+      <div className="rounded-lg border border-ink-100 bg-white">
         <MessageTable
           data={messages}
           totalCount={totalItems}
           page={currentPage - 1}
           rowsPerPage={ITEMS_PER_PAGE}
-          onPageChange={(page: number) => loadMessages(page + 1, searchQuery || undefined)}
-          onRowsPerPageChange={() => {}}
+          onPageChange={(page: number) => setCurrentPage(page + 1)}
+          onRowsPerPageChange={() => undefined}
           onView={handleViewMessage}
           onDelete={handleDeleteRequest}
-          onMarkAsRead={handleMarkAsRead}
+          onMarkAsRead={(id) => void handleMarkAsRead(id)}
+          onReply={handleReply}
           loading={loading}
-          emptyMessage={searchQuery ? 'Aucun résultat trouvé' : 'Aucun message trouvé'}
+          emptyMessage={hasActiveSearchOrFilter ? 'Aucun résultat trouvé' : 'Aucun message trouvé'}
         />
       </div>
 
-      {/* View Dialog */}
       {selectedMessage && (
         <ConfirmDialog
           open={viewDialogOpen}
@@ -213,29 +247,47 @@ const Contacts = () => {
                   <h3 className="text-xl font-bold text-ink-900">
                     {selectedMessage.prenom} {selectedMessage.nom}
                   </h3>
-                  <div className="space-y-1 text-sm text-ink-600 mt-2">
-                    <p>📧 {selectedMessage.email}</p>
-                    {selectedMessage.telephone && <p>📞 {selectedMessage.telephone}</p>}
-                    <p>🕐 {formatDate(selectedMessage.creeLe)}</p>
+                  <div className="mt-2 space-y-1 text-sm text-ink-600">
+                    <p>{selectedMessage.email}</p>
+                    {selectedMessage.telephone && <p>{selectedMessage.telephone}</p>}
+                    <p>Reçu le {formatDate(selectedMessage.creeLe)}</p>
+                    {selectedMessage.luLe && (
+                      <p>
+                        Lu le {formatDate(selectedMessage.luLe)}
+                        {selectedMessage.luPar ? ` par ${selectedMessage.luPar}` : ''}
+                      </p>
+                    )}
                   </div>
                 </div>
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-ink-100 text-ink-800">
+                <span className="inline-flex items-center rounded-full bg-ink-100 px-2.5 py-1 text-xs font-medium text-ink-800">
                   {getSujetLabel(selectedMessage.sujet)}
                 </span>
               </div>
               <div className="border-t border-ink-100 pt-4">
-                <h4 className="font-semibold text-ink-900 mb-2">Message :</h4>
-                <div className="bg-ink-50 rounded-lg p-4">
-                  <p className="text-ink-700 whitespace-pre-wrap">{selectedMessage.message}</p>
+                <h4 className="mb-2 font-semibold text-ink-900">Message :</h4>
+                <div className="rounded-lg bg-ink-50 p-4">
+                  <p className="whitespace-pre-wrap text-ink-700">{selectedMessage.message}</p>
                 </div>
               </div>
+              {selectedMessage.reponse && (
+                <div className="border-t border-ink-100 pt-4">
+                  <h4 className="mb-2 font-semibold text-ink-900">Réponse envoyée</h4>
+                  <p className="mb-1 text-xs text-ink-500">
+                    {selectedMessage.reponduLe ? formatDate(selectedMessage.reponduLe) : ''}
+                    {selectedMessage.reponduPar ? ` · ${selectedMessage.reponduPar}` : ''}
+                  </p>
+                  <div className="rounded-lg bg-brand-50 p-4">
+                    <p className="whitespace-pre-wrap text-ink-700">{selectedMessage.reponse}</p>
+                  </div>
+                </div>
+              )}
             </div>
           }
-          confirmLabel="Fermer"
-          cancelLabel=""
+          confirmLabel="Répondre"
+          cancelLabel="Fermer"
           onConfirm={() => {
             setViewDialogOpen(false);
-            setSelectedMessage(null);
+            setReplyOpen(true);
           }}
           onCancel={() => {
             setViewDialogOpen(false);
@@ -245,7 +297,6 @@ const Contacts = () => {
         />
       )}
 
-      {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         open={deleteDialogOpen}
         title="Supprimer le message"
@@ -263,6 +314,16 @@ const Contacts = () => {
         }}
         severity="error"
       />
+
+      {selectedMessage && (
+        <ContactReplyDialog
+          message={selectedMessage}
+          open={replyOpen}
+          submitting={replying}
+          onClose={() => setReplyOpen(false)}
+          onSubmit={handleSendReply}
+        />
+      )}
     </div>
   );
 };

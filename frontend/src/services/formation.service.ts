@@ -1,40 +1,40 @@
-import type { Formation, PaginationResponse } from '../types/formations.types';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
-const BASE_URL = `${API_BASE_URL.replace(/\/$/, '')}/formations`;
+import { apiClient } from '@/api/client/http';
+import { endpoints } from '@/api/endpoints';
+import type { PaginatedResult } from '@/api/types/api';
+import type { Formation } from '../types/formations.types';
 
 const formationService = {
-  async findAll(page = 1, limit = 10): Promise<PaginationResponse<Formation>> {
-    const res = await fetch(`${BASE_URL}?page=${Number(page)}&limit=${Number(limit)}`);
-    if (!res.ok) throw new Error('Erreur lors du chargement des formations');
-    return res.json();
-  },
-
-  async findOne(id: number): Promise<Formation> {
-    const res = await fetch(`${BASE_URL}/${id}`);
-    if (!res.ok) throw new Error('Formation non trouvée');
-    return res.json();
-  },
-
-  async findBySlug(slug: string): Promise<Formation> {
-    const res = await fetch(`${BASE_URL}/slug/${slug}`);
-    if (!res.ok) throw new Error('Formation non trouvée');
-    return res.json();
-  },
-
-  async search(query: string, page = 1, limit = 10): Promise<PaginationResponse<Formation>> {
-    const res = await fetch(
-      `${BASE_URL}/search?q=${encodeURIComponent(query)}&page=${Number(page)}&limit=${Number(limit)}`
+  findAll(page = 1, limit = 10, signal?: AbortSignal): Promise<PaginatedResult<Formation>> {
+    return apiClient.getList<Formation>(
+      endpoints.formations,
+      { page, limit, sortBy: 'id', sortOrder: 'ASC' },
+      signal,
     );
-    if (!res.ok) throw new Error('Erreur lors de la recherche');
-    return res.json();
   },
 
-  async findFeatured(limit = 6): Promise<Formation[]> {
-    const res = await fetch(`${BASE_URL}?page=1&limit=${Number(limit)}&enVedette=true`);
-    if (!res.ok) throw new Error('Erreur lors du chargement des formations vedettes');
-    const data: PaginationResponse<Formation> = await res.json();
-    return data.data;
+  findOne(id: number, signal?: AbortSignal): Promise<Formation> {
+    return apiClient.get<Formation>(endpoints.formationById(id), undefined, signal);
+  },
+
+  findBySlug(slug: string, signal?: AbortSignal): Promise<Formation> {
+    return apiClient.get<Formation>(endpoints.formationBySlug(slug), undefined, signal);
+  },
+
+  search(query: string, page = 1, limit = 10, signal?: AbortSignal): Promise<PaginatedResult<Formation>> {
+    return apiClient.getList<Formation>(
+      endpoints.formationSearch,
+      { q: query, page, limit },
+      signal,
+    );
+  },
+
+  async findFeatured(limit = 6, signal?: AbortSignal): Promise<Formation[]> {
+    const result = await apiClient.getList<Formation>(
+      endpoints.formations,
+      { page: 1, limit, sortBy: 'id', sortOrder: 'ASC' },
+      signal,
+    );
+    return result.data.filter((item) => item.enVedette).slice(0, limit);
   },
 };
 

@@ -1,7 +1,5 @@
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 import React from 'react';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { getImageUrl } from '../../utils/image.utils';
 import type { User } from '../../types';
 import DataTable from '../common/DataTable';
@@ -127,10 +125,10 @@ const UsersTable: React.FC<UsersTableProps> = ({
       render: (user) => (
         <div className="flex justify-end gap-1">
           <Button size="icon" variant="ghost" onClick={() => onView(user)} className="h-8 w-8">
-            <VisibilityIcon fontSize="small" className="h-4 w-4" />
+            <Eye className="size-4 h-4 w-4" />
           </Button>
           <Button size="icon" variant="ghost" onClick={() => onEdit(user)} className="h-8 w-8">
-            <EditIcon fontSize="small" className="h-4 w-4" />
+            <Pencil className="size-4 h-4 w-4" />
           </Button>
           {isAdmin && (
             <Button
@@ -139,7 +137,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
               onClick={() => onDelete(user)}
               className="h-8 w-8 text-red-600 hover:text-red-700"
             >
-              <DeleteIcon fontSize="small" className="h-4 w-4" />
+              <Trash2 className="size-4 h-4 w-4" />
             </Button>
           )}
         </div>

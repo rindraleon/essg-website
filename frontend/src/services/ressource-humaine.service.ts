@@ -1,56 +1,41 @@
+import { apiClient } from '@/api/client/http';
+import { endpoints } from '@/api/endpoints';
+import type { PaginatedResult } from '@/api/types/api';
 import type { RessourceHumaine } from '../types/ressource-humaine.types';
-import type { PaginationResponse } from '../types/formations.types';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
-const BASE_URL = `${API_BASE_URL.replace(/\/$/, '')}/ressources-humaines`;
 
 const ressourceHumaineService = {
-  async findAll(
-    page = 1,
-    limit = 100,
-    signal?: AbortSignal
-  ): Promise<PaginationResponse<RessourceHumaine>> {
-    const res = await fetch(
-      `${BASE_URL}?page=${Number(page)}&limit=${Number(limit)}&sortBy=ordre&sortOrder=ASC`,
-      { signal }
+  findAll(page = 1, limit = 100, signal?: AbortSignal): Promise<PaginatedResult<RessourceHumaine>> {
+    return apiClient.getList<RessourceHumaine>(
+      endpoints.staff,
+      { page, limit, sortBy: 'ordre', sortOrder: 'ASC' },
+      signal,
     );
-    if (!res.ok) throw new Error('Erreur lors du chargement des ressources humaines');
-    return res.json();
   },
 
-  async findOne(id: number, signal?: AbortSignal): Promise<RessourceHumaine> {
-    const res = await fetch(`${BASE_URL}/${id}`, { signal });
-    if (!res.ok) throw new Error('Ressource humaine non trouvée');
-    return res.json();
+  findOne(id: number, signal?: AbortSignal): Promise<RessourceHumaine> {
+    return apiClient.get<RessourceHumaine>(endpoints.staffById(id), undefined, signal);
   },
 
-  async findBySlug(slug: string, signal?: AbortSignal): Promise<RessourceHumaine> {
-    const res = await fetch(`${BASE_URL}/slug/${slug}`, { signal });
-    if (!res.ok) throw new Error('Ressource humaine non trouvée');
-    return res.json();
+  findBySlug(slug: string, signal?: AbortSignal): Promise<RessourceHumaine> {
+    return apiClient.get<RessourceHumaine>(endpoints.staffBySlug(slug), undefined, signal);
   },
 
-  async search(
+  search(
     query: string,
     page = 1,
     limit = 10,
-    signal?: AbortSignal
-  ): Promise<PaginationResponse<RessourceHumaine>> {
-    const res = await fetch(
-      `${BASE_URL}/search?q=${encodeURIComponent(query)}&page=${Number(page)}&limit=${Number(limit)}`,
-      { signal }
+    signal?: AbortSignal,
+  ): Promise<PaginatedResult<RessourceHumaine>> {
+    return apiClient.getList<RessourceHumaine>(
+      endpoints.staffSearch,
+      { q: query, page, limit },
+      signal,
     );
-    if (!res.ok) throw new Error('Erreur lors de la recherche');
-    return res.json();
   },
 
   async findActive(signal?: AbortSignal): Promise<RessourceHumaine[]> {
-    const res = await fetch(`${BASE_URL}?page=1&limit=100&actif=true&sortBy=ordre&sortOrder=ASC`, {
-      signal,
-    });
-    if (!res.ok) throw new Error('Erreur lors du chargement des ressources humaines actives');
-    const data: PaginationResponse<RessourceHumaine> = await res.json();
-    return data.data;
+    const result = await ressourceHumaineService.findAll(1, 100, signal);
+    return result.data.filter((item) => item.actif !== false);
   },
 };
 

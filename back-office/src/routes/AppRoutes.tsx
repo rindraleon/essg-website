@@ -1,3 +1,4 @@
+import { Fingerprint } from 'lucide-react';
 import React from 'react';
 import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import {
@@ -12,10 +13,10 @@ import {
   Contacts,
   Admissions,
   Profil,
+  ActivityLogs,
 } from '../pages';
 import { routesStatic } from '.';
 import { Layout } from '../components';
-import { Fingerprint } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 
 // Loading Spinner
@@ -31,14 +32,6 @@ const LoadingScreen = () => (
           }}
         />
         <Fingerprint
-          sx={{
-            fontSize: 32,
-            color: '#a3e635',
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-          }}
         />
       </div>
       <p className="text-sage-300/60 text-sm tracking-widest animate-pulse">Vérification...</p>
@@ -66,6 +59,25 @@ const ProtectedRoute = ({ children }: { children: React.JSX.Element }) => {
   ) : (
     <Navigate to={routesStatic.login} replace state={{ from: location }} />
   );
+};
+
+const AdminRoute = ({ children }: { children: React.JSX.Element }) => {
+  const { isAuthenticated, isLoading, user } = useAuth();
+  const location = useLocation();
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to={routesStatic.login} replace state={{ from: location }} />;
+  }
+
+  if (user?.role !== 'admin') {
+    return <Navigate to={routesStatic.dashboard} replace />;
+  }
+
+  return children;
 };
 
 // Public Route
@@ -191,6 +203,17 @@ const AppRoutes = () => {
             <ProtectedRoute>
               <Admissions />
             </ProtectedRoute>
+          </Layout>
+        }
+      />
+
+      <Route
+        path={routesStatic.activityLogs}
+        element={
+          <Layout showSidebar>
+            <AdminRoute>
+              <ActivityLogs />
+            </AdminRoute>
           </Layout>
         }
       />

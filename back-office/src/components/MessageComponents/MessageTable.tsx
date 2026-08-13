@@ -1,8 +1,6 @@
+import { Eye, Mail, Reply, Trash2 } from 'lucide-react';
 // src/components/MessageComponents/MessageTable.tsx
 import React, { useMemo } from 'react';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MailIcon from '@mui/icons-material/Mail';
 import type { Message } from '../../services/messages.service';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
@@ -20,6 +18,7 @@ interface MessageTableProps {
   onView: (message: Message) => void;
   onDelete: (id: number) => void;
   onMarkAsRead: (id: number) => void;
+  onReply?: (message: Message) => void;
   loading?: boolean;
   emptyMessage?: string;
 }
@@ -57,6 +56,7 @@ const MessageTable: React.FC<MessageTableProps> = ({
   onView,
   onDelete,
   onMarkAsRead,
+  onReply,
   loading = false,
   emptyMessage = 'Aucun message trouvé',
 }) => {
@@ -74,7 +74,7 @@ const MessageTable: React.FC<MessageTableProps> = ({
                   row.lu ? 'bg-ink-100' : 'bg-brand-100'
                 }`}
               >
-                <MailIcon sx={{ fontSize: 20, color: row.lu ? '#6b7280' : '#4f46e5' }} />
+                <Mail />
               </div>
               <div className="min-w-0">
                 <span className={`font-semibold block ${row.lu ? 'text-ink-900' : 'text-ink-900'}`}>
@@ -148,11 +148,26 @@ const MessageTable: React.FC<MessageTableProps> = ({
                     onClick={() => onView(row)}
                     className="h-8 w-8"
                   >
-                    <VisibilityIcon className="h-4 w-4" />
+                    <Eye className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Voir</TooltipContent>
               </Tooltip>
+              {onReply && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => onReply(row)}
+                      className="h-8 w-8"
+                    >
+                      <Reply className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Répondre</TooltipContent>
+                </Tooltip>
+              )}
               {!row.lu && (
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -162,7 +177,7 @@ const MessageTable: React.FC<MessageTableProps> = ({
                       onClick={() => onMarkAsRead(row.id)}
                       className="h-8 w-8"
                     >
-                      <MailIcon className="h-4 w-4" />
+                      <Mail className="h-4 w-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Marquer comme lu</TooltipContent>
@@ -176,7 +191,7 @@ const MessageTable: React.FC<MessageTableProps> = ({
                     onClick={() => onDelete(row.id)}
                     className="h-8 w-8 text-red-600 hover:text-red-700"
                   >
-                    <DeleteIcon className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Supprimer</TooltipContent>
@@ -186,7 +201,7 @@ const MessageTable: React.FC<MessageTableProps> = ({
         ),
       },
     ],
-    [onView, onDelete, onMarkAsRead]
+    [onView, onDelete, onMarkAsRead, onReply]
   );
 
   if (loading) {

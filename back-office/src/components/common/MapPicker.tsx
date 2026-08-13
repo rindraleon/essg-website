@@ -1,8 +1,6 @@
+import { Locate, MapPin, Pencil } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import MyLocationIcon from '@mui/icons-material/MyLocation';
-import EditIcon from '@mui/icons-material/Edit';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { FloatingInput } from '@/components/ui/floating-input';
@@ -128,7 +126,7 @@ const MapPicker: React.FC<MapPickerProps> = ({
 
       <div className="mt-3 p-3 bg-ink-50 rounded-lg border border-ink-100">
         <div className="flex items-center gap-2 mb-2">
-          <EditIcon fontSize="small" className="text-ink-600" />
+          <Pencil className="size-4 text-ink-600" />
           <p className="font-semibold text-ink-700 text-sm">Saisie manuelle des coordonnées</p>
         </div>
         <div className="grid grid-cols-2 gap-3">
@@ -165,13 +163,13 @@ const MapPicker: React.FC<MapPickerProps> = ({
 
       <div className="mt-2 flex items-center gap-3 text-sm">
         <div className="flex items-center gap-1">
-          <LocationOnIcon fontSize="small" className="text-ink-500" />
+          <MapPin className="size-4 text-ink-500" />
           <span className="text-ink-600">
             <span className="font-semibold">Lat:</span> {position[0].toFixed(5)}
           </span>
         </div>
         <div className="flex items-center gap-1">
-          <LocationOnIcon fontSize="small" className="text-ink-500" />
+          <MapPin className="size-4 text-ink-500" />
           <span className="text-ink-600">
             <span className="font-semibold">Lng:</span> {position[1].toFixed(5)}
           </span>
@@ -183,7 +181,7 @@ const MapPicker: React.FC<MapPickerProps> = ({
           title="Utiliser ma position actuelle"
           className="h-8 w-8"
         >
-          <MyLocationIcon fontSize="small" className="text-brand-600" />
+          <Locate className="size-4 text-brand-600" />
         </Button>
       </div>
     </div>

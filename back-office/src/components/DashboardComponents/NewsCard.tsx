@@ -1,5 +1,5 @@
+import { Eye } from 'lucide-react';
 import React from 'react';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getImageUrl } from '../../utils/image.utils';
 import { type Actualite } from '../../types/news.types';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -48,7 +48,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ actualite, onView }) => {
       {onView && (
         <CardFooter className="flex justify-end px-4 pb-4">
           <Button size="sm" variant="ghost" onClick={() => onView(actualite.id)} aria-label="voir">
-            <VisibilityIcon className="h-4 w-4" />
+            <Eye className="h-4 w-4" />
           </Button>
         </CardFooter>
       )}

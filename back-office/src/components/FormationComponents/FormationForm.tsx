@@ -1,16 +1,12 @@
-// src/components/formations/FormationForm.tsx
+import { ArrowLeft, ArrowRight, BookOpen, Briefcase, CircleCheck, Info, Upload } from 'lucide-react';
 import React, { useRef, useState, useEffect } from 'react';
-import WorkIcon from '@mui/icons-material/Work';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
-import InfoIcon from '@mui/icons-material/Info';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { toast } from 'sonner';
 import { getImageUrl } from '../../utils/image.utils';
+import { generateSlug } from '../../utils/slug.utils';
 import { uploadImage } from '../../services';
 import type { FormationFormData, FormationFormProps } from '../../types';
 import { useFormValidation } from '../../hooks/useFormValidation';
+import { useAutoSlug } from '../../hooks/useAutoSlug';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -60,17 +56,17 @@ const STEPS = [
   {
     id: 0,
     label: 'Informations',
-    icon: <InfoIcon className="h-4 w-4" />,
+    icon: <Info className="h-4 w-4" />,
   },
   {
     id: 1,
     label: 'Pédagogie',
-    icon: <MenuBookIcon className="h-4 w-4" />,
+    icon: <BookOpen className="h-4 w-4" />,
   },
   {
     id: 2,
     label: 'Détails',
-    icon: <WorkIcon className="h-4 w-4" />,
+    icon: <Briefcase className="h-4 w-4" />,
   },
 ];
 
@@ -116,6 +112,7 @@ const FormationForm: React.FC<FormationFormProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [uploadingImage, setUploadingImage] = useState(false);
+  const { reset: resetSlug, fromTitle, lock: lockSlug } = useAutoSlug();
 
   const {
     formData,
@@ -123,6 +120,7 @@ const FormationForm: React.FC<FormationFormProps> = ({
     activeStep,
     setActiveStep,
     handleChange,
+    handleChanges,
     handleBlur,
     validateStep,
     validateAllSteps,
@@ -181,18 +179,23 @@ const FormationForm: React.FC<FormationFormProps> = ({
     stepFields: STEP_FIELDS_MAP,
   });
 
+  const initialId = initialData?.id ?? '';
+
   useEffect(() => {
-    if (open) {
-      if (mode === 'edit' && initialData) {
-        const { id: _id, creeLe: _c, misAJourLe: _m, ...rest } = initialData as any;
-        setFormData(rest);
-        setImagePreview(getImageUrl(rest.image));
-      } else {
-        resetForm();
-        setImagePreview('');
-      }
+    if (!open) return;
+    if (mode === 'edit' && initialData) {
+      const { id: _id, creeLe: _c, misAJourLe: _m, ...rest } = initialData;
+      setFormData(rest);
+      setImagePreview(getImageUrl(rest.image));
+      resetSlug(rest.slug);
+    } else {
+      resetForm();
+      setImagePreview('');
+      resetSlug();
     }
-  }, [open, mode, initialData, setFormData, resetForm]);
+    // Re-init only when the dialog opens or the edited entity changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, mode, initialId]);
 
   const handleArrayChange = (field: ArrayField, index: number, value: string) => {
     const arr = [...(formData[field] || [])];
@@ -216,11 +219,13 @@ const FormationForm: React.FC<FormationFormProps> = ({
     if (!file) return;
     setUploadingImage(true);
     try {
-      const url = await uploadImage(file);
+      const url = await uploadImage(file, 'formations');
       handleChange('image', url);
       setImagePreview(url);
+      toast.success('Image téléversée avec succès');
     } catch (err) {
-      console.error("Erreur lors de l'upload:", err);
+      const message = err instanceof Error ? err.message : "Échec du téléversement de l'image.";
+      toast.error(message);
     } finally {
       setUploadingImage(false);
     }
@@ -248,35 +253,55 @@ const FormationForm: React.FC<FormationFormProps> = ({
     }
   };
 
-  const handleSubmit = () => {
-    if (validateAllSteps()) onSubmit(formData);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (submitting || !validateAllSteps()) return;
+    setSubmitting(true);
+    try {
+      await onSubmit(formData);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const dialogTitle = mode === 'create' ? 'Nouvelle formation' : 'Modifier la formation';
 
   /* ─── Step 0 : Informations générales ─── */
   const renderStep0 = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <FloatingInput
-          id="titre"
-          label="Titre de la formation *"
-          value={formData.titre}
-          onChange={(e) => handleChange('titre', e.target.value)}
-          onBlur={() => handleBlur('titre')}
-          error={errors.titre}
-        />
-        <FloatingInput
-          id="slug"
-          label="Slug *"
-          value={formData.slug}
-          onChange={(e) => handleChange('slug', e.target.value)}
-          onBlur={() => handleBlur('slug')}
-          error={errors.slug}
-        />
-      </div>
+    <div className="space-y-1">
+      <FloatingInput
+        id="titre"
+        label="Titre de la formation *"
+        autoComplete="off"
+        value={formData.titre}
+        onChange={(e) => {
+          const titre = e.target.value;
+          const nextSlug = fromTitle(titre);
+          if (nextSlug !== undefined) {
+            handleChanges({ titre, slug: nextSlug });
+          } else {
+            handleChange('titre', titre);
+          }
+        }}
+        onBlur={() => handleBlur('titre')}
+        error={errors.titre}
+      />
+      <FloatingInput
+        id="slug"
+        label="Slug (auto)"
+        autoComplete="off"
+        value={formData.slug}
+        onChange={(e) => {
+          lockSlug();
+          handleChange('slug', generateSlug(e.target.value) || e.target.value);
+        }}
+        onBlur={() => handleBlur('slug')}
+        error={errors.slug}
+        hint="Généré automatiquement à partir du titre"
+      />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
         <FloatingSelect
           label="Domaine de formation *"
           value={formData.domaine[0] || ''}
@@ -293,7 +318,7 @@ const FormationForm: React.FC<FormationFormProps> = ({
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
         <FloatingSelect
           label="Durée *"
           value={formData.duree}
@@ -305,6 +330,7 @@ const FormationForm: React.FC<FormationFormProps> = ({
           id="credits"
           label="Crédits *"
           type="number"
+          inputMode="numeric"
           value={formData.credits}
           onChange={(e) => handleChange('credits', Number.parseInt(e.target.value) || 0)}
           onBlur={() => handleBlur('credits')}
@@ -328,7 +354,7 @@ const FormationForm: React.FC<FormationFormProps> = ({
   /* ─── Step 1 : Pédagogie ─── */
   const renderStep1 = () => (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2">
         <DynamicListField
           label="Objectifs *"
           items={formData.objectifs}
@@ -348,7 +374,7 @@ const FormationForm: React.FC<FormationFormProps> = ({
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2">
         <DynamicListField
           label="Programme"
           items={formData.programme || []}
@@ -408,7 +434,7 @@ const FormationForm: React.FC<FormationFormProps> = ({
               size="sm"
               className="gap-1.5 bg-white text-xs h-8"
             >
-              <CloudUploadIcon className="h-3.5 w-3.5" />
+              <Upload className="h-3.5 w-3.5" />
               {uploadingImage ? 'Upload...' : 'Choisir une image'}
             </Button>
             <span className="text-[10px] text-ink-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
@@ -417,10 +443,11 @@ const FormationForm: React.FC<FormationFormProps> = ({
       </div>
 
       {/* Responsable + Email */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
         <FloatingInput
           id="responsable"
           label="Responsable"
+          autoComplete="name"
           value={formData.responsable}
           onChange={(e) => handleChange('responsable', e.target.value)}
         />
@@ -428,6 +455,7 @@ const FormationForm: React.FC<FormationFormProps> = ({
           id="email"
           label="Email"
           type="email"
+          autoComplete="email"
           value={formData.email}
           onChange={(e) => handleChange('email', e.target.value)}
           onBlur={() => handleBlur('email')}
@@ -436,7 +464,7 @@ const FormationForm: React.FC<FormationFormProps> = ({
       </div>
 
       {/* Conditions + Modules */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2">
         <DynamicListField
           label="Conditions"
           items={formData.conditions || []}
@@ -516,7 +544,7 @@ const FormationForm: React.FC<FormationFormProps> = ({
                       }
                     `}
                   >
-                    {isCompleted ? <CheckCircleIcon className="h-4 w-4" /> : step.icon}
+                    {isCompleted ? <CircleCheck className="h-4 w-4" /> : step.icon}
                     <span className="hidden sm:inline">{step.label}</span>
                     <span className="sm:hidden">{index + 1}</span>
                   </button>
@@ -542,6 +570,7 @@ const FormationForm: React.FC<FormationFormProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
+                disabled={submitting}
                 className="text-ink-500 h-8"
               >
                 Annuler
@@ -553,9 +582,10 @@ const FormationForm: React.FC<FormationFormProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={handleBack}
+                  disabled={submitting}
                   className="gap-1 h-8"
                 >
-                  <ArrowBackIcon className="h-3.5 w-3.5" />
+                  <ArrowLeft className="h-3.5 w-3.5" />
                   Précédent
                 </Button>
               )}
@@ -565,20 +595,22 @@ const FormationForm: React.FC<FormationFormProps> = ({
                   type="button"
                   size="sm"
                   onClick={handleNext}
+                  disabled={submitting}
                   className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
                   Suivant
-                  <ArrowForwardIcon className="h-3.5 w-3.5" />
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               ) : (
                 <Button
                   type="button"
                   size="sm"
                   onClick={handleSubmit}
+                  disabled={submitting}
                   className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
-                  <CheckCircleIcon className="h-3.5 w-3.5" />
-                  {mode === 'create' ? 'Créer' : 'Enregistrer'}
+                  <CircleCheck className="h-3.5 w-3.5" />
+                  {submitting ? 'Enregistrement...' : mode === 'create' ? 'Créer' : 'Enregistrer'}
                 </Button>
               )}
             </div>

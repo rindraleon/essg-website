@@ -1,6 +1,5 @@
+import { CircleHelp, GraduationCap } from 'lucide-react';
 import React from 'react';
-import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded';
-import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 
 import { Toaster } from 'react-hot-toast';
 
@@ -9,8 +8,9 @@ import type { AdmissionPageProps } from '../../types/admission.types';
 import { AdmissionForm, ContactCard, CtaSection, PageHero, Breadcrumb } from '../../components';
 import { useScrollToTop } from '../../hooks';
 
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
+import { SITE_HERO_IMAGE } from '../../constants/media';
+
+const HERO_IMAGE = SITE_HERO_IMAGE;
 
 const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPageProps>) => {
   useScrollToTop();
@@ -51,7 +51,7 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPa
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Admission ESSG"
-        badgeIcon={<SchoolRoundedIcon />}
+        badgeIcon={<GraduationCap className="size-4" />}
         badgeLabel={pageSubtitle}
         title={pageTitle}
         description={pageDescription}
@@ -73,11 +73,7 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPa
           <div className="mt-8">
             <ContactCard
               icon={
-                <HelpOutlineRoundedIcon
-                  sx={{
-                    fontSize: 28,
-                    color: GREEN[900],
-                  }}
+                <CircleHelp
                 />
               }
               title="Besoin d'aide ?"
@@ -92,7 +88,7 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPa
       </section>
 
       <CtaSection
-        icon={<SchoolRoundedIcon sx={{ fontSize: 48, color: GREEN[900] }} />}
+        icon={<GraduationCap />}
         title="Découvrez nos formations"
         description="Explorez nos programmes d'excellence en sciences géomatiques avant de soumettre votre candidature."
         primaryLabel="Voir les formations"

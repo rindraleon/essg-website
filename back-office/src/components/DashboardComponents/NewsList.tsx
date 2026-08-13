@@ -1,5 +1,5 @@
+import { RefreshCw } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import NewsCard from './NewsCard';
 import { type Actualite } from '../../types/news.types';
 import { getNews } from '../../services/news.service';
@@ -43,7 +43,7 @@ const NewsList: React.FC = () => {
           {error}
         </div>
         <Button onClick={fetchNews}>
-          <RefreshIcon className="mr-2" />
+          <RefreshCw className="mr-2" />
           Réessayer
         </Button>
       </div>

@@ -1,7 +1,7 @@
-import React from 'react';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import Button from '@mui/material/Button';
-import { Link as RouterLink } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { buttonVariants } from '../ui/button';
+import { cn } from '@/lib/utils';
 import MobileCta from './MobileCta';
 
 interface SectionCtaProps {
@@ -9,35 +9,15 @@ interface SectionCtaProps {
   link: string;
 }
 
-
-const SectionCta: React.FC<SectionCtaProps> = ({ label, link }) => {
+const SectionCta = ({ label, link }: SectionCtaProps) => {
   return (
     <>
-      <div className="mt-6 mb-4 flex justify-center">
-        <Button
-          component={RouterLink}
-          to={link}
-          variant="outlined"
-          endIcon={<ArrowForwardRoundedIcon />}
-          sx={{
-            display: { xs: 'none', sm: 'inline-flex' },
-            borderRadius: '0.75rem',
-            textTransform: 'none',
-            fontWeight: 600,
-            borderColor: 'divider',
-            color: 'text.secondary',
-            transition: 'all 0.2s ease',
-            '&:hover': {
-              borderColor: 'primary.main',
-              color: 'primary.main',
-              backgroundColor: 'primary.50',
-            },
-          }}
-        >
+      <div className="mb-4 mt-6 hidden justify-center sm:flex">
+        <Link to={link} className={cn(buttonVariants({ variant: 'outline' }))}>
           {label}
-        </Button>
+          <ArrowRight className="size-4" />
+        </Link>
       </div>
-
       <MobileCta label={label} link={link} />
     </>
   );

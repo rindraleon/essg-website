@@ -7,7 +7,7 @@ export type HeroStatItem = {
 };
 
 export type PageHeroProps = {
-  image: string;
+  image?: string;
   imageAlt?: string;
   badgeIcon?: ReactElement;
   badgeLabel?: string;

@@ -4,7 +4,7 @@ import {
   verifyToken,
   logout as logoutService,
 } from '../services/auth.service';
-import { setAuthToken, clearAuthToken } from '../config/axios.config';
+import { setAuthToken, clearAuthToken, hasAuthToken } from '../api/client/http';
 import type { User } from '../types/auth.types';
 
 interface AuthContextType {
@@ -25,10 +25,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const initAuth = async () => {
+      if (!hasAuthToken()) {
+        setIsAuthenticated(false);
+        setUser(null);
+        setIsLoading(false);
+        return;
+      }
       try {
-        const valid = await verifyToken();
-        if (valid) {
+        const currentUser = await verifyToken();
+        if (currentUser) {
           setIsAuthenticated(true);
+          setUser(currentUser);
         } else {
           setIsAuthenticated(false);
           setUser(null);
@@ -82,7 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth doit être utilisé à l'intérieur d'un AuthProvider");
   }
   return context;
 };

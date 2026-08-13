@@ -1,4 +1,3 @@
-// src/components/ui/floating-textarea.tsx
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
@@ -13,7 +12,7 @@ const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, FloatingTextareaP
     const hasValue = value !== undefined && value !== null && String(value).length > 0;
 
     return (
-      <div className="relative w-full">
+      <div className="relative w-full pt-2">
         <textarea
           ref={ref}
           id={id}
@@ -21,10 +20,10 @@ const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, FloatingTextareaP
           placeholder=" "
           className={cn(
             'peer w-full rounded-md border bg-white px-3 pt-5 pb-2 text-sm',
-            'outline-none transition-all resize-none',
-            'focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500',
+            'resize-none outline-none transition-all',
+            'focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20',
             'placeholder-transparent',
-            error ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : 'border-ink-300',
+            error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : 'border-ink-300',
             className
           )}
           {...props}
@@ -32,21 +31,18 @@ const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, FloatingTextareaP
         <label
           htmlFor={id}
           className={cn(
-            'absolute left-3 transition-all duration-200 pointer-events-none',
-            'text-ink-500 origin-[0]',
-            hasValue ? 'top-1.5 text-[10px] font-medium' : 'top-3 text-sm',
-            'peer-focus:top-1.5 peer-focus:text-[10px] peer-focus:font-medium',
-            'peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-medium',
-            error ? 'text-red-500 peer-focus:text-red-500' : 'peer-focus:text-brand-600'
+            'pointer-events-none absolute left-3 origin-[0] transition-all duration-200',
+            hasValue ? 'top-0 bg-white px-1 text-xs font-bold text-brand-700' : 'top-5 text-sm text-ink-400',
+            'peer-focus:top-0 peer-focus:bg-white peer-focus:px-1 peer-focus:text-xs peer-focus:font-bold',
+            'peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-bold',
+            error ? 'text-red-500 peer-focus:text-red-500' : 'peer-focus:text-brand-700'
           )}
         >
           {label}
         </label>
-        {(error || hint) && (
-          <p className={cn('mt-1 text-[11px]', error ? 'text-red-500' : 'text-ink-400')}>
-            {error || hint}
-          </p>
-        )}
+        <p className={cn('mt-1 min-h-4 text-[11px]', error ? 'text-red-500' : 'text-ink-400')}>
+          {error || hint || '\u00a0'}
+        </p>
       </div>
     );
   }

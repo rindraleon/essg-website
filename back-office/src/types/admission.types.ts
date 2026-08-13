@@ -12,6 +12,11 @@ export type Admission = {
   lettreMotivationPath?: string;
   statut: 'en_attente' | 'en_cours_etude' | 'accepte' | 'refuse';
   commentaire?: string;
+  reponseDate?: string | null;
+  reponseHeure?: string | null;
+  reponseLieu?: string | null;
+  reponseInstructions?: string | null;
+  reponseMessage?: string | null;
   creeLe: string;
   misAJourLe: string;
 };

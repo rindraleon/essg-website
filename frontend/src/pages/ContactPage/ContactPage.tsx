@@ -1,9 +1,5 @@
+import { Clock, Contact, Mail, MapPin, Phone } from 'lucide-react';
 import React from 'react';
-import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
-import RoomRoundedIcon from '@mui/icons-material/RoomRounded';
-import ContactIcon from '@mui/icons-material/ContactMailRounded';
 
 import { Toaster } from 'react-hot-toast';
 
@@ -13,8 +9,9 @@ import type { ContactPageProps } from '../../types/contact.types';
 import { ContactForm, ContactInfoCards, MapEmbed, Breadcrumb, CtaSection } from '../../components';
 import { useScrollToTop } from '../../hooks';
 
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
+import { SITE_HERO_IMAGE } from '../../constants/media';
+
+const HERO_IMAGE = SITE_HERO_IMAGE;
 
 const UNIV_FIANAR = {
   lat: -21.4413,
@@ -39,7 +36,7 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
   const contactItems = [
     {
       id: 'adresse',
-      icon: <RoomRoundedIcon sx={{ fontSize: 20, color: GREEN[600] }} />,
+      icon: <MapPin />,
       title: 'Adresse',
       lines: [
         'Université de Fianarantsoa',
@@ -50,19 +47,19 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
     },
     {
       id: 'telephone',
-      icon: <PhoneRoundedIcon sx={{ fontSize: 20, color: GREEN[600] }} />,
+      icon: <Phone />,
       title: 'Téléphone',
       lines: ['+261 34 28 085 30', '+261 33 12 345 67'],
     },
     {
       id: 'email',
-      icon: <EmailRoundedIcon sx={{ fontSize: 20, color: GREEN[600] }} />,
+      icon: <Mail />,
       title: 'Email',
       lines: ['contact@essg.mg', 'admission@essg.mg'],
     },
     {
       id: 'horaires',
-      icon: <AccessTimeRoundedIcon sx={{ fontSize: 20, color: GREEN[600] }} />,
+      icon: <Clock />,
       title: 'Horaires',
       lines: ['Lundi - Vendredi : 8h - 17h', 'Samedi : 9h - 13h', 'Dimanche : Fermé'],
     },
@@ -98,7 +95,7 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Contact ESSG"
-        badgeIcon={<ContactIcon />}
+        badgeIcon={<Contact className="size-4" />}
         badgeLabel={pageSubtitle}
         title={pageTitle}
         description={pageDescription}
@@ -135,7 +132,7 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
       </section>
 
       <CtaSection
-        icon={<ContactIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
+        icon={<Contact />}
         title="Un projet, une question ?"
         description="Notre équipe vous répond dans les plus brefs délais. Contactez-nous ou découvrez nos formations."
         primaryLabel="Voir les formations"

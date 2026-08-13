@@ -1,12 +1,6 @@
+import { ArrowLeft, Briefcase, IdCard, Mail, Phone, User, Users } from 'lucide-react';
 import React, { useEffect } from 'react';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
-import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
-import Button from '@mui/material/Button';
+import Button from '@/components/compat/button';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import { CtaSection, EmptyState, PageHero, Breadcrumb } from '../../components';
 import { GREEN } from '../../constants/colors';
@@ -48,7 +42,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
       <div className="min-h-screen bg-ink-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <EmptyState
-            icon={<GroupsRoundedIcon sx={{ fontSize: 40, color: GREEN[400] }} />}
+            icon={<Users />}
             title="Profil introuvable"
             description="Le membre de l'équipe que vous recherchez n'existe pas ou a été supprimé."
             actionLabel="Retour à l'accueil"
@@ -60,18 +54,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
               component={RouterLink}
               to="/RessourceHumaineDetailPage"
               variant="outlined"
-              startIcon={<ArrowBackRoundedIcon />}
-              sx={{
-                borderRadius: '0.75rem',
-                textTransform: 'none',
-                fontWeight: 600,
-                borderColor: GREEN[600],
-                color: GREEN[600],
-                '&:hover': {
-                  borderColor: GREEN[700],
-                  backgroundColor: GREEN[50],
-                },
-              }}
+              startIcon={<ArrowLeft className="size-4" />}
             >
               Retour à l'accueil
             </Button>
@@ -86,18 +69,18 @@ const RessourceHumaineDetailPage: React.FC = () => {
 
   const infoItems = [
     ressourceHumaine.poste && {
-      icon: <WorkRoundedIcon sx={{ fontSize: 20, color: GREEN[600] }} />,
+      icon: <Briefcase />,
       label: 'Poste',
       value: ressourceHumaine.poste,
     },
     ressourceHumaine.email && {
-      icon: <EmailRoundedIcon sx={{ fontSize: 20, color: GREEN[600] }} />,
+      icon: <Mail />,
       label: 'Email',
       value: ressourceHumaine.email,
       href: `mailto:${ressourceHumaine.email}`,
     },
     ressourceHumaine.telephone && {
-      icon: <PhoneRoundedIcon sx={{ fontSize: 20, color: GREEN[600] }} />,
+      icon: <Phone />,
       label: 'Téléphone',
       value: ressourceHumaine.telephone,
       href: `tel:${ressourceHumaine.telephone.replace(/\s+/g, '')}`,
@@ -114,7 +97,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
       <PageHero
         image={photoUrl || FALLBACK_IMAGE}
         imageAlt={fullName}
-        badgeIcon={<BadgeRoundedIcon />}
+        badgeIcon={<IdCard className="size-4" />}
         badgeLabel={ressourceHumaine.poste}
         title={fullName}
         description={ressourceHumaine.description || ''}
@@ -162,7 +145,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
           <div className="lg:col-span-2">
             <div className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card sm:p-8">
               <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-ink-900">
-                <PersonRoundedIcon sx={{ color: GREEN[700] }} />
+                <User />
                 Présentation
               </h2>
 
@@ -211,7 +194,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
       </div>
 
       <CtaSection
-        icon={<GroupsRoundedIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
+        icon={<Users />}
         title="Une question pour notre équipe ?"
         description="N'hésitez pas à nous contacter pour toute question sur les formations, les admissions ou la vie de l'école."
         primaryLabel="Nous contacter"

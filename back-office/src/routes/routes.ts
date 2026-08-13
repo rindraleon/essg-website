@@ -11,6 +11,7 @@ const routesStatic = {
   partenaires: '/partenaires',
   contacts: '/contacts',
   admissions: '/admissions',
+  activityLogs: '/activity-logs',
   profil: '/profil',
 };
 

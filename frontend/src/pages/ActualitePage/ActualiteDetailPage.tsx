@@ -1,21 +1,15 @@
+import { Card, CardContent, Divider, IconButton, Tooltip } from '@/components/compat/mui';
+import { ArrowLeft, Calendar, Newspaper, Share2, User } from 'lucide-react';
 import React, { useEffect } from 'react';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
-import NewspaperRoundedIcon from '@mui/icons-material/NewspaperRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+import Button from '@/components/compat/button';
 import { Link as RouterLink, useParams } from 'react-router-dom';
-import { CtaSection, EmptyState, PageHero, Breadcrumb, CategoryChip } from '../../components';
+import { CtaSection, EmptyState, PageHero, Breadcrumb, CategoryChip, ImageGallery } from '../../components';
 import { GREEN } from '../../constants/colors';
 import { formatDate } from '../../utils/date.utils';
-import { useActualiteBySlug, useScrollToTop } from '../../hooks';
+import { getImageUrl } from '../../utils/image.utils';
+import { useActualiteBySlug, useRecentActualites, useScrollToTop } from '../../hooks';
 import { useTitle } from '../../hooks/useTitle';
+import ViewDetailsButton from '../../components/common/ViewDetailsButton';
 
 const ACTUALITE_IMAGES: Record<string, string> = {
   '1': '1602052577122-f73b9710adba',
@@ -25,7 +19,8 @@ const ACTUALITE_IMAGES: Record<string, string> = {
   '5': '1590012314607-cda9d9b699ae',
 };
 
-const getActualiteImage = (id: string): string => {
+const getActualiteImage = (image: string | undefined, id: string): string => {
+  if (image) return getImageUrl(image);
   const hash = ACTUALITE_IMAGES[id] ?? '1594935975218-a3596da034a3';
   return `https://images.unsplash.com/photo-${hash}?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920`;
 };
@@ -33,6 +28,7 @@ const getActualiteImage = (id: string): string => {
 const ActualiteDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { actualite, loading, error } = useActualiteBySlug(slug || '');
+  const { actualites: related } = useRecentActualites(6);
   const { setTitle } = useTitle();
 
   useScrollToTop();
@@ -72,7 +68,7 @@ const ActualiteDetailPage: React.FC = () => {
       <div className="min-h-screen bg-ink-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <EmptyState
-            icon={<NewspaperRoundedIcon sx={{ fontSize: 40, color: GREEN[400] }} />}
+            icon={<Newspaper />}
             title="Article introuvable"
             description="L'article que vous recherchez n'existe pas ou a été supprimé."
             actionLabel="Retour aux actualités"
@@ -84,18 +80,7 @@ const ActualiteDetailPage: React.FC = () => {
               component={RouterLink}
               to="/actualites"
               variant="outlined"
-              startIcon={<ArrowBackRoundedIcon />}
-              sx={{
-                borderRadius: '0.75rem',
-                textTransform: 'none',
-                fontWeight: 600,
-                borderColor: GREEN[600],
-                color: GREEN[600],
-                '&:hover': {
-                  borderColor: GREEN[700],
-                  backgroundColor: GREEN[50],
-                },
-              }}
+              startIcon={<ArrowLeft className="size-4" />}
             >
               Toutes les actualités
             </Button>
@@ -108,9 +93,9 @@ const ActualiteDetailPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-ink-50">
       <PageHero
-        image={getActualiteImage(actualite.id.toString())}
+        image={getActualiteImage(actualite.image, actualite.id.toString())}
         imageAlt={actualite.titre}
-        badgeIcon={<NewspaperRoundedIcon />}
+        badgeIcon={<Newspaper className="size-4" />}
         badgeLabel={actualite.categorie}
         title={actualite.titre}
         minHeight="50vh"
@@ -127,11 +112,6 @@ const ActualiteDetailPage: React.FC = () => {
           {/* Article */}
           <div className="lg:col-span-2">
             <Card
-              sx={{
-                borderRadius: '1.25rem',
-                border: '1px solid',
-                borderColor: 'divider',
-              }}
             >
               <CardContent className="p-6 sm:p-8">
                 {/* Meta */}
@@ -139,20 +119,15 @@ const ActualiteDetailPage: React.FC = () => {
                   <CategoryChip
                     category={actualite.categorie}
                     size="small"
-                    sx={{
-                      backgroundColor: GREEN[50],
-                      color: GREEN[800],
-                      border: `1px solid ${GREEN[200]}`,
-                    }}
                   />
 
                   <div className="flex items-center gap-1 text-sm text-ink-500">
-                    <CalendarTodayRoundedIcon sx={{ fontSize: 14 }} />
+                    <Calendar />
                     {formatDate(actualite.date)}
                   </div>
 
                   <div className="flex items-center gap-1 text-sm text-ink-500">
-                    <PersonRoundedIcon sx={{ fontSize: 14 }} />
+                    <User />
                     {actualite.auteur}
                   </div>
 
@@ -160,12 +135,8 @@ const ActualiteDetailPage: React.FC = () => {
                     <IconButton
                       size="small"
                       onClick={handleShare}
-                      sx={{
-                        ml: 'auto',
-                        color: GREEN[600],
-                      }}
                     >
-                      <ShareRoundedIcon sx={{ fontSize: 20 }} />
+                      <Share2 />
                     </IconButton>
                   </Tooltip>
                 </div>
@@ -194,17 +165,22 @@ const ActualiteDetailPage: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {(actualite.galerie?.length ?? 0) > 0 && (
+              <div className="mt-6">
+                <ImageGallery
+                  images={actualite.galerie ?? []}
+                  alt={actualite.titre}
+                  title="Galerie de l'événement"
+                />
+              </div>
+            )}
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Infos auteur */}
             <Card
-              sx={{
-                borderRadius: '1.25rem',
-                border: '1px solid',
-                borderColor: 'divider',
-              }}
             >
               <CardContent className="p-6">
                 <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-ink-900">
@@ -217,7 +193,7 @@ const ActualiteDetailPage: React.FC = () => {
                       backgroundColor: GREEN[50],
                     }}
                   >
-                    <PersonRoundedIcon sx={{ color: GREEN[600] }} />
+                    <User />
                   </div>
                   <div>
                     <div className="font-semibold text-ink-900">{actualite.auteur}</div>
@@ -233,18 +209,7 @@ const ActualiteDetailPage: React.FC = () => {
               to="/actualites"
               variant="outlined"
               fullWidth
-              startIcon={<ArrowBackRoundedIcon />}
-              sx={{
-                borderRadius: '0.75rem',
-                textTransform: 'none',
-                fontWeight: 600,
-                borderColor: GREEN[600],
-                color: GREEN[600],
-                '&:hover': {
-                  borderColor: GREEN[700],
-                  backgroundColor: GREEN[50],
-                },
-              }}
+              startIcon={<ArrowLeft className="size-4" />}
             >
               Toutes les actualités
             </Button>
@@ -252,8 +217,32 @@ const ActualiteDetailPage: React.FC = () => {
         </div>
       </div>
 
+      {related.filter((item) => item.slug !== actualite.slug).length > 0 && (
+        <section className="border-t border-ink-100 bg-white py-12">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <h2 className="mb-6 text-2xl font-bold text-ink-900">Actualités similaires</h2>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {related
+                .filter((item) => item.slug !== actualite.slug)
+                .slice(0, 3)
+                .map((item) => (
+                  <article key={item.id} className="rounded-2xl border border-ink-100 bg-ink-50/60 p-5">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">{item.categorie}</p>
+                    <h3 className="mt-2 text-base font-semibold text-ink-900">{item.titre}</h3>
+                    <ViewDetailsButton
+                      to={`/actualites/${item.slug}`}
+                      className="mt-3"
+                      ariaLabel={`Voir le détail de ${item.titre}`}
+                    />
+                  </article>
+                ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       <CtaSection
-        icon={<NewspaperRoundedIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
+        icon={<Newspaper />}
         title="Ne manquez aucune actualité"
         description="Abonnez-vous à notre newsletter pour recevoir les dernières nouvelles de l'ESSG directement dans votre boîte mail."
         primaryLabel="S'abonner"

@@ -22,6 +22,11 @@ export { default as FormationDetailContent } from './FormationComponents/Formati
 export { default as CtaSection } from './common/CtaSection';
 export { default as EmptyState } from './common/EmptyState';
 export { default as PageHero } from './common/PageHero';
+export { default as Reveal } from './common/Reveal';
+export { default as ImageGallery } from './common/ImageGallery';
+export { default as ViewDetailsButton } from './common/ViewDetailsButton';
+export { default as AnimatedBackground } from './animations/AnimatedBackground';
+export { default as SplitTitle } from './animations/SplitTitle';
 export { default as FilterToolbar } from './common/FilterToolbar';
 export { default as Breadcrumb } from './common/Breadcrumb';
 export { default as CategoryChip } from './common/CategoryChip';

@@ -1,31 +1,20 @@
+import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, Skeleton, TextField } from '@/components/compat/mui';
+import { GraduationCap, Rocket, Search, X } from 'lucide-react';
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import RocketLaunchRoundedIcon from '@mui/icons-material/RocketLaunchRounded';
-import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
-import Skeleton from '@mui/material/Skeleton';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import type { SelectChangeEvent } from '@mui/material/Select';
+import type { SelectChangeEvent } from '@/components/compat/mui';
 import CtaSection from '../../components/common/CtaSection';
 import EmptyState from '../../components/common/EmptyState';
 import FilterToolbar from '../../components/common/FilterToolbar';
 import PageHero from '../../components/common/PageHero';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import ProjetCard from '../../components/ProjetComponents/ProjetCard';
-import { GREEN } from '../../constants/colors';
-import { projetService } from '../../services';
-import { useScrollToTop } from '../../hooks';
-import type { ProjetsPageProps, ProjetItem } from '../../types/projets.types';
+import { useProjets, useScrollToTop } from '../../hooks';
+import type { ProjetsPageProps } from '../../types/projets.types';
 import { generateSlug } from '../../utils/slug.utils';
 
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1451187580459-43490279c0fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
+import { SITE_HERO_IMAGE } from '../../constants/media';
+
+const HERO_IMAGE = SITE_HERO_IMAGE;
 
 const TYPES = [
   { value: 'all', label: 'Tous les types' },
@@ -50,9 +39,7 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
     pageDescription = "L'ESSG s'engage dans des projets innovants au service du développement durable et de la recherche.",
   } = props;
 
-  const [allProjets, setAllProjets] = useState<ProjetItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { projets: allProjets, loading, error } = useProjets();
   const [typeFilter, setTypeFilter] = useState('all');
   const [statutFilter, setStatutFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -65,23 +52,6 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
       searchInputRef.current.focus();
     }
   }, [showSearch]);
-  useEffect(() => {
-    const loadProjets = async () => {
-      try {
-        setLoading(true);
-        const data = await projetService.findAll();
-        setAllProjets(data);
-        setError(null);
-      } catch (err) {
-        console.error('Erreur lors du chargement des projets:', err);
-        setError('Impossible de charger les projets');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProjets();
-  }, []);
 
   const hasActiveFilters = typeFilter !== 'all' || statutFilter !== 'all' || searchTerm !== '';
   const activeFilterCount = (typeFilter !== 'all' ? 1 : 0) + (statutFilter !== 'all' ? 1 : 0);
@@ -157,7 +127,7 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Projets ESSG"
-        badgeIcon={<RocketLaunchRoundedIcon />}
+        badgeIcon={<Rocket className="size-4" />}
         badgeLabel={pageSubtitle}
         title={pageTitle}
         description={pageDescription}
@@ -193,31 +163,23 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchRoundedIcon sx={{ color: GREEN[600] }} />
+                  <Search />
                 </InputAdornment>
               ),
               endAdornment: searchTerm && (
                 <InputAdornment position="end">
                   <IconButton size="small" onClick={() => setSearchTerm('')}>
-                    <CloseRoundedIcon sx={{ fontSize: 18 }} />
+                    <X />
                   </IconButton>
                 </InputAdornment>
               ),
-            }}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '0.75rem',
-                '&.Mui-focused fieldset': {
-                  borderColor: GREEN[600],
-                },
-              },
             }}
           />
         }
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <FormControl fullWidth size="small">
-            <InputLabel id="type-label" sx={{ '&.Mui-focused': { color: GREEN[800] } }}>
+            <InputLabel id="type-label">
               Type de projet
             </InputLabel>
             <Select
@@ -225,10 +187,6 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
               label="Type de projet"
               value={typeFilter}
               onChange={handleTypeChange}
-              sx={{
-                borderRadius: '0.75rem',
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: GREEN[600] },
-              }}
             >
               {TYPES.map((item) => (
                 <MenuItem key={item.value} value={item.value}>
@@ -239,7 +197,7 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
           </FormControl>
 
           <FormControl fullWidth size="small">
-            <InputLabel id="statut-label" sx={{ '&.Mui-focused': { color: GREEN[600] } }}>
+            <InputLabel id="statut-label">
               Statut
             </InputLabel>
             <Select
@@ -247,10 +205,6 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
               label="Statut"
               value={statutFilter}
               onChange={handleStatutChange}
-              sx={{
-                borderRadius: '0.75rem',
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: GREEN[600] },
-              }}
             >
               {STATUTS.map((item) => (
                 <MenuItem key={item.value} value={item.value}>
@@ -299,7 +253,7 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {resultCount === 0 ? (
               <EmptyState
-                icon={<RocketLaunchRoundedIcon sx={{ fontSize: 40, color: GREEN[400] }} />}
+                icon={<Rocket />}
                 title="Aucun projet trouvé"
                 description="Essayez de modifier vos critères de filtrage."
                 onAction={handleResetFilters}
@@ -322,7 +276,7 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
       )}
 
       <CtaSection
-        icon={<SchoolRoundedIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
+        icon={<GraduationCap />}
         title="Vous avez un projet de recherche ?"
         description="Collaborez avec l'ESSG pour vos projets de recherche, d'innovation ou de développement en sciences géomatiques."
         primaryLabel="Nous contacter"

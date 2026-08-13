@@ -1,22 +1,11 @@
-import axiosConfig from '../config/axios.config';
-import type { Actualite, NewsResponse } from '../types/news.types';
+import { apiClient } from '../api/client/http';
+import type { Actualite } from '../types/news.types';
 
 export const getNews = async (): Promise<Actualite[]> => {
-  try {
-    const response = await axiosConfig.get<NewsResponse>('/news');
-    return response.data.data;
-  } catch (error) {
-    console.error('Error fetching news:', error);
-    throw error;
-  }
+  const result = await apiClient.getList<Actualite>('/news', { page: 1, limit: 20 });
+  return result.data;
 };
 
 export const getNewsBySlug = async (slug: string): Promise<Actualite> => {
-  try {
-    const response = await axiosConfig.get<Actualite>(`/news/slug/${slug}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching news by slug:', error);
-    throw error;
-  }
+  return apiClient.get<Actualite>(`/news/slug/${slug}`);
 };

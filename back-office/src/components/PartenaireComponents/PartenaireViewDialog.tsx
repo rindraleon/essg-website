@@ -1,10 +1,6 @@
+import { Calendar, Globe, Mail, Tag, X } from 'lucide-react';
 import React from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import LabelIcon from '@mui/icons-material/Label';
-import LanguageIcon from '@mui/icons-material/Language';
-import ContactMailIcon from '@mui/icons-material/ContactMail';
-import { getImageUrl } from '../../utils/image.utils';
+import { getImageUrl, isRemoteImage } from '../../utils/image.utils';
 import type { Partenaire } from '../../types/partenaire.types';
 import { formatDate } from '../../utils/partenaire.utils';
 import { PARTENAIRE_TYPE_COLORS } from '../../constants/partenaire.constants';
@@ -72,7 +68,7 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
                 className="h-10 w-10 shrink-0 rounded-full border border-ink-100 bg-white hover:bg-ink-100"
                 aria-label="Fermer"
               >
-                <CloseIcon className="h-4 w-4" />
+                <X className="h-4 w-4" />
               </Button>
             </div>
           </DialogHeader>
@@ -107,12 +103,12 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
             {/* Metadata */}
             <div className="flex flex-wrap gap-4 mb-4">
               <div className="flex items-center gap-1 text-ink-600 text-sm">
-                <LabelIcon fontSize="small" />
+                <Tag className="size-4" />
                 <span className="font-medium">Secteur:</span>
                 <span>{partenaire.secteur}</span>
               </div>
               <div className="flex items-center gap-1 text-ink-600 text-sm">
-                <CalendarTodayIcon fontSize="small" />
+                <Calendar className="size-4" />
                 <span className="font-medium">Depuis:</span>
                 <span>{formatDate(partenaire.dateDebut)}</span>
               </div>
@@ -134,7 +130,7 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
             <div className="space-y-3">
               {partenaire.siteWeb && (
                 <div className="flex items-center gap-2">
-                  <LanguageIcon fontSize="small" className="text-ink-600" />
+                  <Globe className="size-4 text-ink-600" />
                   <span className="text-sm text-ink-700">
                     <span className="font-semibold">Site web:</span>{' '}
                     <a
@@ -151,7 +147,7 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
 
               {partenaire.contact && (
                 <div className="flex items-center gap-2">
-                  <ContactMailIcon fontSize="small" className="text-ink-600" />
+                  <Mail className="size-4 text-ink-600" />
                   <span className="text-sm text-ink-700">
                     <span className="font-semibold">Contact:</span> {partenaire.contact}
                   </span>
@@ -163,8 +159,7 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
             <div className="mt-4 pt-4 border-t border-ink-100">
               <h4 className="font-semibold text-ink-700 mb-2">Logo</h4>
               <div className="bg-ink-50 p-3 rounded-lg border border-ink-100">
-                {partenaire.logo &&
-                (partenaire.logo.startsWith('/uploads/') || partenaire.logo.startsWith('http')) ? (
+                {isRemoteImage(partenaire.logo) ? (
                   <div>
                     <p className="text-sm text-ink-600 block mb-2">
                       <span className="font-semibold">Image:</span> {partenaire.logo}

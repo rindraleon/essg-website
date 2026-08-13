@@ -1,6 +1,5 @@
+import { RotateCcw, X } from 'lucide-react';
 import React from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import RestoreIcon from '@mui/icons-material/Restore';
 import type { PartenaireFilterOptions } from '../../types/partenaire.types';
 import { PARTENAIRE_TYPES } from '../../constants/partenaire.constants';
 import { Button } from '@/components/ui/button';
@@ -38,7 +37,7 @@ const PartenaireFilters: React.FC<PartenaireFiltersProps> = ({
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-semibold text-ink-700">Filtres avancés</span>
             <Button variant="ghost" size="icon-sm" onClick={onToggle}>
-              <CloseIcon className="h-4 w-4" />
+              <X className="h-4 w-4" />
             </Button>
           </div>
 
@@ -97,7 +96,7 @@ const PartenaireFilters: React.FC<PartenaireFiltersProps> = ({
           {activeFilterCount > 0 && (
             <div className="mt-3 flex justify-end">
               <Button size="sm" variant="destructive" onClick={onResetFilters}>
-                <RestoreIcon className="h-4 w-4 mr-2" />
+                <RotateCcw className="h-4 w-4 mr-2" />
                 Réinitialiser tout
               </Button>
             </div>

@@ -7,6 +7,7 @@ export interface ActualiteItem {
   date: string;
   statut: 'publie' | 'brouillon' | 'archive';
   image?: string;
+  galerie?: string[];
   resume?: string;
   enVedette?: boolean;
 }

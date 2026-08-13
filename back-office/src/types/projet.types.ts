@@ -9,6 +9,7 @@ export interface Projet {
   description: string;
   partenaires: string[];
   image: string;
+  galerie?: string[];
   latitude?: number;
   longitude?: number;
   ville?: string;

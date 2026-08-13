@@ -1,8 +1,5 @@
+import { Image, Mail, User as UserIcon, X } from 'lucide-react';
 import React from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { getImageUrl } from '../../utils/image.utils';
 import type { User } from '../../types';
 import { Button } from '@/components/ui/button';
@@ -84,7 +81,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-ink-800 to-ink-900">
                       <div className="text-center">
-                        <ImageOutlinedIcon className="mx-auto mb-2 h-12 w-12 text-ink-500" />
+                        <Image className="mx-auto mb-2 h-12 w-12 text-ink-500" />
                         <p className="text-sm text-ink-400">Aucune photo</p>
                       </div>
                     </div>
@@ -113,7 +110,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                 </h2>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Badge className="rounded-full bg-white text-ink-900">
-                    <PersonOutlineOutlinedIcon className="mr-1 h-3.5 w-3.5" />
+                    <UserIcon className="mr-1 h-3.5 w-3.5" />
                     {getRoleLabel(user.role)}
                   </Badge>
                 </div>
@@ -123,7 +120,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                 {user.email && (
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <div className="mb-2 flex items-center gap-2 text-white/80">
-                      <EmailOutlinedIcon className="h-4 w-4" />
+                      <Mail className="h-4 w-4" />
                       <span className="text-xs uppercase tracking-wide">Email</span>
                     </div>
                     <p className="text-base font-semibold text-white break-all">{user.email}</p>
@@ -165,7 +162,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                   className="h-10 w-10 shrink-0 rounded-full border border-ink-100 bg-white hover:bg-ink-100"
                   aria-label="Fermer"
                 >
-                  <CloseIcon className="h-4 w-4" />
+                  <X className="h-4 w-4" />
                 </Button>
               </div>
             </DialogHeader>

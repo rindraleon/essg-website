@@ -1,28 +1,29 @@
 /**
- * Utility function to build complete image URLs from backend paths
- *
- * Backend returns image paths like:
- * - /uploads/filename.jpg (for uploaded files)
- * - /images/default.jpg (for default images)
- * - http://... (for external URLs)
- *
- * This function converts them to complete URLs accessible from the back-office
+ * Construit une URL d'image complète à partir d'une référence backend.
+ * Les fichiers sont stockés dans MinIO et exposés via /media/...
  */
+
+function resolveApiBase(): string {
+  const raw =
+    (import.meta.env.VITE_API_BASE_URL as string | undefined) ||
+    (import.meta.env.VITE_APP_URL as string | undefined) ||
+    'http://localhost:3000';
+  return raw.replace(/\/$/, '').replace(/\/api$/, '');
+}
+
+export const isRemoteImage = (imagePath?: string | null): boolean => {
+  if (!imagePath) return false;
+  return (
+    imagePath.startsWith('http') ||
+    imagePath.startsWith('/media/') ||
+    imagePath.startsWith('/uploads/') ||
+    imagePath.startsWith('/images/')
+  );
+};
 
 export const getImageUrl = (imagePath: string): string => {
   if (!imagePath) return '';
-
-  // If already a complete URL, return as is
   if (imagePath.startsWith('http')) return imagePath;
-
-  // Get API base URL from environment or use default
-  const apiBaseUrl = import.meta.env.VITE_APP_URL || 'http://localhost:3000';
-
-  // Ensure the base URL has a protocol
-  const baseUrl = apiBaseUrl.startsWith('http')
-    ? apiBaseUrl.replace(/\/api\/?$/, '')
-    : `http://${apiBaseUrl}`.replace(/\/api\/?$/, '');
-
-  // Return complete URL
-  return `${baseUrl}${imagePath}`;
+  const baseUrl = resolveApiBase();
+  return `${baseUrl}${imagePath.startsWith('/') ? imagePath : `/${imagePath}`}`;
 };

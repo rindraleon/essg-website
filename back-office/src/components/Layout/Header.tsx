@@ -1,13 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { Bell, CircleHelp, LogOut, Mail, Menu, Settings, User, X } from 'lucide-react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import MailIcon from '@mui/icons-material/Mail';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import LogoutIcon from '@mui/icons-material/Logout';
-import SettingsIcon from '@mui/icons-material/Settings';
-import PersonIcon from '@mui/icons-material/Person';
 import { routesStatic } from '../../routes';
 import { useAuth } from '../../contexts/AuthContext';
 import { getImageUrl } from '../../utils/image.utils';
@@ -29,43 +22,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
-import { getRecentAdmissions } from '../../services/admissions.service';
-import { getRecentMessages } from '../../services/messages.service';
-import type { Admission } from '../../types/admission.types';
-import type { Message } from '../../services/messages.service';
+import { useRecentAdmissionsQuery, useRecentMessagesQuery } from '../../hooks/queries';
 
 const Header: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-  const [recentAdmissions, setRecentAdmissions] = useState<Admission[]>([]);
-  const [recentMessages, setRecentMessages] = useState<Message[]>([]);
   const navigate = useNavigate();
   const { isAuthenticated, user, username, logout } = useAuth();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      loadRecentAdmissions();
-      loadRecentMessages();
-    }
-  }, [isAuthenticated]);
-
-  const loadRecentAdmissions = async () => {
-    try {
-      const data = await getRecentAdmissions(4);
-      setRecentAdmissions(data);
-    } catch (error) {
-      console.error('Erreur lors du chargement des admissions récentes:', error);
-    }
-  };
-
-  const loadRecentMessages = async () => {
-    try {
-      const response = await getRecentMessages(4);
-      setRecentMessages(response.data);
-    } catch (error) {
-      console.error('Erreur lors du chargement des messages récents:', error);
-    }
-  };
+  const { data: recentAdmissions = [] } = useRecentAdmissionsQuery(4, isAuthenticated);
+  const { data: recentMessagesResponse } = useRecentMessagesQuery(4, isAuthenticated);
+  const recentMessages = recentMessagesResponse?.data ?? [];
 
   const handleLogoutClick = () => {
     setLogoutDialogOpen(true);
@@ -165,7 +131,7 @@ const Header: React.FC = () => {
                           >
                             {unreadMessagesCount}
                           </Badge>
-                          <MailIcon className="h-5 w-5" />
+                          <Mail className="h-5 w-5" />
                         </Button>
                       </DropdownMenuTrigger>
                     </TooltipTrigger>
@@ -240,7 +206,7 @@ const Header: React.FC = () => {
                           >
                             {pendingAdmissionsCount}
                           </Badge>
-                          <NotificationsIcon className="h-5 w-5" />
+                          <Bell className="h-5 w-5" />
                         </Button>
                       </DropdownMenuTrigger>
                     </TooltipTrigger>
@@ -308,7 +274,7 @@ const Header: React.FC = () => {
                           className="text-ink-700 hover:text-brand-600"
                           aria-label="aide"
                         >
-                          <HelpOutlineIcon className="h-5 w-5" />
+                          <CircleHelp className="h-5 w-5" />
                         </Button>
                       </DropdownMenuTrigger>
                     </TooltipTrigger>
@@ -365,11 +331,11 @@ const Header: React.FC = () => {
                   className="w-48 shadow-none ring-0 bg-white border border-ink-100"
                 >
                   <DropdownMenuItem onClick={() => navigate(routesStatic.profil)}>
-                    <PersonIcon className="h-4 w-4 mr-2" />
+                    <User className="h-4 w-4 mr-2" />
                     Mon profil
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <SettingsIcon className="h-4 w-4 mr-2" />
+                    <Settings className="h-4 w-4 mr-2" />
                     Paramètres
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -377,7 +343,7 @@ const Header: React.FC = () => {
                     onClick={handleLogoutClick}
                     className="text-red-600 focus:text-red-600"
                   >
-                    <LogoutIcon className="h-4 w-4 mr-2" />
+                    <LogOut className="h-4 w-4 mr-2" />
                     Déconnexion
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -394,7 +360,7 @@ const Header: React.FC = () => {
               className="text-ink-700"
               aria-label="Toggle menu"
             >
-              {open ? <CloseIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
+              {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
         </div>
@@ -507,6 +473,19 @@ const Header: React.FC = () => {
               >
                 Actualités
               </NavLink>
+              {user?.role === 'admin' && (
+                <NavLink
+                  to={routesStatic.activityLogs}
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) =>
+                    `py-2.5 px-3 rounded-md text-sm font-medium ${
+                      isActive ? 'bg-brand-50 text-brand-600' : 'text-ink-700 hover:bg-ink-50'
+                    }`
+                  }
+                >
+                  Journal des actions
+                </NavLink>
+              )}
             </nav>
 
             {/* Actions mobile */}
@@ -519,7 +498,7 @@ const Header: React.FC = () => {
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
-                    <NotificationsIcon fontSize="small" />
+                    <Bell className="size-4" />
                     <span>Notifications</span>
                     <Badge variant="destructive" className="ml-auto px-1.5 py-0.5 text-xs">
                       {pendingAdmissionsCount}
@@ -531,7 +510,7 @@ const Header: React.FC = () => {
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
-                    <MailIcon fontSize="small" />
+                    <Mail className="size-4" />
                     <span>Messages</span>
                     <Badge variant="default" className="ml-auto px-1.5 py-0.5 text-xs">
                       {unreadMessagesCount}
@@ -543,7 +522,7 @@ const Header: React.FC = () => {
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
-                    <HelpOutlineIcon fontSize="small" />
+                    <CircleHelp className="size-4" />
                     <span>Aide</span>
                   </button>
 
@@ -555,7 +534,7 @@ const Header: React.FC = () => {
                     }}
                     className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
-                    <PersonIcon fontSize="small" />
+                    <User className="size-4" />
                     <span>Mon profil</span>
                   </button>
 
@@ -564,7 +543,7 @@ const Header: React.FC = () => {
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
-                    <SettingsIcon fontSize="small" />
+                    <Settings className="size-4" />
                     <span>Paramètres</span>
                   </button>
 
@@ -573,7 +552,7 @@ const Header: React.FC = () => {
                     onClick={handleLogoutClick}
                     className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-red-600 hover:bg-ink-50"
                   >
-                    <LogoutIcon fontSize="small" />
+                    <LogOut className="size-4" />
                     <span>Déconnexion</span>
                   </button>
                 </div>
@@ -610,7 +589,7 @@ const Header: React.FC = () => {
               onClick={handleLogoutConfirm}
               className="bg-red-600 hover:bg-red-700 text-white"
             >
-              <LogoutIcon className="h-4 w-4 mr-2" />
+              <LogOut className="h-4 w-4 mr-2" />
               Se déconnecter
             </Button>
           </DialogFooter>

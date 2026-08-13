@@ -1,9 +1,7 @@
+import { Card, CardContent } from '@/components/compat/mui';
+import { ArrowRight, CircleHelp } from 'lucide-react';
 import React from 'react';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+import Button from '@/components/compat/button';
 import { Link as RouterLink } from 'react-router-dom';
 import { GREEN } from '../../constants/colors';
 import type { ContactCardProps } from '../../types/faq.types';
@@ -21,12 +19,6 @@ const ContactCard: React.FC<ContactCardProps> = (props: Readonly<ContactCardProp
 
   return (
     <Card
-      sx={{
-        borderRadius: '1.25rem',
-        border: `1px solid ${GREEN[200]}`,
-        backgroundColor: GREEN[50],
-        boxShadow: '0 1px 2px rgba(15, 33, 30, 0.04), 0 8px 24px -12px rgba(46, 106, 95, 0.2)',
-      }}
     >
       <CardContent className="p-6 sm:p-8">
         <div className="flex items-start gap-4">
@@ -34,7 +26,7 @@ const ContactCard: React.FC<ContactCardProps> = (props: Readonly<ContactCardProp
             className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
             style={{ backgroundColor: GREEN[100] }}
           >
-            {icon ?? <HelpOutlineRoundedIcon sx={{ fontSize: 28, color: GREEN[900] }} />}
+            {icon ?? <CircleHelp />}
           </div>
 
           <div className="flex-1">
@@ -47,18 +39,7 @@ const ContactCard: React.FC<ContactCardProps> = (props: Readonly<ContactCardProp
                 component={RouterLink}
                 to={primaryLink}
                 variant="contained"
-                endIcon={<ArrowForwardRoundedIcon />}
-                sx={{
-                  borderRadius: '0.75rem',
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  backgroundColor: GREEN[900],
-                  boxShadow: 'none',
-                  '&:hover': {
-                    backgroundColor: GREEN[700],
-                    boxShadow: 'none',
-                  },
-                }}
+                endIcon={<ArrowRight className="size-4" />}
               >
                 {primaryLabel}
               </Button>
@@ -67,18 +48,6 @@ const ContactCard: React.FC<ContactCardProps> = (props: Readonly<ContactCardProp
                 component={RouterLink}
                 to={secondaryLink}
                 variant="outlined"
-                sx={{
-                  borderRadius: '0.75rem',
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  borderColor: GREEN[900],
-                  color: GREEN[600],
-                  backgroundColor: '#ffffff',
-                  '&:hover': {
-                    borderColor: GREEN[700],
-                    backgroundColor: GREEN[50],
-                  },
-                }}
               >
                 {secondaryLabel}
               </Button>

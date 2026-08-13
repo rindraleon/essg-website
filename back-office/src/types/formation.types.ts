@@ -35,7 +35,7 @@ export interface FormationFilterOptions {
 export interface FormationFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: FormationFormData) => void;
+  onSubmit: (data: FormationFormData) => void | Promise<void>;
   initialData?: Formation | null;
   mode: 'create' | 'edit';
 }

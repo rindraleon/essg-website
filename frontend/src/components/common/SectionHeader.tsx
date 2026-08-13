@@ -17,7 +17,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   maxWidth = 'max-w-2xl',
 }) => {
   return (
-    <div className={`mb-12 flex flex-col ${center ? 'items-center text-center' : 'items-start'}`}>
+    <div data-gsap="up" className={`mb-12 flex flex-col ${center ? 'items-center text-center' : 'items-start'}`}>
       <div className={center ? `text-center ${maxWidth}` : 'max-w-2xl'}>
         {eyebrow && (
           <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">

@@ -1,5 +1,4 @@
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FloatingInput } from '@/components/ui/floating-input';
 import { Label } from '@/components/ui/label';
@@ -29,7 +28,7 @@ const DynamicListField = ({
         <Label className="text-sm font-medium text-ink-700">{label}</Label>
 
         <Button size="sm" onClick={onAdd} className="normal-case">
-          <AddIcon className="h-4 w-4 mr-1" />
+          <Plus className="h-4 w-4 mr-1" />
           Ajouter
         </Button>
       </div>
@@ -51,7 +50,7 @@ const DynamicListField = ({
                 onClick={() => onRemove(index)}
                 className="mt-1 h-9 w-9"
               >
-                <DeleteIcon className="h-4 w-4" />
+                <Trash2 className="h-4 w-4" />
               </Button>
             )}
           </div>

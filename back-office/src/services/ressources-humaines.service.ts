@@ -1,63 +1,33 @@
-import axiosConfig from '../config/axios.config';
+import { apiClient } from '../api/client/http';
 import type { RessourceHumaineItem } from '../types/ressource-humaine.types';
 
 const getAllRessourcesHumaines = async (): Promise<RessourceHumaineItem[]> => {
-  try {
-    const response = await axiosConfig.get<{ data: RessourceHumaineItem[] }>(
-      '/ressources-humaines'
-    );
-    return response.data.data;
-  } catch (error) {
-    console.error('Error fetching ressources humaines:', error);
-    throw error;
-  }
+  const result = await apiClient.getList<RessourceHumaineItem>('/ressources-humaines', {
+    page: 1,
+    limit: 100,
+  });
+  return result.data;
 };
 
 const getRessourceHumaineById = async (id: string): Promise<RessourceHumaineItem> => {
-  try {
-    const response = await axiosConfig.get<RessourceHumaineItem>(`/ressources-humaines/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching ressource humaine:', error);
-    throw error;
-  }
+  return apiClient.get<RessourceHumaineItem>(`/ressources-humaines/${id}`);
 };
 
 const createRessourceHumaine = async (
-  data: Partial<RessourceHumaineItem>
+  data: Partial<RessourceHumaineItem>,
 ): Promise<RessourceHumaineItem> => {
-  try {
-    const response = await axiosConfig.post<RessourceHumaineItem>('/ressources-humaines', data);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating ressource humaine:', error);
-    throw error;
-  }
+  return apiClient.post<RessourceHumaineItem>('/ressources-humaines', data);
 };
 
 const updateRessourceHumaine = async (
   id: string,
-  data: Partial<RessourceHumaineItem>
+  data: Partial<RessourceHumaineItem>,
 ): Promise<RessourceHumaineItem> => {
-  try {
-    const response = await axiosConfig.put<RessourceHumaineItem>(
-      `/ressources-humaines/${id}`,
-      data
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Error updating ressource humaine:', error);
-    throw error;
-  }
+  return apiClient.put<RessourceHumaineItem>(`/ressources-humaines/${id}`, data);
 };
 
 const deleteRessourceHumaine = async (id: string): Promise<void> => {
-  try {
-    await axiosConfig.delete(`/ressources-humaines/${id}`);
-  } catch (error) {
-    console.error('Error deleting ressource humaine:', error);
-    throw error;
-  }
+  await apiClient.delete(`/ressources-humaines/${id}`);
 };
 
 export {

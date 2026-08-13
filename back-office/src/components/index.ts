@@ -17,6 +17,7 @@ export { default as ConfirmDialog } from './common/ConfirmDialog';
 export { default as PageHeader } from './common/PageHeader';
 export { default as SearchInput } from './common/SearchInput';
 export { default as DynamicListField } from './common/DynamicListField';
+export { default as MultiImageUpload } from './common/MultiImageUpload';
 export { default as StatsCard } from './common/StatCard';
 
 // Actualites components
@@ -58,3 +59,7 @@ export type { UserFilters } from './UsersComponent/UsersFilter';
 
 // Admission components
 export { default as AdmissionFilters } from './AdmissionComponents/AdmissionFilters';
+
+// Contact / messages
+export { default as ContactFilters } from './MessageComponents/ContactFilters';
+export type { ContactFilterValues } from './MessageComponents/ContactFilters';

@@ -1,6 +1,5 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
-import KeyboardArrowLeftRoundedIcon from '@mui/icons-material/KeyboardArrowLeftRounded';
-import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
 
 interface ScrollableCardGridProps {
   children: React.ReactNode;
@@ -52,7 +51,7 @@ const ScrollableCardGrid: React.FC<ScrollableCardGridProps> = ({
           className="hidden lg:flex items-center justify-center rounded-full border border-ink-100 bg-white p-2 text-ink-700 shadow-card transition-all duration-200 hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-ink-100 disabled:hover:bg-white disabled:hover:text-ink-700"
           aria-label="Défiler vers la gauche"
         >
-          <KeyboardArrowLeftRoundedIcon sx={{ fontSize: 28 }} />
+          <ChevronLeft />
         </button>
 
         <button
@@ -61,7 +60,7 @@ const ScrollableCardGrid: React.FC<ScrollableCardGridProps> = ({
           className="hidden lg:flex items-center justify-center rounded-full border border-ink-100 bg-white p-2 text-ink-700 shadow-card transition-all duration-200 hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-ink-100 disabled:hover:bg-white disabled:hover:text-ink-700"
           aria-label="Défiler vers la droite"
         >
-          <KeyboardArrowRightRoundedIcon sx={{ fontSize: 28 }} />
+          <ChevronRight />
         </button>
       </div>
 

@@ -1,7 +1,5 @@
+import { CircleAlert, Info, TriangleAlert } from 'lucide-react';
 import React from 'react';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import InfoIcon from '@mui/icons-material/Info';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
@@ -30,13 +28,13 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     const iconClass = 'h-5 w-5';
     switch (severity) {
       case 'error':
-        return <ErrorOutlineIcon className={`${iconClass} text-red-500`} />;
+        return <CircleAlert className={`${iconClass} text-red-500`} />;
       case 'warning':
-        return <WarningAmberIcon className={`${iconClass} text-sage-500`} />;
+        return <TriangleAlert className={`${iconClass} text-sage-500`} />;
       case 'info':
-        return <InfoIcon className={`${iconClass} text-brand-500`} />;
+        return <Info className={`${iconClass} text-brand-500`} />;
       default:
-        return <WarningAmberIcon className={`${iconClass} text-sage-500`} />;
+        return <TriangleAlert className={`${iconClass} text-sage-500`} />;
     }
   };
 

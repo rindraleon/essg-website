@@ -1,13 +1,9 @@
+import { ArrowLeft, ArrowRight, CircleCheck, Globe, Info, Pencil, Upload } from 'lucide-react';
 // src/components/actualites/ActualiteForm.tsx
 import React, { useRef, useState, useEffect } from 'react';
-import InfoIcon from '@mui/icons-material/Info';
-import EditIcon from '@mui/icons-material/Edit';
-import PublicIcon from '@mui/icons-material/Public';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { toast } from 'sonner';
 import { uploadImage } from '../../services';
+import { getImageUrl } from '../../utils/image.utils';
 import type { ActualiteItem, ActualiteFormData } from '../../types/actualite.types';
 import { categories, statuts } from '../../data/mockData';
 import { useFormValidation } from '../../hooks/useFormValidation';
@@ -24,11 +20,12 @@ import {
 import { FloatingInput } from '@/components/ui/floating-input';
 import { FloatingTextarea } from '@/components/ui/floating-textarea';
 import { FloatingSelect } from '@/components/ui/floating-select';
+import MultiImageUpload from '../common/MultiImageUpload';
 
 interface ActualiteFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: ActualiteFormData) => void;
+  onSubmit: (data: ActualiteFormData) => void | Promise<void>;
   initialData?: ActualiteItem | null;
   mode: 'create' | 'edit';
 }
@@ -37,17 +34,17 @@ const STEPS = [
   {
     id: 0,
     label: 'Informations',
-    icon: <InfoIcon className="h-4 w-4" />,
+    icon: <Info className="h-4 w-4" />,
   },
   {
     id: 1,
     label: 'Contenu',
-    icon: <EditIcon className="h-4 w-4" />,
+    icon: <Pencil className="h-4 w-4" />,
   },
   {
     id: 2,
     label: 'Publication',
-    icon: <PublicIcon className="h-4 w-4" />,
+    icon: <Globe className="h-4 w-4" />,
   },
 ];
 
@@ -67,6 +64,7 @@ const defaultFormData: ActualiteFormData = {
   date: new Date().toISOString().split('T')[0],
   statut: 'brouillon',
   image: '',
+  galerie: [],
   resume: '',
   enVedette: false,
 };
@@ -112,39 +110,44 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
     stepFields: STEP_FIELDS_MAP,
   });
 
+  const initialId = initialData?.id ?? '';
+
   useEffect(() => {
-    if (open) {
-      if (mode === 'edit' && initialData) {
-        const imageUrl = initialData.image || '';
-        setFormData({
-          titre: initialData.titre,
-          contenu: initialData.contenu,
-          categorie: initialData.categorie,
-          auteur: initialData.auteur,
-          date: initialData.date,
-          statut: initialData.statut,
-          image: imageUrl,
-          resume: (initialData as any).resume || '',
-          enVedette: (initialData as any).enVedette || true,
-        });
-        setImagePreview(imageUrl);
-      } else {
-        resetForm();
-        setImagePreview('');
-      }
+    if (!open) return;
+    if (mode === 'edit' && initialData) {
+      const imageUrl = initialData.image || '';
+      setFormData({
+        titre: initialData.titre,
+        contenu: initialData.contenu,
+        categorie: initialData.categorie,
+        auteur: initialData.auteur,
+        date: initialData.date,
+        statut: initialData.statut,
+        image: imageUrl,
+        galerie: initialData.galerie ?? [],
+        resume: initialData.resume || '',
+        enVedette: initialData.enVedette ?? false,
+      });
+      setImagePreview(imageUrl ? getImageUrl(imageUrl) : '');
+    } else {
+      resetForm();
+      setImagePreview('');
     }
-  }, [open, mode, initialData, setFormData, resetForm]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, mode, initialId]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingImage(true);
     try {
-      const url = await uploadImage(file);
+      const url = await uploadImage(file, 'news');
       handleChange('image', url);
-      setImagePreview(url);
+      setImagePreview(getImageUrl(url));
+      toast.success('Image téléversée avec succès');
     } catch (err) {
-      console.error("Erreur lors de l'upload:", err);
+      const message = err instanceof Error ? err.message : "Échec du téléversement de l'image.";
+      toast.error(message);
     } finally {
       setUploadingImage(false);
     }
@@ -172,44 +175,43 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
     }
   };
 
-  const handleSubmit = () => {
-    if (validateAllSteps()) onSubmit(formData);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (submitting || !validateAllSteps()) return;
+    setSubmitting(true);
+    try {
+      await onSubmit(formData);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const dialogTitle = mode === 'create' ? 'Nouvelle actualité' : "Modifier l'actualité";
 
   /* ─── Step 0 : Informations générales ─── */
   const renderStep0 = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <FloatingInput
-          id="titre"
-          label="Titre *"
-          value={formData.titre}
-          onChange={(e) => handleChange('titre', e.target.value)}
-          onBlur={() => handleBlur('titre')}
-          error={errors.titre}
-        />
+    <div className="space-y-1">
+      <FloatingInput
+        id="titre"
+        label="Titre *"
+        autoComplete="off"
+        value={formData.titre}
+        onChange={(e) => handleChange('titre', e.target.value)}
+        onBlur={() => handleBlur('titre')}
+        error={errors.titre}
+      />
 
+      <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
         <FloatingInput
           id="auteur"
           label="Auteur *"
+          autoComplete="name"
           value={formData.auteur}
           onChange={(e) => handleChange('auteur', e.target.value)}
           onBlur={() => handleBlur('auteur')}
           error={errors.auteur}
         />
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <FloatingSelect
-          label="Catégorie *"
-          value={formData.categorie}
-          onValueChange={(v, _eventDetails) => v && handleChange('categorie', v)}
-          options={categories.map((cat) => ({ label: cat, value: cat }))}
-          error={errors.categorie}
-        />
-
         <FloatingInput
           id="date"
           label="Date *"
@@ -220,6 +222,14 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
           error={errors.date}
         />
       </div>
+
+      <FloatingSelect
+        label="Catégorie *"
+        value={formData.categorie}
+        onValueChange={(v, _eventDetails) => v && handleChange('categorie', v)}
+        options={categories.map((cat) => ({ label: cat, value: cat }))}
+        error={errors.categorie}
+      />
     </div>
   );
 
@@ -254,7 +264,7 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
       {/* Image */}
       <div className="space-y-2">
         <Label className="text-xs font-semibold text-ink-600 uppercase tracking-wide">
-          Image de l'actualité
+          Image de couverture
         </Label>
         <div className="flex items-start gap-3">
           {imagePreview && (
@@ -281,7 +291,7 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
               size="sm"
               className="gap-1.5 bg-white text-xs h-8"
             >
-              <CloudUploadIcon className="h-3.5 w-3.5" />
+              <Upload className="h-3.5 w-3.5" />
               {uploadingImage ? 'Upload...' : 'Choisir une image'}
             </Button>
             <span className="text-[10px] text-ink-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
@@ -289,8 +299,16 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
         </div>
       </div>
 
+      <MultiImageUpload
+        label="Galerie de l'actualité"
+        folder="news"
+        value={formData.galerie ?? []}
+        onChange={(urls) => handleChange('galerie', urls)}
+        disabled={uploadingImage}
+      />
+
       {/* Statut + En vedette */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
         <FloatingSelect
           label="Statut *"
           value={formData.statut}
@@ -299,7 +317,7 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
           error={errors.statut}
         />
 
-        <div className="flex items-center gap-2 pt-6">
+        <div className="flex h-12 items-center gap-2 pt-2">
           <Checkbox
             id="enVedette"
             checked={formData.enVedette}
@@ -362,7 +380,7 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
                       }
                     `}
                   >
-                    {isCompleted ? <CheckCircleIcon className="h-4 w-4" /> : step.icon}
+                    {isCompleted ? <CircleCheck className="h-4 w-4" /> : step.icon}
                     <span className="hidden sm:inline">{step.label}</span>
                     <span className="sm:hidden">{index + 1}</span>
                   </button>
@@ -388,6 +406,7 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
+                disabled={submitting}
                 className="text-ink-500 h-8"
               >
                 Annuler
@@ -399,9 +418,10 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={handleBack}
+                  disabled={submitting}
                   className="gap-1 h-8"
                 >
-                  <ArrowBackIcon className="h-3.5 w-3.5" />
+                  <ArrowLeft className="h-3.5 w-3.5" />
                   Précédent
                 </Button>
               )}
@@ -411,20 +431,22 @@ const ActualiteForm: React.FC<ActualiteFormProps> = ({
                   type="button"
                   size="sm"
                   onClick={handleNext}
+                  disabled={submitting}
                   className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
                   Suivant
-                  <ArrowForwardIcon className="h-3.5 w-3.5" />
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               ) : (
                 <Button
                   type="button"
                   size="sm"
                   onClick={handleSubmit}
+                  disabled={submitting}
                   className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
-                  <CheckCircleIcon className="h-3.5 w-3.5" />
-                  {mode === 'create' ? 'Créer' : 'Enregistrer'}
+                  <CircleCheck className="h-3.5 w-3.5" />
+                  {submitting ? 'Enregistrement...' : mode === 'create' ? 'Créer' : 'Enregistrer'}
                 </Button>
               )}
             </div>

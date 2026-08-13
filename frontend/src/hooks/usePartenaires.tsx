@@ -1,67 +1,35 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import partenaireService from '../services/partenaire.service';
-import type { PartenaireItem } from '../types/partenaire.types';
 
-/** Hook pour tous les partenaires */
 export default function usePartenaires() {
-  const [partenaires, setPartenaires] = useState<PartenaireItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const query = useQuery({
+    queryKey: ['partenaires', 'list'],
+    queryFn: () => partenaireService.findAll(),
+  });
 
-  const fetch = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await partenaireService.findAll();
-      setPartenaires(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur inconnue');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
-
-  return { partenaires, loading, error, refetch: fetch };
+  return {
+    partenaires: query.data ?? [],
+    loading: query.isLoading,
+    error: query.error instanceof Error ? query.error.message : query.error ? 'Erreur inconnue' : null,
+    refetch: query.refetch,
+  };
 }
 
-/** Hook pour un partenaire par slug */
 export function usePartenaireBySlug(slug: string) {
-  const [partenaire, setPartenaire] = useState<PartenaireItem | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const query = useQuery({
+    queryKey: ['partenaires', 'slug', slug],
+    queryFn: () => {
+      const isNumeric = /^\d+$/.test(slug);
+      return isNumeric
+        ? partenaireService.findOne(Number(slug))
+        : partenaireService.findBySlug(slug);
+    },
+    enabled: Boolean(slug),
+  });
 
-  useEffect(() => {
-    if (!slug) return;
-    let cancelled = false;
-
-    const load = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        // Si le slug est un nombre, utiliser findOne au lieu de findBySlug
-        const isNumeric = /^\d+$/.test(slug);
-        const data = isNumeric 
-          ? await partenaireService.findOne(Number(slug))
-          : await partenaireService.findBySlug(slug);
-        
-        if (!cancelled) setPartenaire(data);
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Erreur inconnue');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [slug]);
-
-  return { partenaire, loading, error };
+  return {
+    partenaire: query.data ?? null,
+    loading: query.isLoading,
+    error: query.error instanceof Error ? query.error.message : query.error ? 'Erreur inconnue' : null,
+  };
 }

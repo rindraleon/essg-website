@@ -1,5 +1,5 @@
+import { Plus } from 'lucide-react';
 import React from 'react';
-import AddIcon from '@mui/icons-material/Add';
 import { Button } from '@/components/ui/button';
 
 interface PageHeaderProps {
@@ -28,7 +28,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           onClick={onAction}
           className="h-10 shrink-0 rounded-xl px-4 shadow-[0_10px_24px_-10px_rgba(46,106,95,0.55)]"
         >
-          {actionIcon || <AddIcon className="h-4 w-4" />}
+          {actionIcon || <Plus className="h-4 w-4" />}
           {actionLabel}
         </Button>
       )}

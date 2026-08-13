@@ -1,30 +1,22 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import NewspaperRoundedIcon from '@mui/icons-material/NewspaperRounded';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import TextField from '@mui/material/TextField';
-import Skeleton from '@mui/material/Skeleton';
-import type { SelectChangeEvent } from '@mui/material/Select';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Newspaper, Search, X } from 'lucide-react';
 import {
   CtaSection,
-  EmptyState,
   PageHero,
   Breadcrumb,
   ActualiteCard,
   FilterToolbar,
 } from '../../components';
-import { GREEN } from '../../constants/colors';
+import QueryState from '../../components/common/QueryState';
+import { Input } from '../../components/ui/input';
+import { Select } from '../../components/ui/select';
+import { Skeleton } from '../../components/ui/skeleton';
 import { useActualites, useScrollToTop } from '../../hooks';
 import type { Actualite } from '../../types/actualite.types';
 
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1504711434969-e33886168d6c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
+import { SITE_HERO_IMAGE } from '../../constants/media';
+
+const HERO_IMAGE = SITE_HERO_IMAGE;
 
 const CATEGORIES = [
   { value: 'all', label: 'Toutes les catégories' },
@@ -34,18 +26,15 @@ const CATEGORIES = [
   { value: 'Vie Étudiante', label: 'Vie Étudiante' },
 ];
 
-const ActualitesPage: React.FC = () => {
+const ActualitesPage = () => {
   useScrollToTop();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [categorieFilter, setCategorieFilter] = useState('all');
   const [showSearch, setShowSearch] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
-
-  // Charger TOUTES les actualités (limit élevé)
-  const { data, loading, error } = useActualites(1, 100);
+  const { data, loading, error, refetch } = useActualites(1, 100);
   const actualites: Actualite[] = useMemo(() => data?.data ?? [], [data]);
-
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -54,7 +43,6 @@ const ActualitesPage: React.FC = () => {
     }
   }, [showSearch]);
 
-  // Filtrage côté client
   const filteredActualites = useMemo(() => {
     const search = searchTerm.toLowerCase();
     return actualites.filter((actu) => {
@@ -68,10 +56,6 @@ const ActualitesPage: React.FC = () => {
   const resultCount = filteredActualites.length;
   const resultText = `${resultCount} actualité${resultCount > 1 ? 's' : ''}`;
 
-  const handleCategorieChange = (event: SelectChangeEvent) => {
-    setCategorieFilter(event.target.value);
-  };
-
   const handleResetFilters = () => {
     setSearchTerm('');
     setCategorieFilter('all');
@@ -79,29 +63,12 @@ const ActualitesPage: React.FC = () => {
     setShowFilters(false);
   };
 
-  const handleToggleSearch = () => {
-    setShowSearch((prev) => !prev);
-    if (showSearch) setSearchTerm('');
-  };
-
   const activeFilterChips = [
     ...(searchTerm
-      ? [
-          {
-            key: 'search',
-            label: `Recherche: "${searchTerm}"`,
-            onDelete: () => setSearchTerm(''),
-          },
-        ]
+      ? [{ key: 'search', label: `Recherche: "${searchTerm}"`, onDelete: () => setSearchTerm('') }]
       : []),
     ...(categorieFilter !== 'all'
-      ? [
-          {
-            key: 'categorie',
-            label: `Catégorie: ${categorieFilter}`,
-            onDelete: () => setCategorieFilter('all'),
-          },
-        ]
+      ? [{ key: 'categorie', label: `Catégorie: ${categorieFilter}`, onDelete: () => setCategorieFilter('all') }]
       : []),
   ];
 
@@ -110,7 +77,7 @@ const ActualitesPage: React.FC = () => {
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Actualités ESSG"
-        badgeIcon={<NewspaperRoundedIcon />}
+        badgeIcon={<Newspaper className="size-4" />}
         badgeLabel="ESSG — Vie de l'école"
         title="Actualités"
         description="Suivez la vie de l'ESSG : événements, recherche, partenariats et réussites de nos étudiants."
@@ -133,113 +100,82 @@ const ActualitesPage: React.FC = () => {
         searchEnabled
         showSearch={showSearch}
         searchIsActive={searchTerm !== ''}
-        onToggleSearch={handleToggleSearch}
+        onToggleSearch={() => {
+          setShowSearch((prev) => !prev);
+          if (showSearch) setSearchTerm('');
+        }}
         searchContent={
-          <TextField
-            inputRef={searchInputRef}
-            fullWidth
-            placeholder="Rechercher une actualité..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchRoundedIcon />
-                </InputAdornment>
-              ),
-              endAdornment: searchTerm && (
-                <InputAdornment position="end">
-                  <IconButton onClick={() => setSearchTerm('')} size="small">
-                    <CloseRoundedIcon fontSize="small" />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '0.75rem',
-                '&.Mui-focused fieldset': {
-                  borderColor: GREEN[600],
-                },
-              },
-            }}
-          />
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-brand-600" />
+            <Input
+              ref={searchInputRef}
+              placeholder="Rechercher une actualité..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9 pr-9"
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => setSearchTerm('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400 hover:text-ink-700"
+                aria-label="Effacer la recherche"
+              >
+                <X className="size-4" />
+              </button>
+            )}
+          </div>
         }
       >
-        {/* Filtre catégorie */}
-        <div className="flex gap-3 flex-wrap">
-          <FormControl size="small" sx={{ minWidth: 200 }}>
-            <InputLabel>Catégorie</InputLabel>
-            <Select
-              value={categorieFilter}
-              label="Catégorie"
-              onChange={handleCategorieChange}
-              sx={{ borderRadius: '0.75rem' }}
-            >
-              {CATEGORIES.map((item) => (
-                <MenuItem key={item.value} value={item.value}>
-                  {item.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
+        <Select
+          label="Catégorie"
+          value={categorieFilter}
+          onChange={(e) => setCategorieFilter(e.target.value)}
+        >
+          {CATEGORIES.map((item) => (
+            <option key={item.value} value={item.value}>
+              {item.label}
+            </option>
+          ))}
+        </Select>
       </FilterToolbar>
 
       <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Erreur */}
-          {error && (
-            <div className="text-center py-10 text-red-600">
-              <p>Erreur : {error}</p>
-            </div>
-          )}
-
-          {/* Skeletons de chargement */}
-          {loading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="rounded-2xl overflow-hidden border border-ink-100 shadow-card"
-                >
-                  <Skeleton variant="rectangular" height={200} />
-                  <div className="p-5 space-y-3">
-                    <Skeleton variant="text" width="40%" />
-                    <Skeleton variant="text" width="80%" />
-                    <Skeleton variant="text" width="60%" />
-                    <Skeleton variant="text" width="90%" />
-                    <Skeleton variant="text" width="90%" />
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <QueryState
+            loading={loading}
+            error={error}
+            empty={!loading && !error && filteredActualites.length === 0}
+            onRetry={refetch}
+            emptyTitle="Aucune actualité trouvée"
+            emptyDescription="Essayez de modifier vos critères de recherche ou de réinitialiser les filtres."
+            onEmptyAction={handleResetFilters}
+            skeleton={
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="overflow-hidden rounded-2xl border border-ink-100 shadow-card">
+                    <Skeleton className="h-48 w-full rounded-none" />
+                    <div className="space-y-3 p-5">
+                      <Skeleton className="h-4 w-1/3" />
+                      <Skeleton className="h-5 w-4/5" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
                   </div>
-                </div>
+                ))}
+              </div>
+            }
+          >
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredActualites.map((actu) => (
+                <ActualiteCard key={actu.id} actualite={actu} />
               ))}
             </div>
-          )}
-
-          {/* Contenu */}
-          {!loading && !error && (
-            <>
-              {filteredActualites.length === 0 ? (
-                <EmptyState
-                  icon={<NewspaperRoundedIcon />}
-                  title="Aucune actualité trouvée"
-                  description="Essayez de modifier vos critères de recherche ou de réinitialiser les filtres."
-                  onAction={handleResetFilters}
-                />
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredActualites.map((actu) => (
-                    <ActualiteCard key={actu.id} actualite={actu} />
-                  ))}
-                </div>
-              )}
-            </>
-          )}
+          </QueryState>
         </div>
       </section>
 
       <CtaSection
-        icon={<NewspaperRoundedIcon />}
+        icon={<Newspaper className="size-10 text-brand-400" />}
         title="Restez connecté avec l'ESSG"
         description="Abonnez-vous à notre newsletter pour ne rien manquer de l'actualité de l'école."
         primaryLabel="S'abonner"

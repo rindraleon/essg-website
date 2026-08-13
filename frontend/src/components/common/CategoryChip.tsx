@@ -1,39 +1,30 @@
-import React from 'react';
-import Chip from '@mui/material/Chip';
-import type { SxProps } from '@mui/material';
+import { Badge } from '../ui/badge';
+import { cn } from '@/lib/utils';
 
 interface CategoryChipProps {
   category: string;
   size?: 'small' | 'medium';
-  sx?: SxProps;
+  className?: string;
 }
 
-/**
- * Couleurs de catégories harmonisées avec la charte ESSG :
- * tons doux en fond, teintes soutenues en texte, lisibles (WCAG AA).
- */
-const categoryColors: Record<string, { backgroundColor: string; color: string }> = {
-  Événement: { backgroundColor: '#eef4df', color: '#4f6834' },
-  Partenariat: { backgroundColor: '#fef3c7', color: '#92400e' },
-  Recherche: { backgroundColor: '#d9ece7', color: '#27564e' },
-  'Vie Étudiante': { backgroundColor: '#fce7f3', color: '#9d174d' },
+const categoryColors: Record<string, string> = {
+  Événement: 'border-sage-200 bg-sage-50 text-sage-800',
+  Partenariat: 'border-amber-200 bg-amber-50 text-amber-800',
+  Recherche: 'border-brand-200 bg-brand-50 text-brand-800',
+  'Vie Étudiante': 'border-pink-200 bg-pink-50 text-pink-800',
 };
 
-const CategoryChip: React.FC<CategoryChipProps> = ({ category, size = 'small', sx }) => {
-  const colors = categoryColors[category] || { backgroundColor: '#eef2ff', color: '#4338ca' };
-
+const CategoryChip = ({ category, size = 'small', className }: CategoryChipProps) => {
   return (
-    <Chip
-      label={category}
-      size={size}
-      sx={{
-        backgroundColor: colors.backgroundColor,
-        color: colors.color,
-        fontWeight: 600,
-        fontSize: size === 'small' ? '0.7rem' : '0.8rem',
-        ...sx,
-      }}
-    />
+    <Badge
+      className={cn(
+        categoryColors[category] || 'border-indigo-100 bg-indigo-50 text-indigo-800',
+        size === 'medium' && 'text-[0.8rem] px-3 py-1',
+        className,
+      )}
+    >
+      {category}
+    </Badge>
   );
 };
 

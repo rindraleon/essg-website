@@ -1,7 +1,8 @@
+import { Trash2, Upload } from 'lucide-react';
 import React, { useRef, useState, useEffect } from 'react';
-import { Delete, CloudUpload } from '@mui/icons-material';
 import { toast } from 'sonner';
 import { getImageUrl } from '../../utils/image.utils';
+import { toUpperName } from '../../utils/slug.utils';
 import { uploadAvatar } from '../../services';
 import type { User, UserFormData } from '../../types';
 import { useFormValidation } from '../../hooks/useFormValidation';
@@ -21,7 +22,7 @@ import { FloatingSelect } from '@/components/ui/floating-select';
 interface UsersFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: UserFormData) => void;
+  onSubmit: (data: UserFormData) => void | Promise<void>;
   initialData: User | null;
   mode: 'create' | 'edit';
 }
@@ -65,26 +66,28 @@ const UsersForm: React.FC<UsersFormProps> = ({ open, onClose, onSubmit, initialD
       },
     });
 
+  const initialId = initialData?.id ?? '';
+
   useEffect(() => {
-    if (open) {
-      if (mode === 'edit' && initialData) {
-        setFormData({
-          email: initialData.email,
-          prenom: initialData.prenom,
-          nom: initialData.nom,
-          role: initialData.role,
-          estActif: initialData.estActif,
-          avatar: initialData.avatar,
-          motDePasse: '',
-        });
-        setAvatarPreview(initialData.avatar ? getImageUrl(initialData.avatar) : null);
-      } else {
-        resetForm();
-        setAvatarPreview(null);
-        setAvatarFile(null);
-      }
+    if (!open) return;
+    if (mode === 'edit' && initialData) {
+      setFormData({
+        email: initialData.email,
+        prenom: initialData.prenom,
+        nom: initialData.nom,
+        role: initialData.role,
+        estActif: initialData.estActif,
+        avatar: initialData.avatar,
+        motDePasse: '',
+      });
+      setAvatarPreview(initialData.avatar ? getImageUrl(initialData.avatar) : null);
+    } else {
+      resetForm();
+      setAvatarPreview(null);
+      setAvatarFile(null);
     }
-  }, [open, mode, initialData, setFormData, resetForm]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, mode, initialId]);
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -218,7 +221,7 @@ const UsersForm: React.FC<UsersFormProps> = ({ open, onClose, onSubmit, initialD
                         justifyContent: 'center',
                       }}
                     >
-                      <Delete style={{ fontSize: 14 }} />
+                      <Trash2 style={{ fontSize: 14 }} />
                     </button>
                   )}
                 </div>
@@ -239,18 +242,39 @@ const UsersForm: React.FC<UsersFormProps> = ({ open, onClose, onSubmit, initialD
                     disabled={uploading}
                     className="gap-1.5 bg-white text-xs h-8"
                   >
-                    <CloudUpload className="h-3.5 w-3.5" />
+                    <Upload className="h-3.5 w-3.5" />
                     {avatarPreview ? 'Changer' : 'Ajouter'}
                   </Button>
                   <span className="text-[10px] text-ink-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
                 </div>
               </div>
 
-              <div className="flex-1 space-y-3">
+              <div className="min-w-0 flex-1 space-y-1">
+                <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
+                  <FloatingInput
+                    id="prenom"
+                    label="Prénom *"
+                    autoComplete="given-name"
+                    value={formData.prenom}
+                    onChange={(e) => handleChange('prenom', e.target.value)}
+                    onBlur={() => handleBlur('prenom')}
+                    error={errors.prenom}
+                  />
+                  <FloatingInput
+                    id="nom"
+                    label="Nom *"
+                    autoComplete="family-name"
+                    value={formData.nom}
+                    onChange={(e) => handleChange('nom', toUpperName(e.target.value))}
+                    onBlur={() => handleBlur('nom')}
+                    error={errors.nom}
+                  />
+                </div>
                 <FloatingInput
                   id="email"
                   label="Email *"
                   type="email"
+                  autoComplete="email"
                   value={formData.email}
                   onChange={(e) => handleChange('email', e.target.value)}
                   onBlur={() => handleBlur('email')}
@@ -262,6 +286,7 @@ const UsersForm: React.FC<UsersFormProps> = ({ open, onClose, onSubmit, initialD
                     id="motDePasse"
                     label="Mot de passe *"
                     type="password"
+                    autoComplete="new-password"
                     value={formData.motDePasse}
                     onChange={(e) => handleChange('motDePasse', e.target.value)}
                     onBlur={() => handleBlur('motDePasse')}
@@ -269,25 +294,6 @@ const UsersForm: React.FC<UsersFormProps> = ({ open, onClose, onSubmit, initialD
                   />
                 )}
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <FloatingInput
-                id="prenom"
-                label="Prénom *"
-                value={formData.prenom}
-                onChange={(e) => handleChange('prenom', e.target.value)}
-                onBlur={() => handleBlur('prenom')}
-                error={errors.prenom}
-              />
-              <FloatingInput
-                id="nom"
-                label="Nom *"
-                value={formData.nom}
-                onChange={(e) => handleChange('nom', e.target.value)}
-                onBlur={() => handleBlur('nom')}
-                error={errors.nom}
-              />
             </div>
 
             <FloatingSelect

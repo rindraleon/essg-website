@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Card, CardContent, Typography, Box, Button } from '@mui/material';
+import { Card, CardContent, Typography, Box, Button } from '@/components/compat/mui';
+import React, { useState, useCallback } from 'react';
 import { toast, Toaster } from 'sonner';
 import {
   ProjetFilters,
@@ -11,14 +11,17 @@ import {
 } from '../../components';
 import { usePagination, useProjetFilter, useScrollToTop } from '../../hooks';
 import type { ProjetFormData, Projet } from '../../types';
-import { getAllProjets, createProjet, updateProjet, deleteProjet } from '../../services';
+import { useCreateProjet, useDeleteProjet, useProjetsQuery, useUpdateProjet } from '../../hooks/queries';
 import { useTitle } from '@/hooks/useTitle';
 
 const Projets: React.FC = () => {
   useScrollToTop();
   useTitle('Projets');
   // Data state
-  const [data, setData] = useState<Projet[]>([]);
+  const { data = [] } = useProjetsQuery();
+  const createMutation = useCreateProjet();
+  const updateMutation = useUpdateProjet();
+  const deleteMutation = useDeleteProjet();
   const [searchTerm, setSearchTerm] = useState('');
 
   // UI state
@@ -44,21 +47,6 @@ const Projets: React.FC = () => {
     handleChangeRowsPerPage,
     resetPage,
   } = usePagination({ data: filteredData, initialRowsPerPage: 5 });
-
-  // Load data from backend
-  useEffect(() => {
-    const loadProjets = async () => {
-      try {
-        const projets = await getAllProjets();
-        setData(projets);
-      } catch (error) {
-        console.error('Failed to load projets from backend:', error);
-        toast.error('Erreur lors du chargement des projets');
-      }
-    };
-
-    loadProjets();
-  }, []);
 
   // Handlers
   const handleSearchChange = useCallback(
@@ -94,8 +82,7 @@ const Projets: React.FC = () => {
   const handleConfirmDelete = useCallback(async () => {
     if (projetToDelete) {
       try {
-        await deleteProjet(projetToDelete.id);
-        setData((prev) => prev.filter((item) => item.id !== projetToDelete.id));
+        await deleteMutation.mutateAsync(projetToDelete.id);
         toast.success(`"${projetToDelete.titre}" a été supprimé avec succès`);
         setDeleteDialogOpen(false);
         setProjetToDelete(null);
@@ -104,22 +91,19 @@ const Projets: React.FC = () => {
         console.error('Error deleting projet:', error);
       }
     }
-  }, [projetToDelete]);
+  }, [projetToDelete, deleteMutation]);
 
   const handleFormSubmit = useCallback(
     async (formData: ProjetFormData) => {
       try {
         if (formMode === 'create') {
-          const newProjet = await createProjet(formData);
-          setData((prev) => [newProjet, ...prev]);
+          await createMutation.mutateAsync(formData);
           toast.success('Projet créé avec succès');
         } else if (selectedProjet) {
-          const updatedProjet = await updateProjet(selectedProjet.id, formData);
-          setData((prev) =>
-            prev.map((item) => (item.id === selectedProjet.id ? updatedProjet : item))
-          );
+          await updateMutation.mutateAsync({ id: selectedProjet.id, data: formData });
           toast.success('Projet modifié avec succès');
         }
+        setFormOpen(false);
       } catch (error) {
         toast.error("Erreur lors de l'enregistrement");
         console.error('Error saving projet:', error);
@@ -143,7 +127,7 @@ const Projets: React.FC = () => {
       <Toaster position="top-right" richColors />
 
       {/* Search + Add Button */}
-      <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
+      <Card variant="outlined">
         <CardContent>
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
@@ -163,32 +147,12 @@ const Projets: React.FC = () => {
               <Button
                 variant="outlined"
                 onClick={handleToggleFilters}
-                sx={{
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  whiteSpace: 'nowrap',
-                  borderColor: '#e5e7eb',
-                  color: '#374151',
-                  '&:hover': {
-                    borderColor: '#d1d5db',
-                    backgroundColor: '#f9fafb',
-                  },
-                }}
               >
                 {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
               </Button>
               <Button
                 variant="contained"
                 onClick={handleOpenCreate}
-                sx={{
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  whiteSpace: 'nowrap',
-                  backgroundColor: '#2e6a5f',
-                  '&:hover': {
-                    backgroundColor: '#27564e',
-                  },
-                }}
               >
                 + Nouveau projet
               </Button>
@@ -199,7 +163,7 @@ const Projets: React.FC = () => {
 
       {/* Filters - Full Width Below */}
       {filtersOpen && (
-        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
+        <Card variant="outlined">
           <CardContent>
             <ProjetFilters
               filters={filters}

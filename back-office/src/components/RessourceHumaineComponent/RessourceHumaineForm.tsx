@@ -1,12 +1,9 @@
+import { ArrowLeft, ArrowRight, Briefcase, CircleCheck, Globe, Info, Upload } from 'lucide-react';
 import React, { useRef, useState, useEffect } from 'react';
-import InfoIcon from '@mui/icons-material/Info';
-import WorkIcon from '@mui/icons-material/Work';
-import PublicIcon from '@mui/icons-material/Public';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { toast } from 'sonner';
+import { toUpperName } from '../../utils/slug.utils';
 import { uploadImage } from '../../services';
+import { getImageUrl } from '../../utils/image.utils';
 import type {
   RessourceHumaineItem,
   RessourceHumaineFormData,
@@ -30,7 +27,7 @@ import { FloatingSelect } from '@/components/ui/floating-select';
 interface RessourceHumaineFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: RessourceHumaineFormData) => void;
+  onSubmit: (data: RessourceHumaineFormData) => void | Promise<void>;
   initialData?: RessourceHumaineItem | null;
   mode: 'create' | 'edit';
 }
@@ -39,24 +36,24 @@ const STEPS = [
   {
     id: 0,
     label: 'Informations',
-    icon: <InfoIcon className="h-4 w-4" />,
+    icon: <Info className="h-4 w-4" />,
   },
   {
     id: 1,
     label: 'Contact',
-    icon: <WorkIcon className="h-4 w-4" />,
+    icon: <Briefcase className="h-4 w-4" />,
   },
   {
     id: 2,
     label: 'Publication',
-    icon: <PublicIcon className="h-4 w-4" />,
+    icon: <Globe className="h-4 w-4" />,
   },
 ];
 
 type RessourceHumaineField = keyof RessourceHumaineFormData;
 
 const STEP_FIELDS_MAP: Record<number, RessourceHumaineField[]> = {
-  0: ['nom', 'prenom', 'poste'],
+  0: ['prenom', 'nom', 'poste'],
   1: ['email', 'telephone', 'description'],
   2: ['ordre'],
 };
@@ -114,39 +111,43 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
     stepFields: STEP_FIELDS_MAP,
   });
 
+  const initialId = initialData?.id ?? '';
+
   useEffect(() => {
-    if (open) {
-      if (mode === 'edit' && initialData) {
-        const imageUrl = initialData.photo || '';
-        setFormData({
-          nom: initialData.nom,
-          prenom: initialData.prenom,
-          poste: initialData.poste,
-          description: initialData.description || '',
-          email: initialData.email || '',
-          telephone: initialData.telephone || '',
-          photo: imageUrl,
-          actif: initialData.actif,
-          ordre: initialData.ordre,
-        });
-        setImagePreview(imageUrl);
-      } else {
-        resetForm();
-        setImagePreview('');
-      }
+    if (!open) return;
+    if (mode === 'edit' && initialData) {
+      const imageUrl = initialData.photo || '';
+      setFormData({
+        nom: initialData.nom,
+        prenom: initialData.prenom,
+        poste: initialData.poste,
+        description: initialData.description || '',
+        email: initialData.email || '',
+        telephone: initialData.telephone || '',
+        photo: imageUrl,
+        actif: initialData.actif,
+        ordre: initialData.ordre,
+      });
+      setImagePreview(imageUrl ? getImageUrl(imageUrl) : '');
+    } else {
+      resetForm();
+      setImagePreview('');
     }
-  }, [open, mode, initialData, setFormData, resetForm]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, mode, initialId]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingImage(true);
     try {
-      const url = await uploadImage(file);
+      const url = await uploadImage(file, 'staff');
       handleChange('photo', url);
-      setImagePreview(url);
+      setImagePreview(getImageUrl(url));
+      toast.success('Photo téléversée avec succès');
     } catch (err) {
-      console.error("Erreur lors de l'upload:", err);
+      const message = err instanceof Error ? err.message : "Échec du téléversement de la photo.";
+      toast.error(message);
     } finally {
       setUploadingImage(false);
     }
@@ -174,8 +175,16 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
     }
   };
 
-  const handleSubmit = () => {
-    if (validateAllSteps()) onSubmit(formData);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (submitting || !validateAllSteps()) return;
+    setSubmitting(true);
+    try {
+      await onSubmit(formData);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const dialogTitle =
@@ -183,23 +192,25 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
 
   /* ─── Step 0 : Informations personnelles ─── */
   const renderStep0 = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <FloatingInput
-          id="nom"
-          label="Nom *"
-          value={formData.nom}
-          onChange={(e) => handleChange('nom', e.target.value)}
-          onBlur={() => handleBlur('nom')}
-          error={errors.nom}
-        />
+    <div className="space-y-1">
+      <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
         <FloatingInput
           id="prenom"
           label="Prénom *"
+          autoComplete="given-name"
           value={formData.prenom}
           onChange={(e) => handleChange('prenom', e.target.value)}
           onBlur={() => handleBlur('prenom')}
           error={errors.prenom}
+        />
+        <FloatingInput
+          id="nom"
+          label="Nom *"
+          autoComplete="family-name"
+          value={formData.nom}
+          onChange={(e) => handleChange('nom', toUpperName(e.target.value))}
+          onBlur={() => handleBlur('nom')}
+          error={errors.nom}
         />
       </div>
 
@@ -241,7 +252,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
               size="sm"
               className="gap-1.5 bg-white text-xs h-8"
             >
-              <CloudUploadIcon className="h-3.5 w-3.5" />
+              <Upload className="h-3.5 w-3.5" />
               {uploadingImage ? 'Upload...' : 'Choisir une photo'}
             </Button>
             <span className="text-[10px] text-ink-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
@@ -362,7 +373,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                       }
                     `}
                   >
-                    {isCompleted ? <CheckCircleIcon className="h-4 w-4" /> : step.icon}
+                    {isCompleted ? <CircleCheck className="h-4 w-4" /> : step.icon}
                     <span className="hidden sm:inline">{step.label}</span>
                     <span className="sm:hidden">{index + 1}</span>
                   </button>
@@ -388,6 +399,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
+                disabled={submitting}
                 className="text-ink-500 h-8"
               >
                 Annuler
@@ -399,9 +411,10 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={handleBack}
+                  disabled={submitting}
                   className="gap-1 h-8"
                 >
-                  <ArrowBackIcon className="h-3.5 w-3.5" />
+                  <ArrowLeft className="h-3.5 w-3.5" />
                   Précédent
                 </Button>
               )}
@@ -411,20 +424,22 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                   type="button"
                   size="sm"
                   onClick={handleNext}
+                  disabled={submitting}
                   className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
                   Suivant
-                  <ArrowForwardIcon className="h-3.5 w-3.5" />
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               ) : (
                 <Button
                   type="button"
                   size="sm"
                   onClick={handleSubmit}
+                  disabled={submitting}
                   className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
                 >
-                  <CheckCircleIcon className="h-3.5 w-3.5" />
-                  {mode === 'create' ? 'Créer' : 'Enregistrer'}
+                  <CircleCheck className="h-3.5 w-3.5" />
+                  {submitting ? 'Enregistrement...' : mode === 'create' ? 'Créer' : 'Enregistrer'}
                 </Button>
               )}
             </div>

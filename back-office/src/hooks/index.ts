@@ -1,6 +1,10 @@
 export { default as useScrollToTop } from './useScrollToTop';
+export { default as useDebounce } from './useDebounce';
 export { default as usePagination } from './usePagination';
 export { default as useFormationFilter } from './useFormationFilter';
 export { useProjetFilter } from './useProjetFilter';
 export { usePartenaireFilter } from './usePartenaireFilter';
 export { useFormValidation } from './useFormValidation';
+export { useAutoSlug } from './useAutoSlug';
+export * from './queries';
+export { useUploadImage } from './mutations/useUploadImage';

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { toast, Toaster } from 'sonner';
 import {
   ActualiteFilters,
@@ -11,13 +11,12 @@ import {
 import { useFilter } from '../../hooks/useFilter';
 import { usePagination, useScrollToTop } from '../../hooks';
 import type { ActualiteFormData, ActualiteItem } from '../../types';
-import { initialActualites } from '../../data/mockData';
 import {
-  getAllActualites,
-  createActualite,
-  updateActualite,
-  deleteActualite,
-} from '../../services';
+  useActualitesQuery,
+  useCreateActualite,
+  useDeleteActualite,
+  useUpdateActualite,
+} from '../../hooks/queries';
 import { Button } from '@/components/ui/button';
 import { useTitle } from '@/hooks/useTitle';
 
@@ -25,7 +24,10 @@ const Actualites: React.FC = () => {
   useScrollToTop();
   useTitle('Actualités');
   // Data state
-  const [data, setData] = useState<ActualiteItem[]>(initialActualites);
+  const { data = [] } = useActualitesQuery();
+  const createMutation = useCreateActualite();
+  const updateMutation = useUpdateActualite();
+  const deleteMutation = useDeleteActualite();
   const [searchTerm, setSearchTerm] = useState('');
 
   // UI state
@@ -52,20 +54,6 @@ const Actualites: React.FC = () => {
     resetPage,
   } = usePagination({ data: filteredData, initialRowsPerPage: 5 });
 
-
-  // Load data from backend
-  useEffect(() => {
-    const loadActualites = async () => {
-      try {
-        const actualites = await getAllActualites();
-        setData(actualites);
-      } catch (error) {
-        console.error('Failed to load actualites from backend:', error);
-      }
-    };
-
-    loadActualites();
-  }, []);
 
   // Handlers
   const handleSearchChange = useCallback(
@@ -101,8 +89,7 @@ const Actualites: React.FC = () => {
   const handleConfirmDelete = useCallback(async () => {
     if (actualiteToDelete) {
       try {
-        await deleteActualite(actualiteToDelete.id);
-        setData((prev) => prev.filter((item) => item.id !== actualiteToDelete.id));
+        await deleteMutation.mutateAsync(actualiteToDelete.id);
         toast.success(`"${actualiteToDelete.titre}" a été supprimée avec succès`);
         setDeleteDialogOpen(false);
         setActualiteToDelete(null);
@@ -111,22 +98,19 @@ const Actualites: React.FC = () => {
         console.error('Error deleting actualite:', error);
       }
     }
-  }, [actualiteToDelete]);
+  }, [actualiteToDelete, deleteMutation]);
 
   const handleFormSubmit = useCallback(
     async (formData: ActualiteFormData) => {
       try {
         if (formMode === 'create') {
-          const newActualite = await createActualite(formData);
-          setData((prev) => [newActualite, ...prev]);
+          await createMutation.mutateAsync(formData);
           toast.success('Actualité créée avec succès');
         } else if (selectedActualite) {
-          const updatedActualite = await updateActualite(selectedActualite.id, formData);
-          setData((prev) =>
-            prev.map((item) => (item.id === selectedActualite.id ? updatedActualite : item))
-          );
+          await updateMutation.mutateAsync({ id: selectedActualite.id, data: formData });
           toast.success('Actualité modifiée avec succès');
         }
+        setFormOpen(false);
       } catch (error) {
         toast.error("Erreur lors de l'enregistrement");
         console.error('Error saving actualite:', error);

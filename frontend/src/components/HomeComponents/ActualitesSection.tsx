@@ -1,11 +1,7 @@
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import Button from '@mui/material/Button';
-import { Link as RouterLink } from 'react-router-dom';
 import { useRecentActualites } from '../../hooks';
 import { getImageUrl } from '../../utils/image.utils';
 import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../utils/component.utils';
-import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid } from '../../components';
-import { TEXT_LINK_BUTTON } from '../../constants/styles';
+import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid, ViewDetailsButton } from '../../components';
 
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1768117173988-5ebfdde4fdd3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
@@ -61,6 +57,7 @@ const ActualitesSection = () => {
           return (
             <article
               key={actu.id}
+              data-gsap
               className={`${CARD_WIDTH_CLASS} group rounded-xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col`}
             >
               <div className="relative aspect-[16/9] overflow-hidden bg-ink-100">
@@ -93,16 +90,10 @@ const ActualitesSection = () => {
 
                 <p className="text-sm text-ink-600 line-clamp-3 flex-1 leading-6">{actu.resume}</p>
 
-                <Button
-                  component={RouterLink}
+                <ViewDetailsButton
                   to={`/actualites/${actu.slug}`}
-                  variant="text"
-                  endIcon={<ArrowForwardRoundedIcon />}
-                  aria-label={`Lire la suite : ${actu.titre}`}
-                  sx={TEXT_LINK_BUTTON}
-                >
-                  Lire la suite
-                </Button>
+                  ariaLabel={`Voir le détail de ${actu.titre}`}
+                />
               </div>
             </article>
           );

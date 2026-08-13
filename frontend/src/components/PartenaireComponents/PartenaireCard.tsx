@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import Button from '@mui/material/Button';
-import { Link as RouterLink } from 'react-router-dom';
 import { getImageUrl } from '../../utils/image.utils';
+import ViewDetailsButton from '../common/ViewDetailsButton';
 import type { PartenaireCardProps } from '../../types';
 
 const FALLBACK_IMAGE =
@@ -10,14 +8,15 @@ const FALLBACK_IMAGE =
 
 const PartenaireCard: React.FC<PartenaireCardProps> = (props: Readonly<PartenaireCardProps>) => {
   const { partenaire } = props;
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
+  const [, setImageLoaded] = useState(false);
+  const [, setImageError] = useState(false);
 
   const logoUrl = partenaire.logo ? getImageUrl(partenaire.logo) : FALLBACK_IMAGE;
 
   return (
     <article
-      className="group rounded-xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col h-full"
+      data-gsap
+      className="group rounded-xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover hover:-translate-y-1.5 hover:border-brand-100 transition-all duration-300 flex flex-col h-full"
     >
       <div className="relative aspect-[16/9] overflow-hidden bg-ink-100">
         <img
@@ -84,29 +83,10 @@ const PartenaireCard: React.FC<PartenaireCardProps> = (props: Readonly<Partenair
           )}
         </div>
 
-        <Button
-          component={RouterLink}
+        <ViewDetailsButton
           to={`/partenaires/${partenaire.slug ?? partenaire.nom.toLowerCase().replace(/\s+/g, '-')}`}
-          variant="text"
-          endIcon={<ArrowForwardRoundedIcon />}
-          aria-label={`Voir le profil de ${partenaire.nom}`}
-          sx={{
-            mt: 2,
-            p: 0,
-            minWidth: 'auto',
-            color: '#2e6a5f',
-            fontWeight: 600,
-            textTransform: 'none',
-            justifyContent: 'flex-start',
-            alignSelf: 'flex-start',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              color: '#27564e',
-            },
-          }}
-        >
-          Voir le detail
-        </Button>
+          ariaLabel={`Voir le détail de ${partenaire.nom}`}
+        />
       </div>
     </article>
   );

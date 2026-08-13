@@ -1,8 +1,6 @@
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 // src/components/ProjetComponents/ProjetTable.tsx
 import React, { useMemo } from 'react';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import type { Projet } from '../../types/projet.types';
 import { getTypeColor, formatDate } from '../../utils/projet.utils';
 import DataTable from '../common/DataTable';
@@ -114,7 +112,7 @@ const ProjetTable: React.FC<ProjetTableProps> = ({
                     onClick={() => onView(row)}
                     className="h-8 w-8"
                   >
-                    <VisibilityIcon className="h-4 w-4" />
+                    <Eye className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Voir</TooltipContent>
@@ -127,7 +125,7 @@ const ProjetTable: React.FC<ProjetTableProps> = ({
                     onClick={() => onEdit(row)}
                     className="h-8 w-8"
                   >
-                    <EditIcon className="h-4 w-4" />
+                    <Pencil className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Modifier</TooltipContent>
@@ -140,7 +138,7 @@ const ProjetTable: React.FC<ProjetTableProps> = ({
                     onClick={() => onDelete(row)}
                     className="h-8 w-8 text-red-600 hover:text-red-700"
                   >
-                    <DeleteIcon className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Supprimer</TooltipContent>

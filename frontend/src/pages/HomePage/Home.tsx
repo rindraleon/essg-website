@@ -18,6 +18,7 @@ const Home = () => {
   return (
     <div>
       <HeroSection />
+      <div id="contenu" className="sr-only" aria-hidden="true" />
       <CertificationsSection />
       <FormationsSection />
       <ActualitesSection />

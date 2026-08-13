@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SectionCta } from '../../components';
-import partenaireService from '../../services/partenaire.service';
+import { usePartenaires } from '../../hooks';
 import { getImageUrl } from '../../utils/image.utils';
-import type { PartenaireItem, PartenairesSectionProps } from '../../types';
+import { gsap, prefersReducedMotion, registerGsap } from '../../lib/gsap';
+import useGsapReveal from '../../hooks/useGsapReveal';
+import type { PartenairesSectionProps } from '../../types';
 
 const SECTION_CTA = { label: 'Voir tous nos partenaires', link: '/partenaires' } as const;
 
@@ -13,34 +15,16 @@ const PartenairesSection = ({
   maxItems = 8,
   partenaires: propPartenaires,
 }: PartenairesSectionProps) => {
-  const [partenaires, setPartenaires] = useState<PartenaireItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { partenaires: fetchedPartenaires, loading: queryLoading } = usePartenaires();
+  const partenaires = propPartenaires && propPartenaires.length > 0 ? propPartenaires : fetchedPartenaires;
+  const loading = propPartenaires && propPartenaires.length > 0 ? false : queryLoading;
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const loadPartenaires = async () => {
-      if (propPartenaires && propPartenaires.length > 0) {
-        setPartenaires(propPartenaires);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const data = await partenaireService.findAllPaginated(1, maxItems);
-        setPartenaires(data);
-      } catch (error) {
-        console.error('Erreur lors du chargement des partenaires:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadPartenaires();
-  }, [propPartenaires, maxItems]);
+  const revealRef = useGsapReveal<HTMLElement>();
+  const trackRef = useRef<HTMLDivElement | null>(null);
 
   const visiblePartenaires = partenaires.slice(0, maxItems);
 
-  const getLogoUrl = (partenaire: PartenaireItem): string | null => {
+  const getLogoUrl = (partenaire: (typeof partenaires)[number]): string | null => {
     if (!partenaire.logo) return null;
     return getImageUrl(partenaire.logo);
   };
@@ -52,10 +36,34 @@ const PartenairesSection = ({
     ...visiblePartenaires,
   ];
 
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || visiblePartenaires.length === 0 || prefersReducedMotion()) return;
+
+    registerGsap();
+    const tween = gsap.to(track, {
+      xPercent: -33.333,
+      duration: 28,
+      ease: 'none',
+      repeat: -1,
+    });
+
+    const pause = () => tween.pause();
+    const play = () => tween.play();
+    track.addEventListener('mouseenter', pause);
+    track.addEventListener('mouseleave', play);
+
+    return () => {
+      track.removeEventListener('mouseenter', pause);
+      track.removeEventListener('mouseleave', play);
+      tween.kill();
+    };
+  }, [visiblePartenaires.length]);
+
   return (
-    <section className="bg-gradient-to-b from-ink-50 to-white py-24">
+    <section ref={revealRef} className="bg-gradient-to-b from-ink-50 to-white py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-14 text-center">
+        <div data-gsap className="mb-14 text-center">
           {/* <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
             Réseau mondial
           </span> */}
@@ -71,7 +79,7 @@ const PartenairesSection = ({
           </div>
         ) : (
           <div className="relative overflow-hidden py-8">
-            <div className="flex animate-scroll">
+            <div ref={trackRef} className="flex will-change-transform">
               {duplicatedPartenaires.map((partenaire, index) => {
                 const logoUrl = getLogoUrl(partenaire);
                 const handleClick = () => {

@@ -1,9 +1,5 @@
+import { Calendar, Image, MapPin, Tag, X } from 'lucide-react';
 import React from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import LabelIcon from '@mui/icons-material/Label';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import MapPicker from '../common/MapPicker';
 import { getImageUrl } from '../../utils/image.utils';
 import type { Projet } from '../../types/projet.types';
@@ -98,7 +94,7 @@ const ProjectImageCard: React.FC<ProjectImageCardProps> = ({ image, title, dark 
             }`}
           >
             <div className="text-center">
-              <ImageOutlinedIcon
+              <Image
                 className={`mx-auto mb-2 h-12 w-12 ${dark ? 'text-ink-500' : 'text-ink-400'}`}
               />
               <p className={`text-sm ${dark ? 'text-ink-400' : 'text-ink-500'}`}>Aucune image</p>
@@ -155,7 +151,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
                 </Badge>
 
                 <Badge className={`rounded-full px-3 py-1 ${getTypeBadgeDarkClass(typeColor)}`}>
-                  <LabelIcon className="mr-1 h-3.5 w-3.5" />
+                  <Tag className="mr-1 h-3.5 w-3.5" />
                   {projet.type}
                 </Badge>
               </div>
@@ -165,13 +161,13 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
 
                 <div className="mt-3 space-y-2 text-sm text-white/80">
                   <div className="flex items-center gap-2">
-                    <CalendarTodayIcon className="h-4 w-4" />
+                    <Calendar className="h-4 w-4" />
                     <span>{formatDateLong(projet.date)}</span>
                   </div>
 
                   {locationText && (
                     <div className="flex items-center gap-2">
-                      <LocationOnIcon className="h-4 w-4" />
+                      <MapPin className="h-4 w-4" />
                       <span>{locationText}</span>
                     </div>
                   )}
@@ -198,7 +194,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
                   className="h-10 w-10 shrink-0 rounded-full border border-ink-100 bg-white hover:bg-ink-100"
                   aria-label="Fermer"
                 >
-                  <CloseIcon className="h-4 w-4" />
+                  <X className="h-4 w-4" />
                 </Button>
               </div>
             </DialogHeader>
@@ -213,20 +209,20 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
 
                     <div className="mb-3 flex flex-wrap gap-2">
                       <Badge className={`rounded-full ${getTypeBadgeLightClass(typeColor)}`}>
-                        <LabelIcon className="mr-1 h-3.5 w-3.5" />
+                        <Tag className="mr-1 h-3.5 w-3.5" />
                         {projet.type}
                       </Badge>
                     </div>
 
                     <div className="space-y-2 text-sm text-ink-600">
                       <div className="flex items-center gap-2">
-                        <CalendarTodayIcon className="h-4 w-4" />
+                        <Calendar className="h-4 w-4" />
                         <span>{formatDateLong(projet.date)}</span>
                       </div>
 
                       {locationText && (
                         <div className="flex items-center gap-2">
-                          <LocationOnIcon className="h-4 w-4" />
+                          <MapPin className="h-4 w-4" />
                           <span>{locationText}</span>
                         </div>
                       )}
@@ -263,7 +259,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
                   {hasAddressBlock && (
                     <SectionCard
                       title="Adresse"
-                      icon={<LocationOnIcon className="h-4 w-4 text-ink-500" />}
+                      icon={<MapPin className="h-4 w-4 text-ink-500" />}
                     >
                       <div className="space-y-1 text-sm text-ink-600">
                         {projet.adresse && <p className="break-words">{projet.adresse}</p>}
@@ -275,7 +271,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
                   {hasLocation && (
                     <SectionCard
                       title="Localisation"
-                      icon={<LocationOnIcon className="h-4 w-4 text-ink-500" />}
+                      icon={<MapPin className="h-4 w-4 text-ink-500" />}
                     >
                       <div className="w-full overflow-hidden rounded-xl border border-ink-100 aspect-[16/9]">
                         <MapPicker

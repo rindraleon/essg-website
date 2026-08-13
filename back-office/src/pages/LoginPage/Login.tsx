@@ -1,9 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { routesStatic } from '../../routes';
 import EssG from '../../assets/files/images/logo/EssG.png';
@@ -129,7 +126,7 @@ export default function Login() {
 
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-ink-400 pointer-events-none">
-                      <EmailOutlinedIcon fontSize="small" />
+                      <Mail className="size-4" />
                     </span>
 
                     <input
@@ -165,7 +162,7 @@ export default function Login() {
 
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-ink-400 pointer-events-none">
-                      <LockOutlinedIcon fontSize="small" />
+                      <Lock className="size-4" />
                     </span>
 
                     <input
@@ -195,9 +192,9 @@ export default function Login() {
                       className="absolute inset-y-0 right-0 flex items-center pr-4 text-ink-400 hover:text-white transition"
                     >
                       {showPassword ? (
-                        <VisibilityOffOutlinedIcon fontSize="small" />
+                        <EyeOff className="size-4" />
                       ) : (
-                        <VisibilityOutlinedIcon fontSize="small" />
+                        <Eye className="size-4" />
                       )}
                     </button>
                   </div>

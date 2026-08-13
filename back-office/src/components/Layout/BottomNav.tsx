@@ -1,26 +1,24 @@
+import { LogOut, MoreHorizontal, X } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { routesStatic } from '../../routes';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import CloseIcon from '@mui/icons-material/Close';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { NAV_ITEMS, isNavActive, PRIMARY_NAV_LABELS } from '../../constants/navigation';
+import { getVisibleNavItems, isNavActive, PRIMARY_NAV_LABELS } from '../../constants/navigation';
+import { useAuth } from '../../contexts/AuthContext';
 
 
 const BottomNav: React.FC = () => {
   const [moreOpen, setMoreOpen] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
+  const navItems = getVisibleNavItems(user?.role);
 
   // Refermer le panneau « Plus » à chaque navigation
   useEffect(() => {
     setMoreOpen(false);
   }, [location.pathname]);
 
-  const primaryItems = NAV_ITEMS.filter((item) => PRIMARY_NAV_LABELS.includes(item.name)).slice(
-    0,
-    4
-  );
-  const moreItems = NAV_ITEMS.filter((item) => !PRIMARY_NAV_LABELS.includes(item.name));
+  const primaryItems = navItems.filter((item) => PRIMARY_NAV_LABELS.includes(item.name)).slice(0, 4);
+  const moreItems = navItems.filter((item) => !PRIMARY_NAV_LABELS.includes(item.name));
 
   const navButtonClass = (href: string) => {
     const active = isNavActive(href, location.pathname);
@@ -54,7 +52,7 @@ const BottomNav: React.FC = () => {
               aria-label="Fermer"
               className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-500 hover:bg-ink-100 transition-colors"
             >
-              <CloseIcon sx={{ fontSize: 20 }} />
+              <X />
             </button>
           </div>
 
@@ -75,7 +73,7 @@ const BottomNav: React.FC = () => {
                       active ? 'bg-brand-600 text-white' : 'bg-ink-100 text-ink-600'
                     }`}
                   >
-                    <Icon sx={{ fontSize: 20 }} />
+                    <Icon />
                   </span>
                   <span className="truncate">{item.name}</span>
                 </Link>
@@ -88,7 +86,7 @@ const BottomNav: React.FC = () => {
               to={routesStatic.login}
               className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
             >
-              <LogoutIcon sx={{ fontSize: 20 }} />
+              <LogOut />
               Retour au site
             </Link>
           </div>
@@ -115,7 +113,7 @@ const BottomNav: React.FC = () => {
                         : ''
                     }`}
                   >
-                    <Icon sx={{ fontSize: 22 }} />
+                    <Icon />
                   </span>
                   {active && (
                     <span className="absolute -bottom-1 h-1 w-1 rounded-full bg-brand-600" />
@@ -141,7 +139,7 @@ const BottomNav: React.FC = () => {
                   moreOpen ? 'bg-brand-600 text-white' : ''
                 }`}
               >
-                <MoreHorizIcon sx={{ fontSize: 24 }} />
+                <MoreHorizontal />
               </span>
             </span>
             <span>Plus</span>

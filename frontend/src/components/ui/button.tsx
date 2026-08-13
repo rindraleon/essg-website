@@ -1,0 +1,62 @@
+import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+
+const buttonVariants = cva(
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-200 outline-none select-none disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-2 active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:translate-x-0.5 [&_svg:not([class*=\'size-\'])]:size-4',
+  {
+    variants: {
+      variant: {
+        default:
+          'bg-brand-600 text-white shadow-none hover:bg-brand-700 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_-10px_rgba(46,106,95,0.55)]',
+        contained:
+          'bg-brand-600 text-white shadow-none hover:bg-brand-700 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_-10px_rgba(46,106,95,0.55)]',
+        secondary: 'bg-brand-100 text-brand-800 hover:bg-brand-200',
+        outline:
+          'border border-brand-600 bg-transparent text-brand-600 hover:bg-brand-50 hover:border-brand-700 hover:text-brand-700',
+        outlined:
+          'border border-brand-600 bg-transparent text-brand-600 hover:bg-brand-50 hover:border-brand-700 hover:text-brand-700',
+        ghost: 'text-brand-700 hover:bg-brand-50',
+        text: 'text-brand-600 underline-offset-4 hover:underline hover:text-brand-700 px-0',
+        link: 'text-brand-600 underline-offset-4 hover:underline hover:text-brand-700 px-0',
+        destructive: 'bg-red-600 text-white hover:bg-red-700',
+        inverted:
+          'bg-white text-brand-900 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.35)] hover:bg-brand-50 hover:-translate-y-0.5',
+        invertedOutline:
+          'border border-white/75 bg-transparent text-white hover:border-white hover:bg-white/12 hover:-translate-y-0.5',
+      },
+      size: {
+        default: 'h-10 px-4 py-2',
+        sm: 'h-8 rounded-lg px-3 text-xs',
+        small: 'h-8 rounded-lg px-3 text-xs',
+        medium: 'h-10 px-4 py-2',
+        lg: 'h-12 rounded-[0.9rem] px-6 text-base',
+        large: 'h-12 rounded-[0.9rem] px-6 text-base',
+        icon: 'size-10',
+        'icon-sm': 'size-8 rounded-lg',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+    },
+  },
+);
+
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
+  VariantProps<typeof buttonVariants>;
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, type = 'button', ...props }, ref) => (
+    <button
+      ref={ref}
+      type={type}
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  ),
+);
+Button.displayName = 'Button';
+
+export { Button, buttonVariants };
+export type { ButtonProps };

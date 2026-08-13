@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Button } from '@mui/material';
+import { Button } from '@/components/compat/mui';
+import React, { useState, useCallback } from 'react';
 import { toast, Toaster } from 'sonner';
 import {
   PartenaireFilters,
@@ -12,17 +12,20 @@ import {
 import { usePagination, usePartenaireFilter, useScrollToTop } from '../../hooks';
 import type { PartenaireFormData, Partenaire } from '../../types';
 import {
-  getAllPartenaires,
-  createPartenaire,
-  updatePartenaire,
-  deletePartenaire,
-} from '../../services';
+  useCreatePartenaire,
+  useDeletePartenaire,
+  usePartenairesQuery,
+  useUpdatePartenaire,
+} from '../../hooks/queries';
 import { useTitle } from '@/hooks/useTitle';
 
 const Partenaires: React.FC = () => {
   useScrollToTop();
   useTitle('Partenaires');
-  const [data, setData] = useState<Partenaire[]>([]);
+  const { data = [] } = usePartenairesQuery();
+  const createMutation = useCreatePartenaire();
+  const updateMutation = useUpdatePartenaire();
+  const deleteMutation = useDeletePartenaire();
   const [searchTerm, setSearchTerm] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
@@ -46,20 +49,6 @@ const Partenaires: React.FC = () => {
     handleChangeRowsPerPage,
     resetPage,
   } = usePagination({ data: filteredData, initialRowsPerPage: 5 });
-
-  useEffect(() => {
-    const loadPartenaires = async () => {
-      try {
-        const partenaires = (await getAllPartenaires()) as Partenaire[];
-        setData(partenaires);
-      } catch (error) {
-        console.error('Failed to load partenaires from backend:', error);
-        toast.error('Erreur lors du chargement des partenaires');
-      }
-    };
-
-    loadPartenaires();
-  }, []);
 
   const handleSearchChange = useCallback(
     (value: string) => {
@@ -94,8 +83,7 @@ const Partenaires: React.FC = () => {
   const handleConfirmDelete = useCallback(async () => {
     if (partenaireToDelete) {
       try {
-        await deletePartenaire(partenaireToDelete.id);
-        setData((prev) => prev.filter((item) => item.id !== partenaireToDelete.id));
+        await deleteMutation.mutateAsync(partenaireToDelete.id);
         toast.success(`"${partenaireToDelete.nom}" a été supprimé avec succès`);
         setDeleteDialogOpen(false);
         setPartenaireToDelete(null);
@@ -104,22 +92,19 @@ const Partenaires: React.FC = () => {
         console.error('Error deleting partenaire:', error);
       }
     }
-  }, [partenaireToDelete]);
+  }, [partenaireToDelete, deleteMutation]);
 
   const handleFormSubmit = useCallback(
     async (formData: PartenaireFormData | FormData) => {
       try {
         if (formMode === 'create') {
-          const newPartenaire = await createPartenaire(formData);
-          setData((prev) => [newPartenaire, ...prev]);
+          await createMutation.mutateAsync(formData);
           toast.success('Partenaire créé avec succès');
         } else if (selectedPartenaire) {
-          const updatedPartenaire = await updatePartenaire(selectedPartenaire.id, formData);
-          setData((prev) =>
-            prev.map((item) => (item.id === selectedPartenaire.id ? updatedPartenaire : item))
-          );
+          await updateMutation.mutateAsync({ id: selectedPartenaire.id, data: formData });
           toast.success('Partenaire modifié avec succès');
         }
+        setFormOpen(false);
       } catch (error) {
         toast.error("Erreur lors de l'enregistrement");
         console.error('Error saving partenaire:', error);
@@ -161,32 +146,12 @@ const Partenaires: React.FC = () => {
             <Button
               variant="outlined"
               onClick={handleToggleFilters}
-              sx={{
-                borderRadius: '8px',
-                textTransform: 'none',
-                whiteSpace: 'nowrap',
-                borderColor: '#e5e7eb',
-                color: '#374151',
-                '&:hover': {
-                  borderColor: '#d1d5db',
-                  backgroundColor: '#f9fafb',
-                },
-              }}
             >
               {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
             </Button>
             <Button
                 variant="contained"
                 onClick={handleOpenCreate}
-                sx={{
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  whiteSpace: 'nowrap',
-                  backgroundColor: '#2e6a5f',
-                  '&:hover': {
-                    backgroundColor: '#27564e',
-                  },
-                }}
               >
               + Nouveau partenaire
             </Button>

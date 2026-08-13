@@ -1,93 +1,44 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { projetService } from '../services';
-import type { ProjetItem } from '../types/projets.types';
 
-// Hook pour tous les projets
 export default function useProjets() {
-  const [projets, setProjets] = useState<ProjetItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const query = useQuery({
+    queryKey: ['projets', 'list'],
+    queryFn: () => projetService.findAll(),
+  });
 
-  const fetch = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await projetService.findAll();
-      setProjets(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur inconnue');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
-
-  return { projets, loading, error, refetch: fetch };
+  return {
+    projets: query.data ?? [],
+    loading: query.isLoading,
+    error: query.error instanceof Error ? query.error.message : query.error ? 'Erreur inconnue' : null,
+    refetch: query.refetch,
+  };
 }
 
-// Hook pour un projet par ID (legacy, conservé pour compatibilité)
 export function useProjetById(id: string) {
-  const [projet, setProjet] = useState<ProjetItem | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const query = useQuery({
+    queryKey: ['projets', 'id', id],
+    queryFn: () => projetService.findOne(Number(id)),
+    enabled: Boolean(id),
+  });
 
-  useEffect(() => {
-    if (!id) return;
-    let cancelled = false;
-
-    const load = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await projetService.findOne(Number(id));
-        if (!cancelled) setProjet(data);
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Erreur inconnue');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [id]);
-
-  return { projet, loading, error };
+  return {
+    projet: query.data ?? null,
+    loading: query.isLoading,
+    error: query.error instanceof Error ? query.error.message : query.error ? 'Erreur inconnue' : null,
+  };
 }
 
-// Hook pour un projet par slug
 export function useProjetBySlug(slug: string) {
-  const [projet, setProjet] = useState<ProjetItem | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const query = useQuery({
+    queryKey: ['projets', 'slug', slug],
+    queryFn: () => projetService.findBySlug(slug),
+    enabled: Boolean(slug),
+  });
 
-  useEffect(() => {
-    if (!slug) return;
-    let cancelled = false;
-
-    const load = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await projetService.findBySlug(slug);
-        if (!cancelled) setProjet(data);
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Erreur inconnue');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [slug]);
-
-  return { projet, loading, error };
+  return {
+    projet: query.data ?? null,
+    loading: query.isLoading,
+    error: query.error instanceof Error ? query.error.message : query.error ? 'Erreur inconnue' : null,
+  };
 }

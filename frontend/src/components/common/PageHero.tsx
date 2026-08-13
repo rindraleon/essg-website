@@ -1,37 +1,37 @@
-import React from 'react';
-import Chip from '@mui/material/Chip';
-import { GREEN } from '../../constants/colors';
+import { SITE_HERO_ALT, SITE_HERO_IMAGE } from '../../constants/media';
+import useGsapHero from '../../hooks/useGsapHero';
+import AnimatedBackground from '../animations/AnimatedBackground';
+import SplitTitle from '../animations/SplitTitle';
 import type { PageHeroProps } from '../../types/common.types';
 
-const PageHero: React.FC<PageHeroProps> = (props: Readonly<PageHeroProps>) => {
-  const {
-    image,
-    imageAlt = 'Illustration',
-    badgeIcon,
-    badgeLabel,
-    title,
-    description,
-    stats = [],
-    minHeight = '60vh',
-  } = props;
+const PageHero = ({
+  image = SITE_HERO_IMAGE,
+  imageAlt = SITE_HERO_ALT,
+  badgeIcon,
+  badgeLabel,
+  title,
+  description,
+  stats = [],
+  minHeight = '60vh',
+}: PageHeroProps) => {
+  const heroRef = useGsapHero<HTMLElement>();
 
   return (
-    <section className="relative overflow-hidden text-white">
-      <img src={image} alt={imageAlt} className="absolute inset-0 h-full w-full object-cover" />
-
-      <div
-        className="absolute inset-0"
-        style={{
-          background: `linear-gradient(135deg, ${GREEN[950]}f2, ${GREEN[900]}dd, ${GREEN[700]}b3)`,
-        }}
+    <section ref={heroRef} className="relative overflow-hidden bg-brand-950 text-white">
+      <img
+        data-hero="media"
+        src={image || SITE_HERO_IMAGE}
+        alt={imageAlt}
+        className="absolute inset-0 h-full w-full object-cover object-center will-change-transform"
       />
-
-      {/* Halo sauge décoratif */}
+      <div className="absolute inset-0 bg-gradient-to-b from-brand-950/30 via-brand-950/28 to-brand-950/72" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(15,33,30,0.12)_0%,rgba(15,33,30,0.42)_80%)]" />
       <div
+        data-hero="shine"
         aria-hidden="true"
-        className="pointer-events-none absolute -right-24 top-1/4 h-72 w-72 rounded-full opacity-15 blur-3xl"
-        style={{ background: 'radial-gradient(closest-side, #98c070, transparent)' }}
+        className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/16 to-transparent blur-2xl will-change-transform"
       />
+      <AnimatedBackground variant="hero" />
 
       <div
         className="relative mx-auto flex max-w-7xl flex-col items-center justify-center px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8"
@@ -39,31 +39,29 @@ const PageHero: React.FC<PageHeroProps> = (props: Readonly<PageHeroProps>) => {
       >
         <div className="mx-auto max-w-3xl">
           {badgeLabel && (
-            <div className="mb-6 flex justify-center animate-fade-in-up">
-              <Chip
-                icon={badgeIcon}
-                label={badgeLabel}
-                variant="outlined"
-                sx={{
-                  color: GREEN[100],
-                  borderColor: 'rgba(152, 192, 112, 0.45)',
-                  backgroundColor: 'rgba(152, 192, 112, 0.12)',
-                  fontWeight: 500,
-                  backdropFilter: 'blur(4px)',
-                  '& .MuiChip-icon': { color: '#c2d799' },
-                }}
-              />
+            <div data-hero="badge" className="mb-6 flex justify-center">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-sage-300/45 bg-white/10 px-3 py-1 text-sm font-medium text-sage-100 shadow-[0_0_20px_rgba(152,192,112,0.16)] backdrop-blur-md">
+                {badgeIcon}
+                {badgeLabel}
+              </span>
             </div>
           )}
 
-          <h1 className="mb-4 text-4xl font-bold leading-tight drop-shadow-md sm:text-5xl lg:text-6xl animate-fade-in-up [animation-delay:80ms]">
-            {title}
-          </h1>
+          <SplitTitle
+            data-hero="title"
+            text={title}
+            className="mb-3 text-4xl font-bold leading-tight drop-shadow-[0_2px_16px_rgba(15,33,30,0.4)] sm:text-5xl lg:text-6xl"
+          />
+          <div
+            data-hero="accent"
+            aria-hidden="true"
+            className="mx-auto mb-5 h-1 w-20 origin-center rounded-full bg-sage-400 shadow-[0_0_16px_rgba(152,192,112,0.6)]"
+          />
 
           {description && (
             <p
-              className="mx-auto max-w-2xl text-lg leading-relaxed sm:text-xl animate-fade-in-up [animation-delay:160ms]"
-              style={{ color: GREEN[100] }}
+              data-hero="description"
+              className="mx-auto max-w-2xl text-lg leading-relaxed text-white/92 sm:text-xl"
             >
               {description}
             </p>
@@ -72,26 +70,18 @@ const PageHero: React.FC<PageHeroProps> = (props: Readonly<PageHeroProps>) => {
 
         {stats.length > 0 && (
           <div
-            className="mt-12 grid w-full max-w-3xl gap-4 lg:gap-6 animate-fade-in-up [animation-delay:240ms]"
-            style={{
-              gridTemplateColumns: `repeat(${Math.min(stats.length, 4)}, minmax(0, 1fr))`,
-            }}
+            className="mt-12 grid w-full max-w-3xl gap-4 lg:gap-6"
+            style={{ gridTemplateColumns: `repeat(${Math.min(stats.length, 4)}, minmax(0, 1fr))` }}
           >
             {stats.map((stat) => (
               <div
                 key={stat.label}
-                className="rounded-2xl p-4 text-center backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
-                style={{
-                  backgroundColor: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(255,255,255,0.14)',
-                  boxShadow: '0 8px 24px -12px rgba(0,0,0,0.35)',
-                }}
+                data-hero="stat"
+                className="rounded-2xl border border-white/18 bg-white/12 p-4 text-center shadow-lg backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
               >
                 {stat.icon && <div className="mb-2 flex justify-center">{stat.icon}</div>}
                 <div className="text-2xl font-bold text-white sm:text-3xl">{stat.value}</div>
-                <div className="text-sm" style={{ color: GREEN[200] }}>
-                  {stat.label}
-                </div>
+                <div className="text-sm text-sage-100">{stat.label}</div>
               </div>
             ))}
           </div>

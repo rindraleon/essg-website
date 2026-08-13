@@ -1,11 +1,7 @@
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import Button from '@mui/material/Button';
-import { Link as RouterLink } from 'react-router-dom';
 import { useActiveRessourcesHumaines } from '../../hooks';
 import { getImageUrl } from '../../utils/image.utils';
 import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../utils/component.utils';
-import { TEXT_LINK_BUTTON } from '../../constants/styles';
-import { SectionContent, ScrollableCardGrid, SectionCta } from '../../components';
+import { SectionContent, ScrollableCardGrid, SectionCta, ViewDetailsButton } from '../../components';
 
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400';
@@ -15,7 +11,7 @@ const RessourceHumaineSection = () => {
   const { ressourcesHumaines, loading, error } = useActiveRessourcesHumaines();
 
   const headerContent = (
-    <div className="text-center mb-12">
+    <div data-gsap className="text-center mb-12">
       <h2 className="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">Notre Équipe</h2>
       <p className="mt-3 text-ink-500 max-w-2xl mx-auto">
         Des professionnels qualifiés et passionnés au service de votre réussite
@@ -61,6 +57,7 @@ const RessourceHumaineSection = () => {
           return (
             <article
               key={membre.id}
+              data-gsap
               className={`${CARD_WIDTH_CLASS} group rounded-xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col`}
             >
               <div className="relative aspect-[16/9] overflow-hidden bg-ink-100">
@@ -127,16 +124,10 @@ const RessourceHumaineSection = () => {
                   )}
                 </div>
 
-                <Button
-                  component={RouterLink}
+                <ViewDetailsButton
                   to={`/ressources-humaines/${membre.slug}`}
-                  variant="text"
-                  endIcon={<ArrowForwardRoundedIcon />}
-                  aria-label={`Voir le profil de ${membre.prenom} ${membre.nom}`}
-                  sx={TEXT_LINK_BUTTON}
-                >
-                  Voir le profil
-                </Button>
+                  ariaLabel={`Voir le détail de ${membre.prenom} ${membre.nom}`}
+                />
               </div>
 
             </article>

@@ -1,13 +1,5 @@
+import { BadgeCheck, BookOpen, Eye, Flag, GraduationCap, History, Landmark, Rocket, Users } from 'lucide-react';
 import React from 'react';
-import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded';
-import AutoStoriesRoundedIcon from '@mui/icons-material/AutoStoriesRounded';
-import FlagRoundedIcon from '@mui/icons-material/FlagRounded';
-import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
-import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
-import RocketLaunchRoundedIcon from '@mui/icons-material/RocketLaunchRounded';
-import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
-import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
-import WorkspacePremiumRoundedIcon from '@mui/icons-material/WorkspacePremiumRounded';
 import {
   PageHero,
   Breadcrumb,
@@ -15,14 +7,15 @@ import {
   ScrollableCardGrid,
   CtaSection,
 } from '../../components';
-import { useActiveRessourcesHumaines, useScrollToTop } from '../../hooks';
+import { useActiveRessourcesHumaines, useScrollAnimation, useScrollToTop } from '../../hooks';
 import { useTitle } from '../../hooks/useTitle';
 import { getImageUrl } from '../../utils/image.utils';
 import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../utils/component.utils';
 import { GREEN } from '../../constants/colors';
 
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1523050854058-8df90110a6f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
+import { SITE_HERO_IMAGE } from '../../constants/media';
+
+const HERO_IMAGE = SITE_HERO_IMAGE;
 
 const HERO_STATS = [
   { value: '2026', label: 'Année de création' },
@@ -54,23 +47,23 @@ const TIMELINE = [
 
 const VALUES = [
   {
-    icon: <WorkspacePremiumRoundedIcon sx={{ fontSize: 28 }} />,
+    icon: <BadgeCheck />,
     title: 'Excellence',
     description:
       'Un enseignement exigeant, des résultats mesurables et une reconnaissance internationale.',
   },
   {
-    icon: <GroupsRoundedIcon sx={{ fontSize: 28 }} />,
+    icon: <Users />,
     title: 'Professionnalisation',
     description: 'Des formations adossées aux besoins réels des territoires et des entreprises.',
   },
   {
-    icon: <RocketLaunchRoundedIcon sx={{ fontSize: 28 }} />,
+    icon: <Rocket />,
     title: 'Innovation',
     description: 'La maîtrise des technologies spatiales, de la télédétection et du numérique.',
   },
   {
-    icon: <FlagRoundedIcon sx={{ fontSize: 28 }} />,
+    icon: <Flag />,
     title: 'Engagement',
     description:
       'Au service du développement durable, de l’aménagement et de la gestion des territoires.',
@@ -106,15 +99,16 @@ const GALLERY_IMAGES = [
 const AboutPage: React.FC = () => {
   useScrollToTop();
   useTitle('À propos');
+  const pageRef = useScrollAnimation<HTMLDivElement>();
 
   const { ressourcesHumaines, loading, error } = useActiveRessourcesHumaines();
 
   return (
-    <div className="min-h-screen bg-ink-50">
+    <div ref={pageRef} className="min-h-screen bg-ink-50">
       <PageHero
         image={HERO_IMAGE}
         imageAlt="À propos de l'ESSG"
-        badgeIcon={<AccountBalanceRoundedIcon />}
+        badgeIcon={<Landmark />}
         badgeLabel="ESSG — Notre histoire"
         title="À propos de l'ESSG"
         description="Découvrez l'École Supérieure de Sciences Géomatiques : son histoire, sa mission, ses valeurs et son engagement au service de l'excellence académique et du développement territorial."
@@ -126,7 +120,7 @@ const AboutPage: React.FC = () => {
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-12 lg:grid-cols-2">
-            <div>
+            <div data-gsap="left">
               <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
                 Présentation
               </span>
@@ -147,9 +141,9 @@ const AboutPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              <div className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card">
+              <div data-gsap="right" className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card">
                 <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100">
-                  <VisibilityRoundedIcon />
+                  <Eye className="size-4" />
                 </div>
                 <h3 className="mb-2 text-lg font-bold text-ink-900">Notre vision</h3>
                 <p className="text-sm leading-6 text-ink-500">
@@ -157,9 +151,9 @@ const AboutPage: React.FC = () => {
                   d'innovation au service des territoires.
                 </p>
               </div>
-              <div className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card">
+              <div data-gsap="right" className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card">
                 <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-sage-50 text-sage-700 ring-1 ring-sage-100">
-                  <RocketLaunchRoundedIcon />
+                  <Rocket className="size-4" />
                 </div>
                 <h3 className="mb-2 text-lg font-bold text-ink-900">Notre mission</h3>
                 <p className="text-sm leading-6 text-ink-500">
@@ -175,9 +169,9 @@ const AboutPage: React.FC = () => {
       
       <section className="bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 text-center">
+          <div data-gsap className="mb-12 text-center">
             <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
-              <HistoryRoundedIcon sx={{ fontSize: 14 }} />
+              <History />
               Historique
             </span>
             <h2 className="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
@@ -187,7 +181,7 @@ const AboutPage: React.FC = () => {
 
           <div className="mx-auto max-w-3xl space-y-8">
             {TIMELINE.map((step, index) => (
-              <div key={step.title} className="relative flex gap-5">
+              <div key={step.title} data-gsap="left" className="relative flex gap-5">
                 {index < TIMELINE.length - 1 && (
                   <span
                     aria-hidden="true"
@@ -212,7 +206,7 @@ const AboutPage: React.FC = () => {
 
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 text-center">
+          <div data-gsap className="mb-12 text-center">
             <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
               Nos valeurs
             </span>
@@ -228,6 +222,7 @@ const AboutPage: React.FC = () => {
             {VALUES.map((value) => (
               <div
                 key={value.title}
+                data-gsap
                 className="group rounded-2xl border border-ink-100 bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
               >
                 <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100 transition-transform duration-300 group-hover:scale-105">
@@ -244,9 +239,9 @@ const AboutPage: React.FC = () => {
       <section className="bg-gradient-to-br from-brand-950 via-brand-900 to-brand-700 py-16 text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-12 lg:grid-cols-2">
-            <div>
+            <div data-gsap="left">
               <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-sage-300 ring-1 ring-white/20">
-                <SchoolRoundedIcon sx={{ fontSize: 14 }} />
+                <GraduationCap />
                 Nos objectifs
               </span>
               <h2 className="mb-6 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -268,6 +263,7 @@ const AboutPage: React.FC = () => {
               {HERO_STATS.map((stat) => (
                 <div
                   key={stat.label}
+                  data-gsap="scale"
                   className="rounded-2xl border border-white/15 bg-white/10 p-6 text-center backdrop-blur-sm"
                 >
                   <div className="text-3xl font-bold">{stat.value}</div>
@@ -287,7 +283,7 @@ const AboutPage: React.FC = () => {
         headerContent={
           <div className="mb-12 text-center">
             <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
-              <AutoStoriesRoundedIcon sx={{ fontSize: 14 }} />
+              <BookOpen />
               L'équipe
             </span>
             <h2 className="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
@@ -323,6 +319,7 @@ const AboutPage: React.FC = () => {
           {ressourcesHumaines.map((membre) => (
             <article
               key={membre.id}
+              data-gsap
               className={`${CARD_WIDTH_CLASS} group rounded-3xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col hover:-translate-y-1`}
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-ink-100">
@@ -395,7 +392,7 @@ const AboutPage: React.FC = () => {
       </section>
 
       <CtaSection
-        icon={<SchoolRoundedIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
+        icon={<GraduationCap />}
         title="Rejoignez l'ESSG"
         description="Découvrez nos formations d'excellence en sciences géomatiques et démarrez votre parcours."
         primaryLabel="Voir les formations"

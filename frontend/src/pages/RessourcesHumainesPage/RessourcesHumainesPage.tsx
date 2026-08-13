@@ -1,16 +1,7 @@
+import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, Skeleton, TextField } from '@/components/compat/mui';
+import { Search, Users, X } from 'lucide-react';
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Skeleton from '@mui/material/Skeleton';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import type { SelectChangeEvent } from '@mui/material/Select';
+import type { SelectChangeEvent } from '@/components/compat/mui';
 
 import CtaSection from '../../components/common/CtaSection';
 import EmptyState from '../../components/common/EmptyState';
@@ -19,25 +10,13 @@ import PageHero from '../../components/common/PageHero';
 import Breadcrumb from '../../components/common/Breadcrumb';
 
 
-import { GREEN } from '../../constants/colors';
-import { ressourceHumaineService } from '../../services';
-import { useScrollToTop } from '../../hooks';
+import { useRessourcesHumaines, useScrollToTop } from '../../hooks';
+import { generateSlug } from '../../utils/slug.utils';
 import type { RessourceHumaine } from '../../types/ressource-humaine.types';
 import { RessourceHumaineCard } from '../../components';
+import { SITE_HERO_IMAGE } from '../../constants/media';
 
-// Fonction pour générer un slug à partir d'une chaîne
-const generateSlug = (text: string): string => {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Supprimer les accents
-    .replace(/[^a-z0-9]/g, '-') // Remplacer chaque caractère non alphanumérique par un tiret
-    .replace(/-+/g, '-') // Remplacer les tirets multiples par un seul tiret
-    .replace(/^-+|-+$/g, ''); // Supprimer les tirets en début et fin
-};
-
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1521737711867-e3b97375f902?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
+const HERO_IMAGE = SITE_HERO_IMAGE;
 
 const POSTES = [
   { value: 'all', label: 'Tous les postes' },
@@ -51,9 +30,7 @@ const POSTES = [
 const RessourcesHumainesPage: React.FC = () => {
   useScrollToTop();
 
-  const [allRessourcesHumaines, setAllRessourcesHumaines] = useState<RessourceHumaine[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: rhResult, loading, error } = useRessourcesHumaines(1, 100);
   const [posteFilter, setPosteFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [showSearch, setShowSearch] = useState(false);
@@ -66,40 +43,14 @@ const RessourcesHumainesPage: React.FC = () => {
     }
   }, [showSearch]);
 
-  useEffect(() => {
-    const loadRessourcesHumaines = async () => {
-      try {
-        setLoading(true);
-        const data = await ressourceHumaineService.findAll(1, 100);
-
-        const transformedRessourcesHumaines: RessourceHumaine[] = data.data.map((rh: RessourceHumaine) => ({
-          id: rh.id,
-          slug: rh.slug || generateSlug(`${rh.nom} ${rh.prenom}`),
-          nom: rh.nom,
-          prenom: rh.prenom,
-          poste: rh.poste,
-          description: rh.description,
-          email: rh.email,
-          telephone: rh.telephone,
-          photo: rh.photo,
-          actif: rh.actif,
-          ordre: rh.ordre,
-          creeLe: rh.creeLe,
-          misAJourLe: rh.misAJourLe,
-        }));
-
-        setAllRessourcesHumaines(transformedRessourcesHumaines);
-        setError(null);
-      } catch (err) {
-        console.error('Erreur lors du chargement des ressources humaines:', err);
-        setError('Impossible de charger les membres de l\'équipe');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadRessourcesHumaines();
-  }, []);
+  const allRessourcesHumaines = useMemo<RessourceHumaine[]>(
+    () =>
+      (rhResult?.data ?? []).map((rh) => ({
+        ...rh,
+        slug: rh.slug || generateSlug(`${rh.nom} ${rh.prenom}`),
+      })),
+    [rhResult],
+  );
 
   const hasActiveFilters = posteFilter !== 'all' || searchTerm !== '';
   const activeFilterCount = posteFilter !== 'all' ? 1 : 0;
@@ -162,7 +113,7 @@ const RessourcesHumainesPage: React.FC = () => {
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Équipe ESSG"
-        badgeIcon={<GroupsRoundedIcon />}
+        badgeIcon={<Users className="size-4" />}
         badgeLabel="Notre Équipe"
         title="Ressources Humaines"
         description="Découvrez les hommes et femmes qui font de l'ESSG une institution d'excellence en sciences géomatiques."
@@ -199,24 +150,16 @@ const RessourcesHumainesPage: React.FC = () => {
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchRoundedIcon sx={{ color: GREEN[600] }} />
+                    <Search />
                   </InputAdornment>
                 ),
                 endAdornment: searchTerm && (
                   <InputAdornment position="end">
                     <IconButton size="small" onClick={() => setSearchTerm('')}>
-                      <CloseRoundedIcon sx={{ fontSize: 18 }} />
+                      <X />
                     </IconButton>
                   </InputAdornment>
                 ),
-              },
-            }}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '0.75rem',
-                '&.Mui-focused fieldset': {
-                  borderColor: GREEN[600],
-                },
               },
             }}
           />
@@ -224,7 +167,7 @@ const RessourcesHumainesPage: React.FC = () => {
       >
         <div className="max-w-xs">
           <FormControl fullWidth size="small">
-            <InputLabel id="poste-label" sx={{ '&.Mui-focused': { color: GREEN[600] } }}>
+            <InputLabel id="poste-label">
               Poste
             </InputLabel>
             <Select
@@ -232,12 +175,6 @@ const RessourcesHumainesPage: React.FC = () => {
               label="Poste"
               value={posteFilter}
               onChange={handlePosteChange}
-              sx={{
-                borderRadius: '0.75rem',
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: GREEN[600],
-                },
-              }}
             >
               {POSTES.map((item) => (
                 <MenuItem key={item.value} value={item.value}>
@@ -283,7 +220,7 @@ const RessourcesHumainesPage: React.FC = () => {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {resultCount === 0 ? (
               <EmptyState
-                icon={<GroupsRoundedIcon sx={{ fontSize: 40, color: GREEN[400] }} />}
+                icon={<Users />}
                 title="Aucun membre trouvé"
                 description="Essayez de modifier vos critères de filtrage."
                 onAction={handleResetFilters}
@@ -300,7 +237,7 @@ const RessourcesHumainesPage: React.FC = () => {
       )}
 
       <CtaSection
-        icon={<GroupsRoundedIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
+        icon={<Users />}
         title="Rejoignez notre équipe"
         description="L'ESSG recherche des talents passionnés par les sciences géomatiques. Consultez nos offres d'emploi."
         primaryLabel="Nous contacter"

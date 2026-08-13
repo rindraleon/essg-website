@@ -1,7 +1,5 @@
+import { Download, FileText, X } from 'lucide-react';
 import React from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import DownloadIcon from '@mui/icons-material/Download';
 import type { Admission } from '../../types/admission.types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,6 +9,7 @@ interface AdmissionDetailDialogProps {
   open: boolean;
   onClose: () => void;
   onEditStatus: () => void;
+  onPreviewDocument?: (kind: 'cv' | 'lettre') => void;
 }
 
 const getStatusColor = (statut: string): 'default' | 'secondary' | 'destructive' | 'outline' => {
@@ -48,24 +47,9 @@ const AdmissionDetailDialog: React.FC<AdmissionDetailDialogProps> = ({
   open,
   onClose,
   onEditStatus,
+  onPreviewDocument,
 }) => {
   if (!open) return null;
-
-  const handleOpenCV = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (admission.cvPath) {
-      window.open(admission.cvPath, '_blank', 'noopener,noreferrer');
-    }
-  };
-
-  const handleOpenLettre = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (admission.lettreMotivationPath) {
-      window.open(admission.lettreMotivationPath, '_blank', 'noopener,noreferrer');
-    }
-  };
 
   return (
     <div className="fixed inset-0 bg-ink-900 flex items-center justify-center z-50 p-4">
@@ -73,7 +57,7 @@ const AdmissionDetailDialog: React.FC<AdmissionDetailDialogProps> = ({
         <div className="sticky top-0 bg-white border-b border-ink-100 px-6 py-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-ink-900">Détails de la candidature</h2>
           <button onClick={onClose} className="text-ink-400 hover:text-ink-600" type="button">
-            <CloseIcon />
+            <X className="size-4" />
           </button>
         </div>
 
@@ -160,14 +144,14 @@ const AdmissionDetailDialog: React.FC<AdmissionDetailDialogProps> = ({
                   <p className="block text-sm font-medium text-ink-700 mb-2">CV</p>
                   {admission.cvPath ? (
                     <Button
-                      onClick={handleOpenCV}
+                      onClick={() => onPreviewDocument?.('cv')}
                       variant="outline"
                       className="w-full"
                       type="button"
                     >
-                      <PictureAsPdfIcon className="mr-2 h-4 w-4 text-red-600" />
-                      Voir le CV
-                      <DownloadIcon className="ml-2 h-4 w-4" />
+                      <FileText className="mr-2 h-4 w-4 text-red-600" />
+                      Aperçu du CV
+                      <Download className="ml-2 h-4 w-4" />
                     </Button>
                   ) : (
                     <p className="text-sm text-ink-500">Aucun CV joint</p>
@@ -179,14 +163,14 @@ const AdmissionDetailDialog: React.FC<AdmissionDetailDialogProps> = ({
                   </p>
                   {admission.lettreMotivationPath ? (
                     <Button
-                      onClick={handleOpenLettre}
+                      onClick={() => onPreviewDocument?.('lettre')}
                       variant="outline"
                       className="w-full"
                       type="button"
                     >
-                      <PictureAsPdfIcon className="mr-2 h-4 w-4 text-brand-600" />
-                      Voir la lettre
-                      <DownloadIcon className="ml-2 h-4 w-4" />
+                      <FileText className="mr-2 h-4 w-4 text-brand-600" />
+                      Aperçu de la lettre
+                      <Download className="ml-2 h-4 w-4" />
                     </Button>
                   ) : (
                     <p className="text-sm text-ink-500">Aucune lettre jointe</p>

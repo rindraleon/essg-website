@@ -1,50 +1,23 @@
-import React from 'react';
-import Button from '@mui/material/Button';
-import { GREEN } from '../../constants/colors';
+import { Inbox } from 'lucide-react';
+import { Button } from '../ui/button';
 import type { EmptyStateProps } from '../../types/common.types';
 
-const EmptyState: React.FC<EmptyStateProps> = (props: Readonly<EmptyStateProps>) => {
-  const {
-    icon,
-    title = 'Aucun résultat trouvé',
-    description = 'Essayez de modifier vos critères de recherche.',
-    actionLabel = 'Réinitialiser les filtres',
-    onAction,
-  } = props;
-
+const EmptyState = ({
+  icon,
+  title = 'Aucun résultat trouvé',
+  description = 'Essayez de modifier vos critères de recherche.',
+  actionLabel = 'Réinitialiser les filtres',
+  onAction,
+}: EmptyStateProps) => {
   return (
     <div className="py-20 text-center animate-fade-in">
-      <div
-        className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-2xl ring-1"
-        style={{
-          backgroundColor: GREEN[50],
-          borderColor: GREEN[100],
-          boxShadow: '0 8px 24px -12px rgba(46, 106, 95, 0.35)',
-        }}
-      >
-        {icon}
+      <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-2xl bg-brand-50 text-brand-500 ring-1 ring-brand-100 shadow-[0_8px_24px_-12px_rgba(46,106,95,0.35)]">
+        {icon ?? <Inbox className="size-10" />}
       </div>
-
       <h3 className="mb-2 text-xl font-semibold text-ink-900">{title}</h3>
-
       <p className="mx-auto mb-7 max-w-md text-ink-500">{description}</p>
-
       {onAction && (
-        <Button
-          variant="outlined"
-          onClick={onAction}
-          sx={{
-            borderRadius: '0.75rem',
-            textTransform: 'none',
-            fontWeight: 600,
-            borderColor: GREEN[600],
-            color: GREEN[600],
-            '&:hover': {
-              borderColor: GREEN[700],
-              backgroundColor: GREEN[50],
-            },
-          }}
-        >
+        <Button variant="outline" onClick={onAction}>
           {actionLabel}
         </Button>
       )}

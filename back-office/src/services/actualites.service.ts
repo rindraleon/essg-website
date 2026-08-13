@@ -1,66 +1,54 @@
-import axiosConfig from '../config/axios.config';
+import { apiClient } from '../api/client/http';
 import type { ActualiteItem } from '../types/actualite.types';
 
+type NewsApiItem = Omit<ActualiteItem, 'statut'> & {
+  statut?: boolean | ActualiteItem['statut'];
+  galerie?: string[];
+};
+
+function mapActualite(item: NewsApiItem): ActualiteItem {
+  const statut: ActualiteItem['statut'] =
+    item.statut === true || item.statut === 'publie'
+      ? 'publie'
+      : item.statut === 'archive'
+        ? 'archive'
+        : 'brouillon';
+
+  return {
+    ...item,
+    statut,
+    galerie: item.galerie ?? [],
+  };
+}
+
 const getAllActualites = async (): Promise<ActualiteItem[]> => {
-  try {
-    const response = await axiosConfig.get<{ data: ActualiteItem[] }>('/news');
-    return response.data.data;
-  } catch (error) {
-    console.error('Error fetching actualites:', error);
-    throw error;
-  }
+  const result = await apiClient.getList<NewsApiItem>('/news', { page: 1, limit: 100 });
+  return result.data.map(mapActualite);
 };
 
 const getActualiteById = async (id: string): Promise<ActualiteItem> => {
-  try {
-    const response = await axiosConfig.get<ActualiteItem>(`/news/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching actualite:', error);
-    throw error;
-  }
+  const item = await apiClient.get<NewsApiItem>(`/news/${id}`);
+  return mapActualite(item);
 };
 
 const createActualite = async (data: Partial<ActualiteItem>): Promise<ActualiteItem> => {
-  try {
-    // Convertir le statut string en boolean pour le backend
-    const backendData = {
-      ...data,
-      statut: data.statut === 'publie',
-    };
-    const response = await axiosConfig.post<ActualiteItem>('/news', backendData);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating actualite:', error);
-    throw error;
-  }
+  const item = await apiClient.post<NewsApiItem>('/news', {
+    ...data,
+    statut: data.statut === 'publie',
+  });
+  return mapActualite(item);
 };
 
-const updateActualite = async (
-  id: string,
-  data: Partial<ActualiteItem>
-): Promise<ActualiteItem> => {
-  try {
-    // Convertir le statut string en boolean pour le backend
-    const backendData = {
-      ...data,
-      statut: data.statut === 'publie',
-    };
-    const response = await axiosConfig.put<ActualiteItem>(`/news/${id}`, backendData);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating actualite:', error);
-    throw error;
-  }
+const updateActualite = async (id: string, data: Partial<ActualiteItem>): Promise<ActualiteItem> => {
+  const item = await apiClient.put<NewsApiItem>(`/news/${id}`, {
+    ...data,
+    statut: data.statut === 'publie',
+  });
+  return mapActualite(item);
 };
 
 const deleteActualite = async (id: string): Promise<void> => {
-  try {
-    await axiosConfig.delete(`/news/${id}`);
-  } catch (error) {
-    console.error('Error deleting actualite:', error);
-    throw error;
-  }
+  await apiClient.delete(`/news/${id}`);
 };
 
 export { getAllActualites, getActualiteById, createActualite, updateActualite, deleteActualite };

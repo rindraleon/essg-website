@@ -1,10 +1,7 @@
+import { ExternalLink, Globe, Link2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import LogoITDC from '../../assets/files/images/logo/itdc_logo.png';
-import { InsertLinkOutlined } from '@mui/icons-material';
 import type { FooterProps, SocialItem } from '../../types/footer.types';
 import { FloatingInput } from '@/components/ui/floating-input';
 import { Button } from '@/components/ui/button';
@@ -12,13 +9,13 @@ import { Button } from '@/components/ui/button';
 function SocialIcon({ kind }: Readonly<{ kind?: SocialItem['kind'] }>) {
   switch (kind) {
     case 'web':
-      return <InsertLinkOutlined fontSize="large" color="primary" />;
+      return <Link2 className="size-5" />;
     case 'linkedin':
-      return <LinkedInIcon fontSize="large" color="primary" />;
+      return <Globe className="size-5" />;
     case 'facebook':
-      return <FacebookIcon fontSize="large" color="primary" />;
+      return <Globe className="size-5" />;
     default:
-      return <OpenInNewIcon fontSize="large" color="primary" />;
+      return <ExternalLink className="size-5" />;
   }
 }
 

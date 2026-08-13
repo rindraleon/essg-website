@@ -1,81 +1,57 @@
-import axiosConfig from '../config/axios.config';
+import { apiClient } from '../api/client/http';
 import type { Partenaire, PartenaireFormData } from '../types/partenaire.types';
 
-const transformPartenaire = (data: any): Partenaire => {
-  return {
-    ...data,
-    dateDebut: data.dateDebut ? new Date(data.dateDebut).toISOString().split('T')[0] : '',
-    logo: data.logo || '',
-    siteWeb: data.siteWeb || '',
-    contact: data.contact || '',
-  };
-};
+interface PartnerPayload {
+  id: number;
+  nom: string;
+  type?: string;
+  dateDebut?: string;
+  logo?: string;
+  siteWeb?: string;
+  contact?: string;
+  description?: string;
+  slug?: string;
+}
+
+const transformPartenaire = (data: PartnerPayload): Partenaire => ({
+  id: data.id,
+  nom: data.nom,
+  type: (data.type as Partenaire['type']) || 'Autre',
+  secteur: '',
+  dateDebut: data.dateDebut ? new Date(data.dateDebut).toISOString().split('T')[0] : '',
+  description: data.description || '',
+  logo: data.logo || '',
+  siteWeb: data.siteWeb || '',
+  contact: data.contact || '',
+  creeLe: new Date(),
+  misAJourLe: new Date(),
+});
 
 const getAllPartenaires = async (): Promise<Partenaire[]> => {
-  try {
-    const response = await axiosConfig.get<{ data: any[] }>('/partners');
-    const partenaires = response.data.data || [];
-    return partenaires.map(transformPartenaire);
-  } catch (error) {
-    console.error('Error fetching partenaires:', error);
-    throw error;
-  }
+  const result = await apiClient.getList<PartnerPayload>('/partners', { page: 1, limit: 100 });
+  return result.data.map(transformPartenaire);
 };
 
 const getPartenaireById = async (id: number): Promise<Partenaire> => {
-  try {
-    const response = await axiosConfig.get<any>(`/partners/${id}`);
-    return transformPartenaire(response.data);
-  } catch (error) {
-    console.error('Error fetching partenaire:', error);
-    throw error;
-  }
+  const data = await apiClient.get<PartnerPayload>(`/partners/${id}`);
+  return transformPartenaire(data);
 };
 
 const createPartenaire = async (data: PartenaireFormData | FormData): Promise<Partenaire> => {
-  try {
-    const isFormData = data instanceof FormData;
-    const response = await axiosConfig.post<any>('/partners', data, {
-      headers: isFormData
-        ? {
-            'Content-Type': 'multipart/form-data',
-          }
-        : undefined,
-    });
-    return transformPartenaire(response.data);
-  } catch (error) {
-    console.error('Error creating partenaire:', error);
-    throw error;
-  }
+  const created = await apiClient.post<PartnerPayload>('/partners', data);
+  return transformPartenaire(created);
 };
 
 const updatePartenaire = async (
   id: number,
-  data: PartenaireFormData | FormData
+  data: PartenaireFormData | FormData,
 ): Promise<Partenaire> => {
-  try {
-    const isFormData = data instanceof FormData;
-    const response = await axiosConfig.put<any>(`/partners/${id}`, data, {
-      headers: isFormData
-        ? {
-            'Content-Type': 'multipart/form-data',
-          }
-        : undefined,
-    });
-    return transformPartenaire(response.data);
-  } catch (error) {
-    console.error('Error updating partenaire:', error);
-    throw error;
-  }
+  const updated = await apiClient.put<PartnerPayload>(`/partners/${id}`, data);
+  return transformPartenaire(updated);
 };
 
 const deletePartenaire = async (id: number): Promise<void> => {
-  try {
-    await axiosConfig.delete(`/partners/${id}`);
-  } catch (error) {
-    console.error('Error deleting partenaire:', error);
-    throw error;
-  }
+  await apiClient.delete(`/partners/${id}`);
 };
 
 export {

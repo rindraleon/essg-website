@@ -2,8 +2,12 @@ export const generateSlug = (text: string): string => {
   return text
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Supprimer les accents
-    .replace(/[^a-z0-9]+/g, '-') // Remplacer les caractères non alphanumériques par des tirets
-    .replace(/^-+|-+$/g, '') // Supprimer les tirets en début et fin
-    .replace(/--+/g, '-'); // Supprimer les tirets multiples
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/--+/g, '-');
+};
+
+export const toUpperName = (value: string): string => {
+  return value.toLocaleUpperCase('fr-FR');
 };

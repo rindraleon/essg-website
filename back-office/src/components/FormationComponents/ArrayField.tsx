@@ -1,7 +1,6 @@
+import { TextField, IconButton, Button, Box } from '@/components/compat/mui';
+import { Plus, Trash2 } from 'lucide-react';
 import React from 'react';
-import { TextField, IconButton, Button, Box } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
 
 interface ArrayFieldProps {
   label: string;
@@ -65,14 +64,6 @@ const ArrayField: React.FC<ArrayFieldProps> = ({
             fullWidth
             size="small"
             error={hasError && !item.trim()}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: !item.trim() && touched ? '#eff7f4' : 'transparent',
-                '&.Mui-focused': {
-                  backgroundColor: !item.trim() && touched ? '#d9ece7' : 'transparent',
-                },
-              },
-            }}
           />
           <IconButton
             type="button"
@@ -82,7 +73,7 @@ const ArrayField: React.FC<ArrayFieldProps> = ({
             disabled={items.length <= minItems}
             className="flex-shrink-0"
           >
-            <DeleteIcon fontSize="small" />
+            <Trash2 className="size-4" />
           </IconButton>
         </div>
       ))}
@@ -92,7 +83,7 @@ const ArrayField: React.FC<ArrayFieldProps> = ({
         onClick={handleAdd}
         variant="outlined"
         size="small"
-        startIcon={<AddIcon />}
+        startIcon={<Plus className="size-4" />}
         className="mt-1"
       >
         Ajouter

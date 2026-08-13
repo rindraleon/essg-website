@@ -1,14 +1,13 @@
+import { CircleHelp, GraduationCap } from 'lucide-react';
 import React from 'react';
-import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded';
-import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 
-import { GREEN } from '../../constants/colors';
 import type { FaqPageProps } from '../../types/faq.types';
 import { ContactCard, CtaSection, FaqAccordion, PageHero, Breadcrumb } from '../../components';
 import { useScrollToTop } from '../../hooks';
 
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
+import { SITE_HERO_IMAGE } from '../../constants/media';
+
+const HERO_IMAGE = SITE_HERO_IMAGE;
 
 const FaqPage: React.FC<FaqPageProps> = (props: Readonly<FaqPageProps>) => {
   useScrollToTop();
@@ -56,7 +55,7 @@ const FaqPage: React.FC<FaqPageProps> = (props: Readonly<FaqPageProps>) => {
       <PageHero
         image={HERO_IMAGE}
         imageAlt="FAQ ESSG"
-        badgeIcon={<HelpOutlineRoundedIcon />}
+        badgeIcon={<CircleHelp className="size-4" />}
         badgeLabel={pageSubtitle}
         title={pageTitle}
         description={pageDescription}
@@ -76,11 +75,7 @@ const FaqPage: React.FC<FaqPageProps> = (props: Readonly<FaqPageProps>) => {
           <div className="mt-8">
             <ContactCard
               icon={
-                <HelpOutlineRoundedIcon
-                  sx={{
-                    fontSize: 28,
-                    color: GREEN[600],
-                  }}
+                <CircleHelp
                 />
               }
             />
@@ -89,7 +84,7 @@ const FaqPage: React.FC<FaqPageProps> = (props: Readonly<FaqPageProps>) => {
       </section>
 
       <CtaSection
-        icon={<SchoolRoundedIcon sx={{ fontSize: 48, color: GREEN[400] }} />}
+        icon={<GraduationCap />}
         title="Prêt à rejoindre l'ESSG ?"
         description="Commencez votre parcours vers l'excellence en sciences géomatiques dès maintenant."
         primaryLabel="Postuler maintenant"

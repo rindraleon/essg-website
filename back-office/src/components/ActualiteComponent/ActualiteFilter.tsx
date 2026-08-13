@@ -1,7 +1,6 @@
+import { RotateCcw, X } from 'lucide-react';
 // src/components/actualites/ActualiteFilters.tsx
 import React from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import RestoreIcon from '@mui/icons-material/Restore';
 import type { FilterOptions } from '../../types/actualite.types';
 import { categories, statuts } from '../../data/mockData';
 import { Button } from '@/components/ui/button';
@@ -38,7 +37,7 @@ const ActualiteFilters: React.FC<ActualiteFiltersProps> = ({
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-semibold text-ink-700">Filtres avancés</span>
           <Button variant="ghost" size="icon" onClick={onToggle} className="h-8 w-8">
-            <CloseIcon className="h-4 w-4" />
+            <X className="h-4 w-4" />
           </Button>
         </div>
 
@@ -107,7 +106,7 @@ const ActualiteFilters: React.FC<ActualiteFiltersProps> = ({
         {activeFilterCount > 0 && (
           <div className="mt-3 flex justify-end">
             <Button size="sm" variant="destructive" onClick={onResetFilters} className="text-xs">
-              <RestoreIcon className="h-3 w-3 mr-1" />
+              <RotateCcw className="h-3 w-3 mr-1" />
               Réinitialiser tout
             </Button>
           </div>

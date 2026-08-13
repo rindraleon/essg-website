@@ -1,26 +1,92 @@
-import axiosConfig from '../config/axios.config';
+import { apiClient } from '../api/client/http';
+import type { Admission, AdmissionStatus } from '../types/admission.types';
 
-export const getAllAdmissions = async () => {
-  const response = await axiosConfig.get('/admissions');
-  return response.data;
+export interface AdmissionQuery {
+  page?: number;
+  limit?: number;
+  q?: string;
+  statut?: string;
+  niveau?: string;
+  formation?: string;
+  dateDebut?: string;
+  sortBy?: string;
+  sortOrder?: 'ASC' | 'DESC';
+}
+
+export interface AdmissionsListResponse {
+  data: Admission[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export const getAllAdmissions = async (query: AdmissionQuery = {}): Promise<AdmissionsListResponse> => {
+  const result = await apiClient.getList<Admission>('/admissions', {
+    page: query.page ?? 1,
+    limit: query.limit ?? 10,
+    q: query.q,
+    statut: query.statut && query.statut !== 'all' ? query.statut : undefined,
+    niveau: query.niveau && query.niveau !== 'all' ? query.niveau : undefined,
+    formation: query.formation && query.formation !== 'all' ? query.formation : undefined,
+    dateDebut: query.dateDebut || undefined,
+    sortBy: query.sortBy ?? 'creeLe',
+    sortOrder: query.sortOrder ?? 'DESC',
+  });
+  return {
+    data: result.data,
+    total: result.meta.total,
+    page: result.meta.page,
+    limit: result.meta.limit,
+    totalPages: result.meta.totalPages,
+  };
 };
 
-export const getAdmissionById = async (id: number) => {
-  const response = await axiosConfig.get(`/admissions/${id}`);
-  return response.data;
+export const searchAdmissions = async (
+  q: string,
+  query: AdmissionQuery = {},
+): Promise<AdmissionsListResponse> => {
+  return getAllAdmissions({ ...query, q });
 };
 
-export const updateAdmissionStatus = async (id: number, statut: string, commentaire?: string) => {
-  const response = await axiosConfig.patch(`/admissions/${id}/status`, { statut, commentaire });
-  return response.data;
+export const getAdmissionById = async (id: number): Promise<Admission> => {
+  return apiClient.get<Admission>(`/admissions/${id}`);
 };
 
-export const deleteAdmission = async (id: number) => {
-  const response = await axiosConfig.delete(`/admissions/${id}`);
-  return response.data;
+export type AdmissionDecisionPayload = {
+  statut: AdmissionStatus | string;
+  commentaire?: string;
+  reponseDate?: string;
+  reponseHeure?: string;
+  reponseLieu?: string;
+  reponseInstructions?: string;
+  reponseMessage?: string;
 };
 
-export const getRecentAdmissions = async (limit: number = 4) => {
-  const response = await axiosConfig.get(`/admissions?limit=${limit}&sortBy=creeLe&sortOrder=DESC`);
-  return response.data;
+export const updateAdmissionStatus = async (
+  id: number,
+  statut: AdmissionStatus | string | AdmissionDecisionPayload,
+  commentaire?: string,
+): Promise<Admission> => {
+  const payload: AdmissionDecisionPayload =
+    typeof statut === 'object' ? statut : { statut, commentaire };
+  return apiClient.patch<Admission>(`/admissions/${id}/status`, payload);
+};
+
+export const getAdmissionDocumentBlob = async (
+  id: number,
+  kind: 'cv' | 'lettre',
+  download = false,
+): Promise<Blob> => {
+  const suffix = download ? '?download=1' : '';
+  return apiClient.getBlob(`/admissions/${id}/documents/${kind}${suffix}`);
+};
+
+export const deleteAdmission = async (id: number): Promise<void> => {
+  await apiClient.delete(`/admissions/${id}`);
+};
+
+export const getRecentAdmissions = async (limit = 4): Promise<Admission[]> => {
+  const result = await getAllAdmissions({ page: 1, limit, sortBy: 'creeLe', sortOrder: 'DESC' });
+  return result.data;
 };

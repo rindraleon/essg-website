@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Card, CardContent, Typography, Box, Button } from '@mui/material';
+import { Card, CardContent, Typography, Box, Button } from '@/components/compat/mui';
+import React, { useState, useCallback } from 'react';
 import { toast, Toaster } from 'sonner';
 import {
   RessourceHumaineFilters,
@@ -16,20 +16,22 @@ import type {
   RessourceHumaineItem,
   RessourceHumaineFilterOptions,
 } from '../../types';
-import { initialRessourcesHumaines } from '../../data/mockData';
 import {
-  getAllRessourcesHumaines,
-  createRessourceHumaine,
-  updateRessourceHumaine,
-  deleteRessourceHumaine,
-} from '../../services';
+  useCreateRessourceHumaine,
+  useDeleteRessourceHumaine,
+  useRessourcesHumainesQuery,
+  useUpdateRessourceHumaine,
+} from '../../hooks/queries';
 import { useTitle } from '@/hooks/useTitle';
 
 const RessourcesHumaines: React.FC = () => {
   useScrollToTop();
   useTitle('Ressources humaines');
   // Data state
-  const [data, setData] = useState<RessourceHumaineItem[]>(initialRessourcesHumaines);
+  const { data = [] } = useRessourcesHumainesQuery();
+  const createMutation = useCreateRessourceHumaine();
+  const updateMutation = useUpdateRessourceHumaine();
+  const deleteMutation = useDeleteRessourceHumaine();
   const [searchTerm, setSearchTerm] = useState('');
 
   // UI state
@@ -56,20 +58,6 @@ const RessourcesHumaines: React.FC = () => {
     handleChangeRowsPerPage,
     resetPage,
   } = usePagination({ data: filteredData, initialRowsPerPage: 5 });
-
-  // Load data from backend
-  useEffect(() => {
-    const loadRessourcesHumaines = async () => {
-      try {
-        const ressourcesHumaines = await getAllRessourcesHumaines();
-        setData(ressourcesHumaines);
-      } catch (error) {
-        console.error('Failed to load ressources humaines from backend:', error);
-      }
-    };
-
-    loadRessourcesHumaines();
-  }, []);
 
   // Handlers
   const handleSearchChange = useCallback(
@@ -105,8 +93,7 @@ const RessourcesHumaines: React.FC = () => {
   const handleConfirmDelete = useCallback(async () => {
     if (ressourceToDelete) {
       try {
-        await deleteRessourceHumaine(ressourceToDelete.id.toString());
-        setData((prev) => prev.filter((item) => item.id !== ressourceToDelete.id));
+        await deleteMutation.mutateAsync(ressourceToDelete.id.toString());
         toast.success(
           `"${ressourceToDelete.prenom} ${ressourceToDelete.nom}" a été supprimé(e) avec succès`
         );
@@ -117,25 +104,22 @@ const RessourcesHumaines: React.FC = () => {
         console.error('Error deleting ressource humaine:', error);
       }
     }
-  }, [ressourceToDelete]);
+  }, [ressourceToDelete, deleteMutation]);
 
   const handleFormSubmit = useCallback(
     async (formData: RessourceHumaineFormData) => {
       try {
         if (formMode === 'create') {
-          const newRessource = await createRessourceHumaine(formData);
-          setData((prev) => [newRessource, ...prev]);
+          await createMutation.mutateAsync(formData);
           toast.success('Ressource humaine créée avec succès');
         } else if (selectedRessource) {
-          const updatedRessource = await updateRessourceHumaine(
-            selectedRessource.id.toString(),
-            formData
-          );
-          setData((prev) =>
-            prev.map((item) => (item.id === selectedRessource.id ? updatedRessource : item))
-          );
+          await updateMutation.mutateAsync({
+            id: selectedRessource.id.toString(),
+            data: formData,
+          });
           toast.success('Ressource humaine modifiée avec succès');
         }
+        setFormOpen(false);
       } catch (error) {
         toast.error("Erreur lors de l'enregistrement");
         console.error('Error saving ressource humaine:', error);
@@ -158,7 +142,7 @@ const RessourcesHumaines: React.FC = () => {
       <Toaster position="top-right" richColors />
 
       {/* Search + Add Button */}
-      <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
+      <Card variant="outlined">
         <CardContent>
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
@@ -178,32 +162,12 @@ const RessourcesHumaines: React.FC = () => {
               <Button
                 variant="outlined"
                 onClick={handleToggleFilters}
-                sx={{
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  whiteSpace: 'nowrap',
-                  borderColor: '#e5e7eb',
-                  color: '#374151',
-                  '&:hover': {
-                    borderColor: '#d1d5db',
-                    backgroundColor: '#f9fafb',
-                  },
-                }}
               >
                 {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
               </Button>
               <Button
                 variant="contained"
                 onClick={handleOpenCreate}
-                sx={{
-                  borderRadius: '8px',
-                  textTransform: 'none',
-                  whiteSpace: 'nowrap',
-                  backgroundColor: '#2e6a5f',
-                  '&:hover': {
-                    backgroundColor: '#27564e',
-                  },
-                }}
               >
                 + Nouvelle ressource
               </Button>
@@ -214,7 +178,7 @@ const RessourcesHumaines: React.FC = () => {
 
       {/* Filters - Full Width Below */}
       {filtersOpen && (
-        <Card variant="outlined" sx={{ borderRadius: '12px', borderColor: '#e5e7eb' }}>
+        <Card variant="outlined">
           <CardContent>
             <RessourceHumaineFilters
               filters={filters}

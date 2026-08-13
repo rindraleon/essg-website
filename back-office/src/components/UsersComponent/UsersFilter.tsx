@@ -1,7 +1,5 @@
+import { RotateCcw, Search, X } from 'lucide-react';
 import React from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import RestoreIcon from '@mui/icons-material/Restore';
-import SearchIcon from '@mui/icons-material/Search';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -42,7 +40,7 @@ const UsersFilter: React.FC<UsersFilterProps> = ({
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-semibold text-ink-700">Filtres avancés</span>
           <Button variant="ghost" size="icon" onClick={onToggle} className="h-8 w-8">
-            <CloseIcon className="h-4 w-4" />
+            <X className="h-4 w-4" />
           </Button>
         </div>
 
@@ -50,7 +48,7 @@ const UsersFilter: React.FC<UsersFilterProps> = ({
           <div className="space-y-2">
             <Label htmlFor="search">Recherche</Label>
             <div className="relative">
-              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-400" />
               <Input
                 id="search"
                 placeholder="Nom, prénom, email..."
@@ -98,7 +96,7 @@ const UsersFilter: React.FC<UsersFilterProps> = ({
         {activeFilterCount > 0 && (
           <div className="mt-3 flex justify-end">
             <Button size="sm" variant="destructive" onClick={onResetFilters} className="text-xs">
-              <RestoreIcon className="h-3 w-3 mr-1" />
+              <RotateCcw className="h-3 w-3 mr-1" />
               Réinitialiser tout
             </Button>
           </div>

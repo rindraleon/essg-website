@@ -1,3 +1,5 @@
+import { apiClient } from '@/api/client/http';
+import { endpoints } from '@/api/endpoints';
 import type { ProjetItem } from '../types/projets.types';
 import { generateSlug } from '../utils/slug.utils';
 
@@ -12,9 +14,6 @@ type ApiProjet = Omit<ProjetItem, 'id' | 'annee' | 'location' | 'partenaires'> &
   partenaires?: Array<string | { nom: string }>;
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
-const BASE_URL = `${API_BASE_URL.replace(/\/$/, '')}/projects`;
-
 const transformProjet = (projet: ApiProjet): ProjetItem => ({
   id: String(projet.id),
   titre: projet.titre,
@@ -25,13 +24,13 @@ const transformProjet = (projet: ApiProjet): ProjetItem => ({
   description: projet.description,
   partenaires:
     projet.partenaires?.map((partenaire) =>
-      typeof partenaire === 'string' ? partenaire : partenaire.nom
+      typeof partenaire === 'string' ? partenaire : partenaire.nom,
     ) || [],
   image: projet.image,
   budget: projet.budget,
   objectifs: projet.objectifs,
   sourceDonnees: projet.sourceDonnees,
-  galerie: projet.galerie,
+  galerie: projet.galerie ?? [],
   location:
     projet.latitude && projet.longitude
       ? {
@@ -45,34 +44,32 @@ const transformProjet = (projet: ApiProjet): ProjetItem => ({
 });
 
 const projetService = {
-  async findAll(): Promise<ProjetItem[]> {
-    const res = await fetch(BASE_URL);
-    if (!res.ok) throw new Error('Erreur lors du chargement des projets');
-    const data = await res.json();
-    const projets = data.data || data;
-    return Array.isArray(projets) ? projets.map(transformProjet) : [];
+  async findAll(signal?: AbortSignal): Promise<ProjetItem[]> {
+    const result = await apiClient.getList<ApiProjet>(
+      endpoints.projects,
+      { page: 1, limit: 100, sortBy: 'date', sortOrder: 'DESC' },
+      signal,
+    );
+    return result.data.map(transformProjet);
   },
 
-  async findOne(id: number): Promise<ProjetItem> {
-    const res = await fetch(`${BASE_URL}/${id}`);
-    if (!res.ok) throw new Error('Projet non trouvé');
-    const data = await res.json();
-    return transformProjet(data.data || data);
+  async findOne(id: number, signal?: AbortSignal): Promise<ProjetItem> {
+    const projet = await apiClient.get<ApiProjet>(endpoints.projectById(id), undefined, signal);
+    return transformProjet(projet);
   },
 
-  async findBySlug(slug: string): Promise<ProjetItem> {
-    const res = await fetch(`${BASE_URL}/slug/${slug}`);
-    if (!res.ok) throw new Error('Projet non trouvé');
-    const data = await res.json();
-    return transformProjet(data.data || data);
+  async findBySlug(slug: string, signal?: AbortSignal): Promise<ProjetItem> {
+    const projet = await apiClient.get<ApiProjet>(endpoints.projectBySlug(slug), undefined, signal);
+    return transformProjet(projet);
   },
 
-  async search(query: string): Promise<ProjetItem[]> {
-    const res = await fetch(`${BASE_URL}/search?q=${encodeURIComponent(query)}`);
-    if (!res.ok) throw new Error('Erreur lors de la recherche');
-    const data = await res.json();
-    const projets = data.data || data;
-    return Array.isArray(projets) ? projets.map(transformProjet) : [];
+  async search(query: string, signal?: AbortSignal): Promise<ProjetItem[]> {
+    const result = await apiClient.getList<ApiProjet>(
+      endpoints.projectSearch,
+      { q: query, page: 1, limit: 50 },
+      signal,
+    );
+    return result.data.map(transformProjet);
   },
 };
 

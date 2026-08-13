@@ -1,9 +1,6 @@
+import { CircleCheck, Eye, FileText, Trash2 } from 'lucide-react';
 // src/components/AdmissionComponents/AdmissionTable.tsx
 import React, { useMemo } from 'react';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import DeleteIcon from '@mui/icons-material/Delete';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import type { Admission } from '../../types/admission.types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
@@ -23,6 +20,7 @@ interface AdmissionTableProps {
   onDelete: (id: number) => void;
   onDownloadCV?: (admission: Admission) => void;
   onDownloadLettre?: (admission: Admission) => void;
+  onPreviewDocument?: (admission: Admission, kind: 'cv' | 'lettre') => void;
   loading?: boolean;
   emptyMessage?: string;
 }
@@ -69,6 +67,7 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
   onDelete,
   onDownloadCV,
   onDownloadLettre,
+  onPreviewDocument,
   loading = false,
   emptyMessage = 'Aucune admission trouvée',
 }) => {
@@ -138,13 +137,11 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        e.nativeEvent.stopImmediatePropagation();
-                        window.open(row.cvPath, '_blank', 'noopener,noreferrer');
-                        return false;
+                        onPreviewDocument?.(row, 'cv') ?? onDownloadCV?.(row);
                       }}
                       className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-ink-100 transition-colors cursor-pointer"
                     >
-                      <PictureAsPdfIcon className="h-4 w-4 text-red-600" />
+                      <FileText className="h-4 w-4 text-red-600" />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>CV</TooltipContent>
@@ -160,13 +157,11 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        e.nativeEvent.stopImmediatePropagation();
-                        window.open(row.lettreMotivationPath, '_blank', 'noopener,noreferrer');
-                        return false;
+                        onPreviewDocument?.(row, 'lettre') ?? onDownloadLettre?.(row);
                       }}
                       className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-ink-100 transition-colors cursor-pointer"
                     >
-                      <PictureAsPdfIcon className="h-4 w-4 text-brand-600" />
+                      <FileText className="h-4 w-4 text-brand-600" />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>Lettre de motivation</TooltipContent>
@@ -205,7 +200,7 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
                     onClick={() => onView(row)}
                     className="h-8 w-8"
                   >
-                    <VisibilityIcon className="h-4 w-4" />
+                    <Eye className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Voir détails</TooltipContent>
@@ -218,10 +213,10 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
                     onClick={() => onEdit(row)}
                     className="h-8 w-8"
                   >
-                    <CheckCircleIcon className="h-4 w-4" />
+                    <CircleCheck className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Modifier statut</TooltipContent>
+                <TooltipContent>Valider / répondre</TooltipContent>
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -231,7 +226,7 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
                     onClick={() => onDelete(row.id)}
                     className="h-8 w-8 text-red-600 hover:text-red-700"
                   >
-                    <DeleteIcon className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Supprimer</TooltipContent>

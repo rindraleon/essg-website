@@ -1,5 +1,5 @@
+import { Card, CardContent, Typography } from '@/components/compat/mui';
 import React from 'react';
-import { Card, CardContent, Typography } from '@mui/material';
 
 interface StatCardProps {
   title: string;
@@ -23,10 +23,6 @@ const StatsCard: React.FC<StatCardProps> = React.memo(
       <Card
         variant="outlined"
         className="relative overflow-hidden !shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:!shadow-card-hover"
-        sx={{
-          borderRadius: '1rem',
-          borderColor: 'divider',
-        }}
       >
         {/* Accent coloré discret */}
         <span className={`absolute inset-x-0 top-0 h-1 ${meta.accent}`} />

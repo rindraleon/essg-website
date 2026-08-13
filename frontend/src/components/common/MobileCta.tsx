@@ -1,37 +1,20 @@
-import React from 'react';
-import Button from '@mui/material/Button';
-import { Link as RouterLink } from 'react-router-dom';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { buttonVariants } from '../ui/button';
+import { cn } from '@/lib/utils';
 
 interface MobileCtaProps {
   label: string;
   link: string;
 }
 
-const MobileCta: React.FC<MobileCtaProps> = ({ label, link }) => {
+const MobileCta = ({ label, link }: MobileCtaProps) => {
   return (
     <div className="mt-8 sm:hidden">
-      <Button
-        component={RouterLink}
-        to={link}
-        variant="outlined"
-        fullWidth
-        endIcon={<ArrowForwardRoundedIcon />}
-        sx={{
-          borderRadius: '0.9rem',
-          py: 1.25,
-          textTransform: 'none',
-          fontWeight: 600,
-          borderColor: 'primary.main',
-          color: 'primary.main',
-          '&:hover': {
-            borderColor: 'primary.dark',
-            backgroundColor: 'primary.50',
-          },
-        }}
-      >
+      <Link to={link} className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
         {label}
-      </Button>
+        <ArrowRight className="size-4" />
+      </Link>
     </div>
   );
 };

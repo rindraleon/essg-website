@@ -1,7 +1,5 @@
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 import React from 'react';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { getImageUrl } from '../../utils/image.utils';
 import type { RessourceHumaineItem } from '../../types/ressource-humaine.types';
 import DataTable from '../common/DataTable';
@@ -104,7 +102,7 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button size="icon" variant="ghost" onClick={() => onView(row)} className="h-8 w-8">
-                  <VisibilityIcon className="h-4 w-4" />
+                  <Eye className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Voir</TooltipContent>
@@ -112,7 +110,7 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button size="icon" variant="ghost" onClick={() => onEdit(row)} className="h-8 w-8">
-                  <EditIcon className="h-4 w-4" />
+                  <Pencil className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Modifier</TooltipContent>
@@ -125,7 +123,7 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
                   onClick={() => onDelete(row)}
                   className="h-8 w-8 text-red-600 hover:text-red-700"
                 >
-                  <DeleteIcon className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Supprimer</TooltipContent>

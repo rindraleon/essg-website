@@ -1,8 +1,6 @@
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 import React, { useMemo } from 'react';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { getImageUrl } from '../../utils/image.utils';
+import { getImageUrl, isRemoteImage } from '../../utils/image.utils';
 import type { Partenaire } from '../../types/partenaire.types';
 import { formatDate } from '../../utils/partenaire.utils';
 import { PARTENAIRE_TYPE_COLORS } from '../../constants/partenaire.constants';
@@ -43,8 +41,7 @@ const PartenaireTable: React.FC<PartenaireTableProps> = ({
         label: 'Partenaire',
         minWidth: 250,
         render: (row) => {
-          const isImageLogo =
-            row.logo && (row.logo.startsWith('/uploads/') || row.logo.startsWith('http'));
+          const isImageLogo = isRemoteImage(row.logo);
           return (
             <div className="max-w-md">
               <div className="flex items-center gap-3">
@@ -113,7 +110,7 @@ const PartenaireTable: React.FC<PartenaireTableProps> = ({
                     onClick={() => onView(row)}
                     className="h-8 w-8"
                   >
-                    <VisibilityIcon className="h-4 w-4" />
+                    <Eye className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Voir</TooltipContent>
@@ -126,7 +123,7 @@ const PartenaireTable: React.FC<PartenaireTableProps> = ({
                     onClick={() => onEdit(row)}
                     className="h-8 w-8"
                   >
-                    <EditIcon className="h-4 w-4" />
+                    <Pencil className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Modifier</TooltipContent>
@@ -139,7 +136,7 @@ const PartenaireTable: React.FC<PartenaireTableProps> = ({
                     onClick={() => onDelete(row)}
                     className="h-8 w-8 text-red-600 hover:text-red-700"
                   >
-                    <DeleteIcon className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Supprimer</TooltipContent>

@@ -1,8 +1,6 @@
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 // src/components/actualites/ActualiteTable.tsx
 import React from 'react';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import type { ActualiteItem } from '../../types/actualite.types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
@@ -85,10 +83,10 @@ const ActualiteTable: React.FC<ActualiteTableProps> = ({
       render: (row) => (
         <div className="flex justify-end gap-1">
           <Button size="icon" variant="ghost" onClick={() => onView(row)} className="h-8 w-8">
-            <VisibilityIcon fontSize="small" className="h-4 w-4" />
+            <Eye className="size-4 h-4 w-4" />
           </Button>
           <Button size="icon" variant="ghost" onClick={() => onEdit(row)} className="h-8 w-8">
-            <EditIcon fontSize="small" className="h-4 w-4" />
+            <Pencil className="size-4 h-4 w-4" />
           </Button>
           <Button
             size="icon"
@@ -96,7 +94,7 @@ const ActualiteTable: React.FC<ActualiteTableProps> = ({
             onClick={() => onDelete(row)}
             className="h-8 w-8 text-red-600 hover:text-red-700"
           >
-            <DeleteIcon fontSize="small" className="h-4 w-4" />
+            <Trash2 className="size-4 h-4 w-4" />
           </Button>
         </div>
       ),

@@ -1,7 +1,6 @@
+import { ChevronRight, Home } from 'lucide-react';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import HomeIcon from '@mui/icons-material/Home';
 import { routesStatic } from '../../routes';
 
 interface BreadcrumbItem {
@@ -23,6 +22,9 @@ const Breadcrumb: React.FC = () => {
     partenaires: 'Partenaires',
     contacts: 'Contacts',
     admissions: 'Admissions',
+    'activity-logs': 'Journal',
+    'ressources-humaines': 'Ressources humaines',
+    utilisateurs: 'Utilisateurs',
     example: 'Example',
     profil: 'Profil',
     parametres: 'Paramètres',
@@ -52,12 +54,12 @@ const Breadcrumb: React.FC = () => {
         to={routesStatic.home}
         className="flex items-center hover:text-brand-600 transition-colors"
       >
-        <HomeIcon sx={{ fontSize: 16, mr: 0.5 }} />
+        <Home />
         Accueil
       </Link>
       {breadcrumbs.map((crumb) => (
         <React.Fragment key={crumb.to}>
-          <ChevronRightIcon sx={{ fontSize: 16 }} />
+          <ChevronRight />
           {crumb.isLast ? (
             <span className="text-ink-900 font-medium truncate max-w-[200px]" aria-current="page">
               {crumb.label}

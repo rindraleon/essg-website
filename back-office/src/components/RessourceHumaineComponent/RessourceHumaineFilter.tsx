@@ -1,14 +1,5 @@
+import { Box, FormControl, InputLabel, Select, MenuItem, Button, Chip, TextField } from '@/components/compat/mui';
 import React from 'react';
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Button,
-  Chip,
-  TextField,
-} from '@mui/material';
 import type { RessourceHumaineFilterOptions } from '../../types/ressource-humaine.types';
 
 interface RessourceHumaineFilterProps {
@@ -98,7 +89,7 @@ const RessourceHumaineFilter: React.FC<RessourceHumaineFilterProps> = ({
               onDelete={() => onUpdateFilter('search', '')}
             />
           )}
-          <Button size="small" onClick={onResetFilters} sx={{ textTransform: 'none' }}>
+          <Button size="small" onClick={onResetFilters}>
             Réinitialiser tout
           </Button>
         </Box>

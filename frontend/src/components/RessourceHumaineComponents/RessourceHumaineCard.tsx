@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import Button from '@mui/material/Button';
-import { Link as RouterLink } from 'react-router-dom';
 import { getImageUrl } from '../../utils/image.utils';
+import ViewDetailsButton from '../common/ViewDetailsButton';
 import type { RessourceHumaine } from '../../types/ressource-humaine.types';
 
 const FALLBACK_IMAGE =
@@ -10,15 +8,16 @@ const FALLBACK_IMAGE =
 
 const RessourceHumaineCard: React.FC<{ ressourceHumaine: RessourceHumaine }> = (props) => {
   const { ressourceHumaine } = props;
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
+  const [, setImageLoaded] = useState(false);
+  const [, setImageError] = useState(false);
 
   const photoUrl = ressourceHumaine.photo ? getImageUrl(ressourceHumaine.photo) : FALLBACK_IMAGE;
   const fullName = `${ressourceHumaine.prenom} ${ressourceHumaine.nom}`;
 
   return (
     <article
-      className="group rounded-xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col h-full"
+      data-gsap
+      className="group rounded-xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover hover:-translate-y-1.5 hover:border-brand-100 transition-all duration-300 flex flex-col h-full"
     >
       <div className="relative aspect-[16/9] overflow-hidden bg-ink-100">
         <img
@@ -85,29 +84,10 @@ const RessourceHumaineCard: React.FC<{ ressourceHumaine: RessourceHumaine }> = (
           )}
         </div>
 
-        <Button
-          component={RouterLink}
+        <ViewDetailsButton
           to={`/ressources-humaines/${ressourceHumaine.slug ?? ressourceHumaine.id}`}
-          variant="text"
-          endIcon={<ArrowForwardRoundedIcon />}
-          aria-label={`Voir le profil de ${fullName}`}
-          sx={{
-            mt: 2,
-            p: 0,
-            minWidth: 'auto',
-            color: '#2e6a5f',
-            fontWeight: 600,
-            textTransform: 'none',
-            justifyContent: 'flex-start',
-            alignSelf: 'flex-start',
-            '&:hover': {
-              backgroundColor: 'transparent',
-              color: '#27564e',
-            },
-          }}
-        >
-          Voir le profil
-        </Button>
+          ariaLabel={`Voir le détail de ${fullName}`}
+        />
       </div>
     </article>
   );

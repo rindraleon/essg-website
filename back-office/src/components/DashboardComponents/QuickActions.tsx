@@ -1,10 +1,7 @@
+import { CircleHelp, Plus, RefreshCw, Settings } from 'lucide-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { routesStatic } from '../../routes';
-import AddIcon from '@mui/icons-material/Add';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import SettingsIcon from '@mui/icons-material/Settings';
-import HelpIcon from '@mui/icons-material/Help';
 
 const ACTION_STYLES = {
   iconBg: 'bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white',
@@ -14,10 +11,10 @@ const QuickActions: React.FC = () => {
   const navigate = useNavigate();
 
   const actions = [
-    { label: 'Nouvelle Formation', icon: <AddIcon />, path: routesStatic.formations },
-    { label: 'Actualiser', icon: <RefreshIcon />, onClick: () => window.location.reload() },
-    { label: 'Projets', icon: <SettingsIcon />, path: routesStatic.projets },
-    { label: 'Actualités', icon: <HelpIcon />, path: routesStatic.actualites },
+    { label: 'Nouvelle Formation', icon: <Plus className="size-4" />, path: routesStatic.formations },
+    { label: 'Actualiser', icon: <RefreshCw className="size-4" />, onClick: () => window.location.reload() },
+    { label: 'Projets', icon: <Settings className="size-4" />, path: routesStatic.projets },
+    { label: 'Actualités', icon: <CircleHelp className="size-4" />, path: routesStatic.actualites },
   ];
 
   return (

@@ -1,9 +1,6 @@
+import { Card, CardContent } from '@/components/compat/mui';
+import { Calendar, CircleCheck, FileText } from 'lucide-react';
 import React from 'react';
-import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
-import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import { GREEN } from '../../constants/colors';
 import type { AdmissionTimelineProps } from '../../types/admission.types';
 
@@ -11,22 +8,22 @@ const DEFAULT_STEPS = [
   {
     date: 'Janvier - Mai',
     titre: 'Candidatures en ligne',
-    icon: <DescriptionRoundedIcon sx={{ fontSize: 24, color: GREEN[600] }} />,
+    icon: <FileText />,
   },
   {
     date: 'Juin',
     titre: "Examens d'entrée",
-    icon: <CalendarTodayRoundedIcon sx={{ fontSize: 24, color: GREEN[600] }} />,
+    icon: <Calendar />,
   },
   {
     date: 'Juillet',
     titre: 'Résultats et entretiens',
-    icon: <CheckCircleRoundedIcon sx={{ fontSize: 24, color: GREEN[600] }} />,
+    icon: <CircleCheck />,
   },
   {
     date: 'Septembre',
     titre: 'Rentrée académique',
-    icon: <CheckCircleRoundedIcon sx={{ fontSize: 24, color: GREEN[600] }} />,
+    icon: <CircleCheck />,
   },
 ];
 
@@ -46,19 +43,6 @@ const AdmissionTimeline: React.FC<AdmissionTimelineProps> = (
           {steps.map((etape) => (
             <Card
               key={etape.titre}
-              sx={{
-                borderRadius: '1.25rem',
-                border: '1px solid',
-                borderColor: 'divider',
-                textAlign: 'center',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  boxShadow:
-                    '0 2px 4px rgba(15, 33, 30, 0.05), 0 16px 40px -12px rgba(15, 33, 30, 0.16)',
-                  transform: 'translateY(-4px)',
-                  borderColor: GREEN[200],
-                },
-              }}
             >
               <CardContent className="p-6">
                 <div

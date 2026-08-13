@@ -1,0 +1,14 @@
+export function generateSlug(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/--+/g, '-');
+}
+
+export function toUpperName(value: string): string {
+  return value.toLocaleUpperCase('fr-FR');
+}

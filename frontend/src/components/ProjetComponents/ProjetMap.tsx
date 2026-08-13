@@ -1,7 +1,6 @@
+import { MapPin } from 'lucide-react';
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import RoomRoundedIcon from '@mui/icons-material/RoomRounded';
-import { GREEN } from '../../constants/colors';
 import type { ProjetLocation } from '../../types/projets.types';
 
 // Fix pour les icônes Leaflet par défaut
@@ -78,7 +77,7 @@ const ProjetMap: React.FC<ProjetMapProps> = ({
 
       {/* Info bar */}
       <div className="flex items-center gap-2 border-t border-ink-100 bg-ink-50/60 px-3 py-2.5">
-        <RoomRoundedIcon sx={{ fontSize: 16, color: GREEN[600] }} />
+        <MapPin />
         <span className="truncate text-xs font-medium text-ink-700">
           {label || `${ville}, ${pays}`}
         </span>

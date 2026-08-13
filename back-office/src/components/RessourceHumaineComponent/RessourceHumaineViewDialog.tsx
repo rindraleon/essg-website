@@ -1,9 +1,5 @@
+import { Image, Mail, Phone, User, X } from 'lucide-react';
 import React from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { getImageUrl } from '../../utils/image.utils';
 import type { RessourceHumaineItem } from '../../types/ressource-humaine.types';
 import { Button } from '@/components/ui/button';
@@ -62,7 +58,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-ink-800 to-ink-900">
                       <div className="text-center">
-                        <ImageOutlinedIcon className="mx-auto mb-2 h-12 w-12 text-ink-500" />
+                        <Image className="mx-auto mb-2 h-12 w-12 text-ink-500" />
                         <p className="text-sm text-ink-400">Aucune photo</p>
                       </div>
                     </div>
@@ -91,7 +87,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                 </h2>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Badge className="rounded-full bg-white text-ink-900">
-                    <PersonOutlineOutlinedIcon className="mr-1 h-3.5 w-3.5" />
+                    <User className="mr-1 h-3.5 w-3.5" />
                     {ressource.poste}
                   </Badge>
                 </div>
@@ -101,7 +97,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                 {ressource.email && (
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <div className="mb-2 flex items-center gap-2 text-white/80">
-                      <EmailOutlinedIcon className="h-4 w-4" />
+                      <Mail className="h-4 w-4" />
                       <span className="text-xs uppercase tracking-wide">Email</span>
                     </div>
                     <p className="text-base font-semibold text-white break-all">
@@ -113,7 +109,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                 {ressource.telephone && (
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <div className="mb-2 flex items-center gap-2 text-white/80">
-                      <PhoneOutlinedIcon className="h-4 w-4" />
+                      <Phone className="h-4 w-4" />
                       <span className="text-xs uppercase tracking-wide">Téléphone</span>
                     </div>
                     <p className="text-base font-semibold text-white">{ressource.telephone}</p>
@@ -148,7 +144,7 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                   className="h-10 w-10 shrink-0 rounded-full border border-ink-100 bg-white hover:bg-ink-100"
                   aria-label="Fermer"
                 >
-                  <CloseIcon className="h-4 w-4" />
+                  <X className="h-4 w-4" />
                 </Button>
               </div>
             </DialogHeader>
@@ -193,13 +189,13 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                     <div className="space-y-2">
                       {ressource.email && (
                         <div className="flex items-center gap-2 text-ink-600">
-                          <EmailOutlinedIcon className="h-4 w-4 text-ink-400" />
+                          <Mail className="h-4 w-4 text-ink-400" />
                           <span className="text-sm">{ressource.email}</span>
                         </div>
                       )}
                       {ressource.telephone && (
                         <div className="flex items-center gap-2 text-ink-600">
-                          <PhoneOutlinedIcon className="h-4 w-4 text-ink-400" />
+                          <Phone className="h-4 w-4 text-ink-400" />
                           <span className="text-sm">{ressource.telephone}</span>
                         </div>
                       )}

@@ -1,23 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import CloudUploadRoundedIcon from '@mui/icons-material/CloudUploadRounded';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Checkbox from '@mui/material/Checkbox';
-import CircularProgress from '@mui/material/CircularProgress';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
-import type { SelectChangeEvent } from '@mui/material/Select';
-import { GREEN } from '../../constants/colors';
+import { ArrowRight, LoaderCircle, Save, Upload } from 'lucide-react';
+import { toUpperName } from '../../utils/slug.utils';
 import type { AdmissionFormData, AdmissionFormProps } from '../../types';
-import { admissionService } from '../../services';
+import { useCreateAdmission } from '../../hooks/mutations';
+import { ApiError } from '@/api/types/api';
+import { Button } from '../ui/button';
+import { Checkbox } from '../ui/checkbox';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Select } from '../ui/select';
 
 const INITIAL_FORM_DATA: AdmissionFormData = {
   nom: '',
@@ -43,449 +35,244 @@ const DEFAULT_FORMATIONS = [
   { value: 'informatique-donnees', label: 'Informatique et Données Spatiales' },
 ];
 
-const inputSx = {
-  '& .MuiOutlinedInput-root': {
-    borderRadius: '0.75rem',
-    '&.Mui-focused fieldset': {
-      borderColor: GREEN[600],
-    },
-  },
-  '& .MuiInputLabel-root.Mui-focused': {
-    color: GREEN[600],
-  },
-};
-
-const selectSx = {
-  borderRadius: '0.75rem',
-  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-    borderColor: GREEN[600],
-  },
-};
-
-const AdmissionForm: React.FC<AdmissionFormProps> = (props: Readonly<AdmissionFormProps>) => {
-  const { niveaux = DEFAULT_NIVEAUX, formations = DEFAULT_FORMATIONS, onSubmit } = props;
-
+const AdmissionForm = ({
+  niveaux = DEFAULT_NIVEAUX,
+  formations = DEFAULT_FORMATIONS,
+  onSubmit,
+}: AdmissionFormProps) => {
   const [formData, setFormData] = useState<AdmissionFormData>(INITIAL_FORM_DATA);
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [lettreFile, setLettreFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
+  const createAdmission = useCreateAdmission();
+  const loading = createAdmission.isPending;
 
-  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTextChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: name === 'nom' ? toUpperName(value) : value,
     }));
-  };
-
-  const handleSelectChange = (field: string) => (event: SelectChangeEvent) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: event.target.value,
-    }));
-  };
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      accepteConditions: e.target.checked,
-    }));
-  };
-
-  const handleCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setCvFile(file);
-    }
-  };
-
-  const handleLettreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setLettreFile(file);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (!formData.accepteConditions) {
       toast.error('Veuillez accepter les conditions générales.');
       return;
     }
-
     if (!cvFile || !lettreFile) {
       toast.error('Veuillez joindre le CV et la lettre de motivation.');
       return;
     }
 
-    setLoading(true);
+    const payload = new FormData();
+    payload.append('nom', formData.nom);
+    payload.append('prenom', formData.prenom);
+    payload.append('email', formData.email);
+    payload.append('telephone', formData.telephone);
+    payload.append('dateNaissance', formData.dateNaissance);
+    payload.append('niveau', formData.niveau);
+    payload.append('formation', formData.formation);
+    payload.append('diplomePrecedent', formData.diplomePrecedent);
+    payload.append('cv', cvFile);
+    payload.append('lettreMotivation', lettreFile);
+
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('nom', formData.nom);
-      formDataToSend.append('prenom', formData.prenom);
-      formDataToSend.append('email', formData.email);
-      formDataToSend.append('telephone', formData.telephone);
-      formDataToSend.append('dateNaissance', formData.dateNaissance);
-      formDataToSend.append('niveau', formData.niveau);
-      formDataToSend.append('formation', formData.formation);
-      formDataToSend.append('diplomePrecedent', formData.diplomePrecedent);
-      formDataToSend.append('cv', cvFile);
-      formDataToSend.append('lettreMotivation', lettreFile);
-
-      await admissionService.createAdmission(formDataToSend);
-
-      if (onSubmit) {
-        onSubmit(formData);
-      }
-
+      await createAdmission.mutateAsync(payload);
+      onSubmit?.(formData);
       toast.success('Candidature soumise avec succès ! Vous recevrez un email de confirmation.');
-
       setFormData(INITIAL_FORM_DATA);
       setCvFile(null);
       setLettreFile(null);
     } catch (error) {
-      console.error("Erreur lors de la soumission du formulaire d'admission:", error);
-      toast.error('Une erreur est survenue lors de la soumission. Veuillez réessayer.');
-    } finally {
-      setLoading(false);
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : 'Une erreur est survenue lors de la soumission. Veuillez réessayer.',
+      );
     }
   };
 
   return (
-    <>
-      <Card
-        sx={{
-          borderRadius: '1.5rem',
-          border: '1px solid',
-          borderColor: 'divider',
-          boxShadow: '0 1px 2px rgba(15, 33, 30, 0.04), 0 4px 16px -4px rgba(15, 33, 30, 0.08)',
-          overflow: 'hidden',
-        }}
-      >
-        {/* <div
-                    className="h-2 w-full"
-                    style={{
-                        background: `linear-gradient(90deg, ${GREEN[500]}, ${GREEN[400]})`,
-                    }}
-                /> */}
+    <div className="overflow-hidden rounded-[1.5rem] border border-ink-100 bg-white p-6 shadow-card sm:p-8">
+      <h2 className="mb-2 text-2xl font-bold text-ink-900">Formulaire de candidature</h2>
+      <p className="mb-8 text-sm text-ink-500">
+        Remplissez ce formulaire pour soumettre votre candidature. Assurez-vous de fournir des
+        informations exactes.
+      </p>
 
-        <CardContent className="p-6 sm:p-8">
-          <h2 className="mb-2 text-2xl font-bold text-ink-900">Formulaire de candidature</h2>
-          <p className="mb-8 text-sm text-ink-500">
-            Remplissez ce formulaire pour soumettre votre candidature. Assurez-vous de fournir des
-            informations exactes.
-          </p>
-
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Informations personnelles */}
-            <div>
-              <h3 className="mb-4 text-lg font-semibold text-ink-900">Informations personnelles</h3>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <TextField
-                  label="Nom"
-                  name="nom"
-                  value={formData.nom}
-                  onChange={handleTextChange}
-                  required
-                  fullWidth
-                  size="small"
-                  sx={inputSx}
-                />
-
-                <TextField
-                  label="Prénom"
-                  name="prenom"
-                  value={formData.prenom}
-                  onChange={handleTextChange}
-                  required
-                  fullWidth
-                  size="small"
-                  sx={inputSx}
-                />
-
-                <TextField
-                  label="Email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleTextChange}
-                  required
-                  fullWidth
-                  size="small"
-                  sx={inputSx}
-                />
-
-                <TextField
-                  label="Téléphone"
-                  name="telephone"
-                  type="tel"
-                  value={formData.telephone}
-                  onChange={handleTextChange}
-                  required
-                  fullWidth
-                  size="small"
-                  sx={inputSx}
-                />
-
-                <TextField
-                  label="Date de naissance"
-                  name="dateNaissance"
-                  type="date"
-                  value={formData.dateNaissance}
-                  onChange={handleTextChange}
-                  required
-                  fullWidth
-                  size="small"
-                  slotProps={{ inputLabel: { shrink: true } }}
-                  sx={{
-                    ...inputSx,
-                    gridColumn: '1 / -1',
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Formation souhaitée */}
-            <div>
-              <h3 className="mb-4 text-lg font-semibold text-ink-900">Formation souhaitée</h3>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <FormControl fullWidth size="small">
-                  <InputLabel
-                    id="niveau-label"
-                    sx={{
-                      '&.Mui-focused': {
-                        color: GREEN[900],
-                      },
-                    }}
-                  >
-                    Niveau *
-                  </InputLabel>
-                  <Select
-                    labelId="niveau-label"
-                    label="Niveau *"
-                    value={formData.niveau}
-                    onChange={handleSelectChange('niveau')}
-                    required
-                    sx={selectSx}
-                  >
-                    {niveaux.map((item) => (
-                      <MenuItem key={item.value} value={item.value}>
-                        {item.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-
-                <FormControl fullWidth size="small">
-                  <InputLabel
-                    id="formation-label"
-                    sx={{
-                      '&.Mui-focused': {
-                        color: GREEN[900],
-                      },
-                    }}
-                  >
-                    Formation *
-                  </InputLabel>
-                  <Select
-                    labelId="formation-label"
-                    label="Formation *"
-                    value={formData.formation}
-                    onChange={handleSelectChange('formation')}
-                    required
-                    sx={selectSx}
-                  >
-                    {formations.map((item) => (
-                      <MenuItem key={item.value} value={item.value}>
-                        {item.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
-            </div>
-
-            {/* Parcours académique */}
-            <div>
-              <h3 className="mb-4 text-lg font-semibold text-ink-900">Parcours académique</h3>
-
-              <div className="space-y-4">
-                <TextField
-                  label="Dernier diplôme obtenu"
-                  name="diplomePrecedent"
-                  value={formData.diplomePrecedent}
-                  onChange={handleTextChange}
-                  placeholder="Ex: Baccalauréat scientifique, Licence en géographie..."
-                  required
-                  fullWidth
-                  size="small"
-                  sx={inputSx}
-                />
-
-                <div>
-                  <label htmlFor="cv" className="mb-2 block text-sm font-medium text-ink-700">
-                    CV (PDF) *
-                  </label>
-                  <Button
-                    component="label"
-                    variant="outlined"
-                    fullWidth
-                    startIcon={<CloudUploadRoundedIcon />}
-                    sx={{
-                      borderRadius: '0.9rem',
-                      borderColor: 'divider',
-                      color: 'text.secondary',
-                      textTransform: 'none',
-                      justifyContent: 'flex-start',
-                      py: 1.25,
-                      backgroundColor: '#ffffff',
-                      '&:hover': {
-                        borderColor: GREEN[700],
-                        backgroundColor: GREEN[50],
-                      },
-                    }}
-                  >
-                    {cvFile ? cvFile.name : 'Choisir un fichier'}
-                    <input
-                      id="cv"
-                      type="file"
-                      accept=".pdf"
-                      hidden
-                      required
-                      onChange={handleCvChange}
-                    />
-                  </Button>
-                </div>
-
-                <div>
-                  <label htmlFor="lettre" className="mb-2 block text-sm font-medium text-ink-700">
-                    Lettre de motivation (PDF) *
-                  </label>
-                  <Button
-                    component="label"
-                    variant="outlined"
-                    fullWidth
-                    startIcon={<CloudUploadRoundedIcon />}
-                    sx={{
-                      borderRadius: '0.9rem',
-                      borderColor: 'divider',
-                      color: 'text.secondary',
-                      textTransform: 'none',
-                      justifyContent: 'flex-start',
-                      py: 1.25,
-                      backgroundColor: '#ffffff',
-                      '&:hover': {
-                        borderColor: GREEN[700],
-                        backgroundColor: GREEN[50],
-                      },
-                    }}
-                  >
-                    {lettreFile ? lettreFile.name : 'Choisir un fichier'}
-                    <input
-                      id="lettre"
-                      type="file"
-                      accept=".pdf"
-                      hidden
-                      required
-                      onChange={handleLettreChange}
-                    />
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Conditions */}
-            <div
-              className="rounded-xl p-4"
-              style={{
-                backgroundColor: GREEN[50],
-                border: `1px solid ${GREEN[200]}`,
-              }}
-            >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={formData.accepteConditions}
-                    onChange={handleCheckboxChange}
-                    sx={{
-                      color: GREEN[900],
-                      '&.Mui-checked': {
-                        color: GREEN[600],
-                      },
-                    }}
-                  />
-                }
-                label={
-                  <div>
-                    <span className="font-medium text-ink-900">
-                      J&apos;accepte les conditions générales *
-                    </span>
-                    <p className="mt-1 text-sm text-ink-500">
-                      Je certifie que les informations fournies sont exactes et je comprends que
-                      toute fausse déclaration peut entraîner le rejet de ma candidature.
-                    </p>
-                  </div>
-                }
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div>
+          <h3 className="mb-4 text-lg font-semibold text-ink-900">Informations personnelles</h3>
+          <div className="grid items-start gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="prenom">Prénom</Label>
+              <Input
+                id="prenom"
+                name="prenom"
+                autoComplete="given-name"
+                value={formData.prenom}
+                onChange={handleTextChange}
+                required
               />
             </div>
-
-            {/* Boutons */}
-            <div className="flex flex-col gap-3 pt-4 sm:flex-row">
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                size="large"
-                endIcon={
-                  loading ? (
-                    <CircularProgress size={20} color="inherit" />
-                  ) : (
-                    <ArrowForwardRoundedIcon />
-                  )
-                }
-                disabled={loading}
-                sx={{
-                  borderRadius: '0.75rem',
-                  textTransform: 'none',
-                  fontWeight: 800,
-                  backgroundColor: GREEN[900],
-                  boxShadow: 'none',
-                  '&:hover': {
-                    backgroundColor: GREEN[700],
-                    boxShadow: 'none',
-                  },
-                }}
-              >
-                {loading ? 'Soumission en cours...' : 'Soumettre ma candidature'}
-              </Button>
-
-              <Button
-                type="button"
-                variant="outlined"
-                fullWidth
-                size="large"
-                startIcon={<SaveRoundedIcon />}
-                sx={{
-                  borderRadius: '0.75rem',
-                  textTransform: 'none',
-                  fontWeight: 800,
-                  borderColor: GREEN[900],
-                  color: GREEN[900],
-                  '&:hover': {
-                    borderColor: GREEN[700],
-                    backgroundColor: GREEN[50],
-                  },
-                }}
-              >
-                Sauvegarder comme brouillon
-              </Button>
+            <div className="space-y-1.5">
+              <Label htmlFor="nom">Nom</Label>
+              <Input
+                id="nom"
+                name="nom"
+                autoComplete="family-name"
+                value={formData.nom}
+                onChange={handleTextChange}
+                required
+              />
             </div>
-          </form>
-        </CardContent>
-      </Card>
-    </>
+            <div className="space-y-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                value={formData.email}
+                onChange={handleTextChange}
+                required
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="telephone">Téléphone</Label>
+              <Input
+                id="telephone"
+                name="telephone"
+                type="tel"
+                autoComplete="tel"
+                value={formData.telephone}
+                onChange={handleTextChange}
+                required
+              />
+            </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label htmlFor="dateNaissance">Date de naissance</Label>
+              <Input
+                id="dateNaissance"
+                name="dateNaissance"
+                type="date"
+                autoComplete="bday"
+                value={formData.dateNaissance}
+                onChange={handleTextChange}
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="mb-4 text-lg font-semibold text-ink-900">Formation souhaitée</h3>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Select name="niveau" label="Niveau *" value={formData.niveau} onChange={handleTextChange} required>
+              <option value="">Choisir un niveau</option>
+              {niveaux.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
+            </Select>
+            <Select
+              name="formation"
+              label="Formation *"
+              value={formData.formation}
+              onChange={handleTextChange}
+              required
+            >
+              <option value="">Choisir une formation</option>
+              {formations.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
+            </Select>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="mb-4 text-lg font-semibold text-ink-900">Parcours académique</h3>
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="diplomePrecedent">Dernier diplôme obtenu</Label>
+              <Input
+                id="diplomePrecedent"
+                name="diplomePrecedent"
+                value={formData.diplomePrecedent}
+                onChange={handleTextChange}
+                placeholder="Ex: Baccalauréat scientifique, Licence en géographie..."
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="cv" className="mb-2 block">
+                CV (PDF) *
+              </Label>
+              <label className="flex w-full cursor-pointer items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-sm text-ink-600 transition-colors hover:border-brand-600 hover:bg-brand-50">
+                <Upload className="size-4" />
+                {cvFile ? cvFile.name : 'Choisir un fichier'}
+                <input
+                  id="cv"
+                  type="file"
+                  accept=".pdf"
+                  required
+                  className="sr-only"
+                  onChange={(e) => setCvFile(e.target.files?.[0] ?? null)}
+                />
+              </label>
+            </div>
+            <div>
+              <Label htmlFor="lettre" className="mb-2 block">
+                Lettre de motivation (PDF) *
+              </Label>
+              <label className="flex w-full cursor-pointer items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-sm text-ink-600 transition-colors hover:border-brand-600 hover:bg-brand-50">
+                <Upload className="size-4" />
+                {lettreFile ? lettreFile.name : 'Choisir un fichier'}
+                <input
+                  id="lettre"
+                  type="file"
+                  accept=".pdf"
+                  required
+                  className="sr-only"
+                  onChange={(e) => setLettreFile(e.target.files?.[0] ?? null)}
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-brand-200 bg-brand-50 p-4">
+          <Checkbox
+            checked={formData.accepteConditions}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, accepteConditions: e.target.checked }))
+            }
+            label="J'accepte les conditions générales *"
+          />
+          <p className="mt-2 pl-6 text-sm text-ink-500">
+            Je certifie que les informations fournies sont exactes et je comprends que toute fausse
+            déclaration peut entraîner le rejet de ma candidature.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-3 pt-4 sm:flex-row">
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? 'Soumission en cours...' : 'Soumettre ma candidature'}
+            {loading ? <LoaderCircle className="size-4 animate-spin" /> : <ArrowRight className="size-4" />}
+          </Button>
+          <Button type="button" variant="outline" className="w-full">
+            <Save className="size-4" />
+            Sauvegarder comme brouillon
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
 

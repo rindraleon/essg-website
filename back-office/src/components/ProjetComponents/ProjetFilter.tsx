@@ -1,18 +1,7 @@
+import { FormControl, InputLabel, Select, MenuItem, TextField, Button, Collapse, Box, IconButton } from '@/components/compat/mui';
+import { RotateCcw, X } from 'lucide-react';
 // src/components/ProjetComponents/ProjetFilter.tsx
 import React from 'react';
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-  Button,
-  Collapse,
-  Box,
-  IconButton,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import RestoreIcon from '@mui/icons-material/Restore';
 import type { ProjetFilterOptions } from '../../types/projet.types';
 import { PROJET_TYPES } from '../../constants/projet.constants';
 
@@ -40,7 +29,7 @@ const ProjetFilters: React.FC<ProjetFiltersProps> = ({
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-semibold text-ink-700">Filtres avancés</span>
             <IconButton size="small" onClick={onToggle}>
-              <CloseIcon />
+              <X className="size-4" />
             </IconButton>
           </div>
 
@@ -51,7 +40,6 @@ const ProjetFilters: React.FC<ProjetFiltersProps> = ({
                 value={filters.type}
                 label="Type"
                 onChange={(e) => onUpdateFilter('type', e.target.value)}
-                sx={{ borderRadius: '8px', backgroundColor: 'white' }}
               >
                 <MenuItem value="">
                   <em>Tous</em>
@@ -72,12 +60,6 @@ const ProjetFilters: React.FC<ProjetFiltersProps> = ({
               onChange={(e) => onUpdateFilter('dateDebut', e.target.value)}
               InputLabelProps={{ shrink: true }}
               fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                  backgroundColor: 'white',
-                },
-              }}
             />
 
             <TextField
@@ -88,12 +70,6 @@ const ProjetFilters: React.FC<ProjetFiltersProps> = ({
               onChange={(e) => onUpdateFilter('dateFin', e.target.value)}
               InputLabelProps={{ shrink: true }}
               fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                  backgroundColor: 'white',
-                },
-              }}
             />
           </div>
 
@@ -102,9 +78,8 @@ const ProjetFilters: React.FC<ProjetFiltersProps> = ({
               <Button
                 size="small"
                 color="error"
-                startIcon={<RestoreIcon fontSize="small" />}
+                startIcon={<RotateCcw className="size-4" />}
                 onClick={onResetFilters}
-                sx={{ textTransform: 'none', fontSize: 12 }}
               >
                 Réinitialiser tout
               </Button>
