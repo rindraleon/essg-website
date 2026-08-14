@@ -1,8 +1,3 @@
-/**
- * Construit une URL d'image complète à partir d'une référence backend.
- * Les fichiers sont stockés dans MinIO et exposés via /media/...
- */
-
 function resolveApiBase(): string {
   const raw =
     (import.meta.env.VITE_API_BASE_URL as string | undefined) ||
@@ -25,5 +20,6 @@ export const getImageUrl = (imagePath: string): string => {
   if (!imagePath) return '';
   if (imagePath.startsWith('http')) return imagePath;
   const baseUrl = resolveApiBase();
-  return `${baseUrl}${imagePath.startsWith('/') ? imagePath : `/${imagePath}`}`;
+  const path = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+  return `${baseUrl}${path}`;
 };

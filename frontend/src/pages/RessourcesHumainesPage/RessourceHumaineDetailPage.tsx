@@ -17,6 +17,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
   const { setTitle } = useTitle();
 
   useScrollToTop();
+  useTitle(ressourceHumaine ? `${ressourceHumaine.prenom} ${ressourceHumaine.nom}` : 'Ressource Humaine | ESSG');
 
   useEffect(() => {
     if (ressourceHumaine) {

@@ -2,11 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { ApiError } from '@/api/types/api';
-import { SearchInput, AdmissionFilters, ConfirmDialog } from '../../components';
-import AdmissionTable from '../../components/AdmissionComponents/AdmissionTable';
-import AdmissionDetailDialog from '../../components/AdmissionComponents/AdmissionDetailDialog';
-import AdmissionDecisionDialog from '../../components/AdmissionComponents/AdmissionDecisionDialog';
-import PdfPreviewDialog from '../../components/common/PdfPreviewDialog';
+import { SearchInput, AdmissionFilters, ConfirmDialog, AdmissionTable, AdmissionDetailDialog, AdmissionDecisionDialog, PdfPreviewDialog } from '../../components';
 import { useDebounce, useScrollToTop } from '../../hooks';
 import { useAdmissionsQuery, useDeleteAdmission, useUpdateAdmissionStatus } from '../../hooks/queries';
 import { getAdmissionDocumentBlob } from '../../services/admissions.service';
@@ -243,21 +239,32 @@ const Admissions = () => {
         />
       )}
 
-      <PdfPreviewDialog
-        open={Boolean(preview)}
-        title={
-          preview
-            ? `${preview.kind === 'cv' ? 'CV' : 'Lettre de motivation'} — ${preview.admission.prenom} ${preview.admission.nom}`
-            : 'Aperçu PDF'
-        }
-        fileName={
-          preview
-            ? `${preview.kind === 'cv' ? 'CV' : 'Lettre'}-${preview.admission.nom}.pdf`
-            : 'document.pdf'
-        }
-        loadDocument={loadPreview}
-        onClose={() => setPreview(null)}
-      />
+      {preview && (() => {
+        const documentType = preview.kind === 'cv' ? 'CV' : 'Lettre de motivation';
+        const fileName = preview.kind === 'cv' ? 'CV' : 'Lettre';
+        const title = `${documentType} — ${preview.admission.prenom} ${preview.admission.nom}`;
+        const fileNameWithExt = `${fileName}-${preview.admission.nom}.pdf`;
+
+        return (
+          <PdfPreviewDialog
+            open={true}
+            title={title}
+            fileName={fileNameWithExt}
+            loadDocument={loadPreview}
+            onClose={() => setPreview(null)}
+          />
+        );
+      })()}
+
+      {!preview && (
+        <PdfPreviewDialog
+          open={false}
+          title="Aperçu PDF"
+          fileName="document.pdf"
+          loadDocument={loadPreview}
+          onClose={() => setPreview(null)}
+        />
+      )}
 
       <ConfirmDialog
         open={Boolean(deleteTarget)}

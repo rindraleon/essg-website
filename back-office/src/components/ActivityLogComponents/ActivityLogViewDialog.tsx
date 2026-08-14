@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import type { ActivityLog } from '../../services/activity-logs.service';
+import type { ActivityLog } from '@/types';
+
 
 interface ActivityLogViewDialogProps {
   open: boolean;
@@ -15,7 +16,7 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
-export default function ActivityLogViewDialog({ open, onClose, log }: ActivityLogViewDialogProps) {
+export default function ActivityLogViewDialog({ open, onClose, log }: Readonly<ActivityLogViewDialogProps>) {
   if (!log) return null;
 
   return (
@@ -66,7 +67,7 @@ export default function ActivityLogViewDialog({ open, onClose, log }: ActivityLo
   );
 }
 
-function Info({ label, value }: { label: string; value: string }) {
+function Info({ label, value }: Readonly<{ label: string; value: string }>) {
   return (
     <div>
       <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">{label}</p>

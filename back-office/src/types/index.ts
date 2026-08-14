@@ -11,3 +11,5 @@ export * from './template.types';
 export * from './formation.types';
 export * from './ressource-humaine.types';
 export * from './dashboard.types';
+export * from './admission.types';
+export * from './activity-log.types';

@@ -54,7 +54,7 @@ export const getAdmissionById = async (id: number): Promise<Admission> => {
 };
 
 export type AdmissionDecisionPayload = {
-  statut: AdmissionStatus | string;
+  statut: AdmissionStatus;
   commentaire?: string;
   reponseDate?: string;
   reponseHeure?: string;
@@ -65,7 +65,7 @@ export type AdmissionDecisionPayload = {
 
 export const updateAdmissionStatus = async (
   id: number,
-  statut: AdmissionStatus | string | AdmissionDecisionPayload,
+  statut: AdmissionStatus | AdmissionDecisionPayload,
   commentaire?: string,
 ): Promise<Admission> => {
   const payload: AdmissionDecisionPayload =

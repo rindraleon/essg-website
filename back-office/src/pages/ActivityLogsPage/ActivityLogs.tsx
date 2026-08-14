@@ -10,13 +10,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { SearchInput } from '../../components';
-import ActivityLogTable from '../../components/ActivityLogComponents/ActivityLogTable';
-import ActivityLogViewDialog from '../../components/ActivityLogComponents/ActivityLogViewDialog';
+import { ActivityLogTable, ActivityLogViewDialog, SearchInput } from '../../components';
+
 import { useDebounce, useScrollToTop } from '../../hooks';
 import { useActivityLogsQuery } from '../../hooks/queries';
 import { useTitle } from '../../hooks/useTitle';
-import type { ActivityLog } from '../../services/activity-logs.service';
+import type { ActivityLog } from '@/types';
+
+
 
 const MODULES = [
   { value: 'users', label: 'Utilisateurs' },
@@ -225,25 +226,29 @@ const ActivityLogs = () => {
         </div>
       )}
 
-      <ActivityLogTable
-        data={logs}
-        totalCount={totalItems}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        onPageChange={setPage}
-        onRowsPerPageChange={(rows) => {
-          setRowsPerPage(rows);
-          setPage(0);
-        }}
-        onView={setSelectedLog}
-        emptyMessage={
-          isLoading
-            ? 'Chargement...'
-            : searchTerm || activeFilterCount > 0
-              ? 'Aucun résultat trouvé'
-              : 'Aucune action enregistrée'
-        }
-      />
+      {(() => {
+        const emptyMessage = isLoading
+          ? 'Chargement...'
+          : searchTerm || activeFilterCount > 0
+            ? 'Aucun résultat trouvé'
+            : 'Aucune action enregistrée';
+
+        return (
+          <ActivityLogTable
+            data={logs}
+            totalCount={totalItems}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            onPageChange={setPage}
+            onRowsPerPageChange={(rows) => {
+              setRowsPerPage(rows);
+              setPage(0);
+            }}
+            onView={setSelectedLog}
+            emptyMessage={emptyMessage}
+          />
+        );
+      })()}
 
       <ActivityLogViewDialog open={Boolean(selectedLog)} onClose={() => setSelectedLog(null)} log={selectedLog} />
     </div>

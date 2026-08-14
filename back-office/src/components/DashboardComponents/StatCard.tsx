@@ -27,9 +27,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon, loading
   }
 
   const content = (
-    <>
-      <span className="absolute inset-x-0 top-0 h-1 bg-brand-600 opacity-80" />
-      <div className="flex items-start justify-between gap-3">
+    <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <p className="mb-1 text-sm font-medium text-ink-500">{title}</p>
           <p className="mb-2 text-2xl font-bold tracking-tight text-ink-900">{value}</p>
@@ -56,7 +54,6 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon, loading
           </div>
         )}
       </div>
-    </>
   );
 
   const className =

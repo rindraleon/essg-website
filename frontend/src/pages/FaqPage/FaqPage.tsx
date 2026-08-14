@@ -6,11 +6,13 @@ import { ContactCard, CtaSection, FaqAccordion, PageHero, Breadcrumb } from '../
 import { useScrollToTop } from '../../hooks';
 
 import { SITE_HERO_IMAGE } from '../../constants/media';
+import { useTitle } from '@/hooks/useTitle';
 
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
 const FaqPage: React.FC<FaqPageProps> = (props: Readonly<FaqPageProps>) => {
   useScrollToTop();
+  useTitle('FAQ | ESSG');
 
   const {
     pageTitle = 'Questions Fréquentes',

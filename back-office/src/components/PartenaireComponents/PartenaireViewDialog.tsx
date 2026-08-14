@@ -2,18 +2,35 @@ import { Calendar, Globe, Mail, Tag, X } from 'lucide-react';
 import React from 'react';
 import { getImageUrl, isRemoteImage } from '../../utils/image.utils';
 import type { Partenaire } from '../../types/partenaire.types';
-import { formatDate } from '../../utils/partenaire.utils';
 import { PARTENAIRE_TYPE_COLORS } from '../../constants/partenaire.constants';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { formatDate } from '@/utils';
 
 interface PartenaireViewDialogProps {
   open: boolean;
   onClose: () => void;
   partenaire: Partenaire | null;
 }
+
+const getBadgeVariant = (
+  colorType: string,
+): React.ComponentProps<typeof Badge>['variant'] => {
+  switch (colorType) {
+    case 'primary':
+      return 'default';
+    case 'secondary':
+      return 'secondary';
+    case 'success':
+      return 'default';
+    case 'warning':
+      return 'secondary';
+    default:
+      return 'outline';
+  }
+};
 
 const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
   open,
@@ -22,16 +39,9 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
 }) => {
   if (!partenaire) return null;
 
-  const badgeVariant =
-    PARTENAIRE_TYPE_COLORS[partenaire.type] === 'primary'
-      ? 'default'
-      : PARTENAIRE_TYPE_COLORS[partenaire.type] === 'secondary'
-        ? 'secondary'
-        : PARTENAIRE_TYPE_COLORS[partenaire.type] === 'success'
-          ? 'default'
-          : PARTENAIRE_TYPE_COLORS[partenaire.type] === 'warning'
-            ? 'secondary'
-            : 'outline';
+  const badgeVariant: React.ComponentProps<typeof Badge>['variant'] = getBadgeVariant(
+    PARTENAIRE_TYPE_COLORS[partenaire.type],
+  );
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>

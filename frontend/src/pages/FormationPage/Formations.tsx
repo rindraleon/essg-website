@@ -16,6 +16,7 @@ import { useFormations, useScrollToTop } from '../../hooks';
 import type { Formation } from '../../types/formations.types';
 
 import { SITE_HERO_IMAGE } from '../../constants/media';
+import { useTitle } from '@/hooks/useTitle';
 
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
@@ -42,6 +43,7 @@ const HERO_STATS = [
 
 const FormationsPage = () => {
   useScrollToTop();
+  useTitle('Formations | ESSG');
 
   const [searchTerm, setSearchTerm] = useState('');
   const [niveauFilter, setNiveauFilter] = useState('all');

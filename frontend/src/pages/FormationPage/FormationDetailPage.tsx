@@ -19,6 +19,7 @@ const FormationDetailPage: React.FC = () => {
   const { setTitle } = useTitle();
 
   useScrollToTop();
+  useTitle(formation ? formation.titre : 'Formation | ESSG');
 
   useEffect(() => {
     if (formation) {

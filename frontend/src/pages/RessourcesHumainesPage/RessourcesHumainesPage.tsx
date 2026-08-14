@@ -2,19 +2,17 @@ import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, 
 import { Search, Users, X } from 'lucide-react';
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import type { SelectChangeEvent } from '@/components/compat/mui';
-
 import CtaSection from '../../components/common/CtaSection';
 import EmptyState from '../../components/common/EmptyState';
 import FilterToolbar from '../../components/common/FilterToolbar';
 import PageHero from '../../components/common/PageHero';
 import Breadcrumb from '../../components/common/Breadcrumb';
-
-
 import { useRessourcesHumaines, useScrollToTop } from '../../hooks';
 import { generateSlug } from '../../utils/slug.utils';
 import type { RessourceHumaine } from '../../types/ressource-humaine.types';
 import { RessourceHumaineCard } from '../../components';
 import { SITE_HERO_IMAGE } from '../../constants/media';
+import { useTitle } from '@/hooks/useTitle';
 
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
@@ -29,6 +27,7 @@ const POSTES = [
 
 const RessourcesHumainesPage: React.FC = () => {
   useScrollToTop();
+  useTitle('Ressources Humaines | ESSG');
 
   const { data: rhResult, loading, error } = useRessourcesHumaines(1, 100);
   const [posteFilter, setPosteFilter] = useState('all');

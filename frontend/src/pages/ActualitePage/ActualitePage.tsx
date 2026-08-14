@@ -15,6 +15,7 @@ import { useActualites, useScrollToTop } from '../../hooks';
 import type { Actualite } from '../../types/actualite.types';
 
 import { SITE_HERO_IMAGE } from '../../constants/media';
+import { useTitle } from '@/hooks/useTitle';
 
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
@@ -28,6 +29,7 @@ const CATEGORIES = [
 
 const ActualitesPage = () => {
   useScrollToTop();
+  useTitle('Actualités | ESSG');
 
   const [searchTerm, setSearchTerm] = useState('');
   const [categorieFilter, setCategorieFilter] = useState('all');

@@ -14,7 +14,7 @@ import { useTitle } from '../../hooks/useTitle';
 
 const Home = () => {
   useScrollToTop();
-  useTitle('Home');
+  useTitle('Accueil | ESSG');
   return (
     <div>
       <HeroSection />

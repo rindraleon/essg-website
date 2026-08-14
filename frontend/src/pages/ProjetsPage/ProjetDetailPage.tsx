@@ -1,6 +1,5 @@
-import { Banknote } from 'lucide-react';
 import { Card, CardContent } from '@/components/compat/mui';
-import { ArrowLeft, Calendar, Database, Flag, GraduationCap, Map, MapPin, Rocket } from 'lucide-react';
+import { ArrowLeft, Calendar, Database, Flag, GraduationCap, Map, MapPin, Rocket,Banknote } from 'lucide-react';
 import React, { useEffect } from 'react';
 import Button from '@/components/compat/button';
 import { Link as RouterLink, useParams } from 'react-router-dom';
@@ -40,6 +39,7 @@ const ProjetDetailPage: React.FC = () => {
   const { setTitle } = useTitle();
 
   useScrollToTop();
+  useTitle(projet ? projet.titre : 'Projet | ESSG');
 
   useEffect(() => {
     if (projet) {

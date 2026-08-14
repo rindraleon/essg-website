@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
+import type { ActivityLogQuery } from '@/types';
 import {
   getActivityLogById,
   getActivityLogs,
-  type ActivityLogQuery,
 } from '../../services/activity-logs.service';
 import { queryKeys } from './keys';
 

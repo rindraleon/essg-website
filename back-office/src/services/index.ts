@@ -47,7 +47,20 @@ export {
   deleteUser,
   uploadAvatar,
 } from './users.service';
-export { getActivityLogs, getActivityLogById, type ActivityLog } from './activity-logs.service';
+
+export {
+  getAllAdmissions,
+  searchAdmissions,
+  getAdmissionById,
+  updateAdmissionStatus,
+  deleteAdmission,
+} from './admissions.service';
+
+export {
+  getActivityLogs,
+  getActivityLogById,
+} from './activity-logs.service';
+
 export {
   getAllMessages,
   searchMessages,

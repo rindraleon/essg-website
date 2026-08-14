@@ -158,16 +158,18 @@ const RessourcesHumaines: React.FC = () => {
                 placeholder="Rechercher par nom, prénom, poste..."
               />
             </div>
-            <div className="flex items-center gap-3 w-full lg:w-auto">
+            <div className="flex items-center rounded-md gap-3 w-full lg:w-auto">
               <Button
                 variant="outlined"
                 onClick={handleToggleFilters}
+                className='rounded-md'
               >
                 {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
               </Button>
               <Button
                 variant="contained"
                 onClick={handleOpenCreate}
+                className='rounded-md'
               >
                 + Nouvelle ressource
               </Button>

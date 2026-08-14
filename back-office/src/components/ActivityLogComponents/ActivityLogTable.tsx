@@ -1,7 +1,8 @@
 import { Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import DataTable, { type Column } from '../common/DataTable';
-import type { ActivityLog } from '../../services/activity-logs.service';
+import type { ActivityLog } from '@/types';
+
 
 interface ActivityLogTableProps {
   data: ActivityLog[];
@@ -40,7 +41,7 @@ export default function ActivityLogTable({
   onRowsPerPageChange,
   onView,
   emptyMessage = 'Aucune action trouvée',
-}: ActivityLogTableProps) {
+}: Readonly<ActivityLogTableProps>) {
   const columns: Column<ActivityLog>[] = [
     {
       id: 'createdAt',

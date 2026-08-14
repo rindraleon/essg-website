@@ -1,5 +1,4 @@
 import { CircleCheck, Eye, FileText, Trash2 } from 'lucide-react';
-// src/components/AdmissionComponents/AdmissionTable.tsx
 import React, { useMemo } from 'react';
 import type { Admission } from '../../types/admission.types';
 import DataTable from '../common/DataTable';

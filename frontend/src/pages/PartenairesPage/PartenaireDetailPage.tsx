@@ -37,7 +37,7 @@ const PartenaireDetailPage: React.FC = () => {
   const { setTitle } = useTitle();
 
   useScrollToTop();
-
+  useTitle(partenaire ? partenaire.nom : 'Partenaire | ESSG');
   useEffect(() => {
     if (partenaire) {
       setTitle(partenaire.nom);

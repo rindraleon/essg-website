@@ -9,11 +9,13 @@ import { AdmissionForm, ContactCard, CtaSection, PageHero, Breadcrumb } from '..
 import { useScrollToTop } from '../../hooks';
 
 import { SITE_HERO_IMAGE } from '../../constants/media';
+import { useTitle } from '@/hooks/useTitle';
 
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
 const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPageProps>) => {
   useScrollToTop();
+  useTitle('Admission | ESSG');
 
   const {
     pageTitle = 'Admission',

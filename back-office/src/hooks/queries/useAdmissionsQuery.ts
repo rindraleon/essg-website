@@ -38,7 +38,7 @@ export function useUpdateAdmissionStatus() {
       reponseMessage,
     }: {
       id: number;
-      statut: AdmissionStatus | string;
+      statut: AdmissionStatus;
       commentaire?: string;
       reponseDate?: string;
       reponseHeure?: string;

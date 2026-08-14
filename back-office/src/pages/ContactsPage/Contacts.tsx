@@ -2,9 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { ApiError } from '@/api/types/api';
-import { ConfirmDialog, ContactFilters, SearchInput } from '../../components';
-import MessageTable from '../../components/MessageComponents/MessageTable';
-import ContactReplyDialog from '../../components/MessageComponents/ContactReplyDialog';
+import { ConfirmDialog, ContactFilters, ContactReplyDialog, MessageTable, SearchInput } from '../../components';
+
 import { useDebounce, useScrollToTop } from '../../hooks';
 import {
   useDeleteMessage,

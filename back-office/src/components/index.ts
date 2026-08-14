@@ -19,6 +19,7 @@ export { default as SearchInput } from './common/SearchInput';
 export { default as DynamicListField } from './common/DynamicListField';
 export { default as MultiImageUpload } from './common/MultiImageUpload';
 export { default as StatsCard } from './common/StatCard';
+export { default as PdfPreviewDialog } from './common/PdfPreviewDialog';
 
 // Actualites components
 export { default as ActualiteFilters } from './ActualiteComponent/ActualiteFilter';
@@ -59,7 +60,16 @@ export type { UserFilters } from './UsersComponent/UsersFilter';
 
 // Admission components
 export { default as AdmissionFilters } from './AdmissionComponents/AdmissionFilters';
+export { default as AdmissionTable } from './AdmissionComponents/AdmissionTable';
+export { default as AdmissionDetailDialog } from './AdmissionComponents/AdmissionDetailDialog';
+export { default as AdmissionDecisionDialog } from './AdmissionComponents/AdmissionDecisionDialog';
 
 // Contact / messages
 export { default as ContactFilters } from './MessageComponents/ContactFilters';
 export type { ContactFilterValues } from './MessageComponents/ContactFilters';
+export { default as MessageTable } from './MessageComponents/MessageTable';
+export { default as ContactReplyDialog } from './MessageComponents/ContactReplyDialog';
+
+// Activity Logs components
+export { default as ActivityLogTable } from './ActivityLogComponents/ActivityLogTable';
+export { default as ActivityLogViewDialog } from './ActivityLogComponents/ActivityLogViewDialog';

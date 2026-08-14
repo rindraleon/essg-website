@@ -13,6 +13,7 @@ import type { ProjetsPageProps } from '../../types/projets.types';
 import { generateSlug } from '../../utils/slug.utils';
 
 import { SITE_HERO_IMAGE } from '../../constants/media';
+import { useTitle } from '@/hooks/useTitle';
 
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
@@ -32,6 +33,7 @@ const STATUTS = [
 
 const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProps>) => {
   useScrollToTop();
+  useTitle('Projets | ESSG');
 
   const {
     pageTitle = 'Nos Projets',

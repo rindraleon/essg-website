@@ -10,6 +10,7 @@ import { ContactForm, ContactInfoCards, MapEmbed, Breadcrumb, CtaSection } from 
 import { useScrollToTop } from '../../hooks';
 
 import { SITE_HERO_IMAGE } from '../../constants/media';
+import { useTitle } from '@/hooks/useTitle';
 
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
@@ -22,6 +23,7 @@ const UNIV_FIANAR = {
 
 const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProps>) => {
   useScrollToTop();
+  useTitle('Contact | ESSG');
 
   const {
     pageTitle = 'Contactez-nous',

@@ -15,6 +15,7 @@ import { generateSlug } from '../../utils/slug.utils';
 import type { PartenairesPageProps, PartenaireItem } from '../../types/partenaire.types';
 
 import { SITE_HERO_IMAGE } from '../../constants/media';
+import { useTitle } from '@/hooks/useTitle';
 
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
@@ -28,6 +29,7 @@ const TYPES = [
 
 const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<PartenairesPageProps>) => {
   useScrollToTop();
+  useTitle('Partenaires | ESSG');
 
   const {
     pageTitle = 'Nos Partenaires',
