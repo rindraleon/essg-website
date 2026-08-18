@@ -44,7 +44,7 @@ const Accordion: React.FC<AccordionProps> = ({ items, type = 'single', className
               onClick={() => toggle(item.value)}
               aria-expanded={isOpen}
               className={cn(
-                'flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left text-sm font-semibold text-ink-900 transition-colors hover:bg-brand-50/60',
+                'flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left text-small font-semibold text-ink-900 transition-colors hover:bg-brand-50/60',
                 isOpen && 'bg-brand-50/60 text-brand-800',
                 item.triggerClassName
               )}
@@ -64,7 +64,7 @@ const Accordion: React.FC<AccordionProps> = ({ items, type = 'single', className
               )}
             >
               <div className="overflow-hidden">
-                <div className="px-4 pb-4 text-sm leading-7 text-ink-500">{item.children}</div>
+                <div className="px-4 pb-4 text-small leading-7 text-ink-500">{item.children}</div>
               </div>
             </div>
           </div>

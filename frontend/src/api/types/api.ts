@@ -35,6 +35,8 @@ export type ApiErrorKind =
   | 'unauthorized'
   | 'forbidden'
   | 'not_found'
+  /** 409 : la ressource entre en conflit avec une existante (email en double). */
+  | 'conflict'
   | 'server'
   | 'unknown';
 

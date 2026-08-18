@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-const alertVariants = cva('relative w-full rounded-xl border px-4 py-3 text-sm', {
+const alertVariants = cva('relative w-full rounded-xl border px-4 py-3 text-small', {
   variants: {
     variant: {
       default: 'border-ink-100 bg-white text-ink-800',
@@ -28,7 +28,7 @@ function AlertTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingEle
 }
 
 function AlertDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cn('text-sm leading-relaxed opacity-90', className)} {...props} />;
+  return <p className={cn('text-small leading-relaxed opacity-90', className)} {...props} />;
 }
 
 export { Alert, AlertTitle, AlertDescription };

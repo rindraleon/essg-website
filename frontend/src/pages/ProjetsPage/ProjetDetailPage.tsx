@@ -13,9 +13,9 @@ import {
 } from '../../components';
 import { GREEN } from '../../constants/colors';
 import { useProjetBySlug } from '../../hooks/useProjets';
-import { useScrollToTop } from '../../hooks';
 import { useTitle } from '../../hooks/useTitle';
 import { getImageUrl } from '../../utils/image.utils';
+import DetailPageSkeleton from '../../components/common/DetailPageSkeleton';
 
 const getProjetImage = (image: string | undefined, slug: string): string => {
   if (image) {
@@ -37,8 +37,6 @@ const ProjetDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { projet, loading, error } = useProjetBySlug(slug || '');
   const { setTitle } = useTitle();
-
-  useScrollToTop();
   useTitle(projet ? projet.titre : 'Projet | ESSG');
 
   useEffect(() => {
@@ -48,16 +46,7 @@ const ProjetDetailPage: React.FC = () => {
   }, [projet, setTitle]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-ink-50">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-brand-600 border-r-transparent"></div>
-            <p className="text-ink-500">Chargement du projet...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <DetailPageSkeleton label="Chargement du projet…" layout="split" />;
   }
 
   if (error || !projet) {
@@ -96,8 +85,6 @@ const ProjetDetailPage: React.FC = () => {
       <PageHero
         image={imageUrl}
         imageAlt={projet.titre}
-        badgeIcon={<Rocket className="size-4" />}
-        badgeLabel={projet.type}
         title={projet.titre}
         description={projet.description}
         minHeight="50vh"
@@ -111,17 +98,17 @@ const ProjetDetailPage: React.FC = () => {
         {/* En-tête avec badges et titre */}
         <div className="mb-8">
           <div className="mb-4 flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center rounded-full bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-card">
+            <span className="inline-flex items-center rounded-full bg-brand-600 px-4 py-2 text-small font-medium text-white shadow-card">
               {projet.type}
             </span>
 
-            <span className="inline-flex items-center gap-2 rounded-full border border-ink-100 bg-white px-4 py-2 text-sm text-ink-700">
+            <span className="inline-flex items-center gap-2 rounded-full border border-ink-100 bg-white px-4 py-2 text-small text-ink-700">
               <Calendar />
               {projet.annee}
             </span>
 
             <span
-              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-white"
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-small font-medium text-white"
               style={{
                 backgroundColor: isFinished ? '#059669' : '#f59e0b',
               }}
@@ -131,8 +118,8 @@ const ProjetDetailPage: React.FC = () => {
             </span>
           </div>
 
-          <h1 className="text-2xl font-semibold text-ink-900 sm:text-3xl">{projet.titre}</h1>
-          <p className="mt-2 text-base text-ink-600">{projet.description}</p>
+          <h1 className="text-h2 text-ink-900">{projet.titre}</h1>
+          <p className="mt-2 text-body text-ink-600">{projet.description}</p>
         </div>
 
         {/* Grille principale : sidebar gauche + contenu droit */}
@@ -143,7 +130,7 @@ const ProjetDetailPage: React.FC = () => {
             <Card
             >
               <CardContent className="p-6">
-                <h3 className="mb-5 text-xs font-semibold uppercase tracking-wider text-ink-500">
+                <h3 className="mb-5 text-caption font-semibold uppercase tracking-wider text-ink-500">
                   Informations clés
                 </h3>
 
@@ -160,9 +147,9 @@ const ProjetDetailPage: React.FC = () => {
                       />
                     </div>
                     <div className="flex-1">
-                      <div className="text-sm text-ink-500">Statut</div>
+                      <div className="text-small text-ink-500">Statut</div>
                       <span
-                        className="mt-1 inline-block rounded-md px-2 py-0.5 text-xs font-semibold uppercase"
+                        className="mt-1 inline-block rounded-md px-2 py-0.5 text-caption font-semibold uppercase"
                         style={{
                           color: isFinished ? '#059669' : '#d97706',
                           backgroundColor: isFinished ? '#d1fae5' : '#fef3c7',
@@ -179,8 +166,8 @@ const ProjetDetailPage: React.FC = () => {
                       <Calendar />
                     </div>
                     <div className="flex-1">
-                      <div className="text-sm text-ink-500">Année de livraison</div>
-                      <div className="mt-0.5 text-base font-semibold text-ink-900">
+                      <div className="text-small text-ink-500">Année de livraison</div>
+                      <div className="mt-0.5 text-body font-semibold text-ink-900">
                         {projet.annee}
                       </div>
                     </div>
@@ -193,12 +180,12 @@ const ProjetDetailPage: React.FC = () => {
                         <MapPin />
                       </div>
                       <div className="flex-1">
-                        <div className="text-sm text-ink-500">Localisation</div>
-                        <div className="mt-0.5 text-base font-semibold text-ink-900">
+                        <div className="text-small text-ink-500">Localisation</div>
+                        <div className="mt-0.5 text-body font-semibold text-ink-900">
                           {projet.location.ville}, {projet.location.pays}
                         </div>
                         {projet.location.adresse && (
-                          <div className="mt-0.5 text-sm text-ink-500">
+                          <div className="mt-0.5 text-small text-ink-500">
                             {projet.location.adresse}
                           </div>
                         )}
@@ -213,8 +200,8 @@ const ProjetDetailPage: React.FC = () => {
                         <Banknote />
                       </div>
                       <div className="flex-1">
-                        <div className="text-sm text-ink-500">Budget</div>
-                        <div className="mt-0.5 text-base font-semibold text-ink-900">
+                        <div className="text-small text-ink-500">Budget</div>
+                        <div className="mt-0.5 text-body font-semibold text-ink-900">
                           {projet.budget}
                         </div>
                       </div>
@@ -228,8 +215,8 @@ const ProjetDetailPage: React.FC = () => {
                         <Database />
                       </div>
                       <div className="flex-1">
-                        <div className="text-sm text-ink-500">Source de données</div>
-                        <div className="mt-0.5 text-sm leading-6 text-ink-900">
+                        <div className="text-small text-ink-500">Source de données</div>
+                        <div className="mt-0.5 text-small leading-6 text-ink-900">
                           {projet.sourceDonnees}
                         </div>
                       </div>
@@ -246,7 +233,7 @@ const ProjetDetailPage: React.FC = () => {
                 <CardContent className="p-6">
                   <div className="mb-5 flex items-center gap-3">
                     <div className="h-6 w-1 rounded-full" style={{ backgroundColor: GREEN[600] }} />
-                    <h3 className="text-lg font-semibold text-ink-900">Partenaires</h3>
+                    <h3 className="text-h5 font-semibold text-ink-900">Partenaires</h3>
                   </div>
 
                   <div className="space-y-3">
@@ -263,7 +250,7 @@ const ProjetDetailPage: React.FC = () => {
                             <GraduationCap />
                           </div>
                           <div className="flex-1">
-                            <div className="text-sm font-semibold text-ink-900">{nom}</div>
+                            <div className="text-small font-semibold text-ink-900">{nom}</div>
                           </div>
                         </div>
                       );
@@ -284,7 +271,7 @@ const ProjetDetailPage: React.FC = () => {
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-100">
                       <Map />
                     </div>
-                    <h3 className="text-lg font-semibold text-ink-900">Localisation du projet</h3>
+                    <h3 className="text-h5 font-semibold text-ink-900">Localisation du projet</h3>
                   </div>
 
                   <div className="overflow-hidden rounded-xl border border-ink-100 bg-ink-100 shadow-card">
@@ -302,7 +289,7 @@ const ProjetDetailPage: React.FC = () => {
                         className="h-2 w-2 rounded-full"
                         style={{ backgroundColor: GREEN[600] }}
                       />
-                      <span className="text-sm font-medium text-ink-900">
+                      <span className="text-small font-medium text-ink-900">
                         {projet.location.adresse ||
                           `${projet.location.ville}, ${projet.location.pays}`}
                       </span>
@@ -319,7 +306,7 @@ const ProjetDetailPage: React.FC = () => {
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-3">
                     <div className="h-6 w-1 rounded-full" style={{ backgroundColor: GREEN[600] }} />
-                    <h3 className="text-lg font-semibold text-ink-900">Objectifs du projet</h3>
+                    <h3 className="text-h5 font-semibold text-ink-900">Objectifs du projet</h3>
                   </div>
 
                   <div className="grid gap-3 sm:grid-cols-2">
@@ -332,7 +319,7 @@ const ProjetDetailPage: React.FC = () => {
                           className="mt-1.5 h-2.5 w-2.5 flex-shrink-0 rounded-full"
                           style={{ backgroundColor: GREEN[600] }}
                         />
-                        <span className="text-sm leading-6 text-ink-700">{objectif}</span>
+                        <span className="text-small leading-6 text-ink-700">{objectif}</span>
                       </div>
                     ))}
                   </div>

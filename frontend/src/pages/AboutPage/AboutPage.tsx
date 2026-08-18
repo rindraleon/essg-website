@@ -1,4 +1,4 @@
-import { BadgeCheck, BookOpen, Eye, Flag, GraduationCap, History, Landmark, Rocket, Users } from 'lucide-react';
+import { Award, Eye, Flag, GraduationCap, Rocket, Users } from 'lucide-react';
 import React from 'react';
 import {
   PageHero,
@@ -7,15 +7,21 @@ import {
   ScrollableCardGrid,
   CtaSection,
 } from '../../components';
-import { useActiveRessourcesHumaines, useScrollAnimation, useScrollToTop } from '../../hooks';
+import { useActiveRessourcesHumaines, useScrollAnimation } from '../../hooks';
 import { useTitle } from '../../hooks/useTitle';
 import { getImageUrl } from '../../utils/image.utils';
-import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../utils/component.utils';
-import { GREEN } from '../../constants/colors';
+import { CARD_WIDTH_CLASS } from '../../constants/layout';
+import { formatFullName } from '../../utils/name.utils';
+import MediaCard from '../../components/common/MediaCard';
+import { MediaCardSkeletonGrid } from '../../components/common/MediaCardSkeleton';
 
-import { SITE_HERO_IMAGE } from '../../constants/media';
+import { CAMPUS_GALLERY, SITE_HERO_IMAGE } from '../../constants/media';
 
 const HERO_IMAGE = SITE_HERO_IMAGE;
+
+/** Portrait de repli lorsqu'un membre n'a pas encore de photo. */
+const TEAM_FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400';
 
 const HERO_STATS = [
   { value: '2026', label: 'Année de création' },
@@ -47,7 +53,7 @@ const TIMELINE = [
 
 const VALUES = [
   {
-    icon: <BadgeCheck />,
+    icon: <Award />,
     title: 'Excellence',
     description:
       'Un enseignement exigeant, des résultats mesurables et une reconnaissance internationale.',
@@ -77,27 +83,8 @@ const OBJECTIVES = [
   'Renforcer la coopération nationale et internationale avec les universités et les institutions',
 ];
 
-const GALLERY_IMAGES = [
-  {
-    src: 'https://images.unsplash.com/photo-1523050854058-8df90110a6f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=900',
-    alt: 'Campus universitaire',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=900',
-    alt: 'Étudiants en formation',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=900',
-    alt: 'Travaux pratiques',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=900',
-    alt: 'Recherche et innovation',
-  },
-];
 
 const AboutPage: React.FC = () => {
-  useScrollToTop();
   useTitle('À propos');
   const pageRef = useScrollAnimation<HTMLDivElement>();
 
@@ -108,8 +95,6 @@ const AboutPage: React.FC = () => {
       <PageHero
         image={HERO_IMAGE}
         imageAlt="À propos de l'ESSG"
-        badgeIcon={<Landmark />}
-        badgeLabel="ESSG — Notre histoire"
         title="À propos de l'ESSG"
         description="Découvrez l'École Supérieure de Sciences Géomatiques : son histoire, sa mission, ses valeurs et son engagement au service de l'excellence académique et du développement territorial."
         stats={HERO_STATS}
@@ -121,10 +106,10 @@ const AboutPage: React.FC = () => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div data-gsap="left">
-              <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
+              <span className="mb-3 block text-caption font-semibold uppercase tracking-wider text-brand-700">
                 Présentation
               </span>
-              <h2 className="mb-4 text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
+              <h2 className="mb-4 text-h2 text-ink-900">
                 Une école d'excellence en sciences géomatiques
               </h2>
               <p className="mb-4 leading-7 text-ink-500">
@@ -145,8 +130,8 @@ const AboutPage: React.FC = () => {
                 <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100">
                   <Eye className="size-4" />
                 </div>
-                <h3 className="mb-2 text-lg font-bold text-ink-900">Notre vision</h3>
-                <p className="text-sm leading-6 text-ink-500">
+                <h3 className="mb-2 text-h5 font-bold text-ink-900">Notre vision</h3>
+                <p className="text-small leading-6 text-ink-500">
                   Être une référence régionale et internationale en sciences géomatiques, moteur
                   d'innovation au service des territoires.
                 </p>
@@ -155,8 +140,8 @@ const AboutPage: React.FC = () => {
                 <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-sage-50 text-sage-700 ring-1 ring-sage-100">
                   <Rocket className="size-4" />
                 </div>
-                <h3 className="mb-2 text-lg font-bold text-ink-900">Notre mission</h3>
-                <p className="text-sm leading-6 text-ink-500">
+                <h3 className="mb-2 text-h5 font-bold text-ink-900">Notre mission</h3>
+                <p className="text-small leading-6 text-ink-500">
                   Former des professionnels compétents et engagés, développer la recherche appliquée
                   et accompagner les acteurs du territoire.
                 </p>
@@ -170,11 +155,10 @@ const AboutPage: React.FC = () => {
       <section className="bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div data-gsap className="mb-12 text-center">
-            <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
-              <History />
+            <span className="mb-3 block text-caption font-semibold uppercase tracking-wider text-brand-700">
               Historique
             </span>
-            <h2 className="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
+            <h2 className="text-h2 text-ink-900">
               Les grandes étapes
             </h2>
           </div>
@@ -189,13 +173,13 @@ const AboutPage: React.FC = () => {
                   />
                 )}
                 <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white shadow-[0_6px_16px_-6px_rgba(46,106,95,0.7)]">
-                  <span className="text-sm font-bold">{index + 1}</span>
+                  <span className="text-small font-bold">{index + 1}</span>
                 </div>
                 <div className="min-w-0 pt-0.5">
-                  <div className="mb-1 text-xs font-bold uppercase tracking-wider text-brand-600">
+                  <div className="mb-1 text-caption font-bold uppercase tracking-wider text-brand-600">
                     {step.date}
                   </div>
-                  <h3 className="mb-1 text-lg font-bold text-ink-900">{step.title}</h3>
+                  <h3 className="mb-1 text-h5 font-bold text-ink-900">{step.title}</h3>
                   <p className="leading-7 text-ink-500">{step.description}</p>
                 </div>
               </div>
@@ -207,10 +191,10 @@ const AboutPage: React.FC = () => {
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div data-gsap className="mb-12 text-center">
-            <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
+            <span className="mb-3 block text-caption font-semibold uppercase tracking-wider text-brand-700">
               Nos valeurs
             </span>
-            <h2 className="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
+            <h2 className="text-h2 text-ink-900">
               Ce qui nous guide
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-ink-500">
@@ -225,11 +209,11 @@ const AboutPage: React.FC = () => {
                 data-gsap
                 className="group rounded-2xl border border-ink-100 bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
               >
-                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100 transition-transform duration-300 group-hover:scale-105">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100 transition-transform duration-300 group-hover:scale-[1.03]">
                   {value.icon}
                 </div>
-                <h3 className="mb-2 text-lg font-bold text-ink-900">{value.title}</h3>
-                <p className="text-sm leading-6 text-ink-500">{value.description}</p>
+                <h3 className="mb-2 text-h5 font-bold text-ink-900">{value.title}</h3>
+                <p className="text-small leading-6 text-ink-500">{value.description}</p>
               </div>
             ))}
           </div>
@@ -240,17 +224,17 @@ const AboutPage: React.FC = () => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div data-gsap="left">
-              <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-sage-300 ring-1 ring-white/20">
+              <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-caption font-semibold uppercase tracking-wider text-sage-300 ring-1 ring-white/20">
                 <GraduationCap />
                 Nos objectifs
               </span>
-              <h2 className="mb-6 text-3xl font-bold tracking-tight sm:text-4xl">
+              <h2 className="mb-6 text-h2">
                 Une école tournée vers l'avenir
               </h2>
               <ul className="space-y-4">
                 {OBJECTIVES.map((objective) => (
                   <li key={objective} className="flex items-start gap-3">
-                    <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-400/20 text-xs font-bold text-sage-300 ring-1 ring-sage-400/40">
+                    <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage-400/20 text-caption font-bold text-sage-300 ring-1 ring-sage-400/40">
                       ✓
                     </span>
                     <span className="leading-7 text-sage-50/90">{objective}</span>
@@ -266,8 +250,8 @@ const AboutPage: React.FC = () => {
                   data-gsap="scale"
                   className="rounded-2xl border border-white/15 bg-white/10 p-6 text-center backdrop-blur-sm"
                 >
-                  <div className="text-3xl font-bold">{stat.value}</div>
-                  <div className="mt-1 text-sm text-sage-200">{stat.label}</div>
+                  <div className="text-h2 font-bold">{stat.value}</div>
+                  <div className="mt-1 text-small text-sage-200">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -282,11 +266,10 @@ const AboutPage: React.FC = () => {
         emptyMessage="L'équipe sera présentée prochainement."
         headerContent={
           <div className="mb-12 text-center">
-            <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
-              <BookOpen />
+            <span className="mb-3 block text-caption font-semibold uppercase tracking-wider text-brand-700">
               L'équipe
             </span>
-            <h2 className="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
+            <h2 className="text-h2 text-ink-900">
               Notre équipe pédagogique
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-ink-500">
@@ -295,81 +278,44 @@ const AboutPage: React.FC = () => {
             </p>
           </div>
         }
-        loadingSkeletons={
-          <ScrollableCardGrid className="mt-2 w-full">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={SKELETON_KEYS[i]}
-                className={`${CARD_WIDTH_CLASS} rounded-3xl overflow-hidden border border-ink-100 bg-white shadow-card`}
-              >
-                <div className="aspect-[4/3] w-full bg-ink-100 animate-pulse" />
-                <div className="p-6 space-y-4">
-                  <div className="h-5 w-3/5 rounded bg-ink-100 animate-pulse" />
-                  <div className="h-4 w-2/5 rounded bg-ink-100 animate-pulse" />
-                  <div className="h-4 w-full rounded bg-ink-100 animate-pulse" />
-                </div>
-              </div>
-            ))}
-          </ScrollableCardGrid>
-        }
+        loadingSkeletons={<MediaCardSkeletonGrid />}
         sectionClassName="py-16"
         containerClassName="w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12"
       >
-        <ScrollableCardGrid className="mt-2 w-full">
-          {ressourcesHumaines.map((membre) => (
-            <article
-              key={membre.id}
-              data-gsap
-              className={`${CARD_WIDTH_CLASS} group rounded-3xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col hover:-translate-y-1`}
-            >
-              <div className="relative aspect-[4/3] overflow-hidden bg-ink-100">
-                {membre.photo ? (
-                  <img
-                    src={getImageUrl(membre.photo)}
-                    alt={`${membre.prenom} ${membre.nom}`}
-                    loading="lazy"
-                    className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-100 to-brand-200">
-                    <span className="text-5xl font-bold text-brand-600">
-                      {membre.prenom[0]}
-                      {membre.nom[0]}
-                    </span>
-                  </div>
-                )}
-              </div>
-              <div className="flex flex-1 flex-col p-6">
-                <h3 className="mb-1 text-lg font-semibold leading-snug text-ink-900">
-                  {membre.prenom} {membre.nom}
-                </h3>
-                <p className="mb-3 text-sm font-semibold" style={{ color: GREEN[600] }}>
-                  {membre.poste}
-                </p>
-                {membre.description && (
-                  <p className="text-sm leading-6 text-ink-500 line-clamp-3">
-                    {membre.description}
-                  </p>
-                )}
-              </div>
-            </article>
-          ))}
+        <ScrollableCardGrid className="mt-2 w-full" ariaLabel="Équipe pédagogique">
+          {ressourcesHumaines.map((membre) => {
+            const fullName = formatFullName(membre);
+
+            return (
+              <MediaCard
+                key={membre.id}
+                className={CARD_WIDTH_CLASS}
+                to={`/ressources-humaines/${membre.slug ?? membre.id}`}
+                title={fullName}
+                imageUrl={membre.photo ? getImageUrl(membre.photo) : TEAM_FALLBACK_IMAGE}
+                imageAlt={fullName}
+                subtitle={membre.poste}
+                description={membre.description}
+                actionLabel="Voir le profil"
+              />
+            );
+          })}
         </ScrollableCardGrid>
       </SectionContent>
 
       <section className="bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-center">
-            <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
+            <span className="mb-3 block text-caption font-semibold uppercase tracking-wider text-brand-700">
               Galerie
             </span>
-            <h2 className="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
+            <h2 className="text-h2 text-ink-900">
               Notre campus en images
             </h2>
           </div>
 
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {GALLERY_IMAGES.map((image) => (
+            {CAMPUS_GALLERY.map((image) => (
               <figure
                 key={image.src}
                 className="group relative overflow-hidden rounded-2xl border border-ink-100 shadow-card"
@@ -379,10 +325,13 @@ const AboutPage: React.FC = () => {
                     src={image.src}
                     alt={image.alt}
                     loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    decoding="async"
+                    width={900}
+                    height={675}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                   />
                 </div>
-                <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-950/70 to-transparent px-4 pb-3 pt-8 text-sm font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-950/70 to-transparent px-4 pb-3 pt-8 text-small font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   {image.alt}
                 </figcaption>
               </figure>

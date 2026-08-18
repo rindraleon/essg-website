@@ -1,13 +1,11 @@
-import { Button } from '@/components/compat/mui';
 import React, { useState, useCallback } from 'react';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
 import {
   PartenaireFilters,
   PartenaireForm,
   PartenaireTable,
   PartenaireViewDialog,
   ConfirmDialog,
-  SearchInput,
 } from '../../components';
 import { usePagination, usePartenaireFilter, useScrollToTop } from '../../hooks';
 import type { PartenaireFormData, Partenaire } from '../../types';
@@ -18,6 +16,7 @@ import {
   useUpdatePartenaire,
 } from '../../hooks/queries';
 import { useTitle } from '@/hooks/useTitle';
+import ListPageHeader from '../../components/common/ListPageHeader';
 
 const Partenaires: React.FC = () => {
   useScrollToTop();
@@ -124,40 +123,19 @@ const Partenaires: React.FC = () => {
 
 
   return (
-    <div className="space-y-2 p-2 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      <Toaster position="top-right" richColors />
-
-      <div className="bg-white rounded-xl border border-ink-100 p-4 shadow-card">
-        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-            <h2 className="text-lg font-bold text-ink-800 whitespace-nowrap">
-              Liste des partenaires
-              <span className="ml-2 text-sm font-normal text-ink-500">
-                ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
-              </span>
-            </h2>
-            <SearchInput
-              value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder="Rechercher par nom, description, secteur..."
-            />
-          </div>
-          <div className="flex items-center gap-3 w-full lg:w-auto">
-            <Button
-              variant="outlined"
-              onClick={handleToggleFilters}
-            >
-              {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
-            </Button>
-            <Button
-                variant="contained"
-                onClick={handleOpenCreate}
-              >
-              + Nouveau partenaire
-            </Button>
-          </div>
-        </div>
-      </div>
+    <div className="mx-auto max-w-7xl py-4 space-y-2 mx-auto min-w-0">
+      <ListPageHeader
+        title="Liste des partenaires"
+        totalCount={filteredData.length}
+        searchValue={searchTerm}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder="Rechercher par nom, description, secteur..."
+        onToggleFilters={handleToggleFilters}
+        filtersOpen={filtersOpen}
+        activeFilterCount={activeFilterCount}
+        actionLabel="Nouveau partenaire"
+        onAction={handleOpenCreate}
+      />
 
       {filtersOpen && (
         <div className="bg-white rounded-xl border border-ink-100 p-4 shadow-card">

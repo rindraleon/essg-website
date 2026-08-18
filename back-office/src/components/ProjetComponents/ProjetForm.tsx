@@ -1,13 +1,15 @@
 import { ArrowLeft, ArrowRight, Briefcase, CircleCheck, Globe, Info, Upload } from 'lucide-react';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { uploadImage } from '../../services';
 import { getImageUrl } from '../../utils/image.utils';
-import { generateSlug } from '../../utils/slug.utils';
 import type { Projet, ProjetFormData } from '../../types/projet.types';
-import { PROJET_TYPES, DEFAULT_FORM_DATA } from '../../constants/projet.constants';
+import {
+  PROJET_TYPES,
+  PROJET_STATUTS,
+  DEFAULT_FORM_DATA,
+} from '../../constants/projet.constants';
 import { useFormValidation } from '../../hooks/useFormValidation';
-import { useAutoSlug } from '../../hooks/useAutoSlug';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -21,6 +23,9 @@ import { FloatingInput } from '@/components/ui/floating-input';
 import { FloatingTextarea } from '@/components/ui/floating-textarea';
 import { FloatingSelect } from '@/components/ui/floating-select';
 import MultiImageUpload from '../common/MultiImageUpload';
+import MultiSearchSelect from '../common/MultiSearchSelect';
+import type { SearchSelectOption } from '../common/SearchSelect';
+import { usePartenairesQuery } from '../../hooks/queries';
 
 interface ProjetFormProps {
   open: boolean;
@@ -48,10 +53,14 @@ const STEPS = [
   },
 ];
 
-type ProjetField = keyof ProjetFormData;
+type ProjetFormState = ProjetFormData & {
+  statut: string;
+};
+
+type ProjetField = keyof ProjetFormState;
 
 const STEP_FIELDS_MAP: Record<number, ProjetField[]> = {
-  0: ['titre', 'slug', 'type', 'date'],
+  0: ['titre', 'type', 'date'],
   1: ['description'],
   2: ['ville', 'pays', 'adresse'],
 };
@@ -59,9 +68,39 @@ const STEP_FIELDS_MAP: Record<number, ProjetField[]> = {
 const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initialData, mode }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
-  const [partenairesInput, setPartenairesInput] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
-  const { reset: resetSlug, fromTitle, lock: lockSlug } = useAutoSlug();
+
+  // Liste des partenaires disponibles (cache React Query partagé).
+  const {
+    data: partenaires = [],
+    isLoading: loadingPartenaires,
+    isError: partenairesError,
+    refetch: refetchPartenaires,
+  } = usePartenairesQuery();
+
+  const partenaireOptions = useMemo<SearchSelectOption[]>(
+    () =>
+      partenaires.map((partenaire) => ({
+        value: String(partenaire.id),
+        label: partenaire.nom,
+        description: partenaire.secteur || partenaire.type,
+      })),
+    [partenaires]
+  );
+
+  const projectValidators = {
+    titre: {
+      required: true,
+      minLength: { value: 5, message: 'Le titre doit contenir au moins 5 caractères' },
+    },
+    description: {
+      required: true,
+      minLength: { value: 20, message: 'La description doit contenir au moins 20 caractères' },
+    },
+    type: { required: true },
+    statut: { required: true },
+    date: { required: true },
+  } as const;
 
   const {
     formData,
@@ -77,22 +116,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
     resetForm,
   } = useFormValidation<ProjetFormData>({
     defaultValues: DEFAULT_FORM_DATA,
-    validators: {
-      titre: {
-        required: true,
-        minLength: { value: 5, message: 'Le titre doit contenir au moins 5 caractères' },
-      },
-      slug: {
-        required: true,
-        minLength: { value: 3, message: 'Le slug doit contenir au moins 3 caractères' },
-      },
-      description: {
-        required: true,
-        minLength: { value: 20, message: 'La description doit contenir au moins 20 caractères' },
-      },
-      type: { required: true },
-      date: { required: true },
-    },
+    validators: projectValidators as any,
     stepFields: STEP_FIELDS_MAP,
   });
 
@@ -104,11 +128,12 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
       const imageUrl = initialData.image || '';
       setFormData({
         titre: initialData.titre,
-        slug: initialData.slug,
         type: initialData.type,
+        statut: 'En cours',
         date: initialData.date,
         description: initialData.description,
-        partenaires: initialData.partenaires,
+        partenaires: initialData.partenaires ?? [],
+        partenaireIds: initialData.partenaireIds ?? [],
         image: imageUrl,
         galerie: initialData.galerie ?? [],
         latitude: initialData.latitude,
@@ -116,15 +141,12 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
         ville: initialData.ville,
         pays: initialData.pays,
         adresse: initialData.adresse,
-      });
+      } as ProjetFormData);
       setImagePreview(imageUrl ? getImageUrl(imageUrl) : '');
-      resetSlug(initialData.slug);
     } else {
       resetForm();
       setImagePreview('');
-      resetSlug();
     }
-    setPartenairesInput('');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, mode, initialId]);
 
@@ -143,20 +165,6 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
     } finally {
       setUploadingImage(false);
     }
-  };
-
-  const handleAddPartenaire = () => {
-    if (partenairesInput.trim()) {
-      handleChange('partenaires', [...formData.partenaires, partenairesInput.trim()]);
-      setPartenairesInput('');
-    }
-  };
-
-  const handleRemovePartenaire = (index: number) => {
-    handleChange(
-      'partenaires',
-      formData.partenaires.filter((_, i) => i !== index)
-    );
   };
 
   const handleNext = () => {
@@ -203,32 +211,11 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
         label="Titre *"
         autoComplete="off"
         value={formData.titre}
-        onChange={(e) => {
-          const titre = e.target.value;
-          const nextSlug = fromTitle(titre);
-          if (nextSlug !== undefined) {
-            handleChanges({ titre, slug: nextSlug });
-          } else {
-            handleChange('titre', titre);
-          }
-        }}
+        onChange={(e) => handleChange('titre', e.target.value)}
         onBlur={() => handleBlur('titre')}
         error={errors.titre}
       />
-      <FloatingInput
-        id="slug"
-        label="Slug (auto)"
-        autoComplete="off"
-        value={formData.slug}
-        onChange={(e) => {
-          lockSlug();
-          handleChange('slug', generateSlug(e.target.value) || e.target.value);
-        }}
-        onBlur={() => handleBlur('slug')}
-        error={errors.slug}
-        hint="Généré automatiquement à partir du titre"
-      />
-      
+
 
       <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
         <FloatingSelect
@@ -238,6 +225,17 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
           options={[...PROJET_TYPES]}
           error={errors.type}
         />
+        {/* Statut : repris tel quel par le site public (carte, détail, filtre). */}
+        <FloatingSelect
+          label="Statut *"
+          value={formData.statut}
+          onValueChange={(v, _eventDetails) => v && handleChange('statut', v)}
+          options={[...PROJET_STATUTS]}
+          error={errors.statut}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
         <FloatingInput
           id="date"
           label="Date *"
@@ -265,56 +263,25 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
         hint={!errors.description ? `${formData.description.length} caractère(s)` : undefined}
       />
 
-      <div>
-        <div className="flex items-center gap-1.5 mb-2">
-          <Briefcase className="h-4 w-4 text-ink-400" />
-          <Label className="text-xs font-semibold text-ink-600 uppercase tracking-wide">
-            Partenaires
-          </Label>
-        </div>
-        <div className="flex items-start gap-2">
-          <div className="min-w-0 flex-1">
-            <FloatingInput
-              id="partenaire"
-              label="Nouveau partenaire"
-              value={partenairesInput}
-              onChange={(e) => setPartenairesInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleAddPartenaire();
-                }
-              }}
-            />
-          </div>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleAddPartenaire}
-            className="mt-2 h-12"
-            size="sm"
-          >
-            Ajouter
-          </Button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {formData.partenaires.map((partenaire, index) => (
-            <span
-              key={index}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-brand-50 text-brand-700 border border-brand-200"
-            >
-              {partenaire}
-              <button
-                type="button"
-                onClick={() => handleRemovePartenaire(index)}
-                className="ml-1 hover:text-red-600"
-              >
-                ×
-              </button>
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* Partenaires : Select alimenté dynamiquement par l'API */}
+      <MultiSearchSelect
+        label="Partenaires"
+        values={(formData.partenaireIds ?? []).map(String)}
+        onChange={(ids, options) =>
+          handleChanges({
+            partenaireIds: ids.map(Number),
+            // Les noms restent synchronisés pour l'affichage public.
+            partenaires: options.map((option) => option.label),
+          })
+        }
+        options={partenaireOptions}
+        isLoading={loadingPartenaires}
+        loadError={partenairesError ? 'Impossible de charger les partenaires.' : null}
+        onRetry={() => void refetchPartenaires()}
+        placeholder="Rechercher un partenaire..."
+        emptyMessage="Aucun partenaire disponible"
+        hint="Sélectionnez un ou plusieurs partenaires associés au projet"
+      />
     </div>
   );
 
@@ -406,7 +373,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
             step="any"
             value={formData.latitude?.toString() || ''}
             onChange={(e) =>
-              handleChange('latitude', e.target.value ? parseFloat(e.target.value) : undefined)
+              handleChange('latitude', e.target.value ? Number.parseFloat(e.target.value) : undefined)
             }
           />
           <FloatingInput
@@ -416,7 +383,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
             step="any"
             value={formData.longitude?.toString() || ''}
             onChange={(e) =>
-              handleChange('longitude', e.target.value ? parseFloat(e.target.value) : undefined)
+              handleChange('longitude', e.target.value ? Number.parseFloat(e.target.value) : undefined)
             }
           />
         </div>
@@ -447,6 +414,11 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
             {STEPS.map((step, index) => {
               const isCompleted = index < activeStep;
               const isActive = index === activeStep;
+              const buttonClassName = isActive
+                ? 'bg-brand-600 text-white shadow-sm'
+                : isCompleted
+                  ? 'bg-brand-50 text-brand-700 hover:bg-brand-100'
+                  : 'bg-ink-100 text-ink-400';
 
               return (
                 <React.Fragment key={step.id}>
@@ -461,15 +433,9 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
                     type="button"
                     onClick={() => handleStepClick(index)}
                     className={`
-                      flex items-center gap-1.5 px-3 py-1.5 rounded-full
+                      flex items-center gap-1.5 px-3 py-1.5 rounded-md
                       text-xs font-medium transition-all
-                      ${
-                        isActive
-                          ? 'bg-brand-600 text-white shadow-sm'
-                          : isCompleted
-                            ? 'bg-brand-50 text-brand-700 hover:bg-brand-100'
-                            : 'bg-ink-100 text-ink-400'
-                      }
+                      ${buttonClassName}
                     `}
                   >
                     {isCompleted ? <CircleCheck className="h-4 w-4" /> : step.icon}

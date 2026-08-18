@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { Message } from '../../services/messages.service';
+import { formatFullName } from '../../utils/name.utils';
 
 interface ContactReplyDialogProps {
   message: Message;
@@ -36,7 +37,7 @@ const ContactReplyDialog = ({
         <div className="border-b border-ink-100 px-6 py-4">
           <h2 className="text-xl font-bold text-ink-900">Répondre au message</h2>
           <p className="mt-1 text-sm text-ink-600">
-            {message.prenom} {message.nom}
+            {formatFullName(message)}
           </p>
         </div>
 

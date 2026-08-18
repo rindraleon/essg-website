@@ -1,3 +1,6 @@
+import { cn } from '@/lib/utils';
+import usePagination from '../../hooks/usePagination';
+import Pagination from '../../components/common/Pagination';
 import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, Skeleton, TextField } from '@/components/compat/mui';
 import { GraduationCap, Rocket, Search, X } from 'lucide-react';
 import React, { useState, useMemo, useEffect, useRef } from 'react';
@@ -8,7 +11,7 @@ import FilterToolbar from '../../components/common/FilterToolbar';
 import PageHero from '../../components/common/PageHero';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import ProjetCard from '../../components/ProjetComponents/ProjetCard';
-import { useProjets, useScrollToTop } from '../../hooks';
+import { useProjets } from '../../hooks';
 import type { ProjetsPageProps } from '../../types/projets.types';
 import { generateSlug } from '../../utils/slug.utils';
 
@@ -32,12 +35,10 @@ const STATUTS = [
 ];
 
 const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProps>) => {
-  useScrollToTop();
   useTitle('Projets | ESSG');
 
   const {
     pageTitle = 'Nos Projets',
-    pageSubtitle = 'ESSG — Innovation & Recherche',
     pageDescription = "L'ESSG s'engage dans des projets innovants au service du développement durable et de la recherche.",
   } = props;
 
@@ -124,13 +125,14 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
       : []),
   ];
 
+  const { pageItems, page, totalPages, goToPage, listRef, isChanging } =
+    usePagination(filteredProjets, { pageSize: 9 });
+
   return (
     <div className="min-h-screen bg-ink-50">
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Projets ESSG"
-        badgeIcon={<Rocket className="size-4" />}
-        badgeLabel={pageSubtitle}
         title={pageTitle}
         description={pageDescription}
         stats={[
@@ -261,8 +263,16 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
                 onAction={handleResetFilters}
               />
             ) : (
-              <div className="grid gap-8 md:grid-cols-3">
-                {filteredProjets.map((projet) => (
+              <div ref={listRef} className="scroll-mt-24">
+              {/* Fondu bref au changement de page (§23). */}
+              <div
+                className={cn(
+                  'grid gap-8 md:grid-cols-3',
+                  'transition-opacity duration-[--duration-hover] motion-reduce:transition-none',
+                  isChanging && 'opacity-40',
+                )}
+              >
+                {pageItems.map((projet) => (
                   <ProjetCard 
                     key={projet.id} 
                     projet={{
@@ -272,6 +282,15 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
                   />
                 ))}
               </div>
+
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onChange={goToPage}
+                ariaLabel="Pagination des projets"
+                className="mt-12"
+              />
+            </div>
             )}
           </div>
         </section>

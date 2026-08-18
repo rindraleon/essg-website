@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
+import sonarjs from 'eslint-plugin-sonarjs';
 import tseslint from 'typescript-eslint';
 import eslintPluginPrettier from 'eslint-plugin-prettier';
 import eslintConfigPrettier from 'eslint-config-prettier';
@@ -16,6 +17,8 @@ export default defineConfig([
       tseslint.configs.recommended,
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
+      // Règles SonarJS (moteur d'analyse SonarQube pour JS/TS).
+      sonarjs.configs.recommended,
       eslintConfigPrettier,
     ],
     languageOptions: {
@@ -27,6 +30,9 @@ export default defineConfig([
     },
     rules: {
       'prettier/prettier': 'error',
+      // Les classes utilitaires Tailwind se répètent légitimement.
+      'sonarjs/no-duplicate-string': ['warn', { threshold: 5 }],
+      'sonarjs/cognitive-complexity': ['warn', 20],
     },
   },
 ]);

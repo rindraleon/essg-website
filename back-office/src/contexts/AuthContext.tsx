@@ -12,8 +12,14 @@ interface AuthContextType {
   isLoading: boolean;
   user: User | null;
   username: string;
+  /** Vrai si l'utilisateur possède le rôle administrateur. */
+  isAdmin: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  /** Met à jour l'utilisateur courant après une modification du profil. */
+  updateUser: (patch: Partial<User>) => void;
+  /** Recharge le profil depuis l'API. */
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -77,10 +83,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('userRole');
   };
 
+  /**
+   * Mise à jour optimiste : les informations affichées (header, profil)
+   * changent immédiatement après un enregistrement réussi.
+   */
+  const updateUser = (patch: Partial<User>) => {
+    setUser((current) => (current ? { ...current, ...patch } : current));
+  };
+
+  const refreshUser = async () => {
+    const fresh = await verifyToken();
+    if (fresh) setUser(fresh);
+  };
+
   const username = user?.email || '';
+  const isAdmin = user?.role === 'admin';
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, user, username, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        isLoading,
+        user,
+        username,
+        isAdmin,
+        login,
+        logout,
+        updateUser,
+        refreshUser,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

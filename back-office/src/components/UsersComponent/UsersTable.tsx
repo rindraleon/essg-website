@@ -6,6 +6,7 @@ import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { formatFullName, getPersonInitials } from '../../utils/name.utils';
 
 interface UsersTableProps {
   data: User[];
@@ -68,15 +69,15 @@ const UsersTable: React.FC<UsersTableProps> = ({
           {user.avatar ? (
             <img
               src={getImageUrl(user.avatar)}
-              alt={`${user.nom} ${user.prenom}`}
+              alt={formatFullName(user)}
               className="w-10 h-10 rounded-full object-cover"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
-                e.currentTarget.parentElement!.textContent = `${user.prenom[0]}${user.nom[0]}`;
+                e.currentTarget.parentElement!.textContent = getPersonInitials(user);
               }}
             />
           ) : (
-            `${user.prenom[0]}${user.nom[0]}`
+            getPersonInitials(user)
           )}
         </div>
       ),
@@ -88,7 +89,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
       render: (user) => (
         <div>
           <span className="font-semibold text-ink-900">
-            {user.nom} {user.prenom}
+            {formatFullName(user)}
           </span>
         </div>
       ),

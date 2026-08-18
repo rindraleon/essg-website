@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import ListPageHeader from '../../components/common/ListPageHeader';
 import { ApiError } from '@/api/types/api';
-import { ConfirmDialog, ContactFilters, ContactReplyDialog, MessageTable, SearchInput } from '../../components';
+import { ConfirmDialog, ContactFilters, ContactReplyDialog, MessageTable } from '../../components';
 
 import { useDebounce, useScrollToTop } from '../../hooks';
 import {
@@ -13,6 +14,7 @@ import {
 } from '../../hooks/queries';
 import { useTitle } from '../../hooks/useTitle';
 import type { Message } from '../../services/messages.service';
+import { formatFullName } from '../../utils/name.utils';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -168,27 +170,18 @@ const Contacts = () => {
   const hasActiveSearchOrFilter = Boolean(searchQuery) || activeFilterCount > 0;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-2 p-2 sm:p-6 lg:p-8">
-      <div className="rounded-xl border border-ink-100 bg-white p-4 shadow-card">
-        <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
-          <div className="flex min-w-0 flex-1 flex-col items-start gap-4 sm:flex-row sm:items-center">
-            <h2 className="whitespace-nowrap text-lg font-bold text-ink-800">
-              Messages de contact
-              <span className="ml-2 text-sm font-normal text-ink-500">
-                ({totalItems} message{totalItems !== 1 ? 's' : ''})
-              </span>
-            </h2>
-            <SearchInput
-              value={searchQuery}
-              onChange={setSearchQuery}
-              placeholder="Rechercher par nom, email, téléphone..."
-            />
-          </div>
-          <Button variant="outline" onClick={() => setFiltersOpen((prev) => !prev)} className="rounded-lg">
-            {filtersOpen ? 'Masquer les filtres' : activeFilterCount > 0 ? `Filtres (${activeFilterCount})` : 'Filtres'}
-          </Button>
-        </div>
-      </div>
+    <div className="mx-auto max-w-7xl py-4 space-y-2 mx-auto min-w-0">
+      <ListPageHeader
+        title="Messages de contact"
+        totalCount={totalItems}
+        countLabel="message"
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Rechercher par nom, email, téléphone..."
+        onToggleFilters={() => setFiltersOpen((prev) => !prev)}
+        filtersOpen={filtersOpen}
+        activeFilterCount={activeFilterCount}
+      />
 
       <ContactFilters
         filters={{
@@ -244,7 +237,7 @@ const Contacts = () => {
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="text-xl font-bold text-ink-900">
-                    {selectedMessage.prenom} {selectedMessage.nom}
+                    {formatFullName(selectedMessage)}
                   </h3>
                   <div className="mt-2 space-y-1 text-sm text-ink-600">
                     <p>{selectedMessage.email}</p>
@@ -301,7 +294,7 @@ const Contacts = () => {
         title="Supprimer le message"
         message={
           messageToDelete
-            ? `Êtes-vous sûr de vouloir supprimer le message de "${messageToDelete.prenom} ${messageToDelete.nom}" ? Cette action est irréversible.`
+            ? `Êtes-vous sûr de vouloir supprimer le message de "${formatFullName(messageToDelete)}" ? Cette action est irréversible.`
             : ''
         }
         confirmLabel="Supprimer"

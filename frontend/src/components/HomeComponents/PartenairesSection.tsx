@@ -1,150 +1,237 @@
-import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useRef } from 'react';
 import { SectionCta } from '../../components';
+import RevealOnScroll from '../common/RevealOnScroll';
+import PartnerChipCard from '../PartenaireComponents/PartnerChipCard';
 import { usePartenaires } from '../../hooks';
-import { getImageUrl } from '../../utils/image.utils';
 import { gsap, prefersReducedMotion, registerGsap } from '../../lib/gsap';
-import useGsapReveal from '../../hooks/useGsapReveal';
 import type { PartenairesSectionProps } from '../../types';
+import type { PartenaireItem } from '../../types/partenaire.types';
 
 const SECTION_CTA = { label: 'Voir tous nos partenaires', link: '/partenaires' } as const;
 
-const PartenairesSection = ({
-  title = 'Nos Partenaires',
-  description = 'Des collaborations prestigieuses au niveau mondial',
-  maxItems = 8,
-  partenaires: propPartenaires,
-}: PartenairesSectionProps) => {
-  const { partenaires: fetchedPartenaires, loading: queryLoading } = usePartenaires();
-  const partenaires = propPartenaires && propPartenaires.length > 0 ? propPartenaires : fetchedPartenaires;
-  const loading = propPartenaires && propPartenaires.length > 0 ? false : queryLoading;
-  const navigate = useNavigate();
-  const revealRef = useGsapReveal<HTMLElement>();
+/**
+ * Durées de parcours (§7.7, §7.14).
+ *
+ * L'écart entre les deux lignes est délibérément faible : des vitesses trop
+ * différentes se lisent comme deux rubans indépendants, alors qu'un léger
+ * décalage donne l'impression d'un même flux vu en perspective.
+ */
+const DUREE_LIGNE_1 = 32;
+const DUREE_LIGNE_2 = 38;
+
+/**
+ * Amplitude de l'ondulation verticale (§7.7).
+ *
+ * 3 px : la ligne « respire » sans que le déplacement soit identifiable
+ * comme tel. Au-delà, les cartes semblent flotter et le regard décroche.
+ * Aucune rotation — le cahier l'exclut explicitement pour les cartes.
+ */
+const ONDULATION_PX = 3;
+
+interface MarqueeRowProps {
+  partenaires: PartenaireItem[];
+  /** `-1` défile vers la gauche, `1` vers la droite. */
+  direction: -1 | 1;
+  durationSeconds: number;
+}
+
+/**
+ * Une ligne de défilement continu.
+ *
+ * La liste est triplée puis animée sur exactement un tiers de sa largeur :
+ * au terme du cycle, la position coïncide avec l'état initial, ce qui rend
+ * la boucle invisible — pas de saut au retour au début.
+ *
+ * L'animation porte sur `xPercent` (donc `transform`), composé par le GPU.
+ */
+const MarqueeRow = ({ partenaires, direction, durationSeconds }: MarqueeRowProps) => {
   const trackRef = useRef<HTMLDivElement | null>(null);
 
-  const visiblePartenaires = partenaires.slice(0, maxItems);
-
-  const getLogoUrl = (partenaire: (typeof partenaires)[number]): string | null => {
-    if (!partenaire.logo) return null;
-    return getImageUrl(partenaire.logo);
-  };
-
-  // Dupliquer les partenaires pour créer l'effet de défilement infini
-  const duplicatedPartenaires = [
-    ...visiblePartenaires,
-    ...visiblePartenaires,
-    ...visiblePartenaires,
-  ];
+  const boucle = useMemo(
+    () => [...partenaires, ...partenaires, ...partenaires],
+    [partenaires],
+  );
 
   useEffect(() => {
     const track = trackRef.current;
-    if (!track || visiblePartenaires.length === 0 || prefersReducedMotion()) return;
+    if (!track || partenaires.length === 0) return;
+
+    // Mouvement réduit : la ligne reste lisible, simplement immobile.
+    if (prefersReducedMotion()) return;
 
     registerGsap();
+
+    // Départ décalé pour le sens inverse : sans cela, la ligne partirait
+    // d'un vide à gauche avant que le contenu ne la rejoigne.
+    const depart = direction === 1 ? -33.333 : 0;
+    const arrivee = direction === 1 ? 0 : -33.333;
+
+    gsap.set(track, { xPercent: depart });
+
+    // Défilement principal : `linear`, seule courbe acceptable pour un
+    // mouvement continu (§7.15) — toute autre produirait des à-coups
+    // à chaque répétition.
     const tween = gsap.to(track, {
-      xPercent: -33.333,
-      duration: 28,
+      xPercent: arrivee,
+      duration: durationSeconds,
       ease: 'none',
       repeat: -1,
     });
 
-    const pause = () => tween.pause();
-    const play = () => tween.play();
+    /*
+      Ondulation verticale (§7.7) : très légère, de période volontairement
+      différente de celle du défilement. Les deux mouvements ne se
+      resynchronisent donc jamais, ce qui évite l'impression de boucle
+      mécanique et donne la sensation de « flux ».
+
+      Elle est portée par un tween distinct : GSAP compose les deux dans
+      un unique `transform`, il n'y a donc pas de couche supplémentaire.
+    */
+    const ondulation = gsap.to(track, {
+      y: direction === 1 ? ONDULATION_PX : -ONDULATION_PX,
+      duration: durationSeconds / 5.5,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+    });
+
+    // Pause au survol : laisse le temps de lire et de cliquer.
+    const pause = () => {
+      tween.pause();
+      ondulation.pause();
+    };
+    const reprise = () => {
+      tween.play();
+      ondulation.play();
+    };
     track.addEventListener('mouseenter', pause);
-    track.addEventListener('mouseleave', play);
+    track.addEventListener('mouseleave', reprise);
+    track.addEventListener('focusin', pause);
+    track.addEventListener('focusout', reprise);
 
     return () => {
       track.removeEventListener('mouseenter', pause);
-      track.removeEventListener('mouseleave', play);
+      track.removeEventListener('mouseleave', reprise);
+      track.removeEventListener('focusin', pause);
+      track.removeEventListener('focusout', reprise);
       tween.kill();
+      ondulation.kill();
     };
-  }, [visiblePartenaires.length]);
+  }, [partenaires.length, direction, durationSeconds]);
 
   return (
-    <section ref={revealRef} className="bg-gradient-to-b from-ink-50 to-white py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div data-gsap className="mb-14 text-center">
-          {/* <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 ring-1 ring-brand-100">
-            Réseau mondial
-          </span> */}
-          <h2 className="mb-3 text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
-            {title}
-          </h2>
-          <p className="mx-auto max-w-2xl text-lg text-ink-500">{description}</p>
+    <div ref={trackRef} className="flex w-max gap-4 will-change-transform">
+      {boucle.map((partenaire, index) => (
+        <PartnerChipCard key={`${partenaire.id}-${index}`} partenaire={partenaire} />
+      ))}
+    </div>
+  );
+};
+
+/**
+ * Section « Nos partenaires » : deux lignes défilant en sens opposés.
+ *
+ * Les directions et les vitesses divergentes évitent la sensation mécanique
+ * d'un ruban unique, et donnent une impression de profondeur.
+ */
+const PartenairesSection = ({
+  title = 'Nos Partenaires',
+  description = 'Des collaborations prestigieuses au niveau mondial',
+  maxItems = 12,
+  partenaires: propPartenaires,
+}: PartenairesSectionProps) => {
+  const { partenaires: fetched, loading: queryLoading } = usePartenaires();
+
+  const partenaires =
+    propPartenaires && propPartenaires.length > 0 ? propPartenaires : fetched;
+  const loading = propPartenaires && propPartenaires.length > 0 ? false : queryLoading;
+
+  const visibles = useMemo(
+    () => partenaires.slice(0, maxItems),
+    [partenaires, maxItems],
+  );
+
+  /**
+   * Répartition en deux lignes.
+   *
+   * L'alternance pair/impair mélange les partenaires plutôt que de couper la
+   * liste en deux blocs : les logos voisins ne défilent pas ensemble, ce qui
+   * rend le mouvement plus organique.
+   */
+  const { ligne1, ligne2 } = useMemo(() => {
+    if (visibles.length <= 3) return { ligne1: visibles, ligne2: [] as PartenaireItem[] };
+    return {
+      ligne1: visibles.filter((_, index) => index % 2 === 0),
+      ligne2: visibles.filter((_, index) => index % 2 === 1),
+    };
+  }, [visibles]);
+
+  /** Squelette, état vide ou ruban : rendu isolé pour éviter un ternaire imbriqué. */
+  const renderContenu = () => {
+    if (loading) {
+      // Même hauteur que les cartes réelles : aucun saut de mise en page.
+      return (
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex gap-4 overflow-hidden">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={`skeleton-${index}`}
+                className="skeleton-shimmer h-[4.75rem] w-[17rem] shrink-0 rounded-2xl sm:w-[19rem]"
+              />
+            ))}
+          </div>
         </div>
+      );
+    }
 
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="h-12 w-12 animate-spin rounded-xl border-4 border-brand-600 border-t-transparent"></div>
-          </div>
-        ) : (
-          <div className="relative overflow-hidden py-8">
-            <div ref={trackRef} className="flex will-change-transform">
-              {duplicatedPartenaires.map((partenaire, index) => {
-                const logoUrl = getLogoUrl(partenaire);
-                const handleClick = () => {
-                  const slug = partenaire.slug || String(partenaire.id);
-                  navigate(`/partenaires/${slug}`);
-                };
+    if (visibles.length === 0) {
+      return (
+        <p className="px-4 text-center text-body text-ink-400">
+          Aucun partenaire à afficher pour le moment.
+        </p>
+      );
+    }
 
-                return (
-                  <div
-                    key={`${partenaire.id}-${index}`}
-                    className="flex-shrink-0 mx-8 w-32 h-32 flex items-center justify-center"
-                  >
-                    {logoUrl ? (
-                      <button
-                        type="button"
-                        aria-label={`Voir la page de ${partenaire.nom}`}
-                        className="flex h-full w-full items-center justify-center rounded-2xl bg-transparent p-0"
-                        onClick={handleClick}
-                      >
-                        <img
-                          src={logoUrl}
-                          alt={`${partenaire.nom} logo`}
-                          className="max-w-full max-h-full object-contain cursor-pointer hover:opacity-80 transition-opacity"
-                        />
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        aria-label={`Voir la page de ${partenaire.nom}`}
-                        className="w-full h-full flex items-center justify-center bg-brand-50 rounded-2xl border border-brand-100 cursor-pointer hover:opacity-80 transition-opacity"
-                        onClick={handleClick}
-                      >
-                        <span className="text-xs text-ink-500 text-center px-2">
-                          {partenaire.nom}
-                        </span>
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+    return (
+      <RevealOnScroll delay={120}>
+        {/*
+          Dégradés latéraux : les cartes s'estompent aux bords au lieu d'être
+          tranchées net, ce qui suggère la continuité du ruban.
+        */}
+        <div className="relative space-y-4">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-ink-50 to-transparent sm:w-28"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-ink-50 to-transparent sm:w-28"
+          />
 
-        <SectionCta label={SECTION_CTA.label} link={SECTION_CTA.link} />
+          <MarqueeRow partenaires={ligne1} direction={-1} durationSeconds={DUREE_LIGNE_1} />
+
+          {ligne2.length > 0 && (
+            <MarqueeRow partenaires={ligne2} direction={1} durationSeconds={DUREE_LIGNE_2} />
+          )}
+        </div>
+      </RevealOnScroll>
+    );
+  };
+
+  return (
+    <section className="overflow-hidden bg-ink-50 py-20 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <RevealOnScroll className="mb-12 text-center">
+          <h2 className="text-h2 text-ink-900">{title}</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-body-lg text-ink-500">{description}</p>
+        </RevealOnScroll>
       </div>
 
-      <style>{`
-                @keyframes scroll {
-                    0% {
-                        transform: translateX(0);
-                    }
-                    100% {
-                        transform: translateX(-33.333%);
-                    }
-                }
+      {renderContenu()}
 
-                .animate-scroll {
-                    animation: scroll 30s linear infinite;
-                }
-
-                .animate-scroll:hover {
-                    animation-play-state: paused;
-                }
-            `}</style>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <SectionCta label={SECTION_CTA.label} link={SECTION_CTA.link} />
+      </div>
     </section>
   );
 };

@@ -5,26 +5,33 @@ interface PartnerPayload {
   id: number;
   nom: string;
   type?: string;
+  /** Renvoyé par l'API (`partners.secteur`) — doit être conservé tel quel. */
+  secteur?: string | null;
   dateDebut?: string;
   logo?: string;
   siteWeb?: string;
   contact?: string;
   description?: string;
   slug?: string;
+  creeLe?: string;
+  misAJourLe?: string;
 }
 
 const transformPartenaire = (data: PartnerPayload): Partenaire => ({
   id: data.id,
   nom: data.nom,
   type: (data.type as Partenaire['type']) || 'Autre',
-  secteur: '',
+  // FIX: le secteur était écrasé par une chaîne vide, ce qui vidait le champ
+  // à chaque ouverture du formulaire de modification.
+  secteur: data.secteur ?? '',
   dateDebut: data.dateDebut ? new Date(data.dateDebut).toISOString().split('T')[0] : '',
   description: data.description || '',
   logo: data.logo || '',
   siteWeb: data.siteWeb || '',
   contact: data.contact || '',
-  creeLe: new Date(),
-  misAJourLe: new Date(),
+  slug: data.slug,
+  creeLe: data.creeLe ? new Date(data.creeLe) : new Date(),
+  misAJourLe: data.misAJourLe ? new Date(data.misAJourLe) : new Date(),
 });
 
 const getAllPartenaires = async (): Promise<Partenaire[]> => {

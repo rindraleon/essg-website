@@ -21,7 +21,7 @@ export const DEFAULT_PARTENAIRE_FORM_DATA = {
   secteur: '',
   dateDebut: new Date().toISOString().split('T')[0],
   description: '',
-  logo: '🤝',
+  logo: '',
   siteWeb: '',
   contact: '',
 };

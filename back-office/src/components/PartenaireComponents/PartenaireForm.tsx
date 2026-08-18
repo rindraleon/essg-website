@@ -66,7 +66,6 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [logoPreview, setLogoPreview] = useState<string>('');
-  const [logoFile, setLogoFile] = useState<File | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
 
   const {
@@ -106,7 +105,9 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
       setFormData({
         nom: initialData.nom || '',
         type: initialData.type || 'Entreprise',
-        secteur: initialData.secteur || '',
+        // Le secteur provient désormais correctement de l'API
+        // (cf. correctif dans services/partenaires.service.ts).
+        secteur: initialData.secteur ?? '',
         dateDebut: initialData.dateDebut || new Date().toISOString().split('T')[0],
         description: initialData.description || '',
         logo: initialData.logo || '',
@@ -122,7 +123,6 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
       resetForm();
       setLogoPreview('');
     }
-    setLogoFile(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, mode, initialId]);
 
@@ -133,21 +133,16 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
     try {
       const url = await uploadImage(file, 'partners');
       handleChange('logo', url);
-      setLogoPreview(url);
-      setLogoFile(null);
+      setLogoPreview(getImageUrl(url));
       toast.success('Logo téléversé avec succès');
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Échec du téléversement du logo.";
+      const message = err instanceof Error ? err.message : 'Échec du téléversement du logo.';
       toast.error(message);
     } finally {
       setUploadingImage(false);
+      // Permet de re-sélectionner le même fichier après une erreur.
+      e.target.value = '';
     }
-  };
-
-  const handleLogoEmojiChange = (emoji: string) => {
-    handleChange('logo', emoji);
-    setLogoPreview('');
-    setLogoFile(null);
   };
 
   const handleNext = () => {
@@ -178,20 +173,9 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
     if (submitting || !validateAllSteps()) return;
     setSubmitting(true);
     try {
-      if (logoFile) {
-        const formDataObj = new FormData();
-        formDataObj.append('nom', formData.nom);
-        formDataObj.append('type', formData.type);
-        formDataObj.append('secteur', formData.secteur);
-        formDataObj.append('description', formData.description);
-        formDataObj.append('dateDebut', formData.dateDebut);
-        formDataObj.append('logo', logoFile);
-        if (formData.siteWeb) formDataObj.append('siteWeb', formData.siteWeb);
-        if (formData.contact) formDataObj.append('contact', formData.contact);
-        await onSubmit(formDataObj as unknown as PartenaireFormData);
-      } else {
-        await onSubmit(formData);
-      }
+      // L'upload du logo est déjà effectué par `uploadImage` : le formulaire
+      // n'envoie qu'une URL, plus de FormData ni d'input d'URL manuelle.
+      await onSubmit(formData);
     } finally {
       setSubmitting(false);
     }
@@ -282,7 +266,6 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingImage}
               size="sm"
-              className="gap-1.5 bg-white text-xs h-8"
             >
               <Upload className="h-3.5 w-3.5" />
               {uploadingImage ? 'Upload...' : logoPreview ? 'Changer le logo' : 'Ajouter un logo'}
@@ -291,16 +274,6 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
           </div>
         </div>
 
-        <div className="mt-3">
-          <FloatingInput
-            id="logo-emoji"
-            label="Ou utilisez un emoji"
-            value={formData.logo}
-            onChange={(e) => handleLogoEmojiChange(e.target.value)}
-            placeholder="Ex: 🏢, 💰, 🏥, 🎓"
-            maxLength={2}
-          />
-        </div>
       </div>
     </div>
   );
@@ -366,7 +339,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                     type="button"
                     onClick={() => handleStepClick(index)}
                     className={`
-                      flex items-center gap-1.5 px-3 py-1.5 rounded-full
+                      flex items-center gap-1.5 px-3 py-1.5 rounded-md
                       text-xs font-medium transition-all
                       ${
                         isActive
@@ -403,7 +376,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
-                className="text-ink-500 h-8"
+                disabled={submitting}
               >
                 Annuler
               </Button>
@@ -414,7 +387,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={handleBack}
-                  className="gap-1 h-8"
+                  disabled={submitting}
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
                   Précédent
@@ -426,7 +399,7 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                   type="button"
                   size="sm"
                   onClick={handleNext}
-                  className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
+                  disabled={submitting}
                 >
                   Suivant
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -436,10 +409,10 @@ const PartenaireForm: React.FC<PartenaireFormProps> = ({
                   type="button"
                   size="sm"
                   onClick={handleSubmit}
-                  className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
+                  disabled={submitting}
                 >
                   <CircleCheck className="h-3.5 w-3.5" />
-                  {mode === 'create' ? 'Créer' : 'Enregistrer'}
+                  {submitting ? 'Enregistrement…' : mode === 'create' ? 'Créer' : 'Enregistrer'}
                 </Button>
               )}
             </div>

@@ -5,6 +5,11 @@ export const PROJET_TYPES = [
   { value: 'Partenariat', label: 'Partenariat' },
 ] as const;
 
+export const PROJET_STATUTS = [
+  { value: 'En cours', label: 'En cours' },
+  { value: 'Terminé', label: 'Terminé' },
+] as const;
+
 export const PROJET_TYPE_COLORS: Record<
   string,
   'primary' | 'secondary' | 'success' | 'warning' | 'info'
@@ -18,10 +23,12 @@ export const PROJET_TYPE_COLORS: Record<
 export const DEFAULT_FORM_DATA = {
   titre: '',
   type: 'Recherche' as const,
+  // Un projet est créé en cours : le marquer terminé est une action explicite.
+  statut: 'En cours' as const,
   date: new Date().toISOString().split('T')[0],
   description: '',
   partenaires: [] as string[],
-  slug: '',
+  partenaireIds: [] as number[],
   image: '/images/hero-campus.jpg',
   galerie: [] as string[],
   latitude: undefined as number | undefined,

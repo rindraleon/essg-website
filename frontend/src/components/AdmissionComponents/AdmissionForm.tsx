@@ -97,15 +97,15 @@ const AdmissionForm = ({
 
   return (
     <div className="overflow-hidden rounded-[1.5rem] border border-ink-100 bg-white p-6 shadow-card sm:p-8">
-      <h2 className="mb-2 text-2xl font-bold text-ink-900">Formulaire de candidature</h2>
-      <p className="mb-8 text-sm text-ink-500">
+      <h2 className="mb-2 text-h3 text-ink-900">Formulaire de candidature</h2>
+      <p className="mb-8 text-small text-ink-500">
         Remplissez ce formulaire pour soumettre votre candidature. Assurez-vous de fournir des
         informations exactes.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <div>
-          <h3 className="mb-4 text-lg font-semibold text-ink-900">Informations personnelles</h3>
+          <h3 className="mb-4 text-h5 font-semibold text-ink-900">Informations personnelles</h3>
           <div className="grid items-start gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="prenom">Prénom</Label>
@@ -169,7 +169,7 @@ const AdmissionForm = ({
         </div>
 
         <div>
-          <h3 className="mb-4 text-lg font-semibold text-ink-900">Formation souhaitée</h3>
+          <h3 className="mb-4 text-h5 font-semibold text-ink-900">Formation souhaitée</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <Select name="niveau" label="Niveau *" value={formData.niveau} onChange={handleTextChange} required>
               <option value="">Choisir un niveau</option>
@@ -197,7 +197,7 @@ const AdmissionForm = ({
         </div>
 
         <div>
-          <h3 className="mb-4 text-lg font-semibold text-ink-900">Parcours académique</h3>
+          <h3 className="mb-4 text-h5 font-semibold text-ink-900">Parcours académique</h3>
           <div className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="diplomePrecedent">Dernier diplôme obtenu</Label>
@@ -214,7 +214,7 @@ const AdmissionForm = ({
               <Label htmlFor="cv" className="mb-2 block">
                 CV (PDF) *
               </Label>
-              <label className="flex w-full cursor-pointer items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-sm text-ink-600 transition-colors hover:border-brand-600 hover:bg-brand-50">
+              <label className="flex w-full cursor-pointer items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-small text-ink-600 transition-colors hover:border-brand-600 hover:bg-brand-50">
                 <Upload className="size-4" />
                 {cvFile ? cvFile.name : 'Choisir un fichier'}
                 <input
@@ -231,7 +231,7 @@ const AdmissionForm = ({
               <Label htmlFor="lettre" className="mb-2 block">
                 Lettre de motivation (PDF) *
               </Label>
-              <label className="flex w-full cursor-pointer items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-sm text-ink-600 transition-colors hover:border-brand-600 hover:bg-brand-50">
+              <label className="flex w-full cursor-pointer items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-small text-ink-600 transition-colors hover:border-brand-600 hover:bg-brand-50">
                 <Upload className="size-4" />
                 {lettreFile ? lettreFile.name : 'Choisir un fichier'}
                 <input
@@ -255,7 +255,7 @@ const AdmissionForm = ({
             }
             label="J'accepte les conditions générales *"
           />
-          <p className="mt-2 pl-6 text-sm text-ink-500">
+          <p className="mt-2 pl-6 text-small text-ink-500">
             Je certifie que les informations fournies sont exactes et je comprends que toute fausse
             déclaration peut entraîner le rejet de ma candidature.
           </p>

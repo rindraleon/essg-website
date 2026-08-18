@@ -10,14 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ActivityLogTable, ActivityLogViewDialog, SearchInput } from '../../components';
-
-import { useDebounce, useScrollToTop } from '../../hooks';
-import { useActivityLogsQuery } from '../../hooks/queries';
-import { useTitle } from '../../hooks/useTitle';
+import { ActivityLogTable, ActivityLogViewDialog, ListPageHeader } from '../../components';
+import { useDebounce, useScrollToTop,useTitle, useActivityLogsQuery } from '../../hooks';
 import type { ActivityLog } from '@/types';
-
-
 
 const MODULES = [
   { value: 'users', label: 'Utilisateurs' },
@@ -83,34 +78,17 @@ const ActivityLogs = () => {
   }, []);
 
   return (
-    <div className="space-y-2 p-2 sm:p-6 lg:p-8 max-w-7xl mx-auto min-w-0">
-      <div className="rounded-xl border border-ink-100 bg-white p-4 shadow-card">
-        <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
-          <div className="flex min-w-0 flex-1 flex-col items-start gap-4 sm:flex-row sm:items-center">
-            <h2 className="whitespace-nowrap text-lg font-bold text-ink-800">
-              Journal des actions
-              <span className="ml-2 text-sm font-normal text-ink-500">
-                ({totalItems} résultat{totalItems !== 1 ? 's' : ''})
-              </span>
-            </h2>
-            <SearchInput
-              value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder="Rechercher une description, un endpoint, un module..."
-            />
-          </div>
-          <div className="flex w-full items-center gap-3 lg:w-auto">
-            <Button variant="outline" onClick={() => setFiltersOpen((prev) => !prev)}>
-              {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
-              {activeFilterCount > 0 && (
-                <span className="ml-1 rounded-full bg-brand-600 px-1.5 text-[10px] text-white">
-                  {activeFilterCount}
-                </span>
-              )}
-            </Button>
-          </div>
-        </div>
-      </div>
+    <div className="mx-auto max-w-7xl py-4 space-y-2 mx-auto min-w-0">
+      <ListPageHeader
+        title="Journal des actions"
+        totalCount={totalItems}
+        searchValue={searchTerm}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder="Rechercher un utilisateur, une action, un module..."
+        onToggleFilters={() => setFiltersOpen((prev) => !prev)}
+        filtersOpen={filtersOpen}
+        activeFilterCount={activeFilterCount}
+      />
 
       {filtersOpen && (
         <div className="rounded-xl border border-ink-100 bg-white p-4 shadow-card">

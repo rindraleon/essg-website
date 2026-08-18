@@ -7,8 +7,6 @@ import type { PageHeroProps } from '../../types/common.types';
 const PageHero = ({
   image = SITE_HERO_IMAGE,
   imageAlt = SITE_HERO_ALT,
-  badgeIcon,
-  badgeLabel,
   title,
   description,
   stats = [],
@@ -17,7 +15,7 @@ const PageHero = ({
   const heroRef = useGsapHero<HTMLElement>();
 
   return (
-    <section ref={heroRef} className="relative overflow-hidden bg-brand-950 text-white">
+    <section ref={heroRef} data-surface="dark" className="relative overflow-hidden bg-brand-950 text-white">
       <img
         data-hero="media"
         src={image || SITE_HERO_IMAGE}
@@ -38,19 +36,10 @@ const PageHero = ({
         style={{ minHeight }}
       >
         <div className="mx-auto max-w-3xl">
-          {badgeLabel && (
-            <div data-hero="badge" className="mb-6 flex justify-center">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-sage-300/45 bg-white/10 px-3 py-1 text-sm font-medium text-sage-100 shadow-[0_0_20px_rgba(152,192,112,0.16)] backdrop-blur-md">
-                {badgeIcon}
-                {badgeLabel}
-              </span>
-            </div>
-          )}
-
           <SplitTitle
             data-hero="title"
             text={title}
-            className="mb-3 text-4xl font-bold leading-tight drop-shadow-[0_2px_16px_rgba(15,33,30,0.4)] sm:text-5xl lg:text-6xl"
+            className="mb-3 text-display leading-tight drop-shadow-[0_2px_16px_rgba(15,33,30,0.4)]"
           />
           <div
             data-hero="accent"
@@ -61,7 +50,7 @@ const PageHero = ({
           {description && (
             <p
               data-hero="description"
-              className="mx-auto max-w-2xl text-lg leading-relaxed text-white/92 sm:text-xl"
+              className="mx-auto max-w-[60ch] text-body-lg leading-relaxed text-white/92"
             >
               {description}
             </p>
@@ -80,8 +69,8 @@ const PageHero = ({
                 className="rounded-2xl border border-white/18 bg-white/12 p-4 text-center shadow-lg backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
               >
                 {stat.icon && <div className="mb-2 flex justify-center">{stat.icon}</div>}
-                <div className="text-2xl font-bold text-white sm:text-3xl">{stat.value}</div>
-                <div className="text-sm text-sage-100">{stat.label}</div>
+                <div className="text-h3 font-bold text-white">{stat.value}</div>
+                <div className="text-small text-sage-100">{stat.label}</div>
               </div>
             ))}
           </div>

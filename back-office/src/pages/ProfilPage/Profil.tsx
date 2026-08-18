@@ -1,143 +1,129 @@
-import { Avatar, Card, CardContent, Typography, Box, Grid, Divider } from '@/components/compat/mui';
-import { IdCard, Mail, Shield, User } from 'lucide-react';
+import { IdCard, Mail, Pencil, Shield, User as UserIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getImageUrl } from '../../utils/image.utils';
 import { useTitle } from '@/hooks/useTitle';
 import useScrollToTop from '@/hooks/useScrollToTop';
+import { Button } from '@/components/ui/button';
+import ProfilEditDialog from './ProfilEditDialog';
+import { formatFullName, getPersonInitials } from '../../utils/name.utils';
+
+const ROLE_LABELS: Record<string, string> = {
+  admin: 'Administrateur',
+  editeur: 'Éditeur',
+  lecteur: 'Lecteur',
+};
+
+function formatDate(value?: string): string {
+  if (!value) return '—';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '—';
+  return date.toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
+/** Carte d'information réutilisée pour chaque champ du profil. */
+const InfoCard: React.FC<{ icon: React.ReactNode; label: string; value: string }> = ({
+  icon,
+  label,
+  value,
+}) => (
+  <div className="flex items-start gap-3 rounded-md bg-ink-50 p-3">
+    <span className="mt-0.5 shrink-0 text-ink-500">{icon}</span>
+    <div className="min-w-0 flex-1">
+      <p className="mb-0.5 text-xs text-ink-500">{label}</p>
+      <p className="truncate font-medium text-ink-900">{value}</p>
+    </div>
+  </div>
+);
 
 const Profil: React.FC = () => {
   useScrollToTop();
   useTitle('Profil');
-  const { user } = useAuth();
-
-  if (!user) {
-    return null;
+  const { user, isLoading } = useAuth();
+  const [editOpen, setEditOpen] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-4xl space-y-4 p-4 sm:p-6 lg:p-8">
+        <div className="h-32 animate-pulse rounded-xl border border-ink-100 bg-white" />
+        <div className="h-56 animate-pulse rounded-xl border border-ink-100 bg-white" />
+      </div>
+    );
   }
 
-  const [avatarError, setAvatarError] = useState(false);
+  if (!user) {
+    return (
+      <div className="mx-auto max-w-4xl p-4 sm:p-6 lg:p-8">
+        <div className="rounded-xl border border-ink-100 bg-white p-8 text-center">
+          <p className="text-sm text-ink-500">Profil indisponible. Reconnectez-vous.</p>
+        </div>
+      </div>
+    );
+  }
 
-  const getRoleLabel = (role: string) => {
-    switch (role) {
-      case 'admin':
-        return 'Administrateur';
-      case 'editeur':
-        return 'Éditeur';
-      case 'lecteur':
-        return 'Lecteur';
-      default:
-        return role;
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+  const initials = getPersonInitials(user);
+  const showAvatar = Boolean(user.avatar) && !avatarError;
 
   return (
-    <div className="min-h-screen bg-ink-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* En-tête du profil */}
-        <Card className="mb-6 shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex flex-col sm:flex-row items-center gap-6">
-              <Avatar
-                src={!avatarError && user.avatar ? getImageUrl(user.avatar) : undefined}
-                onError={() => setAvatarError(true)}
-              >
-                {(avatarError || !user.avatar) && `${user.prenom[0]}${user.nom[0]}`.toUpperCase()}
-              </Avatar>
-              <div className="text-center sm:text-left flex-1">
-                <Typography variant="h4" className="font-bold text-ink-900 mb-2">
-                  {user.prenom} {user.nom}
-                </Typography>
-                <Box
-                  className="inline-block px-3 py-1 rounded-full text-sm font-medium text-white mb-3"
-                >
-                  {getRoleLabel(user.role)}
-                </Box>
-                <Typography variant="body2" className="text-ink-600">
-                  Membre depuis le {formatDate(user.creeLe)}
-                </Typography>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+    <div className="mx-auto max-w-4xl space-y-4 p-4 sm:p-6 lg:p-8">
+      <section className="rounded-xl border border-ink-100 bg-white p-5 shadow-card">
+        <div className="flex flex-col items-center gap-5 sm:flex-row">
+          {showAvatar ? (
+            <img
+              src={getImageUrl(user.avatar as string)}
+              alt={formatFullName(user)}
+              onError={() => setAvatarError(true)}
+              className="size-20 shrink-0 rounded-full border border-ink-100 object-cover"
+            />
+          ) : (
+            <span className="grid size-20 shrink-0 place-items-center rounded-full bg-brand-100 text-xl font-semibold text-brand-800">
+              {initials}
+            </span>
+          )}
 
-        {/* Informations personnelles */}
-        <Card className="mb-6 shadow-sm">
-          <CardContent className="p-6">
-            <Typography
-              variant="h6"
-              className="font-semibold text-ink-900 mb-4 flex items-center gap-2"
-            >
-              <User className="text-brand-600" />
-              Informations personnelles
-            </Typography>
-            <Divider className="mb-4" />
-            <Grid container spacing={3}>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Box className="flex items-start gap-3 p-3 bg-ink-50 rounded-lg">
-                  <IdCard className="text-ink-500 mt-1 size-4" />
-                  <Box className="flex-1">
-                    <Typography variant="caption" className="text-ink-500 block mb-1">
-                      Nom
-                    </Typography>
-                    <Typography variant="body1" className="font-medium text-ink-900">
-                      {user.nom}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Box className="flex items-start gap-3 p-3 bg-ink-50 rounded-lg">
-                  <User className="text-ink-500 mt-1 size-4" />
-                  <Box className="flex-1">
-                    <Typography variant="caption" className="text-ink-500 block mb-1">
-                      Prénom
-                    </Typography>
-                    <Typography variant="body1" className="font-medium text-ink-900">
-                      {user.prenom}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Box className="flex items-start gap-3 p-3 bg-ink-50 rounded-lg">
-                  <Mail className="text-ink-500 mt-1 size-4" />
-                  <Box className="flex-1">
-                    <Typography variant="caption" className="text-ink-500 block mb-1">
-                      Email
-                    </Typography>
-                    <Typography variant="body1" className="font-medium text-ink-900">
-                      {user.email}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Box className="flex items-start gap-3 p-3 bg-ink-50 rounded-lg">
-                  <Shield className="text-ink-500 mt-1 size-4" />
-                  <Box className="flex-1">
-                    <Typography variant="caption" className="text-ink-500 block mb-1">
-                      Rôle
-                    </Typography>
-                    <Typography variant="body1" className="font-medium text-ink-900">
-                      {getRoleLabel(user.role)}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-      </div>
+          <div className="min-w-0 flex-1 text-center sm:text-left">
+            <h1 className="mb-1.5 text-2xl font-bold text-ink-900">
+              {formatFullName(user)}
+            </h1>
+            <span className="inline-block rounded-md bg-brand-600 px-2.5 py-1 text-xs font-medium text-white">
+              {ROLE_LABELS[user.role] ?? user.role}
+            </span>
+            <p className="mt-2 text-sm text-ink-600">
+              Membre depuis le {formatDate(user.creeLe)}
+            </p>
+          </div>
+
+          <Button onClick={() => setEditOpen(true)} className="w-full shrink-0 sm:w-auto">
+            <Pencil className="size-4" />
+            Modifier le profil
+          </Button>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-ink-100 bg-white p-5 shadow-card">
+        <h2 className="mb-3 flex items-center gap-2 text-base font-semibold text-ink-900">
+          <UserIcon className="size-4 text-brand-600" />
+          Informations personnelles
+        </h2>
+        <div className="mb-4 h-px w-full bg-ink-100" />
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <InfoCard icon={<IdCard className="size-4" />} label="Nom" value={user.nom} />
+          <InfoCard icon={<UserIcon className="size-4" />} label="Prénom" value={user.prenom} />
+          <InfoCard icon={<Mail className="size-4" />} label="Email" value={user.email} />
+          <InfoCard
+            icon={<Shield className="size-4" />}
+            label="Rôle"
+            value={ROLE_LABELS[user.role] ?? user.role}
+          />
+        </div>
+      </section>
+
+      <ProfilEditDialog open={editOpen} onClose={() => setEditOpen(false)} user={user} />
     </div>
   );
 };

@@ -1,49 +1,27 @@
 @import 'tailwindcss';
 
-@font-face {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src:
-    local('Poppins Regular'),
-    url('../assets/fonts/Poppins/Poppins-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src:
-    local('Poppins Medium'),
-    url('../assets/fonts/Poppins/Poppins-Medium.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src:
-    local('Poppins SemiBold'),
-    url('../assets/fonts/Poppins/Poppins-SemiBold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src:
-    local('Poppins Bold'),
-    url('../assets/fonts/Poppins/Poppins-Bold.ttf') format('truetype');
-}
+@import '@fontsource-variable/inter/wght.css';
 
 @theme {
   --font-sans:
-    'Poppins', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif;
+    'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Échelle typographique unique du back-office (titres → légendes). */
+  --text-display: 1.875rem;
+  --text-display--line-height: 2.25rem;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 700;
+
+  --text-title: 1.25rem;
+  --text-title--line-height: 1.75rem;
+  --text-title--letter-spacing: -0.01em;
+  --text-title--font-weight: 600;
+
+  --text-section: 0.75rem;
+  --text-section--line-height: 1rem;
+  --text-section--letter-spacing: 0.06em;
+  --text-section--font-weight: 600;
 
   --color-brand-50: #eff7f4;
   --color-brand-100: #d9ece7;
@@ -172,6 +150,8 @@
 
   body {
     font-family: var(--font-sans);
+    /* Interlignage et césure optimisés pour les libellés longs en français. */
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     background-color: var(--color-ink-50);
     color: var(--color-ink-900);
     -webkit-font-smoothing: antialiased;
@@ -182,6 +162,20 @@
     outline: 2px solid var(--color-brand-600);
     outline-offset: 2px;
     border-radius: 4px;
+  }
+
+  /* Les chiffres des tableaux et statistiques restent alignés verticalement. */
+  table,
+  [data-numeric] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: -0.01em;
+    text-wrap: balance;
   }
 
   ::selection {

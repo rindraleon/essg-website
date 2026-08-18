@@ -3,7 +3,6 @@ import React from 'react';
 
 import type { FaqPageProps } from '../../types/faq.types';
 import { ContactCard, CtaSection, FaqAccordion, PageHero, Breadcrumb } from '../../components';
-import { useScrollToTop } from '../../hooks';
 
 import { SITE_HERO_IMAGE } from '../../constants/media';
 import { useTitle } from '@/hooks/useTitle';
@@ -11,12 +10,10 @@ import { useTitle } from '@/hooks/useTitle';
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
 const FaqPage: React.FC<FaqPageProps> = (props: Readonly<FaqPageProps>) => {
-  useScrollToTop();
   useTitle('FAQ | ESSG');
 
   const {
     pageTitle = 'Questions Fréquentes',
-    pageSubtitle = 'ESSG — Aide & Support',
     pageDescription = "Trouvez rapidement les réponses aux questions les plus posées sur l'ESSG, les formations et les admissions.",
     faqs = [
       {
@@ -57,8 +54,6 @@ const FaqPage: React.FC<FaqPageProps> = (props: Readonly<FaqPageProps>) => {
       <PageHero
         image={HERO_IMAGE}
         imageAlt="FAQ ESSG"
-        badgeIcon={<CircleHelp className="size-4" />}
-        badgeLabel={pageSubtitle}
         title={pageTitle}
         description={pageDescription}
         stats={[

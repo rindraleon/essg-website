@@ -1,13 +1,41 @@
+import { Clock, GraduationCap } from 'lucide-react';
+import { useMemo } from 'react';
 import { getImageUrl } from '../../utils/image.utils';
-import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../utils/component.utils';
-import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid, ViewDetailsButton } from '../../components';
+import { CARD_WIDTH_CLASS } from '../../constants/layout';
+import { NIVEAU_ORDER } from '../../constants/formation';
+import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid } from '../../components';
+import MediaCard from '../common/MediaCard';
+import FilterButton from '../common/FilterButton';
+import { MediaCardSkeletonGrid } from '../common/MediaCardSkeleton';
 import { useFeaturedFormations } from '../../hooks';
+import useSectionFilters, { type FilterDefinition } from '../../hooks/useSectionFilters';
 import type { FeaturedFormationsSectionProps } from '../../types';
+import type { Formation } from '../../types/formations.types';
 
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1523050854058-8df90110a6f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 
 const SECTION_CTA = { label: 'Voir toutes les formations', link: '/formations' } as const;
+
+/**
+ * Critères de filtrage. Déclarés hors du composant : une nouvelle référence
+ * à chaque rendu invaliderait les `useMemo` du hook de filtrage.
+ */
+const FILTERS: FilterDefinition<Formation>[] = [
+  {
+    key: 'niveau',
+    label: 'Niveau',
+    accessor: (formation) => formation.niveau,
+    order: NIVEAU_ORDER,
+    allLabel: 'Tous les niveaux',
+  },
+  {
+    key: 'mention',
+    label: 'Mention',
+    accessor: (formation) => formation.mention || formation.domaine?.[0],
+    allLabel: 'Toutes',
+  },
+];
 
 const FormationsSection = ({
   title = "Formations d'excellence",
@@ -17,98 +45,105 @@ const FormationsSection = ({
   const featuredQuery = useFeaturedFormations(6);
   const formations = propFeaturedFormations ?? featuredQuery.formations;
   const loading = propFeaturedFormations ? false : featuredQuery.loading;
-  const error = propFeaturedFormations
-    ? null
-    : featuredQuery.error instanceof Error
-      ? featuredQuery.error.message
-      : featuredQuery.error;
+  const queryError =
+    featuredQuery.error instanceof Error ? featuredQuery.error.message : featuredQuery.error;
+  const error = propFeaturedFormations ? null : queryError;
 
-  const headerContent = (
-    <SectionHeader 
-    // eyebrow="Nos programmes" 
-    title={title} 
-    description={description} />
-  );
+  /**
+   * Tri par niveau (§4).
+   *
+   * L'ordre suit la hiérarchie pédagogique (Licence → Master → Doctorat), et
+   * non l'ordre alphabétique qui donnerait « Doctorat, Licence, Master ».
+   * À niveau égal, on retombe sur le titre pour que l'affichage reste
+   * déterministe d'un chargement à l'autre.
+   */
+  const sorted = useMemo(() => {
+    const rank = (niveau: string) => {
+      const index = NIVEAU_ORDER.indexOf(niveau as (typeof NIVEAU_ORDER)[number]);
+      // Un niveau inconnu est placé en fin de liste plutôt qu'en tête.
+      return index === -1 ? NIVEAU_ORDER.length : index;
+    };
+    return [...formations].sort(
+      (a, b) => rank(a.niveau) - rank(b.niveau) || a.titre.localeCompare(b.titre, 'fr'),
+    );
+  }, [formations]);
 
-  const loadingSkeletons = (
-    <ScrollableCardGrid className="mt-2">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <div
-          key={SKELETON_KEYS[i]}
-          className={`${CARD_WIDTH_CLASS} rounded-3xl overflow-hidden border border-ink-100 bg-white shadow-card`}
-        >
-          <div className="aspect-[16/9] w-full bg-ink-100 animate-pulse" />
-          <div className="p-6 space-y-4">
-            <div className="h-6 w-24 rounded-full bg-ink-100 animate-pulse" />
-            <div className="h-5 w-4/5 rounded bg-ink-100 animate-pulse" />
-            <div className="h-4 w-full rounded bg-ink-100 animate-pulse" />
-            <div className="h-4 w-11/12 rounded bg-ink-100 animate-pulse" />
-            <div className="h-4 w-2/3 rounded bg-ink-100 animate-pulse" />
-          </div>
-        </div>
-      ))}
-    </ScrollableCardGrid>
-  );
+  const { filtered, groups, setFilter, reset } = useSectionFilters(sorted, FILTERS);
+
+  const count = filtered.length;
+  const total = sorted.length;
+
+  /** « 4 formations » ou « 2 sur 4 formations » lorsqu'un filtre est posé. */
+  const suffix = total > 1 ? 's' : '';
+  const countLabel =
+    count === total ? `${total} formation${suffix}` : `${count} sur ${total} formation${suffix}`;
 
   return (
     <SectionContent
       loading={loading}
       error={error}
-      isEmpty={!loading && formations.length === 0}
+      isEmpty={!loading && total === 0}
       emptyMessage="Aucune formation disponible pour le moment."
-      headerContent={headerContent}
-      loadingSkeletons={loadingSkeletons}
-      sectionClassName="py-20 bg-white"
+      headerContent={<SectionHeader title={title} description={description} />}
+      loadingSkeletons={<MediaCardSkeletonGrid count={3} />}
+      sectionClassName="bg-white py-20"
       fluid
       containerClassName="max-w-none"
     >
-      <ScrollableCardGrid className="mt-2 w-full">
-        {formations.map((formation) => {
-          const imageUrl = formation.image ? getImageUrl(formation.image) : FALLBACK_IMAGE;
-
-          const formationLink = `/formations/${formation.slug ?? formation.id}`;
-
-          return (
-            <article
-              key={formation.id}
-              data-gsap
-              className={`${CARD_WIDTH_CLASS} group rounded-xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col`}
-            >
-              <div className="relative aspect-[16/9] overflow-hidden bg-ink-100">
-                <img
-                  src={imageUrl}
-                  alt={formation.titre}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute top-4 right-4">
-                  <span className="inline-flex items-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
-                    {formation.niveau || 'Formation'}
-                  </span>
-                </div>
-              </div>
-
-              <div className="p-6 flex flex-col flex-1">
-                
-
-                <h3 className="text-lg font-semibold text-ink-900 mb-3 line-clamp-2 leading-snug">
-                  {formation.titre}
-                </h3>
-
-                <p className="text-sm text-justify text-ink-600 line-clamp-3 flex-1 leading-6">
-                  {formation.description || "Découvrez cette formation d'excellence."}
-                </p>
-
-                <ViewDetailsButton
-                  to={formationLink}
-                  ariaLabel={`Voir le détail de ${formation.titre}`}
-                  className="mt-3"
-                />
-              </div>
-            </article>
-          );
-        })}
+      <ScrollableCardGrid
+        className="w-full"
+        ariaLabel="Formations mises en avant"
+        toolbarStart={
+          <span aria-live="polite">{countLabel}</span>
+        }
+        controls={
+          groups.length > 0 && (
+            <FilterButton groups={groups} onChange={setFilter} onReset={reset} revealOnHover />
+          )
+        }
+      >
+        {filtered.map((formation) => (
+          <MediaCard
+            key={formation.id}
+            className={CARD_WIDTH_CLASS}
+            to={`/formations/${formation.slug ?? formation.id}`}
+            title={formation.titre}
+            imageUrl={formation.image ? getImageUrl(formation.image) : FALLBACK_IMAGE}
+            // Le niveau reste visible sur chaque carte (§4).
+            badge={formation.niveau || 'Formation'}
+            subtitle={formation.mention || formation.domaine?.[0]}
+            description={formation.description || "Découvrez cette formation d'excellence."}
+            meta={[
+              ...(formation.duree
+                ? [{ icon: <Clock className="size-3.5" />, label: formation.duree }]
+                : []),
+              ...(formation.credits
+                ? [
+                    {
+                      icon: <GraduationCap className="size-3.5" />,
+                      label: `${formation.credits} crédits`,
+                    },
+                  ]
+                : []),
+            ]}
+            actionLabel="Voir la formation"
+          />
+        ))}
       </ScrollableCardGrid>
+
+      {/* Filtre trop restrictif : on l'indique plutôt que d'afficher un vide. */}
+      {count === 0 && total > 0 && (
+        <p className="py-10 text-center text-body text-ink-500">
+          Aucune formation ne correspond à ces critères.{' '}
+          <button
+            type="button"
+            onClick={reset}
+            className="font-medium text-brand-700 underline underline-offset-4 hover:text-brand-800"
+          >
+            Réinitialiser les filtres
+          </button>
+        </p>
+      )}
 
       <SectionCta label={SECTION_CTA.label} link={SECTION_CTA.link} />
     </SectionContent>

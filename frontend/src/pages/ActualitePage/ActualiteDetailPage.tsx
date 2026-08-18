@@ -7,9 +7,10 @@ import { CtaSection, EmptyState, PageHero, Breadcrumb, CategoryChip, ImageGaller
 import { GREEN } from '../../constants/colors';
 import { formatDate } from '../../utils/date.utils';
 import { getImageUrl } from '../../utils/image.utils';
-import { useActualiteBySlug, useRecentActualites, useScrollToTop } from '../../hooks';
+import { useActualiteBySlug, useRecentActualites } from '../../hooks';
 import { useTitle } from '../../hooks/useTitle';
 import ViewDetailsButton from '../../components/common/ViewDetailsButton';
+import DetailPageSkeleton from '../../components/common/DetailPageSkeleton';
 
 const ACTUALITE_IMAGES: Record<string, string> = {
   '1': '1602052577122-f73b9710adba',
@@ -31,8 +32,6 @@ const ActualiteDetailPage: React.FC = () => {
   const { actualites: related } = useRecentActualites(6);
   const { setTitle } = useTitle();
 
-  useScrollToTop();
-
   useEffect(() => {
     if (actualite) {
       setTitle(actualite.titre);
@@ -51,16 +50,7 @@ const ActualiteDetailPage: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-ink-50">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-brand-600 border-r-transparent"></div>
-            <p className="text-ink-500">Chargement de l'article...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <DetailPageSkeleton label="Chargement de l'article…" layout="article" />;
   }
 
   if (error || !actualite) {
@@ -95,8 +85,6 @@ const ActualiteDetailPage: React.FC = () => {
       <PageHero
         image={getActualiteImage(actualite.image, actualite.id.toString())}
         imageAlt={actualite.titre}
-        badgeIcon={<Newspaper className="size-4" />}
-        badgeLabel={actualite.categorie}
         title={actualite.titre}
         minHeight="50vh"
       />
@@ -121,12 +109,12 @@ const ActualiteDetailPage: React.FC = () => {
                     size="small"
                   />
 
-                  <div className="flex items-center gap-1 text-sm text-ink-500">
+                  <div className="flex items-center gap-1 text-small text-ink-500">
                     <Calendar />
                     {formatDate(actualite.date)}
                   </div>
 
-                  <div className="flex items-center gap-1 text-sm text-ink-500">
+                  <div className="flex items-center gap-1 text-small text-ink-500">
                     <User />
                     {actualite.auteur}
                   </div>
@@ -145,7 +133,7 @@ const ActualiteDetailPage: React.FC = () => {
 
                 {/* Contenu de l'article */}
                 <div className="prose max-w-none text-ink-700">
-                  <p className="mb-4 text-lg font-medium leading-relaxed">{actualite.resume}</p>
+                  <p className="mb-4 text-h5 font-medium leading-relaxed">{actualite.resume}</p>
 
                   {actualite.contenu ? (
                     <div
@@ -183,7 +171,7 @@ const ActualiteDetailPage: React.FC = () => {
             <Card
             >
               <CardContent className="p-6">
-                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-ink-900">
+                <h3 className="mb-4 text-small font-semibold uppercase tracking-wide text-ink-900">
                   Auteur
                 </h3>
                 <div className="flex items-center gap-3">
@@ -197,7 +185,7 @@ const ActualiteDetailPage: React.FC = () => {
                   </div>
                   <div>
                     <div className="font-semibold text-ink-900">{actualite.auteur}</div>
-                    <div className="text-sm text-ink-500">ESSG</div>
+                    <div className="text-small text-ink-500">ESSG</div>
                   </div>
                 </div>
               </CardContent>
@@ -220,15 +208,15 @@ const ActualiteDetailPage: React.FC = () => {
       {related.filter((item) => item.slug !== actualite.slug).length > 0 && (
         <section className="border-t border-ink-100 bg-white py-12">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-6 text-2xl font-bold text-ink-900">Actualités similaires</h2>
+            <h2 className="mb-6 text-h3 text-ink-900">Actualités similaires</h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {related
                 .filter((item) => item.slug !== actualite.slug)
                 .slice(0, 3)
                 .map((item) => (
                   <article key={item.id} className="rounded-2xl border border-ink-100 bg-ink-50/60 p-5">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">{item.categorie}</p>
-                    <h3 className="mt-2 text-base font-semibold text-ink-900">{item.titre}</h3>
+                    <p className="text-caption font-semibold uppercase tracking-wide text-brand-700">{item.categorie}</p>
+                    <h3 className="mt-2 text-body font-semibold text-ink-900">{item.titre}</h3>
                     <ViewDetailsButton
                       to={`/actualites/${item.slug}`}
                       className="mt-3"

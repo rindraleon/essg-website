@@ -23,7 +23,7 @@ const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
   return (
     <div className="w-full">
       {/* {adresse && (
-                <p className="mb-3 flex items-center justify-center gap-1.5 text-center text-xs text-ink-500">
+                <p className="mb-3 flex items-center justify-center gap-1.5 text-center text-caption text-ink-500">
                     <MapPin />
                     {adresse}
                 </p>
@@ -37,7 +37,7 @@ const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
         {/* Barre d'en-tête */}
         <div className="flex items-center gap-2 border-b border-ink-100 bg-ink-50/60 px-3 py-2.5">
           <MapPin />
-          <span className="truncate text-xs font-medium text-ink-700">{label}</span>
+          <span className="truncate text-caption font-medium text-ink-700">{label}</span>
 
           <Tooltip title="Ouvrir dans OpenStreetMap">
             <IconButton
@@ -81,13 +81,13 @@ const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold" style={{ color: GREEN[800] }}>
+                <p className="text-small font-semibold" style={{ color: GREEN[800] }}>
                   {label}
                 </p>
 
-                {adresse && <p className="mt-0.5 text-xs text-ink-500">{adresse}</p>}
+                {adresse && <p className="mt-0.5 text-caption text-ink-500">{adresse}</p>}
 
-                <p className="mt-1 text-xs text-ink-400">
+                <p className="mt-1 text-caption text-ink-400">
                   {lat.toFixed(4)}°S, {lng.toFixed(4)}°E
                 </p>
               </div>

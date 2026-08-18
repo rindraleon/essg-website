@@ -1,12 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
 import {
   ActualiteFilters,
   ActualiteForm,
   ActualiteTable,
   ActualiteViewDialog,
   ConfirmDialog,
-  SearchInput,
 } from '../../components';
 import { useFilter } from '../../hooks/useFilter';
 import { usePagination, useScrollToTop } from '../../hooks';
@@ -17,8 +16,8 @@ import {
   useDeleteActualite,
   useUpdateActualite,
 } from '../../hooks/queries';
-import { Button } from '@/components/ui/button';
 import { useTitle } from '@/hooks/useTitle';
+import ListPageHeader from '../../components/common/ListPageHeader';
 
 const Actualites: React.FC = () => {
   useScrollToTop();
@@ -129,35 +128,19 @@ const Actualites: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-2 p-2 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      <Toaster position="top-right" richColors />
-
-      {/* Search + Add Button */}
-      <div className="bg-white rounded-xl border border-ink-100 p-4 shadow-card">
-        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-            <h2 className="text-lg font-bold text-ink-800 whitespace-nowrap">
-              Liste des actualités
-              <span className="ml-2 text-sm font-normal text-ink-500">
-                ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
-              </span>
-            </h2>
-            <SearchInput
-              value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder="Rechercher par titre, auteur..."
-            />
-          </div>
-          <div className="flex items-center gap-3 w-full lg:w-auto">
-            <Button variant="outline" onClick={handleToggleFilters} className="rounded-lg">
-              {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
-            </Button>
-            <Button onClick={handleOpenCreate} className="bg-brand-600 hover:bg-brand-700">
-              + Nouvelle actualité
-            </Button>
-          </div>
-        </div>
-      </div>
+    <div className="mx-auto max-w-7xl py-4 space-y-2 mx-auto min-w-0">
+      <ListPageHeader
+        title="Liste des actualités"
+        totalCount={filteredData.length}
+        searchValue={searchTerm}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder="Rechercher par titre, auteur..."
+        onToggleFilters={handleToggleFilters}
+        filtersOpen={filtersOpen}
+        activeFilterCount={activeFilterCount}
+        actionLabel="Nouvelle actualité"
+        onAction={handleOpenCreate}
+      />
 
       {/* Filters - Full Width Below */}
       {filtersOpen && (

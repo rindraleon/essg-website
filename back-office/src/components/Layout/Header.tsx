@@ -23,6 +23,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { useRecentAdmissionsQuery, useRecentMessagesQuery } from '../../hooks/queries';
+import { formatFullName } from '../../utils/name.utils';
 
 const Header: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -120,7 +121,7 @@ const Header: React.FC = () => {
                     <TooltipTrigger asChild>
                       <DropdownMenuTrigger>
                         <Button
-                          variant="default"
+                          variant="ghost"
                           size="icon"
                           className="text-ink-700 hover:text-brand-600 relative"
                           aria-label="messages"
@@ -161,7 +162,7 @@ const Header: React.FC = () => {
                           <div className="flex items-start justify-between w-full">
                             <div className="flex-1">
                               <p className="text-sm font-medium text-ink-900">
-                                {message.prenom} {message.nom}
+                                {formatFullName(message)}
                               </p>
                               <p className="text-xs text-ink-500 mt-1">{message.email}</p>
                               <p className="text-xs text-ink-600 mt-1 line-clamp-2">
@@ -236,7 +237,7 @@ const Header: React.FC = () => {
                           <div className="flex items-start justify-between w-full">
                             <div className="flex-1">
                               <p className="text-sm font-medium text-ink-900">
-                                {admission.prenom} {admission.nom}
+                                {formatFullName(admission)}
                               </p>
                               <p className="text-xs text-ink-500 mt-1">
                                 Formation: {admission.formation}

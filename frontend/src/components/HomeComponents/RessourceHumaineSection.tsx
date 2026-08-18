@@ -1,43 +1,19 @@
+import { Mail, Phone } from 'lucide-react';
 import { useActiveRessourcesHumaines } from '../../hooks';
 import { getImageUrl } from '../../utils/image.utils';
-import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../utils/component.utils';
-import { SectionContent, ScrollableCardGrid, SectionCta, ViewDetailsButton } from '../../components';
+import { formatFullName } from '../../utils/name.utils';
+import { CARD_WIDTH_CLASS } from '../../constants/layout';
+import { SectionHeader, SectionContent, ScrollableCardGrid, SectionCta } from '../../components';
+import MediaCard from '../common/MediaCard';
+import { MediaCardSkeletonGrid } from '../common/MediaCardSkeleton';
 
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400';
-  const SECTION_CTA = { label: 'Découvrir tous les membres', link: '/ressources-humaines' } as const;
+
+const SECTION_CTA = { label: 'Découvrir tous les membres', link: '/ressources-humaines' } as const;
 
 const RessourceHumaineSection = () => {
   const { ressourcesHumaines, loading, error } = useActiveRessourcesHumaines();
-
-  const headerContent = (
-    <div data-gsap className="text-center mb-12">
-      <h2 className="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">Notre Équipe</h2>
-      <p className="mt-3 text-ink-500 max-w-2xl mx-auto">
-        Des professionnels qualifiés et passionnés au service de votre réussite
-      </p>
-    </div>
-  );
-
-  const loadingSkeletons = (
-    <ScrollableCardGrid className="mt-2 w-full">
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div
-          key={SKELETON_KEYS[i]}
-          className={`${CARD_WIDTH_CLASS} rounded-3xl overflow-hidden border border-ink-100 bg-white shadow-card`}
-        >
-          <div className="aspect-[4/3] w-full bg-ink-100 animate-pulse" />
-          <div className="p-6 space-y-4">
-            <div className="h-5 w-3/5 rounded bg-ink-100 animate-pulse" />
-            <div className="h-4 w-2/5 rounded bg-ink-100 animate-pulse" />
-            <div className="h-4 w-full rounded bg-ink-100 animate-pulse" />
-            <div className="h-4 w-11/12 rounded bg-ink-100 animate-pulse" />
-            <div className="h-4 w-4/5 rounded bg-ink-100 animate-pulse" />
-          </div>
-        </div>
-      ))}
-    </ScrollableCardGrid>
-  );
 
   return (
     <SectionContent
@@ -45,95 +21,43 @@ const RessourceHumaineSection = () => {
       error={error}
       isEmpty={!loading && ressourcesHumaines.length === 0}
       emptyMessage="Aucun membre de l'équipe disponible pour le moment."
-      headerContent={headerContent}
-      loadingSkeletons={loadingSkeletons}
-      sectionClassName="py-20 bg-white"
-      containerClassName="w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12"
+      headerContent={
+        <SectionHeader
+          title="Notre Équipe"
+          description="Des professionnels qualifiés et passionnés au service de votre réussite"
+        />
+      }
+      loadingSkeletons={<MediaCardSkeletonGrid />}
+      sectionClassName="bg-gradient-to-b from-ink-50 to-white py-20"
+      fluid
+      containerClassName="max-w-none"
     >
-      <ScrollableCardGrid className="mt-2 w-full">
+      <ScrollableCardGrid className="mt-2 w-full" ariaLabel="Membres de l'équipe">
         {ressourcesHumaines.map((membre) => {
-          const imageUrl = membre.photo ? getImageUrl(membre.photo) : FALLBACK_IMAGE;
+          const fullName = formatFullName(membre);
 
           return (
-            <article
+            <MediaCard
               key={membre.id}
-              data-gsap
-              className={`${CARD_WIDTH_CLASS} group rounded-xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col`}
-            >
-              <div className="relative aspect-[16/9] overflow-hidden bg-ink-100">
-                <img
-                  src={imageUrl}
-                  alt={`${membre.prenom} ${membre.nom}`}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
-                  <p className="text-sm font-semibold text-brand-600 mb-4">{membre.poste}</p>
-                </div>
-                
-              </div>
-
-              <div className="p-6 flex flex-col flex-1">
-                <h3 className="text-lg font-semibold text-ink-900 mb-1 leading-snug">
-                  {membre.nom} {membre.prenom}
-                </h3>
-
-                {membre.description && (
-                  <p className="text-sm text-ink-500 line-clamp-3 flex-1 leading-6 mb-4">
-                    {membre.description}
-                  </p>
-                )}
-
-                <div className="mt-auto space-y-2">
-                  {membre.email && (
-                    <p className="text-xs text-ink-500 flex items-start gap-2 break-all">
-                      <svg
-                        className="w-4 h-4 mt-0.5 flex-shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                        />
-                      </svg>
-                      <span>{membre.email}</span>
-                    </p>
-                  )}
-
-                  {membre.telephone && (
-                    <p className="text-xs text-ink-500 flex items-start gap-2">
-                      <svg
-                        className="w-4 h-4 mt-0.5 flex-shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                        />
-                      </svg>
-                      <span>{membre.telephone}</span>
-                    </p>
-                  )}
-                </div>
-
-                <ViewDetailsButton
-                  to={`/ressources-humaines/${membre.slug}`}
-                  ariaLabel={`Voir le détail de ${membre.prenom} ${membre.nom}`}
-                />
-              </div>
-
-            </article>
+              className={CARD_WIDTH_CLASS}
+              to={`/ressources-humaines/${membre.slug}`}
+              title={fullName}
+              imageUrl={membre.photo ? getImageUrl(membre.photo) : FALLBACK_IMAGE}
+              imageAlt={fullName}
+              subtitle={membre.poste}
+              description={membre.description}
+              meta={[
+                ...(membre.email ? [{ icon: <Mail className="size-3.5" />, label: membre.email }] : []),
+                ...(membre.telephone
+                  ? [{ icon: <Phone className="size-3.5" />, label: membre.telephone }]
+                  : []),
+              ]}
+              actionLabel="Voir le profil"
+            />
           );
         })}
       </ScrollableCardGrid>
+
       <SectionCta label={SECTION_CTA.label} link={SECTION_CTA.link} />
     </SectionContent>
   );

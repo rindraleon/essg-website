@@ -62,8 +62,8 @@ const ImageGallery = ({ images, alt = 'Image', title = "Galerie d'images" }: Ima
           <Images className="size-4" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-ink-900">{title}</h3>
-          <p className="text-xs text-ink-500">
+          <h3 className="text-h5 font-semibold text-ink-900">{title}</h3>
+          <p className="text-caption text-ink-500">
             {urls.length} photo{urls.length > 1 ? 's' : ''} — cliquez pour agrandir
           </p>
         </div>
@@ -83,10 +83,10 @@ const ImageGallery = ({ images, alt = 'Image', title = "Galerie d'images" }: Ima
               src={url}
               alt={`${alt} ${index + 1}`}
               loading="lazy"
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
             />
             <span className="pointer-events-none absolute inset-0 flex items-end justify-start bg-gradient-to-t from-ink-950/40 to-transparent p-2.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-              <span className="text-xs font-semibold text-white">
+              <span className="text-caption font-semibold text-white">
                 {index + 1} / {urls.length}
               </span>
             </span>
@@ -130,7 +130,7 @@ const ImageGallery = ({ images, alt = 'Image', title = "Galerie d'images" }: Ima
               alt={`${alt} ${lightboxIndex + 1}`}
               className="max-h-[80vh] max-w-full rounded-xl object-contain shadow-elevated"
             />
-            <figcaption className="mt-4 text-sm font-medium text-white/80">
+            <figcaption className="mt-4 text-small font-medium text-white/80">
               {lightboxIndex + 1} / {urls.length}
             </figcaption>
           </figure>

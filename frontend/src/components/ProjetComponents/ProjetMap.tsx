@@ -47,7 +47,7 @@ const ProjetMap: React.FC<ProjetMapProps> = ({
           style={{ height, width: '100%' }}
           className="flex items-center justify-center bg-ink-100"
         >
-          <p className="text-sm text-ink-500">Localisation non disponible</p>
+          <p className="text-small text-ink-500">Localisation non disponible</p>
         </div>
       </div>
     );
@@ -67,9 +67,9 @@ const ProjetMap: React.FC<ProjetMapProps> = ({
         />
         <Marker position={[lat, lng]}>
           <Popup>
-            <div className="text-sm">
+            <div className="text-small">
               <p className="font-semibold text-ink-900">{label || `${ville}, ${pays}`}</p>
-              {adresse && <p className="mt-1 text-xs text-ink-500">{adresse}</p>}
+              {adresse && <p className="mt-1 text-caption text-ink-500">{adresse}</p>}
             </div>
           </Popup>
         </Marker>
@@ -78,13 +78,13 @@ const ProjetMap: React.FC<ProjetMapProps> = ({
       {/* Info bar */}
       <div className="flex items-center gap-2 border-t border-ink-100 bg-ink-50/60 px-3 py-2.5">
         <MapPin />
-        <span className="truncate text-xs font-medium text-ink-700">
+        <span className="truncate text-caption font-medium text-ink-700">
           {label || `${ville}, ${pays}`}
         </span>
         {adresse && (
           <>
             <span className="text-ink-400">•</span>
-            <span className="truncate text-xs text-ink-500">{adresse}</span>
+            <span className="truncate text-caption text-ink-500">{adresse}</span>
           </>
         )}
       </div>

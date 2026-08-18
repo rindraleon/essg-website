@@ -2,12 +2,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { ApiError } from '@/api/types/api';
-import { SearchInput, AdmissionFilters, ConfirmDialog, AdmissionTable, AdmissionDetailDialog, AdmissionDecisionDialog, PdfPreviewDialog } from '../../components';
+import ListPageHeader from '../../components/common/ListPageHeader';
+import { AdmissionFilters, ConfirmDialog, AdmissionTable, AdmissionDetailDialog, AdmissionDecisionDialog, PdfPreviewDialog } from '../../components';
 import { useDebounce, useScrollToTop } from '../../hooks';
 import { useAdmissionsQuery, useDeleteAdmission, useUpdateAdmissionStatus } from '../../hooks/queries';
 import { getAdmissionDocumentBlob } from '../../services/admissions.service';
 import { useTitle } from '../../hooks/useTitle';
 import type { Admission, AdmissionStatus } from '../../types/admission.types';
+import { formatFullName } from '../../utils/name.utils';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -41,7 +43,7 @@ const Admissions = () => {
     Boolean(filterDateDebut),
   ].filter(Boolean).length;
 
-  const { data, isLoading, isError, error, refetch } = useAdmissionsQuery({
+  const { data, isError, error, refetch } = useAdmissionsQuery({
     page: currentPage + 1,
     limit: rowsPerPage,
     q: debouncedSearch || undefined,
@@ -54,7 +56,6 @@ const Admissions = () => {
   const deleteMutation = useDeleteAdmission();
   const admissions = data?.data ?? [];
   const totalItems = data?.total ?? 0;
-  const loading = isLoading;
   const niveaux = useMemo(
     () => Array.from(new Set(admissions.map((item) => item.niveau))).sort((a, b) => a.localeCompare(b)),
     [admissions],
@@ -130,28 +131,32 @@ const Admissions = () => {
     }
   };
 
+  function getEmptyMessage(): string | undefined {
+    const hasSearch = Boolean(searchTerm.trim());
+    const hasFilters =
+      filterStatus !== 'all' ||
+      filterNiveau !== 'all' ||
+      filterFormation !== 'all' ||
+      Boolean(filterDateDebut.trim());
+
+    if (hasSearch || hasFilters) {
+      return 'Aucune admission ne correspond à votre recherche ou aux filtres appliqués.';
+    }
+
+    return 'Aucune admission enregistrée pour le moment.';
+  }
+
   return (
-    <div className="mx-auto max-w-7xl space-y-2 p-2 sm:p-6 lg:p-8">
-      <div className="rounded-xl border border-ink-100 bg-white p-4 shadow-card">
-        <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
-          <div className="flex flex-1 flex-col items-start gap-4 sm:flex-row sm:items-center">
-            <h2 className="whitespace-nowrap text-lg font-bold text-ink-800">
-              Liste des admissions
-              <span className="ml-2 text-sm font-normal text-ink-500">
-                ({totalItems} résultat{totalItems !== 1 ? 's' : ''})
-              </span>
-            </h2>
-            <SearchInput
-              value={searchTerm}
-              onChange={setSearchTerm}
-              placeholder="Rechercher par nom, prénom, email, téléphone..."
-            />
-          </div>
-          <Button variant="outline" onClick={() => setFiltersOpen((prev) => !prev)} className="rounded-lg">
-            {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
-          </Button>
-        </div>
-      </div>
+    <div className="mx-auto max-w-7xl py-4 space-y-2 mx-auto min-w-0">
+      <ListPageHeader
+        title="Liste des admissions"
+        totalCount={totalItems}
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+        searchPlaceholder="Rechercher par nom, prénom, email, téléphone..."
+        onToggleFilters={() => setFiltersOpen((prev) => !prev)}
+        filtersOpen={filtersOpen}
+      />
 
       <AdmissionFilters
         filters={{
@@ -207,13 +212,7 @@ const Admissions = () => {
           if (admission) setDeleteTarget(admission);
         }}
         onPreviewDocument={openPreview}
-        emptyMessage={
-          loading
-            ? 'Chargement...'
-            : searchTerm || filterStatus !== 'all' || filterNiveau !== 'all' || filterFormation !== 'all'
-              ? 'Aucun résultat trouvé'
-              : 'Aucune candidature trouvée'
-        }
+        emptyMessage={getEmptyMessage()}
       />
 
       {showDetailModal && selectedAdmission && (
@@ -242,8 +241,10 @@ const Admissions = () => {
       {preview && (() => {
         const documentType = preview.kind === 'cv' ? 'CV' : 'Lettre de motivation';
         const fileName = preview.kind === 'cv' ? 'CV' : 'Lettre';
-        const title = `${documentType} — ${preview.admission.prenom} ${preview.admission.nom}`;
-        const fileNameWithExt = `${fileName}-${preview.admission.nom}.pdf`;
+        const title = `${documentType} — ${formatFullName(preview.admission)}`;
+        // L'extension réelle est déterminée par le backend d'après la
+        // signature du fichier ; on n'impose plus « .pdf » ici.
+        const fileNameWithExt = `${fileName}-${preview.admission.nom}`;
 
         return (
           <PdfPreviewDialog
@@ -256,22 +257,12 @@ const Admissions = () => {
         );
       })()}
 
-      {!preview && (
-        <PdfPreviewDialog
-          open={false}
-          title="Aperçu PDF"
-          fileName="document.pdf"
-          loadDocument={loadPreview}
-          onClose={() => setPreview(null)}
-        />
-      )}
-
       <ConfirmDialog
         open={Boolean(deleteTarget)}
         title="Supprimer la candidature"
         message={
           deleteTarget
-            ? `Êtes-vous sûr de vouloir supprimer la candidature de "${deleteTarget.prenom} ${deleteTarget.nom}" ? Cette action est irréversible.`
+            ? `Êtes-vous sûr de vouloir supprimer la candidature de "${formatFullName(deleteTarget)}" ? Cette action est irréversible.`
             : ''
         }
         confirmLabel="Supprimer"

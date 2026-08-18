@@ -9,16 +9,15 @@ import {
   Breadcrumb,
   FormationDetailContent,
 } from '../../components';
-import { useFormationBySlug, useScrollToTop } from '../../hooks';
+import { useFormationBySlug } from '../../hooks';
 import { useTitle } from '../../hooks/useTitle';
 import { getFormationImage } from '../../utils/image.utils';
+import DetailPageSkeleton from '../../components/common/DetailPageSkeleton';
 
 const FormationDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { formation, loading, error } = useFormationBySlug(slug || '');
   const { setTitle } = useTitle();
-
-  useScrollToTop();
   useTitle(formation ? formation.titre : 'Formation | ESSG');
 
   useEffect(() => {
@@ -28,16 +27,7 @@ const FormationDetailPage: React.FC = () => {
   }, [formation, setTitle]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-ink-50">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-brand-600 border-r-transparent"></div>
-            <p className="text-ink-500">Chargement de la formation...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <DetailPageSkeleton label="Chargement de la formation…" layout="split" />;
   }
 
   if (error || !formation) {
@@ -72,8 +62,6 @@ const FormationDetailPage: React.FC = () => {
       <PageHero
         image={getFormationImage(formation.image, formation.slug)}
         imageAlt={formation.titre}
-        badgeIcon={<BookOpen className="size-4" />}
-        badgeLabel={formation.niveau}
         title={formation.titre}
         description={formation.description}
         minHeight="50vh"

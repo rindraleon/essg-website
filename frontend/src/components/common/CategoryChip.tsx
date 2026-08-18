@@ -19,7 +19,7 @@ const CategoryChip = ({ category, size = 'small', className }: CategoryChipProps
     <Badge
       className={cn(
         categoryColors[category] || 'border-indigo-100 bg-indigo-50 text-indigo-800',
-        size === 'medium' && 'text-[0.8rem] px-3 py-1',
+        size === 'medium' && 'text-caption px-3 py-1',
         className,
       )}
     >

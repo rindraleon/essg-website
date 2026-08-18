@@ -1,104 +1,112 @@
+import { Calendar } from 'lucide-react';
 import { useRecentActualites } from '../../hooks';
+import useSectionFilters, { type FilterDefinition } from '../../hooks/useSectionFilters';
+import FilterButton from '../common/FilterButton';
+import type { Actualite } from '../../types/actualite.types';
 import { getImageUrl } from '../../utils/image.utils';
-import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../utils/component.utils';
-import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid, ViewDetailsButton } from '../../components';
+import { formatDate } from '../../utils/date.utils';
+import { CARD_WIDTH_CLASS } from '../../constants/layout';
+import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid } from '../../components';
+import MediaCard from '../common/MediaCard';
+import { MediaCardSkeletonGrid } from '../common/MediaCardSkeleton';
 
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1768117173988-5ebfdde4fdd3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 
 const SECTION_CTA = { label: 'Toutes les actualités', link: '/actualites' } as const;
 
+/**
+ * Critères de filtrage (§5). Les options sont dérivées des actualités
+ * réellement reçues : une catégorie sans article ne s'affiche pas.
+ * L'année est extraite de la date — c'est le second axe de recherche
+ * naturel pour une actualité, après la catégorie.
+ */
+const FILTERS: FilterDefinition<Actualite>[] = [
+  {
+    key: 'categorie',
+    label: 'Catégorie',
+    accessor: (actualite) => actualite.categorie,
+    allLabel: 'Toutes',
+  },
+  {
+    key: 'annee',
+    label: 'Année',
+    accessor: (actualite) => {
+      const date = new Date(actualite.date);
+      return Number.isNaN(date.getTime()) ? undefined : String(date.getFullYear());
+    },
+    allLabel: 'Toutes',
+  },
+];
+
 const ActualitesSection = () => {
   const { actualites, loading, error } = useRecentActualites(8);
+  const { filtered, groups, setFilter, reset } = useSectionFilters(actualites, FILTERS);
 
-  const headerContent = (
-    <SectionHeader
-      // eyebrow="Vie de l'école"
-      title="Dernières Actualités"
-      description="Restez informé de la vie de l'ESSG"
-    />
-  );
+  const count = filtered.length;
+  const total = actualites.length;
 
-  const loadingSkeletons = (
-    <ScrollableCardGrid className="mt-2 w-full">
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div
-          key={SKELETON_KEYS[i]}
-          className={`${CARD_WIDTH_CLASS} rounded-3xl overflow-hidden border border-ink-100 bg-white shadow-card`}
-        >
-          <div className="aspect-[16/9] w-full bg-ink-100 animate-pulse" />
-          <div className="p-6 space-y-2">
-            <div className="h-6 w-24 rounded-full bg-ink-100 animate-pulse" />
-            <div className="h-5 w-4/5 rounded bg-ink-100 animate-pulse" />
-            <div className="h-4 w-full rounded bg-ink-100 animate-pulse" />
-            <div className="h-4 w-11/12 rounded bg-ink-100 animate-pulse" />
-            <div className="h-4 w-2/3 rounded bg-ink-100 animate-pulse" />
-          </div>
-        </div>
-      ))}
-    </ScrollableCardGrid>
-  );
+  /** « 4 actualités » ou « 2 sur 4 actualités » lorsqu'un filtre est posé. */
+  const suffix = total > 1 ? 's' : '';
+  const countLabel =
+    count === total ? `${total} actualité${suffix}` : `${count} sur ${total} actualité${suffix}`;
 
   return (
     <SectionContent
       loading={loading}
       error={error}
-      isEmpty={!loading && actualites.length === 0}
+      isEmpty={!loading && total === 0}
       emptyMessage="Aucune actualité disponible pour le moment."
-      headerContent={headerContent}
-      loadingSkeletons={loadingSkeletons}
-      sectionClassName="py-2 bg-white"
-      containerClassName="w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12"
+      headerContent={
+        <SectionHeader
+          title="Dernières Actualités"
+          description="Restez informé de la vie de l'ESSG"
+        />
+      }
+      loadingSkeletons={<MediaCardSkeletonGrid />}
+      sectionClassName="bg-gradient-to-b from-white to-ink-50 py-20"
+      fluid
+      containerClassName="max-w-none"
     >
-      <ScrollableCardGrid className="mt-2 w-full">
-        {actualites.map((actu) => {
-          const imageUrl = actu.image ? getImageUrl(actu.image) : FALLBACK_IMAGE;
-
-          return (
-            <article
-              key={actu.id}
-              data-gsap
-              className={`${CARD_WIDTH_CLASS} group rounded-xl overflow-hidden border border-ink-100 bg-white shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col`}
-            >
-              <div className="relative aspect-[16/9] overflow-hidden bg-ink-100">
-                <img
-                  src={imageUrl}
-                  alt={actu.titre}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute top-4 right-4">
-                  <span className="inline-flex items-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
-                    {actu.categorie || 'Actualité'}
-                  </span>
-                </div>
-                <div className="absolute bottom-4 left-4">
-                  <span className="inline-flex items-center rounded-sm bg-black/60 backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-white">
-                    {new Date(actu.date).toLocaleDateString('fr-FR', {
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
-                  </span>
-                </div>
-              </div>
-
-              <div className="p-6 flex flex-col flex-1">
-                <h3 className="text-lg font-semibold text-ink-900 mb-3 line-clamp-2 leading-snug">
-                  {actu.titre}
-                </h3>
-
-                <p className="text-sm text-ink-600 line-clamp-3 flex-1 leading-6">{actu.resume}</p>
-
-                <ViewDetailsButton
-                  to={`/actualites/${actu.slug}`}
-                  ariaLabel={`Voir le détail de ${actu.titre}`}
-                />
-              </div>
-            </article>
-          );
-        })}
+      <ScrollableCardGrid
+        className="w-full"
+        ariaLabel="Dernières actualités"
+        toolbarStart={
+          <span aria-live="polite">{countLabel}</span>
+        }
+        controls={
+          groups.length > 0 && (
+            <FilterButton groups={groups} onChange={setFilter} onReset={reset} revealOnHover />
+          )
+        }
+      >
+        {filtered.map((actu) => (
+          <MediaCard
+            key={actu.id}
+            className={CARD_WIDTH_CLASS}
+            to={`/actualites/${actu.slug}`}
+            title={actu.titre}
+            imageUrl={actu.image ? getImageUrl(actu.image) : FALLBACK_IMAGE}
+            badge={actu.categorie || 'Actualité'}
+            description={actu.resume}
+            meta={[{ icon: <Calendar className="size-3.5" />, label: formatDate(actu.date) }]}
+            actionLabel="Lire l'article"
+          />
+        ))}
       </ScrollableCardGrid>
+
+      {count === 0 && total > 0 && (
+        <p className="py-10 text-center text-body text-ink-500">
+          Aucune actualité ne correspond à ces critères.{' '}
+          <button
+            type="button"
+            onClick={reset}
+            className="font-medium text-brand-700 underline underline-offset-4 hover:text-brand-800"
+          >
+            Réinitialiser les filtres
+          </button>
+        </p>
+      )}
 
       <SectionCta label={SECTION_CTA.label} link={SECTION_CTA.link} />
     </SectionContent>

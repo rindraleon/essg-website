@@ -1,3 +1,6 @@
+import { cn } from '@/lib/utils';
+import usePagination from '../../hooks/usePagination';
+import Pagination from '../../components/common/Pagination';
 import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, Skeleton, TextField } from '@/components/compat/mui';
 import { Handshake, Search, X } from 'lucide-react';
 import React, { useState, useMemo, useEffect, useRef } from 'react';
@@ -10,7 +13,7 @@ import PageHero from '../../components/common/PageHero';
 import Breadcrumb from '../../components/common/Breadcrumb';
 import PartenaireCard from '../../components/PartenaireComponents/PartenaireCard';
 
-import { usePartenaires, useScrollToTop } from '../../hooks';
+import { usePartenaires } from '../../hooks';
 import { generateSlug } from '../../utils/slug.utils';
 import type { PartenairesPageProps, PartenaireItem } from '../../types/partenaire.types';
 
@@ -28,12 +31,10 @@ const TYPES = [
 ];
 
 const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<PartenairesPageProps>) => {
-  useScrollToTop();
   useTitle('Partenaires | ESSG');
 
   const {
     pageTitle = 'Nos Partenaires',
-    pageSubtitle = 'ESSG — Réseau & Coopération',
     pageDescription = 'Des collaborations prestigieuses au niveau national et international pour une excellence partagée.',
   } = props;
 
@@ -114,13 +115,14 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
       : []),
   ];
 
+  const { pageItems, page, totalPages, goToPage, listRef, isChanging } =
+    usePagination(filteredPartenaires, { pageSize: 9 });
+
   return (
     <div className="min-h-screen bg-ink-50">
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Partenaires ESSG"
-        badgeIcon={<Handshake className="size-4" />}
-        badgeLabel={pageSubtitle}
         title={pageTitle}
         description={pageDescription}
         stats={[
@@ -232,11 +234,28 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
                 onAction={handleResetFilters}
               />
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredPartenaires.map((partenaire) => (
+              <div ref={listRef} className="scroll-mt-24">
+              {/* Fondu bref au changement de page (§23). */}
+              <div
+                className={cn(
+                  'grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+                  'transition-opacity duration-[--duration-hover] motion-reduce:transition-none',
+                  isChanging && 'opacity-40',
+                )}
+              >
+                {pageItems.map((partenaire) => (
                   <PartenaireCard key={partenaire.slug || partenaire.id} partenaire={partenaire} />
                 ))}
               </div>
+
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onChange={goToPage}
+                ariaLabel="Pagination des partenaires"
+                className="mt-12"
+              />
+            </div>
             )}
           </div>
         </section>

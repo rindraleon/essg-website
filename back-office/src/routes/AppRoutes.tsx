@@ -18,6 +18,7 @@ import {
 import { routesStatic } from '.';
 import { Layout } from '../components';
 import { useAuth } from '../contexts/AuthContext';
+import { isAdminRole } from '../constants/navigation';
 
 // Loading Spinner
 const LoadingScreen = () => (
@@ -73,7 +74,9 @@ const AdminRoute = ({ children }: { children: React.JSX.Element }) => {
     return <Navigate to={routesStatic.login} replace state={{ from: location }} />;
   }
 
-  if (user?.role !== 'admin') {
+  // Redirection silencieuse vers le tableau de bord : aucun message d'erreur
+  // technique n'est affiché à un utilisateur non-admin.
+  if (!isAdminRole(user?.role)) {
     return <Navigate to={routesStatic.dashboard} replace />;
   }
 
@@ -141,13 +144,19 @@ const AppRoutes = () => {
         }
       />
 
+      {/*
+        Gestion des utilisateurs : réservée aux administrateurs.
+        Le menu est masqué dans le Sidebar (cf. constants/navigation.ts) ET
+        la route est protégée ici ; le backend refuse de son côté les appels
+        non-admin sur /users (@Roles('admin')).
+      */}
       <Route
         path={routesStatic.utilisateurs}
         element={
           <Layout showSidebar>
-            <ProtectedRoute>
+            <AdminRoute>
               <Utilisateurs />
-            </ProtectedRoute>
+            </AdminRoute>
           </Layout>
         }
       />

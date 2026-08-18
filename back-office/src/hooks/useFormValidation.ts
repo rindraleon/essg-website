@@ -243,12 +243,11 @@ export function useFormValidation<T extends object>(
     [formData, validators, validateOnBlur]
   );
 
+  // `setFormDataState` accepte déjà une valeur ou une fonction de mise à
+  // jour : le test `typeof data === 'function'` était inutile (les deux
+  // branches étaient identiques).
   const setFormData = useCallback((data: T | ((prev: T) => T)) => {
-    if (typeof data === 'function') {
-      setFormDataState(data);
-    } else {
-      setFormDataState(data);
-    }
+    setFormDataState(data);
   }, []);
 
   const resetForm = useCallback(() => {

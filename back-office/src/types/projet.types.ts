@@ -7,6 +7,8 @@ export interface Projet {
   type: ProjetType;
   date: string;
   description: string;
+  partenaireIds?: number[];
+  statut: string;
   partenaires: string[];
   image: string;
   galerie?: string[];
@@ -19,7 +21,7 @@ export interface Projet {
   misAJourLe: Date;
 }
 
-export type ProjetFormData = Omit<Projet, 'id' | 'creeLe' | 'misAJourLe'>;
+export type ProjetFormData = Omit<Projet, 'id' | 'slug' | 'creeLe' | 'misAJourLe'>;
 
 export interface ProjetFilterOptions {
   type: string;

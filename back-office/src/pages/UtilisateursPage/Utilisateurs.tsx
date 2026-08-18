@@ -1,20 +1,19 @@
-import { Card, CardContent, Typography, Box, Button, IconButton } from '@/components/compat/mui';
-import { Filter } from 'lucide-react';
 import React, { useState, useCallback } from 'react';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
 import {
   UsersTable,
   UsersForm,
   UsersViewDialog,
   ConfirmDialog,
-  SearchInput,
   UsersFilter,
+  ListPageHeader,
+  type UserFilters,
 } from '../../components';
-import type { UserFilters } from '../../components/UsersComponent/UsersFilter';
 import { usePagination, useScrollToTop } from '../../hooks';
 import { useAuth } from '../../contexts/AuthContext';
 import type { User, UserFormData } from '../../types';
 import { useCreateUser, useDeleteUser, useUpdateUser, useUsersQuery } from '../../hooks/queries';
+import { ApiError } from '@/api/types/api';
 import { useTitle } from '@/hooks/useTitle';
 
 const Utilisateurs: React.FC = () => {
@@ -166,90 +165,29 @@ const Utilisateurs: React.FC = () => {
         }
         setFormOpen(false);
       } catch (error) {
-        toast.error("Erreur lors de l'enregistrement");
+        const message =
+          error instanceof ApiError ? error.message : "Erreur lors de l'enregistrement";
+        toast.error(message);
         console.error('Error saving user:', error);
       }
     },
     [formMode, selectedUser]
   );
 
-  // const totalCount = filteredData.length;
-  // const activeCount = filteredData.filter((u) => u.estActif).length;
-  // const adminCount = filteredData.filter((u) => u.role === 'admin').length;
-
   return (
-    <div className="space-y-2 p-2 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      <Toaster position="top-right" richColors />
-
-      {/* Stats Cards */}
-      {/* <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <Card variant="outlined">
-          <CardContent className="flex flex-col items-center py-4">
-            <Typography variant="h4" className="font-bold text-ink-900">
-              {totalCount}
-            </Typography>
-            <Typography variant="body2" className="text-ink-500">
-              Total utilisateurs
-            </Typography>
-          </CardContent>
-        </Card>
-        <Card variant="outlined">
-          <CardContent className="flex flex-col items-center py-4">
-            <Typography variant="h4" className="font-bold text-brand-600">
-              {activeCount}
-            </Typography>
-            <Typography variant="body2" className="text-ink-500">
-              Actifs
-            </Typography>
-          </CardContent>
-        </Card>
-        <Card variant="outlined">
-          <CardContent className="flex flex-col items-center py-4">
-            <Typography variant="h4" className="font-bold text-brand-600">
-              {adminCount}
-            </Typography>
-            <Typography variant="body2" className="text-ink-500">
-              Administrateurs
-            </Typography>
-          </CardContent>
-        </Card>
-      </div> */}
-
-      {/* Search + Add Button */}
-      <Card variant="outlined">
-        <CardContent>
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-              <Typography variant="h6" className="font-bold text-ink-800 whitespace-nowrap">
-                Gestion des utilisateurs
-                <Box component="span" className="ml-2 text-sm font-normal text-ink-500">
-                  ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
-                </Box>
-              </Typography>
-              <SearchInput
-                value={filters.search}
-                onChange={handleSearchChange}
-                placeholder="Rechercher par nom, prénom, email..."
-              />
-            </div>
-            <Box className="flex gap-2">
-              <IconButton
-                onClick={handleToggleFilters}
-              >
-                <Filter className="size-4" />
-              </IconButton>
-              {isAdmin && (
-                <Button
-                  variant="contained"
-                  onClick={handleOpenCreate}
-                >
-                  + Nouvel utilisateur
-                </Button>
-              )}
-            </Box>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="mx-auto max-w-7xl py-4 space-y-2 mx-auto min-w-0">
+      <ListPageHeader
+        title="Gestion des utilisateurs"
+        totalCount={filteredData.length}
+        searchValue={filters.search}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder="Rechercher par nom, prénom, email..."
+        onToggleFilters={handleToggleFilters}
+        filtersOpen={filterOpen}
+        activeFilterCount={activeFilterCount()}
+        actionLabel={isAdmin ? 'Nouvel utilisateur' : undefined}
+        onAction={isAdmin ? handleOpenCreate : undefined}
+      />
 
       {/* Filters */}
       <UsersFilter

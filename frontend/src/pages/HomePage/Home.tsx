@@ -9,11 +9,9 @@ import {
   ActualitesSection,
   RessourceHumaineSection,
 } from '../../components';
-import { useScrollToTop } from '../../hooks/';
 import { useTitle } from '../../hooks/useTitle';
 
 const Home = () => {
-  useScrollToTop();
   useTitle('Accueil | ESSG');
   return (
     <div>

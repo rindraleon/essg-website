@@ -19,6 +19,12 @@ const transformProjet = (projet: ApiProjet): ProjetItem => ({
   titre: projet.titre,
   slug: projet.slug || generateSlug(projet.titre),
   type: projet.type,
+  /*
+    Repli sur « En cours » uniquement pour les projets enregistrés avant
+    l'ajout de la colonne `statut` en base. Le statut réel provient
+    désormais du back-office : ce repli ne doit plus jamais s'appliquer
+    aux projets créés ou modifiés depuis.
+  */
   statut: projet.statut || 'En cours',
   annee: new Date(projet.date ?? '').getFullYear().toString(),
   description: projet.description,

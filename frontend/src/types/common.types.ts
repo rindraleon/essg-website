@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export type HeroStatItem = {
   value: string;
@@ -9,8 +9,6 @@ export type HeroStatItem = {
 export type PageHeroProps = {
   image?: string;
   imageAlt?: string;
-  badgeIcon?: ReactElement;
-  badgeLabel?: string;
   title: string;
   description?: string;
   stats?: HeroStatItem[];

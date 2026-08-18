@@ -17,7 +17,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
       <div className="mx-auto flex max-w-7xl items-center gap-1.5 overflow-x-auto scrollbar-hide px-4 py-3 sm:px-6 lg:px-8">
         <Link
           to="/"
-          className="flex shrink-0 items-center gap-1.5 text-sm font-medium text-ink-600 transition-colors hover:text-brand-700"
+          className="flex shrink-0 items-center gap-1.5 text-small font-medium text-ink-600 transition-colors hover:text-brand-700"
         >
           <Home className="size-4" aria-hidden="true" />
           <span className="hidden sm:inline">Accueil</span>
@@ -30,7 +30,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
               <ChevronRight className="size-4 shrink-0 text-ink-300" aria-hidden="true" />
               {isLast || !item.to ? (
                 <span
-                  className="truncate text-sm font-medium text-ink-900"
+                  className="truncate text-small font-medium text-ink-900"
                   aria-current={isLast ? 'page' : undefined}
                 >
                   {item.label}
@@ -38,7 +38,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
               ) : (
                 <Link
                   to={item.to}
-                  className="shrink-0 text-sm font-medium text-ink-600 transition-colors hover:text-brand-700"
+                  className="shrink-0 text-small font-medium text-ink-600 transition-colors hover:text-brand-700"
                 >
                   {item.label}
                 </Link>

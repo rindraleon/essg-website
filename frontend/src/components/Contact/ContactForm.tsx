@@ -64,8 +64,8 @@ const ContactForm = ({ sujets = DEFAULT_SUJETS, onSubmit }: ContactFormProps) =>
   return (
     <div className="h-full overflow-hidden rounded-[1.5rem] border border-ink-100 bg-white p-4 shadow-card sm:p-6">
       <div className="mb-4">
-        <h2 className="mb-1 text-xl font-bold text-ink-900">Envoyez-nous un message</h2>
-        <p className="text-xs text-ink-500">
+        <h2 className="mb-1 text-h4 font-bold text-ink-900">Envoyez-nous un message</h2>
+        <p className="text-caption text-ink-500">
           Remplissez le formulaire ci-dessous et notre équipe vous répondra dans les plus brefs
           délais.
         </p>
@@ -77,7 +77,7 @@ const ContactForm = ({ sujets = DEFAULT_SUJETS, onSubmit }: ContactFormProps) =>
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand-50 text-brand-600">
               <User className="size-4" />
             </div>
-            <h3 className="text-base font-semibold text-ink-900">Vos informations</h3>
+            <h3 className="text-body font-semibold text-ink-900">Vos informations</h3>
           </div>
 
           <div className="grid items-start gap-3 sm:grid-cols-2">
@@ -152,7 +152,7 @@ const ContactForm = ({ sujets = DEFAULT_SUJETS, onSubmit }: ContactFormProps) =>
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand-50 text-brand-600">
               <MessageSquare className="size-4" />
             </div>
-            <h3 className="text-base font-semibold text-ink-900">Votre demande</h3>
+            <h3 className="text-body font-semibold text-ink-900">Votre demande</h3>
           </div>
           <div className="space-y-4">
             <Select name="sujet" label="Sujet" value={formData.sujet} onChange={handleChange} required>

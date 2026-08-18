@@ -1,3 +1,6 @@
+import { cn } from '@/lib/utils';
+import usePagination from '../../hooks/usePagination';
+import Pagination from '../../components/common/Pagination';
 import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, Skeleton, TextField } from '@/components/compat/mui';
 import { Search, Users, X } from 'lucide-react';
 import React, { useState, useMemo, useEffect, useRef } from 'react';
@@ -7,12 +10,13 @@ import EmptyState from '../../components/common/EmptyState';
 import FilterToolbar from '../../components/common/FilterToolbar';
 import PageHero from '../../components/common/PageHero';
 import Breadcrumb from '../../components/common/Breadcrumb';
-import { useRessourcesHumaines, useScrollToTop } from '../../hooks';
+import { useRessourcesHumaines } from '../../hooks';
 import { generateSlug } from '../../utils/slug.utils';
 import type { RessourceHumaine } from '../../types/ressource-humaine.types';
 import { RessourceHumaineCard } from '../../components';
 import { SITE_HERO_IMAGE } from '../../constants/media';
 import { useTitle } from '@/hooks/useTitle';
+import { formatFullName } from '../../utils/name.utils';
 
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
@@ -26,7 +30,6 @@ const POSTES = [
 ];
 
 const RessourcesHumainesPage: React.FC = () => {
-  useScrollToTop();
   useTitle('Ressources Humaines | ESSG');
 
   const { data: rhResult, loading, error } = useRessourcesHumaines(1, 100);
@@ -46,7 +49,7 @@ const RessourcesHumainesPage: React.FC = () => {
     () =>
       (rhResult?.data ?? []).map((rh) => ({
         ...rh,
-        slug: rh.slug || generateSlug(`${rh.nom} ${rh.prenom}`),
+        slug: rh.slug || generateSlug(formatFullName(rh)),
       })),
     [rhResult],
   );
@@ -107,13 +110,14 @@ const RessourcesHumainesPage: React.FC = () => {
       : []),
   ];
 
+  const { pageItems, page, totalPages, goToPage, listRef, isChanging } =
+    usePagination(filteredRessourcesHumaines, { pageSize: 9 });
+
   return (
     <div className="min-h-screen bg-ink-50">
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Équipe ESSG"
-        badgeIcon={<Users className="size-4" />}
-        badgeLabel="Notre Équipe"
         title="Ressources Humaines"
         description="Découvrez les hommes et femmes qui font de l'ESSG une institution d'excellence en sciences géomatiques."
         stats={[
@@ -225,11 +229,28 @@ const RessourcesHumainesPage: React.FC = () => {
                 onAction={handleResetFilters}
               />
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredRessourcesHumaines.map((rh) => (
+              <div ref={listRef} className="scroll-mt-24">
+              {/* Fondu bref au changement de page (§23). */}
+              <div
+                className={cn(
+                  'grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+                  'transition-opacity duration-[--duration-hover] motion-reduce:transition-none',
+                  isChanging && 'opacity-40',
+                )}
+              >
+                {pageItems.map((rh) => (
                   <RessourceHumaineCard key={rh.slug || rh.id} ressourceHumaine={rh} />
                 ))}
               </div>
+
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onChange={goToPage}
+                ariaLabel="Pagination des membres"
+                className="mt-12"
+              />
+            </div>
             )}
           </div>
         </section>

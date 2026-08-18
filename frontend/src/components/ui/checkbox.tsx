@@ -10,7 +10,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   ({ className, label, id, checked, ...props }, ref) => {
     const inputId = id ?? label?.toLowerCase().replaceAll(/\s+/g, '-');
     return (
-      <label htmlFor={inputId} className="inline-flex cursor-pointer items-center gap-2 text-sm">
+      <label htmlFor={inputId} className="inline-flex cursor-pointer items-center gap-2 text-small">
         <span className="relative inline-flex size-4 items-center justify-center">
           <input
             ref={ref}

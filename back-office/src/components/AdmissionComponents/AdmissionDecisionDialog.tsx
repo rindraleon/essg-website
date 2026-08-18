@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { Admission, AdmissionStatus } from '../../types/admission.types';
+import { formatFullName } from '../../utils/name.utils';
 
 interface AdmissionDecisionDialogProps {
   admission: Admission;
@@ -68,7 +69,7 @@ const AdmissionDecisionDialog = ({
         <div className="border-b border-ink-100 px-6 py-4">
           <h2 className="text-xl font-bold text-ink-900">Réponse au candidat</h2>
           <p className="mt-1 text-sm text-ink-600">
-            {admission.prenom} {admission.nom} — {admission.formation}
+            {formatFullName(admission)} — {admission.formation}
           </p>
         </div>
 

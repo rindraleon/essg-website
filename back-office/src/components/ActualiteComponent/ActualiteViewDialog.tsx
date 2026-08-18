@@ -1,8 +1,10 @@
-import { Calendar, Image, Star, Tag, User, X } from 'lucide-react';
+import { Calendar, FileText, Images, Star, Tag, User, X } from 'lucide-react';
 import React from 'react';
-import { getImageUrl } from '../../utils/image.utils';
 import type { ActualiteItem } from '../../types/actualite.types';
 import StatusBadge from '../common/StatusBadge';
+import CoverImage from '../common/CoverImage';
+import ImageGallery from '../common/ImageGallery';
+import { DetailSection } from '../common/DetailSection';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +17,12 @@ interface ActualiteViewDialogProps {
 
 const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose, actualite }) => {
   if (!actualite) return null;
+
+  // La galerie exclut l'image principale : elle est déjà affichée en tête de
+  // fiche, la répéter dans le carrousel n'apporterait rien.
+  const galerie = (actualite.galerie ?? []).filter(
+    (image) => image?.trim() && image.trim() !== actualite.image?.trim(),
+  );
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -38,29 +46,9 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose
         <div className="grid h-full min-h-0 lg:grid-cols-[360px_minmax(0,1fr)]">
           {/* Colonne gauche desktop */}
           <aside className="hidden min-h-0 flex-col border-r border-ink-100 bg-ink-950 p-5 text-white lg:flex">
-            {/* Image 16/9 en haut gauche */}
+            {/* Image principale : distincte de la galerie, affichée à part */}
             <div className="w-full self-start">
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-ink-800 shadow-[0_12px_30px_rgba(0,0,0,0.35)]">
-                <div className="aspect-[16/9] w-full bg-ink-800">
-                  {actualite.image ? (
-                    <img
-                      src={getImageUrl(actualite.image)}
-                      alt={actualite.titre}
-                      className="h-full w-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-ink-800 to-ink-900">
-                      <div className="text-center">
-                        <Image className="mx-auto mb-2 h-12 w-12 text-ink-500" />
-                        <p className="text-sm text-ink-400">Aucune image</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+              <CoverImage src={actualite.image} alt={actualite.titre} dark />
             </div>
 
             {/* Texte séparé de l'image pour meilleure lisibilité */}
@@ -149,22 +137,11 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose
               {/* Version mobile */}
               <div className="mb-5 lg:hidden">
                 <div className="overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-sm">
-                  <div className="aspect-[16/9] w-full bg-ink-100">
-                    {actualite.image ? (
-                      <img
-                        src={getImageUrl(actualite.image)}
-                        alt={actualite.titre}
-                        className="h-full w-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                        }}
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-ink-100 to-ink-100">
-                        <Image className="h-14 w-14 text-ink-400" />
-                      </div>
-                    )}
-                  </div>
+                  <CoverImage
+                    src={actualite.image}
+                    alt={actualite.titre}
+                    className="rounded-none border-0"
+                  />
 
                   <div className="p-4">
                     <h2 className="mb-3 text-2xl font-bold text-ink-900">{actualite.titre}</h2>
@@ -214,25 +191,30 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose
               <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
                 {/* Colonne principale */}
                 <div className="space-y-5">
-                  {actualite.resume && (
-                    <div className="rounded-2xl border border-ink-100 bg-white p-5 shadow-sm">
-                      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-700">
-                        Résumé
-                      </h3>
-                      <p className="whitespace-pre-wrap break-words text-sm leading-7 text-ink-600">
-                        {actualite.resume}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="rounded-2xl border border-ink-100 bg-white p-5 shadow-sm">
-                    <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-700">
-                      Contenu complet
-                    </h3>
+                  {/*
+                    Le champ « Résumé » n'est volontairement pas affiché dans le
+                    détail (cf. cahier des charges §15) : il reste utilisé dans
+                    les listes et les cartes.
+                  */}
+                  <DetailSection title="Contenu complet" icon={<FileText className="size-4" />}>
                     <p className="whitespace-pre-wrap break-words text-sm leading-7 text-ink-600">
                       {actualite.contenu}
                     </p>
-                  </div>
+                  </DetailSection>
+
+                  {/*
+                    Galerie de l'actualité : carrousel autonome, placé après le
+                    contenu. Elle ne remplace jamais l'image de couverture.
+                  */}
+                  {galerie.length > 0 && (
+                    <DetailSection
+                      title="Galerie de l'actualité"
+                      icon={<Images className="size-4" />}
+                      count={galerie.length}
+                    >
+                      <ImageGallery images={galerie} alt={actualite.titre} />
+                    </DetailSection>
+                  )}
                 </div>
 
                 {/* Colonne secondaire */}

@@ -3,6 +3,7 @@ import React from 'react';
 import type { Admission } from '../../types/admission.types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { formatFullName } from '../../utils/name.utils';
 
 interface AdmissionDetailDialogProps {
   admission: Admission;
@@ -70,7 +71,7 @@ const AdmissionDetailDialog: React.FC<AdmissionDetailDialogProps> = ({
               <div>
                 <p className="block text-sm font-medium text-ink-700 mb-1">Nom complet</p>
                 <p className="text-sm text-ink-900">
-                  {admission.prenom} {admission.nom}
+                  {formatFullName(admission)}
                 </p>
               </div>
               <div>

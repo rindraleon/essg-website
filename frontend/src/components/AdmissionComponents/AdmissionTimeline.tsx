@@ -35,7 +35,7 @@ const AdmissionTimeline: React.FC<AdmissionTimelineProps> = (
   return (
     <section className="border-b border-ink-100 bg-white py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-10 text-center text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
+        <h2 className="mb-10 text-center text-h2 text-ink-900">
           {title}
         </h2>
 
@@ -52,7 +52,7 @@ const AdmissionTimeline: React.FC<AdmissionTimelineProps> = (
                   {etape.icon}
                 </div>
 
-                <div className="mb-1 text-sm font-semibold" style={{ color: GREEN[600] }}>
+                <div className="mb-1 text-small font-semibold" style={{ color: GREEN[600] }}>
                   {etape.date}
                 </div>
 

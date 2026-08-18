@@ -1,13 +1,10 @@
 import { Clock, Contact, Mail, MapPin, Phone } from 'lucide-react';
 import React from 'react';
 
-import { Toaster } from 'react-hot-toast';
 
 import PageHero from '../../components/common/PageHero';
-import { GREEN } from '../../constants/colors';
 import type { ContactPageProps } from '../../types/contact.types';
 import { ContactForm, ContactInfoCards, MapEmbed, Breadcrumb, CtaSection } from '../../components';
-import { useScrollToTop } from '../../hooks';
 
 import { SITE_HERO_IMAGE } from '../../constants/media';
 import { useTitle } from '@/hooks/useTitle';
@@ -22,12 +19,10 @@ const UNIV_FIANAR = {
 };
 
 const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProps>) => {
-  useScrollToTop();
   useTitle('Contact | ESSG');
 
   const {
     pageTitle = 'Contactez-nous',
-    pageSubtitle = 'ESSG — Support & Échanges',
     pageDescription = 'Notre équipe est à votre disposition pour répondre à toutes vos questions sur les formations, les admissions ou les partenariats.',
     mapLat = UNIV_FIANAR.lat,
     mapLng = UNIV_FIANAR.lng,
@@ -69,36 +64,11 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
 
   return (
     <div className="min-h-screen bg-ink-50">
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 5000,
-          style: {
-            background: '#363636',
-            color: '#fff',
-            borderRadius: '0.75rem',
-            padding: '12px 16px',
-          },
-          success: {
-            iconTheme: {
-              primary: GREEN[600],
-              secondary: '#fff',
-            },
-          },
-          error: {
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#fff',
-            },
-          },
-        }}
-      />
+      {/* Les toasts sont gérés globalement par <AppToaster /> (App.tsx). */}
 
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Contact ESSG"
-        badgeIcon={<Contact className="size-4" />}
-        badgeLabel={pageSubtitle}
         title={pageTitle}
         description={pageDescription}
         stats={[
@@ -128,7 +98,7 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
       {/* Carte */}
       <section className="bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-6 text-2xl font-bold text-ink-900">Localisation</h2>
+          <h2 className="mb-6 text-h3 text-ink-900">Localisation</h2>
           <MapEmbed lat={mapLat} lng={mapLng} label={mapLabel} adresse={mapAdresse} zoom="city" />
         </div>
       </section>

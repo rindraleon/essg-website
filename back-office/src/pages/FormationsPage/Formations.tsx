@@ -1,13 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { toast, Toaster } from 'sonner';
-import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 import {
   FormationFilters,
   FormationForm,
   FormationTable,
   FormationViewDialog,
   ConfirmDialog,
-  SearchInput,
 } from '../../components';
 import { usePagination, useFormationFilter, useScrollToTop } from '../../hooks';
 import {
@@ -18,6 +16,7 @@ import {
 } from '../../hooks/queries';
 import type { FormationFormData, Formation } from '../../types';
 import { useTitle } from '@/hooks/useTitle';
+import ListPageHeader from '../../components/common/ListPageHeader';
 
 const Formations: React.FC = () => {
   useScrollToTop();
@@ -128,33 +127,19 @@ const Formations: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-2 p-2 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      <Toaster position="top-right" richColors />
-
-      {/* Search + Add Button */}
-      <div className="rounded-xl border border-ink-100 bg-white p-4 shadow-card">
-        <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
-          <div className="flex flex-1 flex-col items-start gap-4 sm:flex-row sm:items-center">
-            <h2 className="whitespace-nowrap text-lg font-bold text-ink-800">
-              Liste des formations
-              <span className="ml-2 text-sm font-normal text-ink-500">
-                ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
-              </span>
-            </h2>
-            <SearchInput
-              value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder="Rechercher par titre, domaine..."
-            />
-          </div>
-          <div className="flex w-full items-center gap-3 lg:w-auto">
-            <Button variant="outline" onClick={handleToggleFilters}>
-              {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
-            </Button>
-            <Button onClick={handleOpenCreate}>+ Nouvelle formation</Button>
-          </div>
-        </div>
-      </div>
+    <div className="mx-auto max-w-7xl py-4 space-y-2 mx-auto min-w-0">
+      <ListPageHeader
+        title="Liste des formations"
+        totalCount={filteredData.length}
+        searchValue={searchTerm}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder="Rechercher par titre, domaine..."
+        onToggleFilters={handleToggleFilters}
+        filtersOpen={filtersOpen}
+        activeFilterCount={activeFilterCount}
+        actionLabel="Nouvelle formation"
+        onAction={handleOpenCreate}
+      />
 
       {/* Filters - Full Width Below */}
       {filtersOpen && (

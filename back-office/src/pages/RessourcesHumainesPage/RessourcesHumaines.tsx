@@ -1,16 +1,14 @@
-import { Card, CardContent, Typography, Box, Button } from '@/components/compat/mui';
+import { Card, CardContent } from '@/components/compat/mui';
 import React, { useState, useCallback } from 'react';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
 import {
   RessourceHumaineFilters,
   RessourceHumaineForm,
   RessourceHumaineTable,
   RessourceHumaineViewDialog,
   ConfirmDialog,
-  SearchInput,
+  ListPageHeader,
 } from '../../components';
-import { useRessourceHumaineFilter } from '../../hooks/useRessourceHumaineFilter';
-import { usePagination, useScrollToTop } from '../../hooks';
 import type {
   RessourceHumaineFormData,
   RessourceHumaineItem,
@@ -21,8 +19,12 @@ import {
   useDeleteRessourceHumaine,
   useRessourcesHumainesQuery,
   useUpdateRessourceHumaine,
-} from '../../hooks/queries';
-import { useTitle } from '@/hooks/useTitle';
+  useTitle,
+  usePagination, useScrollToTop,
+  useRessourceHumaineFilter
+} from '../../hooks/';
+import { ApiError } from '@/api/types/api';
+import { formatFullName } from '../../utils/name.utils';
 
 const RessourcesHumaines: React.FC = () => {
   useScrollToTop();
@@ -95,7 +97,7 @@ const RessourcesHumaines: React.FC = () => {
       try {
         await deleteMutation.mutateAsync(ressourceToDelete.id.toString());
         toast.success(
-          `"${ressourceToDelete.prenom} ${ressourceToDelete.nom}" a été supprimé(e) avec succès`
+          `"${formatFullName(ressourceToDelete)}" a été supprimé(e) avec succès`
         );
         setDeleteDialogOpen(false);
         setRessourceToDelete(null);
@@ -121,7 +123,9 @@ const RessourcesHumaines: React.FC = () => {
         }
         setFormOpen(false);
       } catch (error) {
-        toast.error("Erreur lors de l'enregistrement");
+        const message =
+          error instanceof ApiError ? error.message : "Erreur lors de l'enregistrement";
+        toast.error(message);
         console.error('Error saving ressource humaine:', error);
       }
     },
@@ -138,45 +142,19 @@ const RessourcesHumaines: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-2 p-2 sm:p-6 lg:p-8">
-      <Toaster position="top-right" richColors />
-
-      {/* Search + Add Button */}
-      <Card variant="outlined">
-        <CardContent>
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-              <Typography variant="h6" className="font-bold text-ink-800 whitespace-nowrap">
-                Liste des ressources humaines
-                <Box component="span" className="ml-2 text-sm font-normal text-ink-500">
-                  ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
-                </Box>
-              </Typography>
-              <SearchInput
-                value={searchTerm}
-                onChange={handleSearchChange}
-                placeholder="Rechercher par nom, prénom, poste..."
-              />
-            </div>
-            <div className="flex items-center rounded-md gap-3 w-full lg:w-auto">
-              <Button
-                variant="outlined"
-                onClick={handleToggleFilters}
-                className='rounded-md'
-              >
-                {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleOpenCreate}
-                className='rounded-md'
-              >
-                + Nouvelle ressource
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="mx-auto max-w-7xl py-4 space-y-2 mx-auto min-w-0">
+      <ListPageHeader
+        title="Liste des ressources humaines"
+        totalCount={filteredData.length}
+        searchValue={searchTerm}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder="Rechercher par nom, prénom, poste..."
+        onToggleFilters={handleToggleFilters}
+        filtersOpen={filtersOpen}
+        activeFilterCount={activeFilterCount}
+        actionLabel="Nouvelle ressource"
+        onAction={handleOpenCreate}
+      />
 
       {/* Filters - Full Width Below */}
       {filtersOpen && (
@@ -232,7 +210,7 @@ const RessourcesHumaines: React.FC = () => {
         title="Supprimer la ressource humaine"
         message={
           ressourceToDelete
-            ? `Êtes-vous sûr de vouloir supprimer "${ressourceToDelete.prenom} ${ressourceToDelete.nom}" ? Cette action est irréversible.`
+            ? `Êtes-vous sûr de vouloir supprimer "${formatFullName(ressourceToDelete)}" ? Cette action est irréversible.`
             : ''
         }
         confirmLabel="Supprimer"

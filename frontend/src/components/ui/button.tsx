@@ -3,7 +3,29 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-200 outline-none select-none disabled:pointer-events-none disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-2 active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:translate-x-0.5 [&_svg:not([class*=\'size-\'])]:size-4',
+  [
+    'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl',
+    'text-small font-semibold outline-none select-none',
+    /*
+      `transition-all` animait TOUTE propriété qui change, y compris la
+      largeur et les marges lors d'un changement de libellé — d'où des
+      reflows évitables (§7.17). On énumère désormais les seules
+      propriétés concernées.
+      Durée : 200 ms, dans la fourchette micro-interaction du §7.14.
+    */
+    'transition-[transform,background-color,border-color,color,box-shadow,opacity]',
+    'duration-200 ease-out motion-reduce:transition-none',
+    // §7.12 — Les quatre états sont couverts : hover (par variante),
+    // focus-visible, active et disabled.
+    'focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-2',
+    'active:scale-[0.98] motion-reduce:active:scale-100',
+    'disabled:pointer-events-none disabled:opacity-50',
+    // §7.5 — Glissement de l'icône, jamais un agrandissement du bouton.
+    "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:transition-transform",
+    '[&_svg]:duration-[--duration-micro] [&_svg]:ease-out hover:[&_svg]:translate-x-0.5',
+    'motion-reduce:[&_svg]:transition-none motion-reduce:hover:[&_svg]:translate-x-0',
+    "[&_svg:not([class*='size-'])]:size-4",
+  ].join(' '),
   {
     variants: {
       variant: {
@@ -27,11 +49,11 @@ const buttonVariants = cva(
       },
       size: {
         default: 'h-10 px-4 py-2',
-        sm: 'h-8 rounded-lg px-3 text-xs',
-        small: 'h-8 rounded-lg px-3 text-xs',
+        sm: 'h-8 rounded-lg px-3 text-caption',
+        small: 'h-8 rounded-lg px-3 text-caption',
         medium: 'h-10 px-4 py-2',
-        lg: 'h-12 rounded-[0.9rem] px-6 text-base',
-        large: 'h-12 rounded-[0.9rem] px-6 text-base',
+        lg: 'h-12 rounded-[0.9rem] px-6 text-body',
+        large: 'h-12 rounded-[0.9rem] px-6 text-body',
         icon: 'size-10',
         'icon-sm': 'size-8 rounded-lg',
       },

@@ -43,7 +43,7 @@ const Chip: React.FC<ChipProps> = ({
 }) => {
   return (
     <span
-      className={cn(chipVariants({ variant }), size === 'small' ? 'text-xs' : 'text-sm', className)}
+      className={cn(chipVariants({ variant }), size === 'small' ? 'text-caption' : 'text-small', className)}
       style={style}
     >
       {icon && <span className="shrink-0 [&>svg]:size-3.5">{icon}</span>}

@@ -21,7 +21,7 @@ const FormationCard = ({
               <img
                 src={getImageUrl(formation.image)}
                 alt={formation.titre}
-                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
               />
             </div>
             <div
@@ -36,26 +36,26 @@ const FormationCard = ({
         <div className="w-full p-6 sm:w-2/3">
           <div className="mb-4 flex items-start justify-between">
             <Badge>{formation.niveau}</Badge>
-            <div className="flex items-center gap-1 text-xs text-ink-500">
+            <div className="flex items-center gap-1 text-caption text-ink-500">
               <Clock className="size-3.5" />
               {formation.duree}
             </div>
           </div>
 
-          <h3 className="mb-2 text-xl font-bold text-ink-900">{formation.titre}</h3>
-          <p className="mb-4 text-sm font-medium text-brand-600">{formation.domaine.join(', ')}</p>
+          <h3 className="mb-2 text-h4 font-bold text-ink-900">{formation.titre}</h3>
+          <p className="mb-4 text-small font-medium text-brand-600">{formation.domaine.join(', ')}</p>
           <p className="mb-6 leading-relaxed text-ink-500">{formation.description}</p>
           <div className="mb-6 h-px bg-ink-100" />
 
           <div className="mb-5">
-            <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-ink-900">
+            <div className="mb-3 flex items-center gap-2 text-small font-semibold text-ink-900">
               <GraduationCap className="size-4 text-brand-600" />
               Objectifs principaux
             </div>
-            <ul className="space-y-2 text-sm text-ink-500">
+            <ul className="space-y-2 text-small text-ink-500">
               {formation.objectifs.slice(0, 3).map((obj) => (
                 <li key={obj} className="flex items-start gap-2">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-xs font-bold text-white">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-caption font-bold text-white">
                     ✓
                   </span>
                   <span>{obj}</span>
@@ -65,7 +65,7 @@ const FormationCard = ({
           </div>
 
           <div className="mb-6">
-            <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-ink-900">
+            <div className="mb-3 flex items-center gap-2 text-small font-semibold text-ink-900">
               <Briefcase className="size-4 text-brand-600" />
               Débouchés
             </div>

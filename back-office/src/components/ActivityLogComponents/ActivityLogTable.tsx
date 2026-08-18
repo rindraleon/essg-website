@@ -15,11 +15,26 @@ interface ActivityLogTableProps {
   emptyMessage?: string;
 }
 
-const METHOD_STYLES: Record<string, string> = {
-  POST: 'bg-brand-50 text-brand-800 border-brand-100',
-  PUT: 'bg-amber-50 text-amber-800 border-amber-100',
-  PATCH: 'bg-amber-50 text-amber-800 border-amber-100',
-  DELETE: 'bg-red-50 text-red-700 border-red-100',
+/** Libellés métier des actions (aucun terme technique en colonne). */
+const ACTION_LABELS: Record<string, string> = {
+  create: 'Création',
+  update: 'Modification',
+  delete: 'Suppression',
+  status: 'Changement de statut',
+};
+
+/** Libellés métier des modules. */
+const MODULE_LABELS: Record<string, string> = {
+  users: 'Utilisateurs',
+  admissions: 'Admissions',
+  formations: 'Formations',
+  projects: 'Projets',
+  news: 'Actualités',
+  partners: 'Partenaires',
+  messages: 'Messages',
+  'ressources-humaines': 'Ressources humaines',
+  upload: 'Fichiers',
+  documents: 'Documents',
 };
 
 function formatDate(value: string) {
@@ -47,58 +62,38 @@ export default function ActivityLogTable({
       id: 'createdAt',
       label: 'Date',
       minWidth: 130,
-      render: (row) => <span className="whitespace-nowrap text-sm text-ink-700">{formatDate(row.createdAt)}</span>,
-    },
-    {
-      id: 'module',
-      label: 'Module',
-      minWidth: 120,
-      render: (row) => <span className="font-medium text-ink-900">{row.module}</span>,
-    },
-    {
-      id: 'action',
-      label: 'Action',
-      minWidth: 90,
-      render: (row) => <span className="capitalize text-ink-700">{row.action}</span>,
-    },
-    {
-      id: 'method',
-      label: 'Méthode',
-      minWidth: 80,
       render: (row) => (
-        <span
-          className={`inline-flex rounded-full border px-2 py-0.5 text-xs font-semibold ${METHOD_STYLES[row.method] ?? 'bg-ink-50 text-ink-700 border-ink-100'}`}
-        >
-          {row.method}
+        <span data-numeric className="whitespace-nowrap text-sm text-ink-600">
+          {formatDate(row.createdAt)}
         </span>
       ),
     },
     {
-      id: 'status',
-      label: 'Statut',
-      minWidth: 90,
+      id: 'user',
+      label: 'Utilisateur',
+      minWidth: 150,
       render: (row) => (
-        <span
-          className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
-            row.success ? 'bg-brand-50 text-brand-800' : 'bg-red-50 text-red-700'
-          }`}
-        >
-          {row.statusCode} {row.success ? 'OK' : 'Erreur'}
+        <span className="font-medium text-ink-900">
+          {row.userName?.trim() || (row.userId ? `Utilisateur #${row.userId}` : 'Système')}
         </span>
       ),
     },
     {
       id: 'description',
-      label: 'Description',
-      minWidth: 200,
-      render: (row) => <span className="line-clamp-2 text-sm text-ink-600">{row.description}</span>,
+      label: 'Action',
+      minWidth: 240,
+      render: (row) => (
+        <span className="line-clamp-2 text-sm text-ink-700">
+          {row.description || ACTION_LABELS[row.action] || row.action}
+        </span>
+      ),
     },
     {
-      id: 'user',
-      label: 'Auteur',
-      minWidth: 90,
+      id: 'module',
+      label: 'Module',
+      minWidth: 140,
       render: (row) => (
-        <span className="text-sm text-ink-600">{row.userId ? `#${row.userId}` : 'Système'}</span>
+        <span className="text-sm text-ink-600">{MODULE_LABELS[row.module] ?? row.module}</span>
       ),
     },
     {

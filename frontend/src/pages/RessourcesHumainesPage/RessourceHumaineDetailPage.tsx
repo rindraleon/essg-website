@@ -1,38 +1,110 @@
-import { ArrowLeft, Briefcase, IdCard, Mail, Phone, User, Users } from 'lucide-react';
-import React, { useEffect } from 'react';
+import {
+  ArrowLeft,
+  Award,
+  Briefcase,
+  Building2,
+  GraduationCap,
+  Languages,
+  Mail,
+  MapPin,
+  Phone,
+  User,
+  Users,
+  Wrench,
+} from 'lucide-react';
+import React, { useEffect, useMemo } from 'react';
 import Button from '@/components/compat/button';
 import { Link as RouterLink, useParams } from 'react-router-dom';
-import { CtaSection, EmptyState, PageHero, Breadcrumb } from '../../components';
-import { GREEN } from '../../constants/colors';
-import { useRessourceHumaineBySlug, useScrollToTop } from '../../hooks';
+import { CtaSection, EmptyState, Breadcrumb } from '../../components';
+import RevealOnScroll from '../../components/common/RevealOnScroll';
+import {
+  CheckList,
+  InfoTile,
+  ProfileSection,
+  TagCloud,
+  Timeline,
+} from '../../components/common/ProfileLayout';
+import { useRessourceHumaineBySlug } from '../../hooks';
 import { useTitle } from '../../hooks/useTitle';
 import { getImageUrl } from '../../utils/image.utils';
+import { formatFullName, getPersonInitials } from '../../utils/name.utils';
 
-const FALLBACK_IMAGE =
-  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920';
-
+/**
+ * Fiche publique d'un membre de l'équipe.
+ *
+ * Présentation de type « profil professionnel » : bandeau d'identité, puis
+ * sections thématiques révélées progressivement au défilement.
+ *
+ * Le parcours (expériences, diplômes, formations, compétences, langues) était
+ * renvoyé par l'API mais absent du type TypeScript côté frontend : les données
+ * arrivaient sans jamais être affichées. Elles le sont désormais.
+ */
 const RessourceHumaineDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { ressourceHumaine, loading, error } = useRessourceHumaineBySlug(slug || '');
   const { setTitle } = useTitle();
-
-  useScrollToTop();
-  useTitle(ressourceHumaine ? `${ressourceHumaine.prenom} ${ressourceHumaine.nom}` : 'Ressource Humaine | ESSG');
+  useTitle(
+    ressourceHumaine
+      ? formatFullName(ressourceHumaine)
+      : 'Ressource Humaine | ESSG',
+  );
 
   useEffect(() => {
     if (ressourceHumaine) {
-      setTitle(`${ressourceHumaine.prenom} ${ressourceHumaine.nom}`);
+      setTitle(formatFullName(ressourceHumaine));
     }
   }, [ressourceHumaine, setTitle]);
+
+  /* Coordonnées disponibles, converties en tuiles cliquables. */
+  const contacts = useMemo(() => {
+    if (!ressourceHumaine) return [];
+
+    return [
+      ressourceHumaine.email && {
+        icon: <Mail className="size-5" />,
+        label: 'Email',
+        value: ressourceHumaine.email,
+        href: `mailto:${ressourceHumaine.email}`,
+      },
+      ressourceHumaine.telephone && {
+        icon: <Phone className="size-5" />,
+        label: 'Téléphone',
+        value: ressourceHumaine.telephone,
+        href: `tel:${ressourceHumaine.telephone.replace(/\s+/g, '')}`,
+      },
+      ressourceHumaine.adresse && {
+        icon: <MapPin className="size-5" />,
+        label: 'Adresse',
+        value: ressourceHumaine.adresse,
+      },
+      {
+        icon: <Briefcase className="size-5" />,
+        label: 'Fonction',
+        value: ressourceHumaine.poste,
+      },
+    ].filter(Boolean) as {
+      icon: React.ReactNode;
+      label: string;
+      value: string;
+      href?: string;
+    }[];
+  }, [ressourceHumaine]);
+
+  /* ─── États de chargement et d'erreur ─── */
 
   if (loading) {
     return (
       <div className="min-h-screen bg-ink-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-brand-600 border-r-transparent"></div>
-            <p className="text-ink-500">Chargement du profil...</p>
+          {/* Squelette de même gabarit que la page finale : pas de saut. */}
+          <div className="space-y-8">
+            <div className="skeleton-shimmer h-64 rounded-3xl" />
+            <div className="grid gap-8 lg:grid-cols-3">
+              <div className="skeleton-shimmer h-80 rounded-2xl" />
+              <div className="skeleton-shimmer h-80 rounded-2xl lg:col-span-2" />
+            </div>
           </div>
+          <p className="sr-only">Chargement du profil…</p>
         </div>
       </div>
     );
@@ -46,18 +118,18 @@ const RessourceHumaineDetailPage: React.FC = () => {
             icon={<Users />}
             title="Profil introuvable"
             description="Le membre de l'équipe que vous recherchez n'existe pas ou a été supprimé."
-            actionLabel="Retour à l'accueil"
+            actionLabel="Retour à l'équipe"
             onAction={() => window.history.back()}
           />
 
           <div className="mt-8 text-center">
             <Button
               component={RouterLink}
-              to="/RessourceHumaineDetailPage"
+              to="/ressources-humaines"
               variant="outlined"
               startIcon={<ArrowLeft className="size-4" />}
             >
-              Retour à l'accueil
+              Retour à l'équipe
             </Button>
           </div>
         </div>
@@ -65,132 +137,213 @@ const RessourceHumaineDetailPage: React.FC = () => {
     );
   }
 
-  const fullName = `${ressourceHumaine.nom} ${ressourceHumaine.prenom}`;
+  /* ─── Données ─── */
+
+  const fullName = formatFullName(ressourceHumaine);
+  const initials = getPersonInitials(ressourceHumaine);
   const photoUrl = ressourceHumaine.photo ? getImageUrl(ressourceHumaine.photo) : '';
 
-  const infoItems = [
-    ressourceHumaine.poste && {
-      icon: <Briefcase />,
-      label: 'Poste',
-      value: ressourceHumaine.poste,
-    },
-    ressourceHumaine.email && {
-      icon: <Mail />,
-      label: 'Email',
-      value: ressourceHumaine.email,
-      href: `mailto:${ressourceHumaine.email}`,
-    },
-    ressourceHumaine.telephone && {
-      icon: <Phone />,
-      label: 'Téléphone',
-      value: ressourceHumaine.telephone,
-      href: `tel:${ressourceHumaine.telephone.replace(/\s+/g, '')}`,
-    },
-  ].filter(Boolean) as {
-    icon: React.ReactNode;
-    label: string;
-    value: string;
-    href?: string;
-  }[];
+  const experiences = ressourceHumaine.experiences ?? [];
+  const diplomes = ressourceHumaine.diplomes ?? [];
+  const formations = ressourceHumaine.formations ?? [];
+  const competences = ressourceHumaine.competences ?? [];
+  const langues = ressourceHumaine.langues ?? [];
+
+  /* Chaque section démarre un peu après la précédente : le regard suit. */
+  let delay = 0;
+  const nextDelay = () => {
+    delay += 90;
+    return delay;
+  };
 
   return (
     <div className="min-h-screen bg-ink-50">
-      <PageHero
-        image={photoUrl || FALLBACK_IMAGE}
-        imageAlt={fullName}
-        badgeIcon={<IdCard className="size-4" />}
-        badgeLabel={ressourceHumaine.poste}
-        title={fullName}
-        description={ressourceHumaine.description || ''}
-        minHeight="50vh"
-      />
+      {/* ═══ Bandeau d'identité ═══ */}
+      <header className="relative overflow-hidden bg-brand-950 pt-24 pb-16 text-white sm:pt-28 sm:pb-20">
+        {/* Décor : dégradés discrets, aucune image à charger. */}
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 bg-[radial-gradient(120%_110%_at_20%_0%,#27564e_0%,#173832_50%,#0b1917_100%)]" />
+          <div className="absolute -right-24 -top-24 size-[28rem] rounded-full bg-[radial-gradient(circle,rgba(152,192,112,0.20),transparent_65%)] blur-3xl" />
+        </div>
 
-     
-      <Breadcrumb items={[{ label: 'Ressources Humaines', to: '/RessourcesHumainesPage' }, { label: fullName }]} />
-
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-3">
-          
-          <div className="lg:col-span-1">
-            <div className="overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-card">
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink-100">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center gap-7 text-center sm:flex-row sm:items-end sm:text-left">
+            {/* Portrait */}
+            <RevealOnScroll direction="none" className="shrink-0">
+              <div className="size-36 overflow-hidden rounded-3xl border-4 border-white/15 bg-brand-900 shadow-2xl sm:size-44">
                 {photoUrl ? (
                   <img
                     src={photoUrl}
                     alt={fullName}
+                    loading="eager"
+                    decoding="async"
                     className="h-full w-full object-cover object-top"
-                    onError={(e) => {
-                      e.currentTarget.style.opacity = '0.4';
+                    onError={(event) => {
+                      event.currentTarget.style.display = 'none';
                     }}
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-100 to-brand-200">
-                    <span className="text-6xl font-bold text-brand-600">
-                      {ressourceHumaine.nom[0]}
-                      {ressourceHumaine.prenom[0]}
-                    </span>
+                  <div className="flex h-full w-full items-center justify-center">
+                    <span className="text-display font-bold text-sage-300">{initials}</span>
                   </div>
                 )}
               </div>
+            </RevealOnScroll>
 
-              <div className="p-6">
-                <h2 className="mb-1 text-xl font-bold text-ink-900">{fullName}</h2>
-                <p className="text-sm font-semibold" style={{ color: GREEN[600] }}>
+            {/* Identité */}
+            <div className="min-w-0 flex-1">
+              <RevealOnScroll delay={80}>
+                <p className="text-caption uppercase text-sage-300">Équipe ESSG</p>
+                <h1 className="mt-2 text-display text-white">{fullName}</h1>
+                <p className="mt-2 flex items-center justify-center gap-2 text-body-lg text-white/85 sm:justify-start">
+                  <Briefcase className="size-4 shrink-0 text-sage-300" />
                   {ressourceHumaine.poste}
                 </p>
-              </div>
+              </RevealOnScroll>
+
+              {/* Accès direct aux coordonnées */}
+              <RevealOnScroll delay={180}>
+                <div className="mt-5 flex flex-wrap justify-center gap-2.5 sm:justify-start">
+                  {ressourceHumaine.email && (
+                    <a
+                      href={`mailto:${ressourceHumaine.email}`}
+                      className="inline-flex items-center gap-2 rounded-full bg-sage-400 px-4 py-2 text-small font-semibold text-brand-950 transition-colors duration-200 hover:bg-sage-300 motion-reduce:transition-none"
+                    >
+                      <Mail className="size-4" />
+                      Contacter
+                    </a>
+                  )}
+                  {ressourceHumaine.telephone && (
+                    <a
+                      href={`tel:${ressourceHumaine.telephone.replace(/\s+/g, '')}`}
+                      className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-small font-semibold text-white backdrop-blur-md transition-colors duration-200 hover:bg-white/20 motion-reduce:transition-none"
+                    >
+                      <Phone className="size-4" />
+                      Appeler
+                    </a>
+                  )}
+                </div>
+              </RevealOnScroll>
             </div>
           </div>
+        </div>
+      </header>
 
-          
-          <div className="lg:col-span-2">
-            <div className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card sm:p-8">
-              <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-ink-900">
-                <User />
-                Présentation
-              </h2>
+      <Breadcrumb
+        items={[
+          { label: 'Ressources Humaines', to: '/ressources-humaines' },
+          { label: fullName },
+        ]}
+      />
 
-              <p className="mb-8 leading-7 text-ink-600">
+      {/* ═══ Contenu ═══ */}
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+        <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
+          {/* ── Colonne principale ── */}
+          <div className="space-y-6 lg:col-span-2">
+            <ProfileSection
+              title="Présentation"
+              icon={<User className="size-5" />}
+              delay={nextDelay()}
+            >
+              <p className="whitespace-pre-wrap text-body leading-7 text-ink-600">
                 {ressourceHumaine.description ||
                   `${fullName} occupe le poste de ${ressourceHumaine.poste} à l'ESSG, contribuant à l'excellence académique et à la réussite des étudiants en sciences géomatiques.`}
               </p>
+            </ProfileSection>
 
-              {infoItems.length > 0 && (
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {infoItems.map((item) => {
-                    const content = (
-                      <div className="flex items-start gap-3 rounded-xl border border-ink-100 bg-ink-50/60 p-4 transition-colors hover:bg-brand-50/50">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 ring-1 ring-brand-100">
-                          {item.icon}
-                        </div>
-                        <div className="min-w-0">
-                          <div className="text-xs font-semibold uppercase tracking-wide text-ink-400">
-                            {item.label}
-                          </div>
-                          <div className="mt-0.5 break-words text-sm font-semibold text-ink-900">
-                            {item.value}
-                          </div>
-                        </div>
-                      </div>
-                    );
+            {experiences.length > 0 && (
+              <ProfileSection
+                title="Parcours professionnel"
+                icon={<Building2 className="size-5" />}
+                count={experiences.length}
+                delay={nextDelay()}
+              >
+                <Timeline
+                  entries={experiences.map((experience) => ({
+                    title: experience.poste,
+                    subtitle: experience.organisation,
+                    period: experience.periode,
+                  }))}
+                />
+              </ProfileSection>
+            )}
 
-                    return item.href ? (
-                      <a
-                        key={item.label}
-                        href={item.href}
-                        className="block no-underline"
-                        aria-label={`${item.label} : ${item.value}`}
-                      >
-                        {content}
-                      </a>
-                    ) : (
-                      <div key={item.label}>{content}</div>
-                    );
-                  })}
+            {(diplomes.length > 0 || formations.length > 0) && (
+              <ProfileSection
+                title="Formation et diplômes"
+                icon={<GraduationCap className="size-5" />}
+                count={diplomes.length + formations.length}
+                delay={nextDelay()}
+              >
+                <div className="grid gap-6 sm:grid-cols-2">
+                  {diplomes.length > 0 && (
+                    <div>
+                      <h3 className="mb-3 flex items-center gap-2 text-caption uppercase text-ink-400">
+                        <Award className="size-3.5" />
+                        Diplômes
+                      </h3>
+                      <CheckList items={diplomes} />
+                    </div>
+                  )}
+                  {formations.length > 0 && (
+                    <div>
+                      <h3 className="mb-3 flex items-center gap-2 text-caption uppercase text-ink-400">
+                        <GraduationCap className="size-3.5" />
+                        Formations
+                      </h3>
+                      <CheckList items={formations} />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </ProfileSection>
+            )}
           </div>
+
+          {/* ── Colonne latérale ── */}
+          <aside className="space-y-6">
+            {contacts.length > 0 && (
+              <ProfileSection
+                title="Coordonnées"
+                icon={<Mail className="size-5" />}
+                delay={nextDelay()}
+              >
+                <div className="grid gap-3">
+                  {contacts.map((contact) => (
+                    <InfoTile
+                      key={contact.label}
+                      icon={contact.icon}
+                      label={contact.label}
+                      value={contact.value}
+                      href={contact.href}
+                    />
+                  ))}
+                </div>
+              </ProfileSection>
+            )}
+
+            {competences.length > 0 && (
+              <ProfileSection
+                title="Compétences"
+                icon={<Wrench className="size-5" />}
+                count={competences.length}
+                delay={nextDelay()}
+              >
+                <TagCloud items={competences} />
+              </ProfileSection>
+            )}
+
+            {langues.length > 0 && (
+              <ProfileSection
+                title="Langues"
+                icon={<Languages className="size-5" />}
+                count={langues.length}
+                delay={nextDelay()}
+              >
+                <TagCloud items={langues} />
+              </ProfileSection>
+            )}
+          </aside>
         </div>
       </div>
 

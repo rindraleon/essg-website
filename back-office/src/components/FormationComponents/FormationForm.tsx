@@ -1,12 +1,24 @@
 import { ArrowLeft, ArrowRight, BookOpen, Briefcase, CircleCheck, Info, Upload } from 'lucide-react';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { getImageUrl } from '../../utils/image.utils';
-import { generateSlug } from '../../utils/slug.utils';
 import { uploadImage } from '../../services';
 import type { FormationFormData, FormationFormProps } from '../../types';
 import { useFormValidation } from '../../hooks/useFormValidation';
-import { useAutoSlug } from '../../hooks/useAutoSlug';
+import {
+  EMAIL_ERROR_MESSAGE,
+  EMAIL_PATTERN,
+} from '../../constants/validation.constants';
+import { useFormationMentionsQuery } from '../../hooks/queries/useFormationMentionsQuery';
+import { useRessourcesHumainesQuery } from '../../hooks/queries';
+import {
+  CONDITION_ACCES_OPTIONS,
+  DUREE_OPTIONS,
+  NIVEAU_OPTIONS,
+  findMentionByTitre,
+  getTitreOptions,
+  isTitreInMention,
+} from '../../constants/formation.constants';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -21,68 +33,36 @@ import { FloatingInput } from '@/components/ui/floating-input';
 import { FloatingTextarea } from '@/components/ui/floating-textarea';
 import { FloatingSelect } from '@/components/ui/floating-select';
 import DynamicListField from '../common/DynamicListField';
-
-const DOMAINE_OPTIONS = [
-  { label: 'Géomatique et applications', value: 'Géomatique et applications' },
-  { label: 'Géomatique et management', value: 'Géomatique et management' },
-  { label: 'Informatique et données spatiales', value: 'Informatique et données spatiales' },
-  { label: 'Autre', value: 'Autre' },
-];
-
-const DUREE_OPTIONS = [
-  { label: '2 ans', value: '2 ans' },
-  { label: '3 ans', value: '3 ans' },
-  { label: '5 ans', value: '5 ans' },
-];
-
-const NIVEAU_OPTIONS = [
-  { label: 'Licence', value: 'Licence' },
-  { label: 'Master', value: 'Master' },
-  { label: 'Doctorat', value: 'Doctorat' },
-];
-
-const CONDITIONS_ACCES_OPTIONS = [
-  { label: 'Baccalauréat scientifique', value: 'Baccalauréat scientifique' },
-  { label: 'Baccalauréat + 2 ans', value: 'Baccalauréat + 2 ans' },
-  { label: 'Baccalauréat + 3 ans', value: 'Baccalauréat + 3 ans' },
-  { label: 'Master', value: 'Master' },
-  { label: 'Expérience professionnelle', value: 'Expérience professionnelle' },
-  { label: 'Concours', value: 'Concours' },
-  { label: 'Dossier', value: 'Dossier' },
-  { label: 'Autre', value: 'Autre' },
-];
+import MultiValueSelect from '../common/MultiValueSelect';
+import SearchSelect, { type SearchSelectOption } from '../common/SearchSelect';
+import { formatFullName } from '../../utils/name.utils';
 
 const STEPS = [
-  {
-    id: 0,
-    label: 'Informations',
-    icon: <Info className="h-4 w-4" />,
-  },
-  {
-    id: 1,
-    label: 'Pédagogie',
-    icon: <BookOpen className="h-4 w-4" />,
-  },
-  {
-    id: 2,
-    label: 'Détails',
-    icon: <Briefcase className="h-4 w-4" />,
-  },
+  { id: 0, label: 'Informations', icon: <Info className="h-4 w-4" /> },
+  { id: 1, label: 'Pédagogie', icon: <BookOpen className="h-4 w-4" /> },
+  { id: 2, label: 'Détails', icon: <Briefcase className="h-4 w-4" /> },
 ];
 
-type ArrayField =
-  'objectifs' | 'debouches' | 'programme' | 'conditions' | 'competences' | 'modules';
+type ArrayField = 'objectifs' | 'debouches' | 'programme' | 'competences';
 
 type FormationField = keyof FormationFormData;
 
 const STEP_FIELDS_MAP: Record<number, FormationField[]> = {
-  0: ['titre', 'slug', 'domaine', 'niveau', 'duree', 'credits', 'description'],
+  0: ['mention', 'titre', 'niveau', 'duree', 'credits', 'description'],
   1: ['objectifs', 'debouches'],
-  2: ['email', 'responsable'],
+  2: ['email'],
 };
 
+/**
+ * Valeurs par défaut.
+ *
+ * Champs retirés par rapport à la version précédente (cf. cahier des charges §7) :
+ *  - `slug`        : généré par le backend à partir du titre ;
+ *  - `conditionsAcces` : faisait doublon avec `conditions` (fusionnés) ;
+ *  - `modules`     : redondant avec `programme` (une seule liste désormais).
+ */
 const defaultFormData: FormationFormData = {
-  slug: '',
+  mention: '',
   domaine: [],
   titre: '',
   niveau: 'Licence',
@@ -90,15 +70,15 @@ const defaultFormData: FormationFormData = {
   description: '',
   objectifs: [''],
   debouches: [''],
-  conditionsAcces: '',
-  conditions: [''],
+  // Sélection multiple : la liste démarre vide (pas de jeton fantôme).
+  conditions: [],
   competences: [''],
-  modules: [''],
   programme: [''],
   image: '',
   enVedette: false,
   credits: 180,
   responsable: '',
+  responsableId: null,
   email: '',
 };
 
@@ -112,7 +92,29 @@ const FormationForm: React.FC<FormationFormProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [uploadingImage, setUploadingImage] = useState(false);
-  const { reset: resetSlug, fromTitle, lock: lockSlug } = useAutoSlug();
+  const [submitting, setSubmitting] = useState(false);
+
+  const { data: mentions = [] } = useFormationMentionsQuery();
+
+  // Responsables : ressources humaines actives, chargées une seule fois et
+  // partagées via le cache React Query (aucune requête dupliquée).
+  const {
+    data: ressources = [],
+    isLoading: loadingRessources,
+    isError: ressourcesError,
+    refetch: refetchRessources,
+  } = useRessourcesHumainesQuery();
+
+  const responsableOptions = useMemo<SearchSelectOption[]>(
+    () =>
+      ressources.map((rh) => ({
+        value: String(rh.id),
+        label: formatFullName(rh),
+        description: rh.poste,
+        image: rh.photo ? getImageUrl(rh.photo) : undefined,
+      })),
+    [ressources]
+  );
 
   const {
     formData,
@@ -129,15 +131,17 @@ const FormationForm: React.FC<FormationFormProps> = ({
   } = useFormValidation<FormationFormData>({
     defaultValues: defaultFormData,
     validators: {
+      mention: { required: true },
       titre: {
         required: true,
-        minLength: { value: 5, message: 'Min. 5 caractères' },
-      },
-      domaine: {
-        required: true,
-        custom: (value) => {
-          const arr = value as string[];
-          if (!arr || arr.length === 0) return 'Le domaine est requis';
+        custom: (value, data) => {
+          const titre = value as string;
+          const mention = (data as FormationFormData).mention;
+          if (!titre) return 'Le titre est requis';
+          // Cohérence hiérarchique : un titre d'une autre mention est refusé.
+          if (mention && !isTitreInMention(mention, titre, mentions)) {
+            return "Ce titre n'appartient pas à la mention sélectionnée";
+          }
           return undefined;
         },
       },
@@ -147,33 +151,26 @@ const FormationForm: React.FC<FormationFormProps> = ({
         required: true,
         minLength: { value: 20, message: 'Min. 20 caractères' },
       },
-      slug: { required: true },
       credits: {
         required: true,
-        custom: (value) => {
-          const num = Number(value);
-          if (!num || num <= 0) return 'Doit être > 0';
-          return undefined;
-        },
+        custom: (value) => (Number(value) > 0 ? undefined : 'Doit être > 0'),
       },
       objectifs: {
         required: true,
-        custom: (value) => {
-          const arr = value as string[];
-          if (arr.filter((o) => o.trim()).length === 0) return 'Au moins un objectif requis';
-          return undefined;
-        },
+        custom: (value) =>
+          (value as string[]).filter((item) => item.trim()).length === 0
+            ? 'Au moins un objectif requis'
+            : undefined,
       },
       debouches: {
         required: true,
-        custom: (value) => {
-          const arr = value as string[];
-          if (arr.filter((d) => d.trim()).length === 0) return 'Au moins un débouché requis';
-          return undefined;
-        },
+        custom: (value) =>
+          (value as string[]).filter((item) => item.trim()).length === 0
+            ? 'Au moins un débouché requis'
+            : undefined,
       },
       email: {
-        pattern: { regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email invalide' },
+        pattern: { regex: EMAIL_PATTERN, message: EMAIL_ERROR_MESSAGE },
       },
     },
     stepFields: STEP_FIELDS_MAP,
@@ -183,51 +180,115 @@ const FormationForm: React.FC<FormationFormProps> = ({
 
   useEffect(() => {
     if (!open) return;
+
     if (mode === 'edit' && initialData) {
-      const { id: _id, creeLe: _c, misAJourLe: _m, ...rest } = initialData;
-      setFormData(rest);
-      setImagePreview(getImageUrl(rest.image));
-      resetSlug(rest.slug);
+      const { id: _id, slug: _slug, creeLe: _c, misAJourLe: _m, ...rest } = initialData;
+
+      // Reprise des données historiques :
+      //  - la mention peut venir de `mention`, de `domaine[0]`, ou être
+      //    déduite du titre pour les formations créées avant la hiérarchie ;
+      //  - `conditionsAcces` (texte libre) est fusionné dans `conditions`.
+      const mention =
+        rest.mention ||
+        rest.domaine?.[0] ||
+        findMentionByTitre(rest.titre, mentions)?.label ||
+        '';
+
+      const legacyCondition = (initialData.conditionsAcces ?? '').trim();
+      const conditions = [...(rest.conditions ?? [])];
+      if (legacyCondition && !conditions.some((item) => item.trim() === legacyCondition)) {
+        conditions.push(legacyCondition);
+      }
+
+      setFormData({
+        ...defaultFormData,
+        ...rest,
+        mention,
+        // Les valeurs vides éventuellement stockées côté backend sont
+        // écartées : elles n'ont pas de sens dans une sélection multiple.
+        conditions: conditions.map((item) => item.trim()).filter(Boolean),
+        competences: rest.competences?.length ? rest.competences : [''],
+        programme: rest.programme?.length ? rest.programme : [''],
+        objectifs: rest.objectifs?.length ? rest.objectifs : [''],
+        debouches: rest.debouches?.length ? rest.debouches : [''],
+        responsableId: rest.responsableId ?? null,
+        responsable: rest.responsable ?? '',
+      });
+      setImagePreview(rest.image ? getImageUrl(rest.image) : '');
     } else {
       resetForm();
       setImagePreview('');
-      resetSlug();
     }
-    // Re-init only when the dialog opens or the edited entity changes.
+    // Ré-initialisation uniquement à l'ouverture ou au changement d'entité.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, mode, initialId]);
 
-  const handleArrayChange = (field: ArrayField, index: number, value: string) => {
-    const arr = [...(formData[field] || [])];
-    arr[index] = value;
-    handleChange(field, arr);
+  /** Options de titres filtrées par la mention sélectionnée. */
+  const titreOptions = useMemo(
+    () => getTitreOptions(formData.mention, mentions),
+    [formData.mention, mentions]
+  );
+
+  const mentionOptions = useMemo(
+    () => mentions.map((mention) => ({ value: mention.label, label: mention.label })),
+    [mentions]
+  );
+
+  /**
+   * Changement de mention : le titre est réinitialisé s'il n'appartient pas
+   * à la nouvelle mention, ce qui rend impossible un couple incohérent.
+   */
+  const handleMentionChange = (mention: string) => {
+    const keepTitre = isTitreInMention(mention, formData.titre, mentions);
+    handleChanges({
+      mention,
+      domaine: [mention],
+      titre: keepTitre ? formData.titre : '',
+    });
   };
 
-  const addArrayItem = (field: ArrayField) => handleChange(field, [...(formData[field] || []), '']);
+  const handleResponsableChange = (value: string | null, option: SearchSelectOption | null) => {
+    handleChanges({
+      responsableId: value ? Number(value) : null,
+      // Le nom reste dénormalisé pour l'affichage public de la formation.
+      responsable: option?.label ?? '',
+    });
+  };
+
+  const handleArrayChange = (field: ArrayField, index: number, value: string) => {
+    const next = [...(formData[field] ?? [])];
+    next[index] = value;
+    handleChange(field, next);
+  };
+
+  const addArrayItem = (field: ArrayField) =>
+    handleChange(field, [...(formData[field] ?? []), '']);
 
   const removeArrayItem = (field: ArrayField, index: number) => {
-    const arr = formData[field] || [];
-    if (arr.length > 1)
+    const current = formData[field] ?? [];
+    if (current.length > 1) {
       handleChange(
         field,
-        arr.filter((_, i) => i !== index)
+        current.filter((_, i) => i !== index)
       );
+    }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (!file) return;
     setUploadingImage(true);
     try {
       const url = await uploadImage(file, 'formations');
       handleChange('image', url);
-      setImagePreview(url);
+      setImagePreview(getImageUrl(url));
       toast.success('Image téléversée avec succès');
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Échec du téléversement de l'image.";
-      toast.error(message);
+      toast.error(err instanceof Error ? err.message : "Échec du téléversement de l'image.");
     } finally {
       setUploadingImage(false);
+      // Permet de re-sélectionner le même fichier après une erreur.
+      event.target.value = '';
     }
   };
 
@@ -240,26 +301,32 @@ const FormationForm: React.FC<FormationFormProps> = ({
   const handleStepClick = (step: number) => {
     if (step < activeStep) {
       setActiveStep(step);
-    } else if (step > activeStep) {
-      let canAdvance = true;
-      for (let i = activeStep; i < step; i++) {
-        if (!validateStep(i)) {
-          setActiveStep(i);
-          canAdvance = false;
-          break;
-        }
-      }
-      if (canAdvance) setActiveStep(step);
+      return;
     }
+    for (let i = activeStep; i < step; i++) {
+      if (!validateStep(i)) {
+        setActiveStep(i);
+        return;
+      }
+    }
+    setActiveStep(step);
   };
-
-  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async () => {
     if (submitting || !validateAllSteps()) return;
     setSubmitting(true);
     try {
-      await onSubmit(formData);
+      // Nettoyage : les lignes vides des listes ne sont pas envoyées.
+      const clean = (items?: string[]) => (items ?? []).map((i) => i.trim()).filter(Boolean);
+      await onSubmit({
+        ...formData,
+        domaine: formData.mention ? [formData.mention] : [],
+        objectifs: clean(formData.objectifs),
+        debouches: clean(formData.debouches),
+        conditions: clean(formData.conditions),
+        competences: clean(formData.competences),
+        programme: clean(formData.programme),
+      });
     } finally {
       setSubmitting(false);
     }
@@ -267,76 +334,60 @@ const FormationForm: React.FC<FormationFormProps> = ({
 
   const dialogTitle = mode === 'create' ? 'Nouvelle formation' : 'Modifier la formation';
 
-  /* ─── Step 0 : Informations générales ─── */
+  /* ─── Étape 0 : Identification (Mention → Titre) ─── */
   const renderStep0 = () => (
     <div className="space-y-1">
-      <FloatingInput
-        id="titre"
-        label="Titre de la formation *"
-        autoComplete="off"
-        value={formData.titre}
-        onChange={(e) => {
-          const titre = e.target.value;
-          const nextSlug = fromTitle(titre);
-          if (nextSlug !== undefined) {
-            handleChanges({ titre, slug: nextSlug });
-          } else {
-            handleChange('titre', titre);
-          }
-        }}
-        onBlur={() => handleBlur('titre')}
-        error={errors.titre}
+      {/* Niveau 1 de la hiérarchie */}
+      <FloatingSelect
+        label="Mention / Domaine *"
+        value={formData.mention ?? ''}
+        onValueChange={(v) => v && handleMentionChange(v)}
+        options={mentionOptions}
+        error={errors.mention}
+        hint="Sélectionnez d'abord la mention pour accéder aux titres associés"
       />
-      <FloatingInput
-        id="slug"
-        label="Slug (auto)"
-        autoComplete="off"
-        value={formData.slug}
-        onChange={(e) => {
-          lockSlug();
-          handleChange('slug', generateSlug(e.target.value) || e.target.value);
-        }}
-        onBlur={() => handleBlur('slug')}
-        error={errors.slug}
-        hint="Généré automatiquement à partir du titre"
+
+      {/* Niveau 2 : filtré par la mention */}
+      <FloatingSelect
+        label="Titre de la formation *"
+        value={formData.titre}
+        onValueChange={(v) => v && handleChange('titre', v)}
+        options={titreOptions}
+        error={errors.titre}
+        hint={
+          formData.mention
+            ? `${titreOptions.length} titre(s) disponible(s) pour cette mention`
+            : 'Choisissez une mention pour activer ce champ'
+        }
       />
 
       <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
-        <FloatingSelect
-          label="Domaine de formation *"
-          value={formData.domaine[0] || ''}
-          onValueChange={(v, _eventDetails) => v && handleChange('domaine', [v])}
-          options={DOMAINE_OPTIONS}
-          error={errors.domaine}
-        />
         <FloatingSelect
           label="Niveau *"
           value={formData.niveau}
-          onValueChange={(v, _eventDetails) => v && handleChange('niveau', v)}
+          onValueChange={(v) => v && handleChange('niveau', v)}
           options={NIVEAU_OPTIONS}
           error={errors.niveau}
         />
-      </div>
-
-      <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
         <FloatingSelect
           label="Durée *"
           value={formData.duree}
-          onValueChange={(v, _eventDetails) => v && handleChange('duree', v)}
+          onValueChange={(v) => v && handleChange('duree', v)}
           options={DUREE_OPTIONS}
           error={errors.duree}
         />
-        <FloatingInput
-          id="credits"
-          label="Crédits *"
-          type="number"
-          inputMode="numeric"
-          value={formData.credits}
-          onChange={(e) => handleChange('credits', Number.parseInt(e.target.value) || 0)}
-          onBlur={() => handleBlur('credits')}
-          error={errors.credits}
-        />
       </div>
+
+      <FloatingInput
+        id="credits"
+        label="Crédits *"
+        type="number"
+        inputMode="numeric"
+        value={formData.credits}
+        onChange={(e) => handleChange('credits', Number.parseInt(e.target.value, 10) || 0)}
+        onBlur={() => handleBlur('credits')}
+        error={errors.credits}
+      />
 
       <FloatingTextarea
         id="description"
@@ -351,7 +402,7 @@ const FormationForm: React.FC<FormationFormProps> = ({
     </div>
   );
 
-  /* ─── Step 1 : Pédagogie ─── */
+  /* ─── Étape 1 : Pédagogie ─── */
   const renderStep1 = () => (
     <div className="space-y-4">
       <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2">
@@ -363,7 +414,6 @@ const FormationForm: React.FC<FormationFormProps> = ({
           onRemove={(i) => removeArrayItem('objectifs', i)}
           onChange={(i, v) => handleArrayChange('objectifs', i, v)}
         />
-
         <DynamicListField
           label="Débouchés *"
           items={formData.debouches}
@@ -375,46 +425,75 @@ const FormationForm: React.FC<FormationFormProps> = ({
       </div>
 
       <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2">
+        {/* `programme` remplace l'ancien couple programme + modules */}
         <DynamicListField
-          label="Programme"
-          items={formData.programme || []}
+          label="Programme (modules)"
+          items={formData.programme ?? []}
           onAdd={() => addArrayItem('programme')}
           onRemove={(i) => removeArrayItem('programme', i)}
           onChange={(i, v) => handleArrayChange('programme', i, v)}
         />
-
         <DynamicListField
-          label="Compétences"
-          items={formData.competences || []}
+          label="Compétences visées"
+          items={formData.competences ?? []}
           onAdd={() => addArrayItem('competences')}
           onRemove={(i) => removeArrayItem('competences', i)}
           onChange={(i, v) => handleArrayChange('competences', i, v)}
         />
       </div>
 
-      <div>
-        <FloatingSelect
-          label="Conditions d'accès"
-          value={formData.conditionsAcces}
-          onValueChange={(v, _eventDetails) => v && handleChange('conditionsAcces', v)}
-          options={CONDITIONS_ACCES_OPTIONS}
-        />
-      </div>
+      {/* Champ unique : fusion de « conditions d'accès » et « prérequis ».
+          Sélection multiple : propositions courantes cochables + saisie
+          libre pour les cas particuliers (§1.3). */}
+      <MultiValueSelect
+        label="Conditions et prérequis d'accès"
+        values={formData.conditions ?? []}
+        onChange={(values) => setFormData((prev) => ({ ...prev, conditions: values }))}
+        suggestions={CONDITION_ACCES_OPTIONS}
+        placeholder="Rechercher ou saisir une condition…"
+        emptyMessage="Aucune proposition — saisissez la condition puis validez"
+        hint="Sélectionnez une ou plusieurs conditions, ou saisissez-en une nouvelle"
+      />
     </div>
   );
 
-  /* ─── Step 2 : Détails ─── */
+  /* ─── Étape 2 : Responsable, image, publication ─── */
   const renderStep2 = () => (
     <div className="space-y-4">
+      {/* Responsable : recherche dans les ressources humaines */}
+      <SearchSelect
+        label="Responsable de formation"
+        value={formData.responsableId ? String(formData.responsableId) : null}
+        onChange={handleResponsableChange}
+        options={responsableOptions}
+        isLoading={loadingRessources}
+        loadError={ressourcesError ? 'Impossible de charger les ressources humaines.' : null}
+        onRetry={() => void refetchRessources()}
+        placeholder="Rechercher par nom, prénom ou poste..."
+        emptyMessage="Aucune ressource humaine trouvée"
+        hint="Sélectionnez la personne responsable dans les ressources humaines"
+      />
+
+      <FloatingInput
+        id="email"
+        label="Email de contact"
+        type="email"
+        autoComplete="email"
+        value={formData.email}
+        onChange={(e) => handleChange('email', e.target.value)}
+        onBlur={() => handleBlur('email')}
+        error={errors.email}
+      />
+
       {/* Image */}
       <div className="space-y-2">
-        <Label className="text-xs font-semibold text-ink-600 uppercase tracking-wide">Image</Label>
+        <Label className="text-xs font-semibold uppercase tracking-wide text-ink-600">Image</Label>
         <div className="flex items-start gap-3">
           {imagePreview && (
             <img
               src={imagePreview}
               alt="Aperçu"
-              className="w-28 h-20 object-cover rounded-md border border-ink-100 shrink-0"
+              className="h-20 w-28 shrink-0 rounded-md border border-ink-100 object-cover"
               onError={() => setImagePreview('')}
             />
           )}
@@ -429,57 +508,16 @@ const FormationForm: React.FC<FormationFormProps> = ({
             <Button
               type="button"
               variant="outline"
+              size="sm"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingImage}
-              size="sm"
-              className="gap-1.5 bg-white text-xs h-8"
             >
               <Upload className="h-3.5 w-3.5" />
-              {uploadingImage ? 'Upload...' : 'Choisir une image'}
+              {uploadingImage ? 'Téléversement…' : 'Choisir une image'}
             </Button>
             <span className="text-[10px] text-ink-400">JPG, PNG, GIF, WebP — max 5 Mo</span>
           </div>
         </div>
-      </div>
-
-      {/* Responsable + Email */}
-      <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
-        <FloatingInput
-          id="responsable"
-          label="Responsable"
-          autoComplete="name"
-          value={formData.responsable}
-          onChange={(e) => handleChange('responsable', e.target.value)}
-        />
-        <FloatingInput
-          id="email"
-          label="Email"
-          type="email"
-          autoComplete="email"
-          value={formData.email}
-          onChange={(e) => handleChange('email', e.target.value)}
-          onBlur={() => handleBlur('email')}
-          error={errors.email}
-        />
-      </div>
-
-      {/* Conditions + Modules */}
-      <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2">
-        <DynamicListField
-          label="Conditions"
-          items={formData.conditions || []}
-          onAdd={() => addArrayItem('conditions')}
-          onRemove={(i) => removeArrayItem('conditions', i)}
-          onChange={(i, v) => handleArrayChange('conditions', i, v)}
-        />
-
-        <DynamicListField
-          label="Modules"
-          items={formData.modules || []}
-          onAdd={() => addArrayItem('modules')}
-          onRemove={(i) => removeArrayItem('modules', i)}
-          onChange={(i, v) => handleArrayChange('modules', i, v)}
-        />
       </div>
 
       <div className="flex items-center gap-2">
@@ -500,31 +538,19 @@ const FormationForm: React.FC<FormationFormProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent
-        className="
-          sm:max-w-3xl
-          w-[95vw]
-          bg-white
-          p-0
-          gap-0
-          overflow-hidden
-          [&>button]:hidden
-        "
-      >
-        {/* ─── Header + Stepper ─── */}
-        <DialogHeader className="px-5 pt-4 pb-3 border-b bg-ink-50/80">
+      <DialogContent className="w-[95vw] gap-0 overflow-hidden bg-white p-0 sm:max-w-3xl [&>button]:hidden">
+        <DialogHeader className="border-b bg-ink-50/80 px-5 pt-4 pb-3">
           <DialogTitle className="text-lg font-bold text-ink-900">{dialogTitle}</DialogTitle>
 
-          <div className="flex items-center justify-center gap-1 mt-3">
+          <div className="mt-3 flex items-center justify-center gap-1">
             {STEPS.map((step, index) => {
               const isCompleted = index < activeStep;
               const isActive = index === activeStep;
-
               return (
                 <React.Fragment key={step.id}>
                   {index > 0 && (
                     <div
-                      className={`hidden sm:block h-px w-8 transition-colors ${
+                      className={`hidden h-px w-8 transition-colors sm:block ${
                         isCompleted ? 'bg-brand-500' : 'bg-ink-300'
                       }`}
                     />
@@ -532,17 +558,13 @@ const FormationForm: React.FC<FormationFormProps> = ({
                   <button
                     type="button"
                     onClick={() => handleStepClick(index)}
-                    className={`
-                      flex items-center gap-1.5 px-3 py-1.5 rounded-full
-                      text-xs font-medium transition-all
-                      ${
-                        isActive
-                          ? 'bg-brand-600 text-white shadow-sm'
-                          : isCompleted
-                            ? 'bg-brand-50 text-brand-700 hover:bg-brand-100'
-                            : 'bg-ink-100 text-ink-400'
-                      }
-                    `}
+                    className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                      isActive
+                        ? 'bg-brand-600 text-white'
+                        : isCompleted
+                          ? 'bg-brand-50 text-brand-700 hover:bg-brand-100'
+                          : 'bg-ink-100 text-ink-400'
+                    }`}
                   >
                     {isCompleted ? <CircleCheck className="h-4 w-4" /> : step.icon}
                     <span className="hidden sm:inline">{step.label}</span>
@@ -554,25 +576,16 @@ const FormationForm: React.FC<FormationFormProps> = ({
           </div>
         </DialogHeader>
 
-        {/* ─── Body ─── */}
-        <div className="px-5 py-4 overflow-y-auto max-h-[58vh]">{stepRenderers[activeStep]()}</div>
+        <div className="max-h-[58vh] overflow-y-auto px-5 py-4">{stepRenderers[activeStep]()}</div>
 
-        {/* ─── Footer ─── */}
-        <DialogFooter className="px-5 py-3 mb-4 mx-4 border-t bg-ink-50/80">
-          <div className="flex items-center justify-between w-full">
-            <span className="text-xs text-ink-400">
+        <DialogFooter className="mx-4 mb-4 border-t bg-ink-50/80 px-5 py-3">
+          <div className="flex w-full items-center justify-between">
+            <span data-numeric className="text-xs text-ink-400">
               {activeStep + 1}/{STEPS.length}
             </span>
 
             <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={onClose}
-                disabled={submitting}
-                className="text-ink-500 h-8"
-              >
+              <Button type="button" variant="ghost" size="sm" onClick={onClose} disabled={submitting}>
                 Annuler
               </Button>
 
@@ -583,7 +596,6 @@ const FormationForm: React.FC<FormationFormProps> = ({
                   size="sm"
                   onClick={handleBack}
                   disabled={submitting}
-                  className="gap-1 h-8"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
                   Précédent
@@ -591,26 +603,14 @@ const FormationForm: React.FC<FormationFormProps> = ({
               )}
 
               {activeStep < STEPS.length - 1 ? (
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={handleNext}
-                  disabled={submitting}
-                  className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
-                >
+                <Button type="button" size="sm" onClick={handleNext} disabled={submitting}>
                   Suivant
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               ) : (
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={handleSubmit}
-                  disabled={submitting}
-                  className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
-                >
+                <Button type="button" size="sm" onClick={handleSubmit} disabled={submitting}>
                   <CircleCheck className="h-3.5 w-3.5" />
-                  {submitting ? 'Enregistrement...' : mode === 'create' ? 'Créer' : 'Enregistrer'}
+                  {submitting ? 'Enregistrement…' : mode === 'create' ? 'Créer' : 'Enregistrer'}
                 </Button>
               )}
             </div>

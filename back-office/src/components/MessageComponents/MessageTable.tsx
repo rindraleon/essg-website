@@ -7,6 +7,7 @@ import type { Column } from '../common/DataTable';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { formatFullName } from '../../utils/name.utils';
 
 interface MessageTableProps {
   data: Message[];
@@ -77,8 +78,11 @@ const MessageTable: React.FC<MessageTableProps> = ({
                 <Mail />
               </div>
               <div className="min-w-0">
-                <span className={`font-semibold block ${row.lu ? 'text-ink-900' : 'text-ink-900'}`}>
-                  {row.prenom} {row.nom}
+                {/* Un message non lu est mis en avant (gras + couleur soutenue). */}
+                <span
+                  className={`block ${row.lu ? 'font-medium text-ink-700' : 'font-bold text-ink-900'}`}
+                >
+                  {formatFullName(row)}
                 </span>
                 <p className="text-xs text-ink-500 truncate">{row.email}</p>
                 {row.telephone && <p className="text-xs text-ink-500">{row.telephone}</p>}

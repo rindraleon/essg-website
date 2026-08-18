@@ -74,7 +74,7 @@ const Footer = ({
   };
 
   return (
-    <footer className="relative isolate overflow-hidden bg-ink-950 text-white">
+    <footer data-surface="dark" className="relative isolate overflow-hidden bg-ink-950 text-white">
       {/* Large ESSG typography */}
       <div
         aria-hidden="true"
@@ -218,7 +218,7 @@ const Footer = ({
                   p-1.5
                   shadow-[0_10px_35px_rgba(0,0,0,0.25)]
                   transition-transform duration-300
-                  group-hover:scale-105
+                  group-hover:scale-[1.03]
                 "
               >
                 <img
@@ -229,25 +229,25 @@ const Footer = ({
               </div>
 
               <div>
-                <p className="text-lg font-bold tracking-tight text-white">
+                <p className="text-h5 font-bold tracking-tight text-white">
                   {companyName}
                 </p>
 
-                <p className="mt-0.5 max-w-[240px] text-xs leading-5 text-ink-300">
+                <p className="mt-0.5 max-w-[240px] text-caption leading-5 text-ink-300">
                   École Supérieure de Sciences Géomatiques
                 </p>
               </div>
             </Link>
 
             <div className="max-w-xl">
-              <p className="text-sm leading-7 text-ink-300">
+              <p className="text-small leading-7 text-ink-300">
                 L&apos;ESSG est un établissement d&apos;enseignement supérieur
                 spécialisé dans la formation, la recherche et l&apos;innovation
                 en sciences géomatiques, cartographie, télédétection et
                 systèmes d&apos;information géographique.
               </p>
 
-              <p className="mt-4 text-sm leading-7 text-ink-400">
+              <p className="mt-4 text-small leading-7 text-ink-400">
                 Excellence académique, professionnalisation et ouverture vers
                 les technologies spatiales et numériques.
               </p>
@@ -256,7 +256,7 @@ const Footer = ({
             {/* Socials */}
             {socials.length > 0 && (
               <div className="mt-7">
-                <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-sage-300/80">
+                <p className="mb-3 text-caption font-semibold uppercase tracking-[0.18em] text-sage-300/80">
                   Nous suivre
                 </p>
 
@@ -302,7 +302,7 @@ const Footer = ({
                 backdrop-blur-sm
               "
             >
-              <h3 className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-sage-300">
+              <h3 className="mb-5 flex items-center gap-2 text-caption font-semibold uppercase tracking-[0.18em] text-sage-300">
                 <span className="h-px w-5 bg-sage-400/60" />
                 Navigation
               </h3>
@@ -316,7 +316,7 @@ const Footer = ({
                         group flex items-center justify-between
                         rounded-lg
                         px-2 py-2
-                        text-sm text-ink-300
+                        text-small text-ink-300
                         transition-all duration-200
                         hover:bg-white/[0.04]
                         hover:text-white
@@ -363,7 +363,7 @@ const Footer = ({
                 backdrop-blur-sm
               "
             >
-              <h3 className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-sage-300">
+              <h3 className="mb-5 flex items-center gap-2 text-caption font-semibold uppercase tracking-[0.18em] text-sage-300">
                 <span className="h-px w-5 bg-sage-400/60" />
                 Contact
               </h3>
@@ -384,7 +384,7 @@ const Footer = ({
                     <MapPin className="size-4" strokeWidth={1.8} />
                   </div>
 
-                  <p className="text-sm leading-6 text-ink-300">
+                  <p className="text-small leading-6 text-ink-300">
                     {contact.address}
                   </p>
                 </li>
@@ -409,7 +409,7 @@ const Footer = ({
                       href={`tel:${contact.phone.replaceAll(/\s+/g, '')}`}
                       className="
                         flex items-center
-                        text-sm text-ink-300
+                        text-small text-ink-300
                         transition-colors
                         hover:text-white
                       "
@@ -439,7 +439,7 @@ const Footer = ({
                     className="
                       flex items-center
                       break-all
-                      text-sm text-ink-300
+                      text-small text-ink-300
                       transition-colors
                       hover:text-white
                     "
@@ -460,7 +460,7 @@ const Footer = ({
                   border border-sage-400/20
                   bg-sage-400/[0.08]
                   px-4 py-3
-                  text-sm font-medium
+                  text-small font-medium
                   text-sage-300
                   transition-all duration-300
                   hover:border-sage-400/30
@@ -495,11 +495,11 @@ const Footer = ({
           "
         >
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-xs leading-5 text-ink-400">
+            <p className="text-caption leading-5 text-ink-400">
               © {currentYear} {companyName}. Tous droits réservés.
             </p>
 
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-caption">
               <Link
                 to="/mentions-legales"
                 className="

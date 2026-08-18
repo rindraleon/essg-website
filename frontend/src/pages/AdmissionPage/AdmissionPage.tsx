@@ -1,12 +1,9 @@
 import { CircleHelp, GraduationCap } from 'lucide-react';
 import React from 'react';
 
-import { Toaster } from 'react-hot-toast';
 
-import { GREEN } from '../../constants/colors';
 import type { AdmissionPageProps } from '../../types/admission.types';
 import { AdmissionForm, ContactCard, CtaSection, PageHero, Breadcrumb } from '../../components';
-import { useScrollToTop } from '../../hooks';
 
 import { SITE_HERO_IMAGE } from '../../constants/media';
 import { useTitle } from '@/hooks/useTitle';
@@ -14,47 +11,20 @@ import { useTitle } from '@/hooks/useTitle';
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
 const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPageProps>) => {
-  useScrollToTop();
   useTitle('Admission | ESSG');
 
   const {
     pageTitle = 'Admission',
-    pageSubtitle = 'ESSG — Candidature',
     pageDescription = "Rejoignez l'ESSG et commencez votre parcours vers l'excellence en sciences géomatiques.",
   } = props;
 
   return (
     <div className="min-h-screen bg-ink-50">
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 5000,
-          style: {
-            background: '#363636',
-            color: '#fff',
-            borderRadius: '0.75rem',
-            padding: '12px 16px',
-          },
-          success: {
-            iconTheme: {
-              primary: GREEN[600],
-              secondary: '#fff',
-            },
-          },
-          error: {
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#fff',
-            },
-          },
-        }}
-      />
+      {/* Les toasts sont gérés globalement par <AppToaster /> (App.tsx). */}
 
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Admission ESSG"
-        badgeIcon={<GraduationCap className="size-4" />}
-        badgeLabel={pageSubtitle}
         title={pageTitle}
         description={pageDescription}
         stats={[

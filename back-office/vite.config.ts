@@ -11,6 +11,9 @@ export default defineConfig(({ mode }) => {
     server: {
       port: Number(env.VITE_PORT),
       host: true,
+      // Autorise les hôtes de prévisualisation distants (environnements de
+      // développement conteneurisés / tunnels), en plus de localhost.
+      allowedHosts: true,
     },
     resolve: {
       alias: {

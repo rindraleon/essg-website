@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BookOpen, GraduationCap, Search, Star, TrendingUp, Users, X } from 'lucide-react';
+import { GraduationCap, Search, Star, TrendingUp, Users, X } from 'lucide-react';
 import {
   CtaSection,
   PageHero,
@@ -12,7 +12,7 @@ import QueryState from '../../components/common/QueryState';
 import { Input } from '../../components/ui/input';
 import { Select } from '../../components/ui/select';
 import { Skeleton } from '../../components/ui/skeleton';
-import { useFormations, useScrollToTop } from '../../hooks';
+import { useFormations } from '../../hooks';
 import type { Formation } from '../../types/formations.types';
 
 import { SITE_HERO_IMAGE } from '../../constants/media';
@@ -42,7 +42,6 @@ const HERO_STATS = [
 ];
 
 const FormationsPage = () => {
-  useScrollToTop();
   useTitle('Formations | ESSG');
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -103,8 +102,6 @@ const FormationsPage = () => {
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Campus ESSG"
-        badgeIcon={<BookOpen className="size-4" />}
-        badgeLabel="ESSG — École Supérieure de Sciences Géomatiques"
         title="Nos Formations"
         description="Des programmes d'excellence pour maîtriser les technologies géospatiales et bâtir votre carrière dans un secteur en pleine expansion."
         stats={HERO_STATS}

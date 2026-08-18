@@ -75,6 +75,14 @@ function toApiErrorFromStatus(status: number, payload: unknown, fallback?: strin
       kind: 'not_found',
     });
   }
+  if (status === 409) {
+    // Doublon détecté par le backend : le message est explicite et destiné
+    // à l'utilisateur, on le transmet sans le remplacer.
+    return new ApiError(message || 'Cette valeur est déjà utilisée.', {
+      statusCode: status,
+      kind: 'conflict',
+    });
+  }
   if (status === 502 || status === 503) {
     return new ApiError(message || 'Une erreur serveur est survenue. Réessayez plus tard.', {
       statusCode: status,

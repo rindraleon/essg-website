@@ -34,7 +34,15 @@ export const NAV_ITEMS: NavItem[] = [
     href: routesStatic.ressourcesHumaines,
     icon: Users,
   },
-  { name: 'Utilisateurs', label: 'Utilisateurs', href: routesStatic.utilisateurs, icon: Users },
+  {
+    name: 'Utilisateurs',
+    label: 'Utilisateurs',
+    href: routesStatic.utilisateurs,
+    icon: Users,
+    // Gestion des comptes : réservée aux administrateurs.
+    // Le backend applique la même règle (@Roles('admin') sur /users).
+    adminOnly: true,
+  },
   {
     name: 'Journal',
     label: 'Journal',
@@ -53,5 +61,12 @@ export const isNavActive = (href: string, pathname: string): boolean => {
 
 export const PRIMARY_NAV_LABELS = ['Tableau de bord', 'Formations', 'Actualités', 'Projets'];
 
+export const isAdminRole = (role?: string): boolean => role === 'admin';
+
+/** Éléments de navigation visibles selon le rôle réel de l'utilisateur. */
 export const getVisibleNavItems = (role?: string): NavItem[] =>
-  NAV_ITEMS.filter((item) => !item.adminOnly || role === 'admin');
+  NAV_ITEMS.filter((item) => !item.adminOnly || isAdminRole(role));
+
+/** Vrai si la route demandée exige le rôle administrateur. */
+export const isAdminOnlyRoute = (pathname: string): boolean =>
+  NAV_ITEMS.some((item) => item.adminOnly && isNavActive(item.href, pathname));

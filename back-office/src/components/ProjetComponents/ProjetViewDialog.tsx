@@ -1,12 +1,14 @@
-import { Calendar, Image, MapPin, Tag, X } from 'lucide-react';
+import { Calendar, Images, Info, MapPin, Tag, Users, X } from 'lucide-react';
 import React from 'react';
 import MapPicker from '../common/MapPicker';
-import { getImageUrl } from '../../utils/image.utils';
 import type { Projet } from '../../types/projet.types';
 import { getTypeColor, formatDateLong } from '../../utils/projet.utils';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import CoverImage from '../common/CoverImage';
+import ImageGallery from '../common/ImageGallery';
+import { DetailSection, TagList } from '../common/DetailSection';
 
 interface ProjetViewDialogProps {
   open: boolean;
@@ -44,68 +46,6 @@ const getTypeBadgeLightClass = (typeColor: string) => {
   }
 };
 
-interface SectionCardProps {
-  title: string;
-  icon?: React.ReactNode;
-  children: React.ReactNode;
-  className?: string;
-}
-
-const SectionCard: React.FC<SectionCardProps> = ({ title, icon, children, className = '' }) => (
-  <div className={`rounded-2xl border border-ink-100 bg-white p-4 shadow-sm ${className}`}>
-    <div className="mb-3 flex items-center gap-2">
-      {icon}
-      <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-700">{title}</h3>
-    </div>
-    {children}
-  </div>
-);
-
-interface ProjectImageCardProps {
-  image?: string | null;
-  title: string;
-  dark?: boolean;
-}
-
-const ProjectImageCard: React.FC<ProjectImageCardProps> = ({ image, title, dark = false }) => {
-  const [hasError, setHasError] = React.useState(false);
-  const showImage = Boolean(image) && !hasError;
-
-  return (
-    <div
-      className={`overflow-hidden rounded-2xl border shadow-[0_12px_30px_rgba(0,0,0,0.12)] ${
-        dark ? 'border-white/10 bg-ink-800' : 'border-ink-100 bg-white shadow-sm'
-      }`}
-    >
-      <div className={`aspect-[16/9] w-full ${dark ? 'bg-ink-800' : 'bg-ink-100'}`}>
-        {showImage ? (
-          <img
-            src={getImageUrl(image!)}
-            alt={title}
-            className="h-full w-full object-cover"
-            onError={() => setHasError(true)}
-          />
-        ) : (
-          <div
-            className={`flex h-full w-full items-center justify-center ${
-              dark
-                ? 'bg-gradient-to-br from-ink-800 to-ink-900'
-                : 'bg-gradient-to-br from-ink-100 to-ink-100'
-            }`}
-          >
-            <div className="text-center">
-              <Image
-                className={`mx-auto mb-2 h-12 w-12 ${dark ? 'text-ink-500' : 'text-ink-400'}`}
-              />
-              <p className={`text-sm ${dark ? 'text-ink-400' : 'text-ink-500'}`}>Aucune image</p>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
 const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, projet }) => {
   if (!projet) return null;
 
@@ -117,6 +57,12 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
     projet.latitude !== undefined &&
     projet.longitude !== null &&
     projet.longitude !== undefined;
+
+  // La galerie exclut la photo de couverture : elle est déjà affichée en
+  // tête de fiche, la répéter dans le carrousel n'apporterait rien.
+  const galerie = (projet.galerie ?? []).filter(
+    (image) => image?.trim() && image.trim() !== projet.image?.trim(),
+  );
 
   const locationText = [projet.ville, projet.pays].filter(Boolean).join(', ');
   const hasAddressBlock = Boolean(projet.adresse || locationText);
@@ -142,7 +88,8 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
       >
         <div className="grid h-full min-h-0 lg:grid-cols-[360px_minmax(0,1fr)]">
           <aside className="hidden min-h-0 flex-col border-r border-ink-100 bg-ink-950 p-5 text-white lg:flex">
-            <ProjectImageCard image={projet.image} title={projet.titre} dark />
+            {/* Photo de couverture : image principale, distincte de la galerie */}
+            <CoverImage src={projet.image} alt={projet.titre} dark />
 
             <div className="mt-5 space-y-4">
               <div className="flex items-center justify-between gap-3">
@@ -153,6 +100,11 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
                 <Badge className={`rounded-full px-3 py-1 ${getTypeBadgeDarkClass(typeColor)}`}>
                   <Tag className="mr-1 h-3.5 w-3.5" />
                   {projet.type}
+                </Badge>
+
+                {/* Statut : même information que sur le site public. */}
+                <Badge className="rounded-full bg-white/10 px-3 py-1 text-white">
+                  {projet.statut ?? 'En cours'}
                 </Badge>
               </div>
 
@@ -202,7 +154,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
             <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 lg:px-6">
               <div className="mb-5 lg:hidden">
                 <div className="overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-sm">
-                  <ProjectImageCard image={projet.image} title={projet.titre} />
+                  <CoverImage src={projet.image} alt={projet.titre} aspect="aspect-[16/9]" />
 
                   <div className="p-4">
                     <h2 className="mb-3 text-2xl font-bold text-ink-900">{projet.titre}</h2>
@@ -235,29 +187,41 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
               <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
                 {/* Colonne principale */}
                 <div className="space-y-5">
-                  <SectionCard title="Description">
+                  <DetailSection title="Description" icon={<Info className="size-4" />}>
                     <p className="whitespace-pre-wrap break-words text-sm leading-7 text-ink-600">
                       {projet.description}
                     </p>
-                  </SectionCard>
+                  </DetailSection>
 
                   {projet.partenaires && projet.partenaires.length > 0 && (
-                    <SectionCard title="Partenaires">
-                      <div className="flex flex-wrap gap-2">
-                        {projet.partenaires.map((partenaire) => (
-                          <Badge key={partenaire} variant="outline" className="rounded-full">
-                            {partenaire}
-                          </Badge>
-                        ))}
-                      </div>
-                    </SectionCard>
+                    <DetailSection
+                      title="Partenaires"
+                      icon={<Users className="size-4" />}
+                      count={projet.partenaires.length}
+                    >
+                      <TagList items={projet.partenaires} />
+                    </DetailSection>
+                  )}
+
+                  {/*
+                    Galerie du projet : carrousel autonome, séparé de la photo
+                    de couverture affichée en tête de fiche.
+                  */}
+                  {galerie.length > 0 && (
+                    <DetailSection
+                      title="Galerie du projet"
+                      icon={<Images className="size-4" />}
+                      count={galerie.length}
+                    >
+                      <ImageGallery images={galerie} alt={projet.titre} />
+                    </DetailSection>
                   )}
                 </div>
 
                 {/* Colonne secondaire */}
                 <div className="space-y-4">
                   {hasAddressBlock && (
-                    <SectionCard
+                    <DetailSection
                       title="Adresse"
                       icon={<MapPin className="h-4 w-4 text-ink-500" />}
                     >
@@ -265,11 +229,11 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
                         {projet.adresse && <p className="break-words">{projet.adresse}</p>}
                         {locationText && <p>{locationText}</p>}
                       </div>
-                    </SectionCard>
+                    </DetailSection>
                   )}
 
                   {hasLocation && (
-                    <SectionCard
+                    <DetailSection
                       title="Localisation"
                       icon={<MapPin className="h-4 w-4 text-ink-500" />}
                     >
@@ -281,7 +245,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
                           label=""
                         />
                       </div>
-                    </SectionCard>
+                    </DetailSection>
                   )}
                 </div>
               </div>

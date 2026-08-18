@@ -27,7 +27,7 @@ const ContactInfoCards: React.FC<ContactInfoCardsProps> = (
 
             <div className="space-y-1 pl-11">
               {item.lines.map((line, index) => (
-                <p key={`${item.id}-line-${index}`} className="text-sm text-ink-500">
+                <p key={`${item.id}-line-${index}`} className="text-small text-ink-500">
                   {line}
                 </p>
               ))}

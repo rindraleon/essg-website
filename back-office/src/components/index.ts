@@ -18,8 +18,17 @@ export { default as PageHeader } from './common/PageHeader';
 export { default as SearchInput } from './common/SearchInput';
 export { default as DynamicListField } from './common/DynamicListField';
 export { default as MultiImageUpload } from './common/MultiImageUpload';
+export { default as CoverImage } from './common/CoverImage';
+export { default as ImageGallery } from './common/ImageGallery';
+export { DetailSection, DetailField, TagList, BulletList } from './common/DetailSection';
 export { default as StatsCard } from './common/StatCard';
 export { default as PdfPreviewDialog } from './common/PdfPreviewDialog';
+export { default as ListPageHeader} from './common/ListPageHeader';
+export { default as MultiSearchSelect} from './common/MultiSearchSelect';
+export { default as MultiValueSelect} from './common/MultiValueSelect';
+export { default as SearchSelect} from './common/SearchSelect';
+export { default as StatusBadge} from './common/StatusBadge';
+export { default as MapPicker} from './common/MapPicker';
 
 // Actualites components
 export { default as ActualiteFilters } from './ActualiteComponent/ActualiteFilter';
@@ -57,6 +66,7 @@ export { default as UsersForm } from './UsersComponent/UsersForm';
 export { default as UsersViewDialog } from './UsersComponent/UsersViewDialog';
 export { default as UsersFilter } from './UsersComponent/UsersFilter';
 export type { UserFilters } from './UsersComponent/UsersFilter';
+
 
 // Admission components
 export { default as AdmissionFilters } from './AdmissionComponents/AdmissionFilters';

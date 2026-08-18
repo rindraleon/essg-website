@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Briefcase, CircleCheck, Globe, Info, Upload } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Briefcase, CircleCheck, Globe, GraduationCap, Info, Upload } from 'lucide-react';
 import React, { useRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { toUpperName } from '../../utils/slug.utils';
@@ -10,6 +10,10 @@ import type {
 } from '../../types/ressource-humaine.types';
 import { postes } from '../../data/mockData';
 import { useFormValidation } from '../../hooks/useFormValidation';
+import {
+  EMAIL_ERROR_MESSAGE,
+  EMAIL_PATTERN,
+} from '../../constants/validation.constants';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -23,6 +27,8 @@ import {
 import { FloatingInput } from '@/components/ui/floating-input';
 import { FloatingTextarea } from '@/components/ui/floating-textarea';
 import { FloatingSelect } from '@/components/ui/floating-select';
+import CvImportPanel from './CvImportPanel';
+import ParcoursFields from './ParcoursFields';
 
 interface RessourceHumaineFormProps {
   open: boolean;
@@ -45,6 +51,11 @@ const STEPS = [
   },
   {
     id: 2,
+    label: 'Parcours',
+    icon: <GraduationCap className="h-4 w-4" />,
+  },
+  {
+    id: 3,
     label: 'Publication',
     icon: <Globe className="h-4 w-4" />,
   },
@@ -55,7 +66,8 @@ type RessourceHumaineField = keyof RessourceHumaineFormData;
 const STEP_FIELDS_MAP: Record<number, RessourceHumaineField[]> = {
   0: ['prenom', 'nom', 'poste'],
   1: ['email', 'telephone', 'description'],
-  2: ['ordre'],
+  2: ['experiences', 'formations', 'diplomes', 'competences', 'langues'],
+  3: ['ordre'],
 };
 
 const defaultFormData: RessourceHumaineFormData = {
@@ -65,9 +77,16 @@ const defaultFormData: RessourceHumaineFormData = {
   description: '',
   email: '',
   telephone: '',
+  adresse: '',
   photo: '',
   actif: true,
   ordre: 0,
+  // Parcours : vide par défaut, rempli par l'OCR ou manuellement.
+  experiences: [],
+  formations: [],
+  diplomes: [],
+  competences: [],
+  langues: [],
 };
 
 const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
@@ -80,6 +99,9 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  /** Champs renseignés par l'OCR, signalés par un repère « Auto ». */
+  const [autoFilled, setAutoFilled] = useState<Set<keyof RessourceHumaineFormData>>(new Set());
 
   const {
     formData,
@@ -87,6 +109,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
     activeStep,
     setActiveStep,
     handleChange,
+    handleChanges,
     handleBlur,
     validateStep,
     validateAllSteps,
@@ -105,7 +128,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
       },
       poste: { required: true },
       email: {
-        pattern: { regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email invalide' },
+        pattern: { regex: EMAIL_PATTERN, message: EMAIL_ERROR_MESSAGE },
       },
     },
     stepFields: STEP_FIELDS_MAP,
@@ -124,14 +147,22 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
         description: initialData.description || '',
         email: initialData.email || '',
         telephone: initialData.telephone || '',
+        adresse: initialData.adresse || '',
         photo: imageUrl,
         actif: initialData.actif,
         ordre: initialData.ordre,
+        experiences: initialData.experiences ?? [],
+        formations: initialData.formations ?? [],
+        diplomes: initialData.diplomes ?? [],
+        competences: initialData.competences ?? [],
+        langues: initialData.langues ?? [],
       });
+      setAutoFilled(new Set());
       setImagePreview(imageUrl ? getImageUrl(imageUrl) : '');
     } else {
       resetForm();
       setImagePreview('');
+      setAutoFilled(new Set());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, mode, initialId]);
@@ -150,6 +181,8 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
       toast.error(message);
     } finally {
       setUploadingImage(false);
+      // Permet de re-sélectionner le même fichier après une erreur.
+      e.target.value = '';
     }
   };
 
@@ -175,8 +208,6 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
     }
   };
 
-  const [submitting, setSubmitting] = useState(false);
-
   const handleSubmit = async () => {
     if (submitting || !validateAllSteps()) return;
     setSubmitting(true);
@@ -192,7 +223,20 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
 
   /* ─── Step 0 : Informations personnelles ─── */
   const renderStep0 = () => (
-    <div className="space-y-1">
+    <div className="space-y-3">
+      {/* Import de CV : préremplit les champs, l'utilisateur valide ensuite. */}
+      {mode === 'create' && (
+        <CvImportPanel
+          disabled={submitting}
+          onApply={(patch, champs) => {
+            // Les champs détectés sont injectés dans le formulaire, et les
+            // listes du parcours génèrent autant d'inputs que d'entrées.
+            handleChanges(patch);
+            setAutoFilled(champs);
+          }}
+        />
+      )}
+
       <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
         <FloatingInput
           id="prenom"
@@ -250,7 +294,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingImage}
               size="sm"
-              className="gap-1.5 bg-white text-xs h-8"
+              
             >
               <Upload className="h-3.5 w-3.5" />
               {uploadingImage ? 'Upload...' : 'Choisir une photo'}
@@ -285,6 +329,14 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
         />
       </div>
 
+      <FloatingInput
+        id="adresse"
+        label="Adresse"
+        value={formData.adresse ?? ''}
+        onChange={(e) => handleChange('adresse', e.target.value)}
+        placeholder="Lot II M 15 Antananarivo"
+      />
+
       <FloatingTextarea
         id="description"
         label="Description (optionnel)"
@@ -296,8 +348,18 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
     </div>
   );
 
-  /* ─── Step 2 : Publication ─── */
+  /* ─── Step 2 : Parcours (généré par l'OCR, éditable) ─── */
   const renderStep2 = () => (
+    <ParcoursFields
+      formData={formData}
+      onChange={handleChanges}
+      autoFilled={autoFilled}
+      disabled={submitting}
+    />
+  );
+
+  /* ─── Step 3 : Publication ─── */
+  const renderStep3 = () => (
     <div className="space-y-4">
       <FloatingInput
         id="ordre"
@@ -325,7 +387,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
     </div>
   );
 
-  const stepRenderers = [renderStep0, renderStep1, renderStep2];
+  const stepRenderers = [renderStep0, renderStep1, renderStep2, renderStep3];
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -362,7 +424,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                     type="button"
                     onClick={() => handleStepClick(index)}
                     className={`
-                      flex items-center gap-1.5 px-3 py-1.5 rounded-full
+                      flex items-center gap-1.5 px-3 py-1.5 rounded-md
                       text-xs font-medium transition-all
                       ${
                         isActive
@@ -400,7 +462,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                 size="sm"
                 onClick={onClose}
                 disabled={submitting}
-                className="text-ink-500 h-8"
+                
               >
                 Annuler
               </Button>
@@ -412,7 +474,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                   size="sm"
                   onClick={handleBack}
                   disabled={submitting}
-                  className="gap-1 h-8"
+                  
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
                   Précédent
@@ -425,7 +487,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                   size="sm"
                   onClick={handleNext}
                   disabled={submitting}
-                  className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
+                  
                 >
                   Suivant
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -436,7 +498,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                   size="sm"
                   onClick={handleSubmit}
                   disabled={submitting}
-                  className="gap-1 h-8 bg-brand-600 hover:bg-brand-700"
+                  
                 >
                   <CircleCheck className="h-3.5 w-3.5" />
                   {submitting ? 'Enregistrement...' : mode === 'create' ? 'Créer' : 'Enregistrer'}

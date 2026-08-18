@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   ArrowRight,
   Award,
-  BadgeCheck,
   Banknote,
   BookOpen,
   Briefcase,
@@ -126,8 +125,6 @@ export const ChevronLeftRoundedIcon = makeIcon(ChevronLeft);
 export const KeyboardArrowRightRoundedIcon = makeIcon(ChevronRight);
 export const KeyboardArrowLeftRoundedIcon = makeIcon(ChevronLeft);
 export const CheckCircleRoundedIcon = makeIcon(CheckCircle2);
-export const BadgeRoundedIcon = makeIcon(BadgeCheck);
-export const VerifiedRoundedIcon = makeIcon(BadgeCheck);
 export const ApartmentRoundedIcon = makeIcon(Building2);
 export const TrendingUpRoundedIcon = makeIcon(TrendingUp);
 export const SubjectRoundedIcon = makeIcon(NotebookPen);

@@ -38,11 +38,11 @@ const LocalisationSection: React.FC<LocalisationSectionProps> = (
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div data-gsap>
-            <h2 className="mb-4 text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
+            <h2 className="mb-4 text-h2 text-ink-900">
               {title}
             </h2>
 
-            <p className="mb-7 text-lg leading-7 text-ink-500">{description}</p>
+            <p className="mb-7 text-h5 leading-7 text-ink-500">{description}</p>
 
             <div className="space-y-4">
               <div className="flex items-start gap-3">

@@ -19,7 +19,7 @@ const CtaSection = ({
   const revealRef = useGsapReveal<HTMLElement>();
 
   return (
-    <section ref={revealRef} className="relative overflow-hidden py-20 text-white">
+    <section ref={revealRef} data-surface="dark" className="relative overflow-hidden py-20 text-white">
       <div className="absolute inset-0 bg-gradient-to-br from-brand-950 via-brand-900 to-brand-700" />
       <AnimatedBackground variant="cta" />
 
@@ -29,11 +29,11 @@ const CtaSection = ({
             {icon}
           </div>
         )}
-        <h2 data-gsap className="mb-4 text-3xl font-bold drop-shadow-sm sm:text-4xl text-balance">
+        <h2 data-gsap className="mb-4 text-h2 drop-shadow-sm text-balance">
           {title}
         </h2>
         {description && (
-          <p data-gsap className="mx-auto mb-9 max-w-2xl text-lg text-brand-100 sm:text-xl">
+          <p data-gsap className="mx-auto mb-9 max-w-2xl text-h5 text-brand-100">
             {description}
           </p>
         )}

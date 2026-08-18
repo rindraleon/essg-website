@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { formatFullName, getPersonInitials } from '../../utils/name.utils';
 
 interface UsersViewDialogProps {
   open: boolean;
@@ -29,11 +30,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
     }
   };
 
-  const getInitials = () => {
-    const prenom = user.prenom || '';
-    const nom = user.nom || '';
-    return `${prenom.charAt(0)}${nom.charAt(0)}`.toUpperCase();
-  };
+  const getInitials = () => getPersonInitials(user);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {
@@ -72,7 +69,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                   {user.avatar ? (
                     <img
                       src={getImageUrl(user.avatar)}
-                      alt={`${user.prenom} ${user.nom}`}
+                      alt={formatFullName(user)}
                       className="h-full w-full object-cover"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
@@ -185,7 +182,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                       </Avatar>
                       <div className="flex-1">
                         <h2 className="mb-2 text-xl font-bold text-ink-900">
-                          {user.prenom} {user.nom}
+                          {formatFullName(user)}
                         </h2>
                         <p className="text-sm text-ink-500 mb-2">{user.email}</p>
                         <div className="flex flex-wrap gap-2">

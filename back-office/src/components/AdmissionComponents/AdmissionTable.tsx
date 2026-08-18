@@ -6,6 +6,7 @@ import type { Column } from '../common/DataTable';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { formatFullName } from '../../utils/name.utils';
 
 interface AdmissionTableProps {
   data: Admission[];
@@ -89,7 +90,7 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
               </div>
               <div className="min-w-0">
                 <span className="font-semibold text-ink-900 block">
-                  {row.nom} {row.prenom}
+                  {formatFullName(row)}
                 </span>
                 <p className="text-xs text-ink-500 truncate">{row.email}</p>
                 <p className="text-xs text-ink-500">{row.telephone}</p>

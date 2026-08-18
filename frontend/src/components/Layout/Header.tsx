@@ -18,12 +18,12 @@ const NAVIGATION = [
 ] as const;
 
 const NAV_LINK_CLASS =
-  'relative py-2 text-sm font-medium text-ink-600 transition-colors duration-200 hover:text-brand-700 ' +
+  'relative py-2 text-small font-medium text-ink-600 transition-colors duration-200 hover:text-brand-700 ' +
   'after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:rounded-full after:bg-brand-600 ' +
   'after:origin-center after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100';
 
 const MOBILE_NAV_LINK_CLASS =
-  'block rounded-xl px-4 py-2.5 text-base font-medium text-ink-700 transition-colors duration-150 hover:bg-brand-50 hover:text-brand-700';
+  'block rounded-xl px-4 py-2.5 text-body font-medium text-ink-700 transition-colors duration-150 hover:bg-brand-50 hover:text-brand-700';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -56,11 +56,14 @@ const Header = () => {
     if (prefersReducedMotion()) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(node, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.26, ease: 'power2.out' });
+      // §7.11 — Navigation : 180–220 ms. Une transition plus longue sur un
+      // menu se ressent directement comme une lenteur de l'interface,
+      // puisqu'elle s'interpose entre le clic et l'action voulue.
+      gsap.fromTo(node, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' });
       gsap.fromTo(
         node.querySelectorAll('a'),
-        { opacity: 0, x: -8 },
-        { opacity: 1, x: 0, duration: 0.24, stagger: 0.035, delay: 0.04 },
+        { opacity: 0, x: -6 },
+        { opacity: 1, x: 0, duration: 0.18, stagger: 0.03, delay: 0.03 },
       );
     }, node);
 
@@ -78,14 +81,24 @@ const Header = () => {
       )}
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div
-          className={cn(
-            'flex items-center justify-between transition-[height] duration-300',
-            scrolled ? 'h-14 sm:h-16' : 'h-16 sm:h-[4.5rem]',
-          )}
-        >
+        {/*
+          Hauteur FIXE. La version précédente animait `height`, ce qui
+          force le navigateur à recalculer la mise en page de la page
+          entière à chaque frame du défilement (§7.17).
+          La réduction visuelle passe désormais par `scale` sur le logo :
+          même effet perçu, composé par le GPU, aucun reflow.
+        */}
+        <div className="flex h-16 items-center justify-between sm:h-[4.5rem]">
           <Link ref={logoRef} to="/" className="flex items-center" aria-label="Retour à l'accueil">
-            <img src={EssG} alt="Logo ESSG" className="h-14 w-auto object-contain sm:h-16" />
+            <img
+              src={EssG}
+              alt="Logo ESSG"
+              className={cn(
+                'h-14 w-auto origin-left object-contain transition-transform duration-300 ease-out sm:h-16',
+                'motion-reduce:transition-none',
+                scrolled && 'scale-[0.88]',
+              )}
+            />
           </Link>
 
           <div ref={navRef} className="hidden lg:flex lg:items-center lg:gap-7">

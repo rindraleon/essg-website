@@ -80,8 +80,8 @@ export default function QueryState({
           <Icon className="size-7" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-ink-900">{copy.title}</h3>
-          <p className="mt-1 max-w-md text-sm text-ink-500">{copy.description}</p>
+          <h3 className="text-h5 font-semibold text-ink-900">{copy.title}</h3>
+          <p className="mt-1 max-w-md text-small text-ink-500">{copy.description}</p>
         </div>
         {onRetry && (
           <Button variant="outline" onClick={onRetry}>

@@ -76,7 +76,7 @@ export function Chip({
   onDelete?: () => void;
 }) {
   return (
-    <span className={cn('inline-flex items-center gap-1 rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-800', className)}>
+    <span className={cn('inline-flex items-center gap-1 rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-caption font-medium text-brand-800', className)}>
       {icon}
       {label}
       {onDelete && (
@@ -138,7 +138,7 @@ export function FormControl({ children, className, fullWidth, size: _size, requi
 
 export function InputLabel({ children, htmlFor }: { children?: React.ReactNode; htmlFor?: string; id?: string; sx?: unknown }) {
   return (
-    <label htmlFor={htmlFor} className="mb-1.5 block text-sm font-medium text-ink-700">
+    <label htmlFor={htmlFor} className="mb-1.5 block text-small font-medium text-ink-700">
       {children}
     </label>
   );
@@ -174,7 +174,7 @@ export function TextField({
   const inputClass = cn('w-full', fullWidth && 'w-full', InputProps?.startAdornment && 'pl-9', className);
   return (
     <div className={cn('space-y-1.5', fullWidth && 'w-full')}>
-      {label && <label className="text-sm font-medium text-ink-700">{label}</label>}
+      {label && <label className="text-small font-medium text-ink-700">{label}</label>}
       <div className="relative">
         {InputProps?.startAdornment && (
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
@@ -218,13 +218,13 @@ export function Select({
 }) {
   return (
     <label className={cn('block w-full', !fullWidth && className)}>
-      {label && <span className="mb-1.5 block text-sm font-medium text-ink-700">{label}</span>}
+      {label && <span className="mb-1.5 block text-small font-medium text-ink-700">{label}</span>}
       <select
         name={name}
         required={required}
         value={value ?? ''}
         className={cn(
-          'flex h-10 w-full rounded-xl border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900',
+          'flex h-10 w-full rounded-xl border border-ink-200 bg-white px-3 py-2 text-small text-ink-900',
           className,
         )}
         onChange={(event) => onChange?.({ target: { value: event.target.value } })}

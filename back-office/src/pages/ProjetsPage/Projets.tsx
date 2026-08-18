@@ -1,18 +1,17 @@
-import { Card, CardContent, Typography, Box, Button } from '@/components/compat/mui';
+import { Card, CardContent } from '@/components/compat/mui';
 import React, { useState, useCallback } from 'react';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
 import {
   ProjetFilters,
   ProjetForm,
   ProjetTable,
   ProjetViewDialog,
   ConfirmDialog,
-  SearchInput,
+  ListPageHeader
 } from '../../components';
-import { usePagination, useProjetFilter, useScrollToTop } from '../../hooks';
+import { usePagination, useProjetFilter, useScrollToTop,useTitle,useCreateProjet, useDeleteProjet, useProjetsQuery, useUpdateProjet} from '../../hooks';
 import type { ProjetFormData, Projet } from '../../types';
-import { useCreateProjet, useDeleteProjet, useProjetsQuery, useUpdateProjet } from '../../hooks/queries';
-import { useTitle } from '@/hooks/useTitle';
+
 
 const Projets: React.FC = () => {
   useScrollToTop();
@@ -123,43 +122,19 @@ const Projets: React.FC = () => {
 
 
   return (
-    <div className="space-y-2 p-2 sm:p-6 lg:p-8">
-      <Toaster position="top-right" richColors />
-
-      {/* Search + Add Button */}
-      <Card variant="outlined">
-        <CardContent>
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-              <Typography variant="h6" className="font-bold text-ink-800 whitespace-nowrap">
-                Liste des projets
-                <Box component="span" className="ml-2 text-sm font-normal text-ink-500">
-                  ({filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''})
-                </Box>
-              </Typography>
-              <SearchInput
-                value={searchTerm}
-                onChange={handleSearchChange}
-                placeholder="Rechercher par titre, description..."
-              />
-            </div>
-            <div className="flex items-center gap-3 w-full lg:w-auto">
-              <Button
-                variant="outlined"
-                onClick={handleToggleFilters}
-              >
-                {filtersOpen ? 'Masquer les filtres' : 'Filtres'}
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleOpenCreate}
-              >
-                + Nouveau projet
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="mx-auto max-w-7xl py-4 space-y-2 mx-auto min-w-0">
+      <ListPageHeader
+        title="Liste des projets"
+        totalCount={filteredData.length}
+        searchValue={searchTerm}
+        onSearchChange={handleSearchChange}
+        searchPlaceholder="Rechercher par titre, description..."
+        onToggleFilters={handleToggleFilters}
+        filtersOpen={filtersOpen}
+        activeFilterCount={activeFilterCount}
+        actionLabel="Nouveau projet"
+        onAction={handleOpenCreate}
+      />
 
       {/* Filters - Full Width Below */}
       {filtersOpen && (

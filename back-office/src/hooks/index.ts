@@ -7,4 +7,7 @@ export { usePartenaireFilter } from './usePartenaireFilter';
 export { useFormValidation } from './useFormValidation';
 export { useAutoSlug } from './useAutoSlug';
 export * from './queries';
-export { useUploadImage } from './mutations/useUploadImage';
+export { useUploadImage } from './useUploadImage';
+export { useTitle} from './useTitle';
+export { useUploadImage as useUpluadImage } from './useUploadImage';
+export { useRessourceHumaineFilter} from './useRessourceHumaineFilter';

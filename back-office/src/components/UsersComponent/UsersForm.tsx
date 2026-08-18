@@ -6,6 +6,10 @@ import { toUpperName } from '../../utils/slug.utils';
 import { uploadAvatar } from '../../services';
 import type { User, UserFormData } from '../../types';
 import { useFormValidation } from '../../hooks/useFormValidation';
+import {
+  EMAIL_ERROR_MESSAGE,
+  EMAIL_PATTERN,
+} from '../../constants/validation.constants';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -55,7 +59,7 @@ const UsersForm: React.FC<UsersFormProps> = ({ open, onClose, onSubmit, initialD
       validators: {
         email: {
           required: true,
-          pattern: { regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email invalide' },
+          pattern: { regex: EMAIL_PATTERN, message: EMAIL_ERROR_MESSAGE },
         },
         motDePasse: {
           required: mode === 'create',

@@ -1,6 +1,9 @@
 export interface Formation {
   id: number;
   slug: string;
+  /** Mention / domaine (niveau 1 de la hiérarchie pédagogique ESSG). */
+  mention?: string;
+  /** @deprecated Aligné sur [mention] par le backend. */
   domaine: string[];
   titre: string;
   niveau: 'Licence' | 'Master' | 'Doctorat';
@@ -14,9 +17,21 @@ export interface Formation {
   misAJourLe?: string;
   credits?: number;
   responsable?: string;
+  /** Ressource humaine responsable — permet le lien vers sa fiche. */
+  responsableId?: number | null;
   email?: string;
   conditions?: string[];
   competences?: string[];
+  /**
+   * Programme de la formation : une entrée par module ou unité
+   * d'enseignement. C'est le champ alimenté par le back-office.
+   */
+  programme?: string[];
+  /**
+   * @deprecated Remplacé par `programme`. Conservé en lecture seule pour les
+   * formations historiques dont le programme était structuré par semestre ;
+   * le back-office ne l'alimente plus.
+   */
   modules?: FormationModule[];
 }
 
@@ -37,6 +52,8 @@ export type FormationItem = {
   description: string;
   objectifs: string[];
   debouches: string[];
+  programme?: string[];
+  /** @deprecated Voir `Formation.modules`. */
   modules?: FormationModule[];
   conditions?: string[];
   competences?: string[];

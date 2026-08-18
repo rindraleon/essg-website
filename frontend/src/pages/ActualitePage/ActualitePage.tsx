@@ -11,7 +11,10 @@ import QueryState from '../../components/common/QueryState';
 import { Input } from '../../components/ui/input';
 import { Select } from '../../components/ui/select';
 import { Skeleton } from '../../components/ui/skeleton';
-import { useActualites, useScrollToTop } from '../../hooks';
+import { cn } from '@/lib/utils';
+import { useActualites } from '../../hooks';
+import usePagination from '../../hooks/usePagination';
+import Pagination from '../../components/common/Pagination';
 import type { Actualite } from '../../types/actualite.types';
 
 import { SITE_HERO_IMAGE } from '../../constants/media';
@@ -28,7 +31,6 @@ const CATEGORIES = [
 ];
 
 const ActualitesPage = () => {
-  useScrollToTop();
   useTitle('Actualités | ESSG');
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -55,6 +57,9 @@ const ActualitesPage = () => {
     });
   }, [actualites, searchTerm, categorieFilter]);
 
+  const { pageItems, page, totalPages, goToPage, listRef, isChanging } =
+    usePagination(filteredActualites, { pageSize: 9 });
+
   const resultCount = filteredActualites.length;
   const resultText = `${resultCount} actualité${resultCount > 1 ? 's' : ''}`;
 
@@ -79,8 +84,6 @@ const ActualitesPage = () => {
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Actualités ESSG"
-        badgeIcon={<Newspaper className="size-4" />}
-        badgeLabel="ESSG — Vie de l'école"
         title="Actualités"
         description="Suivez la vie de l'ESSG : événements, recherche, partenariats et réussites de nos étudiants."
         stats={[
@@ -167,10 +170,29 @@ const ActualitesPage = () => {
               </div>
             }
           >
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredActualites.map((actu) => (
-                <ActualiteCard key={actu.id} actualite={actu} />
-              ))}
+            <div ref={listRef} className="scroll-mt-24">
+              {/* Fondu bref au changement de page (§23) : signale que le
+                  contenu a été renouvelé, sur deux pages de structure
+                  identique rien ne le montrerait autrement. */}
+              <div
+                className={cn(
+                  'grid grid-cols-1 gap-6 transition-opacity duration-[--duration-hover] sm:grid-cols-2 lg:grid-cols-3',
+                  'motion-reduce:transition-none',
+                  isChanging && 'opacity-40',
+                )}
+              >
+                {pageItems.map((actu) => (
+                  <ActualiteCard key={actu.id} actualite={actu} />
+                ))}
+              </div>
+
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onChange={goToPage}
+                ariaLabel="Pagination des actualités"
+                className="mt-12"
+              />
             </div>
           </QueryState>
         </div>

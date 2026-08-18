@@ -34,6 +34,11 @@ export { default as SectionHeader } from './common/SectionHeader';
 export { default as SectionCta } from './common/SectionCta';
 export { default as SectionContent } from './common/SectionContent';
 export { default as ScrollableCardGrid } from './common/ScrollableCardGrid';
+export { default as MediaCard } from './common/MediaCard';
+export {
+  MediaCardSkeleton,
+  MediaCardSkeletonGrid,
+} from './common/MediaCardSkeleton';
 export { default as MobileCta } from './common/MobileCta';
 
 // Partenaires components

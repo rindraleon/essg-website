@@ -12,7 +12,6 @@ export default function useGsapHero<T extends HTMLElement>() {
 
     const media = root.querySelector<HTMLElement>('[data-hero="media"]');
     const shine = root.querySelector<HTMLElement>('[data-hero="shine"]');
-    const badge = root.querySelector<HTMLElement>('[data-hero="badge"]');
     const titleWords = root.querySelectorAll<HTMLElement>('[data-split="word"]');
     const title = root.querySelector<HTMLElement>('[data-hero="title"]');
     const description = root.querySelector<HTMLElement>('[data-hero="description"]');
@@ -27,7 +26,6 @@ export default function useGsapHero<T extends HTMLElement>() {
       clearMotion([
         media,
         shine,
-        badge,
         title,
         description,
         actions,
@@ -68,10 +66,6 @@ export default function useGsapHero<T extends HTMLElement>() {
           repeatDelay: 6,
           delay: 2.4,
         });
-      }
-
-      if (badge) {
-        timeline.fromTo(badge, { opacity: 0, y: 16, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.5 }, 0.18);
       }
 
       if (titleWords.length > 0) {

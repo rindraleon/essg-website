@@ -1,4 +1,3 @@
-import { BadgeCheck } from 'lucide-react';
 import React from 'react';
 import useGsapReveal from '../../hooks/useGsapReveal';
 import type { CertificationsSectionProps } from '../../types';
@@ -17,7 +16,7 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = (
     <section ref={revealRef} className="bg-brand-50 py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div data-gsap className="mb-8 text-center">
-          <h2 className="mb-3 text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">
+          <h2 className="mb-3 text-h2 text-ink-900">
             {title}
           </h2>
           <p className="mx-auto max-w-3xl text-ink-500 leading-7">{description}</p>
@@ -25,7 +24,6 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = (
 
         <div className="flex flex-wrap justify-center gap-4">
           <div data-gsap className="flex items-center gap-3 rounded-2xl bg-white px-6 py-4 shadow-card ring-1 ring-brand-100">
-            <BadgeCheck />
             <span className="text-ink-800 font-semibold">
               Reconnaissance nationale et internationale de notre excellence
             </span>

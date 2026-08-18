@@ -20,11 +20,12 @@ const AdmissionSection: React.FC<AdmissionCtaSectionProps> = (
   const revealRef = useGsapReveal<HTMLElement>();
 
   return (
-    <section ref={revealRef} className="relative overflow-hidden bg-gradient-to-br from-brand-800 via-brand-700 to-brand-600 py-20 text-white">
+    <section ref={revealRef} data-surface="dark"
+      className="relative overflow-hidden bg-gradient-to-br from-brand-800 via-brand-700 to-brand-600 py-20 text-white">
       <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-        <h2 data-gsap className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>
+        <h2 data-gsap className="mb-4 text-h2">{title}</h2>
 
-        <p data-gsap className="mx-auto mb-8 max-w-2xl text-xl text-sage-100/90">{description}</p>
+        <p data-gsap className="mx-auto mb-8 max-w-2xl text-h4 text-sage-100/90">{description}</p>
 
         <div data-gsap className="flex flex-col justify-center gap-4 sm:flex-row">
           <Button
