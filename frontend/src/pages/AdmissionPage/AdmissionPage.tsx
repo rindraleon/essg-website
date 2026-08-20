@@ -41,21 +41,6 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPa
       <section className="py-12">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <AdmissionForm />
-
-          <div className="mt-8">
-            <ContactCard
-              icon={
-                <CircleHelp
-                />
-              }
-              title="Besoin d'aide ?"
-              description="Si vous rencontrez des difficultés ou avez des questions sur le processus d'admission, notre équipe est là pour vous aider."
-              primaryLabel="admission@essg.mg"
-              primaryLink="admission@essg.mg"
-              secondaryLabel="+261 34 28 085 30"
-              secondaryLink="/contact"
-            />
-          </div>
         </div>
       </section>
 
