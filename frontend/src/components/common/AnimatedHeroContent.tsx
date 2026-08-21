@@ -1,77 +1,51 @@
 import React from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
-const EASE = [0.22, 1, 0.36, 1] as const;
+const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.15 },
-  },
-};
+export const AnimatedHeroContainer: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+}> = ({ children, className }) => (
+  <div
+    className={cn('hero-content-stagger', className)}
+    style={{ '--hero-ease': EASE } as React.CSSProperties}
+  >
+    {React.Children.map(children, (child, index) => (
+      <div
+        key={index}
+        className="hero-content-stagger__item"
+        style={{ animationDelay: `${150 + index * 110}ms` }}
+      >
+        {child}
+      </div>
+    ))}
+  </div>
+);
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 28 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: EASE },
-  },
-};
+/** Élément individuel du héros (badge, titre, description, CTA). */
+export const AnimatedHeroItem: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+}> = ({ children, className }) => (
+  <div className={cn('hero-content-stagger__item', className)}>{children}</div>
+);
 
-/**
- * Conteneur de contenu héro animé : les enfants apparaissent en cascade
- * (stagger) au chargement. À utiliser dans HeroSection / PageHero.
- */
-export const AnimatedHeroContainer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const reduce = useReducedMotion();
-  return (
-    <motion.div variants={containerVariants} initial={reduce ? false : 'hidden'} animate="visible">
-      {children}
-    </motion.div>
-  );
-};
-
-/**
- * Élément individuel du héros (badge, titre, description, CTA).
- */
-export const AnimatedHeroItem: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <motion.div variants={itemVariants} className="[&_*]:!duration-700">
-      {children}
-    </motion.div>
-  );
-};
-
-/**
- * Background héro animé : léger zoom lent + dégradé qui se déplace
- * (parallax subtil). S'étend derrière le contenu.
- */
 export const AnimatedHeroBackground: React.FC<{
   children: React.ReactNode;
   gradient?: string;
-}> = ({ children, gradient }) => {
-  return (
-    <div className="absolute inset-0 overflow-hidden">
-      <motion.div
-        className="absolute inset-0"
-        initial={{ scale: 1.15, opacity: 0.85 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 1.6, ease: EASE }}
-      >
-        {children}
-      </motion.div>
-      {gradient && (
-        <motion.div
-          aria-hidden="true"
-          className="absolute inset-0"
-          style={{ background: gradient, backgroundSize: '200% 200%' }}
-          animate={{ backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'] }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
-        />
-      )}
-    </div>
-  );
-};
+  className?: string;
+}> = ({ children, gradient, className }) => (
+  <div className={cn('absolute inset-0 overflow-hidden', className)}>
+    <div className="hero-background-content absolute inset-0">{children}</div>
+    {gradient && (
+      <div
+        aria-hidden="true"
+        className="hero-background-gradient absolute inset-0"
+        style={{ background: gradient }}
+      />
+    )}
+  </div>
+);
 
 export default AnimatedHeroContainer;

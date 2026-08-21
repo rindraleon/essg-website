@@ -12,7 +12,7 @@ export function Card({ className, children, elevation: _e, sx: _sx, ...props }: 
   );
 }
 
-export function CardContent({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+export function CardContent({ className, children, ...props }: Readonly<React.HTMLAttributes<HTMLDivElement>>) {
   return (
     <div className={cn('p-6', className)} {...props}>
       {children}
@@ -66,7 +66,7 @@ export function Chip({
   variant: _variant,
   sx: _sx,
   onDelete,
-}: {
+}: Readonly<{
   label?: React.ReactNode;
   className?: string;
   icon?: React.ReactNode;
@@ -74,7 +74,7 @@ export function Chip({
   variant?: string;
   sx?: unknown;
   onDelete?: () => void;
-}) {
+}>) {
   return (
     <span className={cn('inline-flex items-center gap-1 rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-caption font-medium text-brand-800', className)}>
       {icon}
@@ -88,7 +88,7 @@ export function Chip({
   );
 }
 
-export function Divider({ className }: { className?: string }) {
+export function Divider({ className }: Readonly<{ className?: string }>) {
   return <div className={cn('h-px w-full bg-ink-100', className)} />;
 }
 
@@ -98,13 +98,13 @@ export function Skeleton({
   width,
   height,
   sx: _sx,
-}: {
+}: Readonly<{
   className?: string;
   variant?: string;
   width?: string | number;
   height?: string | number;
   sx?: unknown;
-}) {
+}>) {
   return (
     <UiSkeleton
       className={cn(variant === 'text' ? 'h-4' : 'rounded-md', className)}
@@ -113,7 +113,7 @@ export function Skeleton({
   );
 }
 
-export function Tooltip({ children, title }: { children: React.ReactElement; title?: React.ReactNode }) {
+export function Tooltip({ children, title }: Readonly<{ children: React.ReactElement; title?: React.ReactNode }>) {
   return (
     <span className="inline-flex" title={typeof title === 'string' ? title : undefined}>
       {children}
@@ -136,7 +136,7 @@ export function FormControl({ children, className, fullWidth, size: _size, requi
   return <div className={cn(fullWidth && 'w-full', className)}>{children}</div>;
 }
 
-export function InputLabel({ children, htmlFor }: { children?: React.ReactNode; htmlFor?: string; id?: string; sx?: unknown }) {
+export function InputLabel({ children, htmlFor }: Readonly<{ children?: React.ReactNode; htmlFor?: string; id?: string; sx?: unknown }>) {
   return (
     <label htmlFor={htmlFor} className="mb-1.5 block text-small font-medium text-ink-700">
       {children}
@@ -144,7 +144,7 @@ export function InputLabel({ children, htmlFor }: { children?: React.ReactNode; 
   );
 }
 
-export function InputAdornment({ children }: { children?: React.ReactNode; position?: string; sx?: unknown }) {
+export function InputAdornment({ children }: Readonly<{ children?: React.ReactNode; position?: string; sx?: unknown }>) {
   return <span className="inline-flex items-center text-ink-400">{children}</span>;
 }
 
@@ -203,7 +203,7 @@ export function Select({
   fullWidth,
   name,
   required,
-}: {
+}: Readonly<{
   children?: React.ReactNode;
   value?: string;
   onChange?: (event: { target: { value: string } }) => void;
@@ -215,7 +215,7 @@ export function Select({
   labelId?: string;
   name?: string;
   required?: boolean;
-}) {
+}>) {
   return (
     <label className={cn('block w-full', !fullWidth && className)}>
       {label && <span className="mb-1.5 block text-small font-medium text-ink-700">{label}</span>}
@@ -235,7 +235,7 @@ export function Select({
   );
 }
 
-export function MenuItem({ children, value }: { children?: React.ReactNode; value?: string }) {
+export function MenuItem({ children, value }: Readonly<{ children?: React.ReactNode; value?: string }>) {
   return <option value={value}>{children}</option>;
 }
 

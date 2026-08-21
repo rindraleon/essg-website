@@ -51,7 +51,7 @@ export { default as RessourceHumaineCard } from './RessourceHumaineComponents/Re
 export { default as ActualiteCard } from './ActualiteCompnent/ActualiteCard';
 
 // Faq components
-export { default as FaqAccordion } from './FaqComponents/FaqAccordion';
+export { default as FaqAccordion } from './HomeComponents/FaqAccordion';
 export { default as ContactCard } from './Contact/ContactCard';
 
 // admission components

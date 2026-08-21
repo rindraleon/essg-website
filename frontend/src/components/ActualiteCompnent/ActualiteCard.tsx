@@ -11,11 +11,6 @@ interface Props {
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1768117173988-5ebfdde4fdd3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 
-/**
- * Carte d'actualité — délègue toute la présentation à `MediaCard`, afin que
- * la page « Actualités » et la section d'accueil aient rigoureusement le même
- * rendu et le même comportement au survol.
- */
 const ActualiteCard = ({ actualite }: Props) => (
   <MediaCard
     to={`/actualites/${actualite.slug}`}

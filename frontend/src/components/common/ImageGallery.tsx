@@ -99,8 +99,14 @@ const ImageGallery = ({ images, alt = 'Image', title = "Galerie d'images" }: Ima
           role="dialog"
           aria-modal="true"
           aria-label="Visionneuse d'images"
+          tabIndex={-1}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-ink-950/95 backdrop-blur-sm"
-          onClick={close}
+          onClick={(event) => {
+            if (event.target === event.currentTarget) close();
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Escape') close();
+          }}
         >
           <button
             type="button"
@@ -123,7 +129,7 @@ const ImageGallery = ({ images, alt = 'Image', title = "Galerie d'images" }: Ima
               <ChevronLeft />
             </button>
           )}
-          <figure className="flex max-h-full max-w-full flex-col items-center px-4" onClick={(event) => event.stopPropagation()}>
+          <figure className="flex max-h-full max-w-full flex-col items-center px-4">
             <img
               data-lightbox-image
               src={urls[lightboxIndex]}

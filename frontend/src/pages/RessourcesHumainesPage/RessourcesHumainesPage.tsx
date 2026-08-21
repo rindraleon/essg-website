@@ -120,11 +120,6 @@ const RessourcesHumainesPage: React.FC = () => {
         imageAlt="Équipe ESSG"
         title="Ressources Humaines"
         description="Découvrez les hommes et femmes qui font de l'ESSG une institution d'excellence en sciences géomatiques."
-        stats={[
-          { value: `${allRessourcesHumaines.length}+`, label: 'Membres' },
-          { value: '50+', label: 'Années d\'expérience' },
-          { value: '15+', label: 'Partenaires internationaux' },
-        ]}
       />
 
       <Breadcrumb items={[{ label: 'Ressources Humaines' }]} />

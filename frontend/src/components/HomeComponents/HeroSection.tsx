@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { SITE_HERO_ALT, SITE_HERO_IMAGE } from '../../constants/media';
 import type { HeroSectionProps } from '../../types';
-
+import TypingText from '../common/TypingText';
 
 type CssVars = React.CSSProperties & Record<`--${string}`, string>;
 
@@ -114,8 +114,16 @@ const GeodeticLayer: React.FC = () => (
     {/* Lignes de mesure entre les stations. */}
     <g stroke="rgb(152 192 112 / 0.55)" strokeWidth="0.75">
       <path className="hero-geo-line" d="M120 620 L340 470 L610 560 L880 380 L1080 470" />
-      <path className="hero-geo-line" style={{ animationDelay: '0.4s' }} d="M340 470 L420 220 L610 560" />
-      <path className="hero-geo-line" style={{ animationDelay: '0.8s' }} d="M610 560 L760 180 L880 380" />
+      <path
+        className="hero-geo-line"
+        style={{ animationDelay: '0.4s' }}
+        d="M340 470 L420 220 L610 560"
+      />
+      <path
+        className="hero-geo-line"
+        style={{ animationDelay: '0.8s' }}
+        d="M610 560 L760 180 L880 380"
+      />
     </g>
 
     {/* Stations : un point plein, un cercle de tolérance autour. */}
@@ -131,13 +139,19 @@ const GeodeticLayer: React.FC = () => (
       ].map(([cx, cy]) => (
         <g key={`${cx}-${cy}`}>
           <circle cx={cx} cy={cy} r="2.5" />
-          <circle cx={cx} cy={cy} r="9" fill="none" stroke="rgb(152 192 112 / 0.4)" strokeWidth="0.6" />
+          <circle
+            cx={cx}
+            cy={cy}
+            r="9"
+            fill="none"
+            stroke="rgb(152 192 112 / 0.4)"
+            strokeWidth="0.6"
+          />
         </g>
       ))}
     </g>
   </svg>
 );
-
 
 const HudCrosshair: React.FC = () => (
   <div
@@ -164,14 +178,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   title = 'École Supérieure de Sciences Géomatiques',
   description = "Formez-vous à la géomatique, à la topographie et à l'aménagement du territoire. Une école d'excellence, au service des territoires de Madagascar.",
 }) => {
-  
   const titleWords = useMemo(
     () =>
       title
         .split(' ')
         .filter(Boolean)
         .map((word, index, all) => (index < all.length - 1 ? `${word}\u00A0` : word)),
-    [title],
+    [title]
   );
 
   const containerRef = useRef<HTMLElement>(null);
@@ -267,11 +280,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-4xl px-5 py-12 text-center md:px-8 md:py-16">
-        <div
-          ref={registerLayer}
-          data-depth="0.03"
-          className="hero-plx flex flex-col items-center"
-        >
+        <div ref={registerLayer} data-depth="0.03" className="hero-plx flex flex-col items-center">
           <span
             style={{ '--hero-step': '1' } as CssVars}
             className="hero-reveal mb-6 inline-flex items-center gap-1.5 rounded-full border border-sage-400/40 bg-white/10 px-3 py-1 text-small font-medium text-sage-100 backdrop-blur-md"
@@ -296,9 +305,22 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             ))}
           </h1>
 
+          <p
+            style={{ '--hero-step': String(titleWords.length + 2) } as CssVars}
+            className="hero-reveal mb-3 min-h-7 text-h5 font-semibold text-sage-300"
+          >
+            <TypingText
+              phrases={[
+                'Géomatique de précision.',
+                'Des territoires durables.',
+                "La donnée au service de l'action.",
+              ]}
+            />
+          </p>
+
           {description && (
             <p
-              style={{ '--hero-step': String(titleWords.length + 2) } as CssVars}
+              style={{ '--hero-step': String(titleWords.length + 3) } as CssVars}
               className="hero-reveal mb-9 max-w-[42rem] text-body-lg text-white/85"
             >
               {description}
@@ -307,12 +329,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* CTA : action principale puis action secondaire (§14). */}
           <div
-            style={{ '--hero-step': String(titleWords.length + 3) } as CssVars}
+            style={{ '--hero-step': String(titleWords.length + 4) } as CssVars}
             className="hero-reveal flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row"
           >
             <Link
               to="/formations"
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-sage-400 px-6 text-small font-semibold text-brand-950 shadow-lg transition-colors duration-200 hover:bg-sage-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-200 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-950 motion-reduce:transition-none sm:w-auto"
+              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-sage-400 px-6 text-small font-semibold text-brand-950 shadow-lg transition-[transform,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-sage-300 hover:shadow-[0_10px_24px_-10px_rgba(152,192,112,0.55)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-200 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-950 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 sm:w-auto"
             >
               Découvrir nos formations
               <ArrowRight className="size-4" />
@@ -320,7 +342,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 
             <Link
               to="/contact"
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 text-small font-semibold text-white backdrop-blur-md transition-colors duration-200 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 motion-reduce:transition-none sm:w-auto"
+              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 text-small font-semibold text-white backdrop-blur-md transition-[transform,background-color,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-white/50 hover:bg-white/20 hover:shadow-[0_10px_24px_-10px_rgba(255,255,255,0.25)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 sm:w-auto"
             >
               Contactez-nous
             </Link>
@@ -336,9 +358,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         className="absolute bottom-7 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-1 text-white/60 transition-colors hover:text-white"
         aria-label="Défiler vers le contenu"
       >
-        <span className="font-tech text-tech uppercase">
-          Découvrir
-        </span>
+        <span className="font-tech text-tech uppercase">Découvrir</span>
         <ArrowDown className="hero-scroll-cue size-4" />
       </a>
     </section>

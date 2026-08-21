@@ -2,6 +2,7 @@ import { SITE_HERO_ALT, SITE_HERO_IMAGE } from '../../constants/media';
 import useGsapHero from '../../hooks/useGsapHero';
 import AnimatedBackground from '../animations/AnimatedBackground';
 import SplitTitle from '../animations/SplitTitle';
+import AnimatedNumber from './AnimatedNumber';
 import type { PageHeroProps } from '../../types/common.types';
 
 const PageHero = ({
@@ -15,7 +16,11 @@ const PageHero = ({
   const heroRef = useGsapHero<HTMLElement>();
 
   return (
-    <section ref={heroRef} data-surface="dark" className="relative overflow-hidden bg-brand-950 text-white">
+    <section
+      ref={heroRef}
+      data-surface="dark"
+      className="relative overflow-hidden bg-brand-950 text-white"
+    >
       <img
         data-hero="media"
         src={image || SITE_HERO_IMAGE}
@@ -66,10 +71,10 @@ const PageHero = ({
               <div
                 key={stat.label}
                 data-hero="stat"
-                className="rounded-2xl border border-white/18 bg-white/12 p-4 text-center shadow-lg backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
+                className="rounded-2xl border border-white/18 bg-white/12 p-4 text-center shadow-lg backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               >
                 {stat.icon && <div className="mb-2 flex justify-center">{stat.icon}</div>}
-                <div className="text-h3 font-bold text-white">{stat.value}</div>
+                <AnimatedNumber value={stat.value} className="block text-h3 font-bold text-white" />
                 <div className="text-small text-sage-100">{stat.label}</div>
               </div>
             ))}

@@ -6,22 +6,9 @@ interface SectionHeaderProps {
   description: string;
   eyebrow?: string;
   center?: boolean;
-  /** Largeur maximale du bloc. Par défaut : largeur de lecture confortable. */
   maxWidth?: string;
 }
 
-/**
- * En-tête de section : label facultatif, titre, description (§1).
- *
- * Rythme vertical fixe — label 12 px, titre, description 12 px — pour que
- * toutes les sections du site présentent le même espacement entre ces trois
- * niveaux, quelle que soit la page.
- *
- * La description est bornée à `65ch` plutôt qu'à une largeur en pixels : la
- * limite suit alors la taille réelle des caractères, donc la ligne conserve
- * le même nombre de mots quelle que soit la taille de police choisie par
- * l'utilisateur dans son navigateur (§1 : 60–75 caractères par ligne).
- */
 const SectionHeader: React.FC<SectionHeaderProps> = ({
   title,
   description,

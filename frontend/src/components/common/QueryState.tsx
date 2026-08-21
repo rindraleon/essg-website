@@ -53,7 +53,7 @@ export default function QueryState({
   onEmptyAction,
   skeleton,
   children,
-}: QueryStateProps) {
+}: Readonly<QueryStateProps>) {
   if (loading) {
     return (
       skeleton ?? (

@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { playIntro } from '../../animations/presets';
 import useHeaderScroll from '../../hooks/useHeaderScroll';
 import { useAdmissionsOuvertes } from '../../hooks/useAdmissionsSettings';
-import { gsap, prefersReducedMotion, registerGsap } from '../../lib/gsap';
+import { gsap, registerGsap } from '../../lib/gsap';
 
 const NAVIGATION = [
   { name: 'Accueil', href: '/' },
@@ -24,12 +24,14 @@ const NAV_LINK_CLASS =
   'after:origin-center after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100';
 
 const MOBILE_NAV_LINK_CLASS =
-  'block rounded-xl px-4 py-2.5 text-body font-medium text-ink-700 transition-colors duration-150 hover:bg-brand-50 hover:text-brand-700';
+  'block rounded-xl px-4 py-3 text-body font-medium text-ink-700 transition-[background-color,color,transform] duration-200 ' +
+  'hover:translate-x-1 hover:bg-brand-50 hover:text-brand-700 motion-reduce:transition-none motion-reduce:hover:translate-x-0';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const admissionsOuvertes = useAdmissionsOuvertes();
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
   const logoRef = useRef<HTMLAnchorElement | null>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
@@ -52,29 +54,22 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    const node = mobileMenuRef.current;
-    if (!node || !mobileMenuOpen) return;
-    registerGsap();
-    if (prefersReducedMotion()) return;
+    if (!mobileMenuOpen) return;
 
-    const ctx = gsap.context(() => {
-      // §7.11 — Navigation : 180–220 ms. Une transition plus longue sur un
-      // menu se ressent directement comme une lenteur de l'interface,
-      // puisqu'elle s'interpose entre le clic et l'action voulue.
-      gsap.fromTo(
-        node,
-        { opacity: 0, y: -8 },
-        { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' }
-      );
-      gsap.fromTo(
-        node.querySelectorAll('a'),
-        { opacity: 0, x: -6 },
-        { opacity: 1, x: 0, duration: 0.18, stagger: 0.03, delay: 0.03 }
-      );
-    }, node);
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
 
-    return () => ctx.revert();
+    document.addEventListener('keydown', closeOnEscape);
+    const firstLink = mobileMenuRef.current?.querySelector<HTMLAnchorElement>('a');
+    firstLink?.focus();
+    return () => document.removeEventListener('keydown', closeOnEscape);
   }, [mobileMenuOpen]);
+
+  const closeMobileMenu = () => setMobileMenuOpen(false);
 
   return (
     <header
@@ -87,13 +82,6 @@ const Header = () => {
       )}
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/*
-          Hauteur FIXE. La version précédente animait `height`, ce qui
-          force le navigateur à recalculer la mise en page de la page
-          entière à chaque frame du défilement (§7.17).
-          La réduction visuelle passe désormais par `scale` sur le logo :
-          même effet perçu, composé par le GPU, aucun reflow.
-        */}
         <div className="flex h-16 items-center justify-between sm:h-[4.5rem]">
           <Link ref={logoRef} to="/" className="flex items-center" aria-label="Retour à l'accueil">
             <img
@@ -133,51 +121,79 @@ const Header = () => {
           </div>
 
           <button
+            ref={menuButtonRef}
             type="button"
-            className="inline-flex size-10 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-brand-800 transition-colors hover:bg-brand-100 lg:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="inline-flex size-10 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-brand-800 transition-[background-color,color,transform] duration-200 hover:bg-brand-100 active:scale-[0.98] lg:hidden motion-reduce:transition-none motion-reduce:active:scale-100"
+            onClick={() => setMobileMenuOpen((open) => !open)}
             aria-label={mobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
             aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
           >
             {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
-
-        {mobileMenuOpen && (
-          <div ref={mobileMenuRef} className="border-t border-ink-100 py-4 lg:hidden">
-            <div className="space-y-1.5">
-              {NAVIGATION.map((item) => (
-                <NavLink
-                  key={item.name}
-                  to={item.href}
-                  className={MOBILE_NAV_LINK_CLASS}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </NavLink>
-              ))}
-              <div className="space-y-2.5 pt-4">
-                <Link
-                  to="/contact"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}
-                >
-                  Contact
-                </Link>
-                {admissionsOuvertes && (
-                  <Link
-                    to="/admission"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
-                  >
-                    Admission
-                  </Link>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
       </nav>
+
+      {/* Voile séparé : le contenu sous le menu reste immobile. */}
+      <button
+        type="button"
+        aria-label="Fermer le menu"
+        tabIndex={mobileMenuOpen ? 0 : -1}
+        onClick={closeMobileMenu}
+        className={cn(
+          'fixed inset-0 top-16 z-40 bg-ink-950/30 transition-opacity duration-300 sm:top-[4.5rem] lg:hidden',
+          mobileMenuOpen ? 'opacity-100' : 'pointer-events-none opacity-0',
+          'motion-reduce:transition-none'
+        )}
+      />
+
+      {/* Menu mobile : panneau latéral, sans déplacement brutal de la page. */}
+      <div
+        id="mobile-navigation"
+        ref={mobileMenuRef}
+        aria-hidden={!mobileMenuOpen}
+        className={cn(
+          'fixed bottom-0 left-0 top-16 z-50 w-[min(22rem,calc(100vw-2rem))] overflow-y-auto border-r border-ink-100 bg-white px-4 py-5 shadow-elevated transition-[opacity,transform] duration-300 sm:top-[4.5rem] lg:hidden',
+          mobileMenuOpen
+            ? 'translate-x-0 opacity-100'
+            : 'pointer-events-none -translate-x-full opacity-0',
+          'motion-reduce:transition-none'
+        )}
+      >
+        <div className="space-y-1.5">
+          {NAVIGATION.map((item) => (
+            <NavLink
+              key={item.name}
+              to={item.href}
+              tabIndex={mobileMenuOpen ? 0 : -1}
+              className={MOBILE_NAV_LINK_CLASS}
+              onClick={closeMobileMenu}
+            >
+              {item.name}
+            </NavLink>
+          ))}
+          <div className="space-y-2.5 border-t border-ink-100 pt-5">
+            <Link
+              to="/contact"
+              onClick={closeMobileMenu}
+              tabIndex={mobileMenuOpen ? 0 : -1}
+              className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}
+            >
+              Contact
+            </Link>
+            {admissionsOuvertes && (
+              <Link
+                to="/admission"
+                onClick={closeMobileMenu}
+                tabIndex={mobileMenuOpen ? 0 : -1}
+                className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
+              >
+                Admission
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
     </header>
   );
 };

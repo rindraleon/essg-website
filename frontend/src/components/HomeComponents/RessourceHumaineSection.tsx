@@ -27,7 +27,7 @@ const RessourceHumaineSection = () => {
           description="Des professionnels qualifiés et passionnés au service de votre réussite"
         />
       }
-      loadingSkeletons={<MediaCardSkeletonGrid />}
+      loadingSkeletons={<MediaCardSkeletonGrid layout="home" />}
       sectionClassName="bg-gradient-to-b from-ink-50 to-white py-20"
       fluid
       containerClassName="max-w-none"
@@ -40,6 +40,7 @@ const RessourceHumaineSection = () => {
             <MediaCard
               key={membre.id}
               className={CARD_WIDTH_CLASS}
+              layout="home"
               to={`/ressources-humaines/${membre.slug}`}
               title={fullName}
               imageUrl={membre.photo ? getImageUrl(membre.photo) : FALLBACK_IMAGE}
@@ -47,7 +48,9 @@ const RessourceHumaineSection = () => {
               subtitle={membre.poste}
               description={membre.description}
               meta={[
-                ...(membre.email ? [{ icon: <Mail className="size-3.5" />, label: membre.email }] : []),
+                ...(membre.email
+                  ? [{ icon: <Mail className="size-3.5" />, label: membre.email }]
+                  : []),
                 ...(membre.telephone
                   ? [{ icon: <Phone className="size-3.5" />, label: membre.telephone }]
                   : []),

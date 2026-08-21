@@ -23,12 +23,12 @@ const HERO_IMAGE = SITE_HERO_IMAGE;
 const TEAM_FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400';
 
-const HERO_STATS = [
-  { value: '2026', label: 'Année de création' },
-  { value: '95%', label: "Taux d'insertion" },
-  { value: '30+', label: 'Pays partenaires' },
-  { value: '5/7', label: 'Ouverture' },
-];
+// const HERO_STATS = [
+//   { value: '2026', label: 'Année de création' },
+//   { value: '95%', label: "Taux d'insertion" },
+//   { value: '30+', label: 'Pays partenaires' },
+//   { value: '5/7', label: 'Ouverture' },
+// ];
 
 const TIMELINE = [
   {
@@ -97,7 +97,7 @@ const AboutPage: React.FC = () => {
         imageAlt="À propos de l'ESSG"
         title="À propos de l'ESSG"
         description="Découvrez l'École Supérieure de Sciences Géomatiques : son histoire, sa mission, ses valeurs et son engagement au service de l'excellence académique et du développement territorial."
-        stats={HERO_STATS}
+        //stats={HERO_STATS}
       />
       <Breadcrumb items={[{ label: 'À propos' }]} />
 
@@ -243,7 +243,7 @@ const AboutPage: React.FC = () => {
               </ul>
             </div>
 
-            <div className="grid grid-cols-2 gap-5">
+            {/* <div className="grid grid-cols-2 gap-5">
               {HERO_STATS.map((stat) => (
                 <div
                   key={stat.label}
@@ -254,7 +254,7 @@ const AboutPage: React.FC = () => {
                   <div className="mt-1 text-small text-sage-200">{stat.label}</div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

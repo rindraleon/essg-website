@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { GraduationCap, Search, Star, TrendingUp, Users, X } from 'lucide-react';
+import { GraduationCap, Search, X } from 'lucide-react';
 import {
   CtaSection,
   PageHero,
@@ -34,12 +34,7 @@ const DOMAINES = [
   { value: 'Informatique et Données Spatiales', label: 'Informatique et Données Spatiales' },
 ];
 
-const HERO_STATS = [
-  { value: '6+', label: 'Formations', icon: <GraduationCap className="size-7 text-brand-300" /> },
-  { value: '500+', label: 'Étudiants', icon: <Users className="size-7 text-brand-300" /> },
-  { value: '95%', label: "Taux d'insertion", icon: <TrendingUp className="size-7 text-brand-300" /> },
-  { value: '15+', label: 'Partenaires', icon: <Star className="size-7 text-brand-300" /> },
-];
+
 
 const FormationsPage = () => {
   useTitle('Formations | ESSG');
@@ -104,7 +99,6 @@ const FormationsPage = () => {
         imageAlt="Campus ESSG"
         title="Nos Formations"
         description="Des programmes d'excellence pour maîtriser les technologies géospatiales et bâtir votre carrière dans un secteur en pleine expansion."
-        stats={HERO_STATS}
         minHeight="70vh"
       />
       <Breadcrumb items={[{ label: 'Formations' }]} />

@@ -125,11 +125,6 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
         imageAlt="Partenaires ESSG"
         title={pageTitle}
         description={pageDescription}
-        stats={[
-          { value: `${allPartenaires.length}+`, label: 'Partenaires' },
-          { value: '30+', label: 'Pays' },
-          { value: '100+', label: 'Projets communs' },
-        ]}
       />
 
       <Breadcrumb items={[{ label: 'Partenaires' }]} />

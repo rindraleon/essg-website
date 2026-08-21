@@ -335,7 +335,7 @@ const Header: React.FC = () => {
                     <User className="h-4 w-4 mr-2" />
                     Mon profil
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate(routesStatic.parametres)}>
                     <Settings className="h-4 w-4 mr-2" />
                     Paramètres
                   </DropdownMenuItem>
@@ -440,7 +440,7 @@ const Header: React.FC = () => {
                 }
               >
                 Projets
-                </NavLink>
+              </NavLink>
               <NavLink
                 to={routesStatic.formations}
                 onClick={() => setOpen(false)}
@@ -462,8 +462,8 @@ const Header: React.FC = () => {
                 }
               >
                 Partenaires
-                </NavLink>
-                <NavLink
+              </NavLink>
+              <NavLink
                 to={routesStatic.actualites}
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
@@ -495,7 +495,7 @@ const Header: React.FC = () => {
                 <hr className="border-ink-100" />
                 <div className="flex flex-col gap-1">
                   <button
-                  type='button'
+                    type="button"
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
@@ -507,7 +507,7 @@ const Header: React.FC = () => {
                   </button>
 
                   <button
-                    type='button'
+                    type="button"
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
@@ -519,7 +519,7 @@ const Header: React.FC = () => {
                   </button>
 
                   <button
-                    type='button'
+                    type="button"
                     onClick={() => setOpen(false)}
                     className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
@@ -528,7 +528,7 @@ const Header: React.FC = () => {
                   </button>
 
                   <button
-                    type='button'
+                    type="button"
                     onClick={() => {
                       navigate(routesStatic.profil);
                       setOpen(false);
@@ -540,8 +540,11 @@ const Header: React.FC = () => {
                   </button>
 
                   <button
-                    type='button'
-                    onClick={() => setOpen(false)}
+                    type="button"
+                    onClick={() => {
+                      navigate(routesStatic.parametres);
+                      setOpen(false);
+                    }}
                     className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-ink-700 hover:bg-ink-50"
                   >
                     <Settings className="size-4" />
@@ -549,7 +552,7 @@ const Header: React.FC = () => {
                   </button>
 
                   <button
-                    type='button'
+                    type="button"
                     onClick={handleLogoutClick}
                     className="flex items-center gap-3 py-2.5 px-3 rounded-md text-sm font-medium text-red-600 hover:bg-ink-50"
                   >

@@ -63,7 +63,7 @@ const ActualitesSection = () => {
           description="Restez informé de la vie de l'ESSG"
         />
       }
-      loadingSkeletons={<MediaCardSkeletonGrid />}
+      loadingSkeletons={<MediaCardSkeletonGrid layout="home" />}
       sectionClassName="bg-gradient-to-b from-white to-ink-50 py-20"
       fluid
       containerClassName="max-w-none"
@@ -71,19 +71,22 @@ const ActualitesSection = () => {
       <ScrollableCardGrid
         className="w-full"
         ariaLabel="Dernières actualités"
-        toolbarStart={
-          <span aria-live="polite">{countLabel}</span>
-        }
+        toolbarStart={<span aria-live="polite">{countLabel}</span>}
         controls={
-          groups.length > 0 && (
-            <FilterButton groups={groups} onChange={setFilter} onReset={reset} revealOnHover />
-          )
-        }
+        groups.length > 0 && (
+          <FilterButton
+            groups={groups}
+            onChange={setFilter}
+            onReset={reset}
+          />
+        )
+      }
       >
         {filtered.map((actu) => (
           <MediaCard
             key={actu.id}
             className={CARD_WIDTH_CLASS}
+            layout="home"
             to={`/actualites/${actu.slug}`}
             title={actu.titre}
             imageUrl={actu.image ? getImageUrl(actu.image) : FALLBACK_IMAGE}

@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
+import BackToTop from '../common/BackToTop';
+import ScrollProgress from '../common/ScrollProgress';
 import type { LayoutProps } from '../../types/layout.types';
 import { useScrollToTop } from '../../hooks';
 import { gsap, prefersReducedMotion, registerGsap, ScrollTrigger } from '../../lib/gsap';
@@ -26,7 +28,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       gsap.fromTo(
         node,
         { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' },
+        { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }
       );
     }, node);
 
@@ -37,11 +39,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-ink-50 text-ink-900">
+      <ScrollProgress />
       <Header />
       <main ref={mainRef} className="flex-1 w-full">
-        {children}
+        <div key={location.pathname} className="page-transition">
+          {children}
+        </div>
       </main>
       <Footer />
+      <BackToTop />
     </div>
   );
 };

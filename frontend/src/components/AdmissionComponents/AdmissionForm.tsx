@@ -649,8 +649,8 @@ const AdmissionForm = ({
           <div className="space-y-2">
             <div className="h-2 w-full overflow-hidden rounded-full bg-ink-100">
               <div
-                className="h-full rounded-full bg-brand-600 transition-all duration-300"
-                style={{ width: `${Math.max(progress, 8)}%` }}
+                className="h-full origin-left scale-x-[0.08] rounded-full bg-brand-600 transition-transform duration-300 ease-out motion-reduce:transition-none"
+                style={{ transform: `scaleX(${Math.max(progress, 8) / 100})` }}
               />
             </div>
             <p className="text-center text-caption text-ink-500">

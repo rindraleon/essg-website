@@ -86,11 +86,6 @@ const ActualitesPage = () => {
         imageAlt="Actualités ESSG"
         title="Actualités"
         description="Suivez la vie de l'ESSG : événements, recherche, partenariats et réussites de nos étudiants."
-        stats={[
-          { value: `${actualites.length}+`, label: 'Articles' },
-          { value: '4', label: 'Catégories' },
-          { value: 'Hebdo', label: 'Fréquence' },
-        ]}
       />
       <Breadcrumb items={[{ label: 'Actualités' }]} />
 
@@ -171,9 +166,6 @@ const ActualitesPage = () => {
             }
           >
             <div ref={listRef} className="scroll-mt-24">
-              {/* Fondu bref au changement de page (§23) : signale que le
-                  contenu a été renouvelé, sur deux pages de structure
-                  identique rien ne le montrerait autrement. */}
               <div
                 className={cn(
                   'grid grid-cols-1 gap-6 transition-opacity duration-[--duration-hover] sm:grid-cols-2 lg:grid-cols-3',

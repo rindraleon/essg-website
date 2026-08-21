@@ -56,11 +56,6 @@ const FaqPage: React.FC<FaqPageProps> = (props: Readonly<FaqPageProps>) => {
         imageAlt="FAQ ESSG"
         title={pageTitle}
         description={pageDescription}
-        stats={[
-          { value: `${faqs.length}`, label: 'Questions' },
-          { value: '24/7', label: 'Support' },
-          { value: '< 24h', label: 'Temps de réponse' },
-        ]}
       />
 
       <Breadcrumb items={[{ label: 'FAQ' }]} />

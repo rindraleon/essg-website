@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { getImageUrl } from '../../utils/image.utils';
 import ViewDetailsButton from '../common/ViewDetailsButton';
 import type { FormationCardProps } from '../../types/formations.types';
+import { HOVER_CARD, HOVER_IMAGE_ZOOM } from '../../constants/motion';
 
 const FormationCard = ({
   formation,
@@ -13,7 +14,13 @@ const FormationCard = ({
   applyLink = '/admission',
 }: FormationCardProps) => {
   return (
-    <article data-gsap className="group overflow-hidden rounded-[1.25rem] border border-ink-100 bg-white shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-100 hover:shadow-card-hover">
+    <article
+      data-gsap
+      className={cn(
+        'group overflow-hidden rounded-[1.25rem] border border-ink-100 bg-white shadow-card hover:border-brand-100 hover:shadow-card-hover',
+        HOVER_CARD
+      )}
+    >
       <div className="flex flex-col sm:flex-row">
         {formation.image && (
           <div className="relative w-full shrink-0 overflow-hidden bg-ink-100 sm:w-[40%] sm:self-stretch">
@@ -21,7 +28,7 @@ const FormationCard = ({
               <img
                 src={getImageUrl(formation.image)}
                 alt={formation.titre}
-                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                className={cn('h-full w-full object-cover', HOVER_IMAGE_ZOOM)}
               />
             </div>
             <div
@@ -31,7 +38,9 @@ const FormationCard = ({
           </div>
         )}
 
-        {formation.image && <div aria-hidden="true" className="hidden w-px shrink-0 bg-ink-100 sm:block" />}
+        {formation.image && (
+          <div aria-hidden="true" className="hidden w-px shrink-0 bg-ink-100 sm:block" />
+        )}
 
         <div className="w-full p-6 sm:w-2/3">
           <div className="mb-4 flex items-start justify-between">
@@ -43,7 +52,9 @@ const FormationCard = ({
           </div>
 
           <h3 className="mb-2 text-h4 font-bold text-ink-900">{formation.titre}</h3>
-          <p className="mb-4 text-small font-medium text-brand-600">{formation.domaine.join(', ')}</p>
+          <p className="mb-4 text-small font-medium text-brand-600">
+            {formation.domaine.join(', ')}
+          </p>
           <p className="mb-6 leading-relaxed text-ink-500">{formation.description}</p>
           <div className="mb-6 h-px bg-ink-100" />
 

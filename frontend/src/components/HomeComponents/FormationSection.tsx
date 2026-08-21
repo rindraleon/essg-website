@@ -17,10 +17,6 @@ const FALLBACK_IMAGE =
 
 const SECTION_CTA = { label: 'Voir toutes les formations', link: '/formations' } as const;
 
-/**
- * Critères de filtrage. Déclarés hors du composant : une nouvelle référence
- * à chaque rendu invaliderait les `useMemo` du hook de filtrage.
- */
 const FILTERS: FilterDefinition<Formation>[] = [
   {
     key: 'niveau',
@@ -49,22 +45,13 @@ const FormationsSection = ({
     featuredQuery.error instanceof Error ? featuredQuery.error.message : featuredQuery.error;
   const error = propFeaturedFormations ? null : queryError;
 
-  /**
-   * Tri par niveau (§4).
-   *
-   * L'ordre suit la hiérarchie pédagogique (Licence → Master → Doctorat), et
-   * non l'ordre alphabétique qui donnerait « Doctorat, Licence, Master ».
-   * À niveau égal, on retombe sur le titre pour que l'affichage reste
-   * déterministe d'un chargement à l'autre.
-   */
   const sorted = useMemo(() => {
     const rank = (niveau: string) => {
       const index = NIVEAU_ORDER.indexOf(niveau as (typeof NIVEAU_ORDER)[number]);
-      // Un niveau inconnu est placé en fin de liste plutôt qu'en tête.
       return index === -1 ? NIVEAU_ORDER.length : index;
     };
     return [...formations].sort(
-      (a, b) => rank(a.niveau) - rank(b.niveau) || a.titre.localeCompare(b.titre, 'fr'),
+      (a, b) => rank(a.niveau) - rank(b.niveau) || a.titre.localeCompare(b.titre, 'fr')
     );
   }, [formations]);
 
@@ -73,7 +60,6 @@ const FormationsSection = ({
   const count = filtered.length;
   const total = sorted.length;
 
-  /** « 4 formations » ou « 2 sur 4 formations » lorsqu'un filtre est posé. */
   const suffix = total > 1 ? 's' : '';
   const countLabel =
     count === total ? `${total} formation${suffix}` : `${count} sur ${total} formation${suffix}`;
@@ -85,7 +71,7 @@ const FormationsSection = ({
       isEmpty={!loading && total === 0}
       emptyMessage="Aucune formation disponible pour le moment."
       headerContent={<SectionHeader title={title} description={description} />}
-      loadingSkeletons={<MediaCardSkeletonGrid count={3} />}
+      loadingSkeletons={<MediaCardSkeletonGrid count={3} layout="home" />}
       sectionClassName="bg-white py-20"
       fluid
       containerClassName="max-w-none"
@@ -93,12 +79,10 @@ const FormationsSection = ({
       <ScrollableCardGrid
         className="w-full"
         ariaLabel="Formations mises en avant"
-        toolbarStart={
-          <span aria-live="polite">{countLabel}</span>
-        }
+        toolbarStart={<span aria-live="polite">{countLabel}</span>}
         controls={
           groups.length > 0 && (
-            <FilterButton groups={groups} onChange={setFilter} onReset={reset} revealOnHover />
+            <FilterButton groups={groups} onChange={setFilter} onReset={reset} />
           )
         }
       >
@@ -106,16 +90,16 @@ const FormationsSection = ({
           <MediaCard
             key={formation.id}
             className={CARD_WIDTH_CLASS}
+            layout="home"
             to={`/formations/${formation.slug ?? formation.id}`}
             title={formation.titre}
             imageUrl={formation.image ? getImageUrl(formation.image) : FALLBACK_IMAGE}
-            // Le niveau reste visible sur chaque carte (§4).
             badge={formation.niveau || 'Formation'}
-            subtitle={formation.mention || formation.domaine?.[0]}
+            subtitle={formation.duree}
             description={formation.description || "Découvrez cette formation d'excellence."}
             meta={[
-              ...(formation.duree
-                ? [{ icon: <Clock className="size-3.5" />, label: formation.duree }]
+              ...(formation.mention
+                ? [{ icon: <Clock className="size-3.5" />, label: formation.mention }]
                 : []),
               ...(formation.credits
                 ? [

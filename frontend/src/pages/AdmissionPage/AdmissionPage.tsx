@@ -63,11 +63,6 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPa
         imageAlt="Admission ESSG"
         title={pageTitle}
         description={pageDescription}
-        stats={[
-          { value: 'Jan-Mai', label: 'Candidatures' },
-          { value: 'Juin', label: 'Examens' },
-          { value: 'Sept', label: 'Rentrée' },
-        ]}
       />
 
       <Breadcrumb items={[{ label: 'Admission' }]} />

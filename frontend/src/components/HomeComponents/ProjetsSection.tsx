@@ -1,9 +1,8 @@
 import { Calendar, MapPin } from 'lucide-react';
-import type { FeaturedProjetsSectionProps } from '../../types/projets.types';
+import type { FeaturedProjetsSectionProps, ProjetItem } from '../../types/projets.types';
 import { useProjets } from '../../hooks';
 import useSectionFilters, { type FilterDefinition } from '../../hooks/useSectionFilters';
 import FilterButton from '../common/FilterButton';
-import type { ProjetItem } from '../../types/projets.types';
 import { getImageUrl } from '../../utils/image.utils';
 import { CARD_WIDTH_CLASS } from '../../constants/layout';
 import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid } from '../../components';
@@ -15,14 +14,7 @@ const FALLBACK_IMAGE =
 
 const SECTION_CTA = { label: 'Découvrir tous nos projets', link: '/projets' } as const;
 
-/**
- * Critères de filtrage (§6), limités aux champs réellement fournis par le
- * backend (`type`, `statut`, `annee` de l'entité Projet).
- *
- * Le partenaire n'est pas proposé : c'est un tableau, donc un projet
- * multi-partenaires appartiendrait à plusieurs valeurs à la fois, ce que le
- * filtre à sélection unique ne sait pas représenter honnêtement.
- */
+
 const FILTERS: FilterDefinition<ProjetItem>[] = [
   { key: 'type', label: 'Type', accessor: (projet) => projet.type, allLabel: 'Tous' },
   { key: 'statut', label: 'Statut', accessor: (projet) => projet.statut, allLabel: 'Tous' },
@@ -51,7 +43,7 @@ const ProjetsSection = ({
       isEmpty={!loading && total === 0}
       emptyMessage="Aucun projet disponible pour le moment."
       headerContent={<SectionHeader title={title} description={description} />}
-      loadingSkeletons={<MediaCardSkeletonGrid />}
+      loadingSkeletons={<MediaCardSkeletonGrid layout="home" />}
       sectionClassName="bg-ink-50 py-20"
       fluid
       containerClassName="max-w-none"
@@ -59,12 +51,10 @@ const ProjetsSection = ({
       <ScrollableCardGrid
         className="w-full"
         ariaLabel="Projets de l'école"
-        toolbarStart={
-          <span aria-live="polite">{countLabel}</span>
-        }
+        toolbarStart={<span aria-live="polite">{countLabel}</span>}
         controls={
           groups.length > 0 && (
-            <FilterButton groups={groups} onChange={setFilter} onReset={reset} revealOnHover />
+            <FilterButton groups={groups} onChange={setFilter} onReset={reset} />
           )
         }
       >
@@ -72,6 +62,7 @@ const ProjetsSection = ({
           <MediaCard
             key={projet.id}
             className={CARD_WIDTH_CLASS}
+            layout="home"
             to={`/projets/${projet.slug}`}
             title={projet.titre}
             imageUrl={projet.image ? getImageUrl(projet.image) : FALLBACK_IMAGE}
@@ -86,7 +77,7 @@ const ProjetsSection = ({
                 ? [
                     {
                       icon: <MapPin className="size-3.5" />,
-                      label: `${projet.location.ville}, ${projet.location.pays}`,
+                      label: `${projet.location.adresse}`,
                     },
                   ]
                 : []),

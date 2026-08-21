@@ -135,11 +135,6 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
         imageAlt="Projets ESSG"
         title={pageTitle}
         description={pageDescription}
-        stats={[
-          { value: `${allProjets.length}+`, label: 'Projets' },
-          { value: '10+', label: 'Pays' },
-          { value: '50+', label: 'Partenaires' },
-        ]}
       />
 
       <Breadcrumb items={[{ label: 'Projets' }]} />

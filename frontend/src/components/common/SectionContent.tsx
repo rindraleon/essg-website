@@ -33,22 +33,27 @@ const SectionContent: React.FC<SectionContentProps> = ({
     ? 'w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12'
     : 'container mx-auto px-4 sm:px-6 lg:px-8';
 
+  let content: React.ReactNode;
+
+  if (loading) {
+    content = loadingSkeletons;
+  } else if (error) {
+    content = (
+      <div className="py-14 text-center">
+        <p className="text-ink-500">{errorMessage}</p>
+      </div>
+    );
+  } else if (isEmpty) {
+    content = <div className="py-14 text-center text-ink-500">{emptyMessage}</div>;
+  } else {
+    content = children;
+  }
+
   return (
     <section ref={revealRef} className={`reveal-section ${sectionClassName}`}>
       <div className={`${wrapperClass} ${containerClassName}`}>
         {headerContent}
-
-        {loading ? (
-          loadingSkeletons
-        ) : error ? (
-          <div className="py-14 text-center">
-            <p className="text-ink-500">{errorMessage}</p>
-          </div>
-        ) : isEmpty ? (
-          <div className="py-14 text-center text-ink-500">{emptyMessage}</div>
-        ) : (
-          children
-        )}
+        {content}
       </div>
     </section>
   );

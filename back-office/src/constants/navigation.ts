@@ -7,7 +7,6 @@ import {
   Mail,
   Newspaper,
   ScrollText,
-  Settings,
   UserCheck,
   Users,
 } from 'lucide-react';
@@ -56,13 +55,6 @@ export const NAV_ITEMS: NavItem[] = [
     icon: ScrollText,
     adminOnly: true,
   },
-  {
-    name: 'Paramètres',
-    label: 'Paramètres',
-    href: routesStatic.parametres,
-    icon: Settings,
-    adminOnly: true,
-  },
 ];
 
 export const isNavActive = (href: string, pathname: string): boolean => {
@@ -80,6 +72,17 @@ export const isAdminRole = (role?: string): boolean => role === 'admin';
 export const getVisibleNavItems = (role?: string): NavItem[] =>
   NAV_ITEMS.filter((item) => !item.adminOnly || isAdminRole(role));
 
-/** Vrai si la route demandée exige le rôle administrateur. */
+/**
+ * Routes réservées aux administrateurs.
+ *
+ * Paramètres n'est plus un item de sidebar, mais reste bien protégé comme les
+ * autres routes d'administration.
+ */
+const ADMIN_ONLY_ROUTES = [
+  routesStatic.utilisateurs,
+  routesStatic.activityLogs,
+  routesStatic.parametres,
+] as const;
+
 export const isAdminOnlyRoute = (pathname: string): boolean =>
-  NAV_ITEMS.some((item) => item.adminOnly && isNavActive(item.href, pathname));
+  ADMIN_ONLY_ROUTES.some((href) => isNavActive(href, pathname));
