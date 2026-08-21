@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   deleteAdmission,
+  deleteAdmissionFile,
+  getAdmissionById,
   getAllAdmissions,
   updateAdmissionStatus,
   type AdmissionQuery,
@@ -21,6 +23,14 @@ export function useAdmissionsQuery(query: AdmissionQuery = {}) {
   return useQuery({
     queryKey: queryKeys.admissions.list(query),
     queryFn: () => getAllAdmissions(query),
+  });
+}
+
+export function useAdmissionDetailQuery(id: number | null) {
+  return useQuery({
+    queryKey: queryKeys.admissions.detail(id ?? 0),
+    queryFn: () => getAdmissionById(id as number),
+    enabled: id !== null,
   });
 }
 
@@ -65,6 +75,16 @@ export function useDeleteAdmission() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => deleteAdmission(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.admissions.all });
+    },
+  });
+}
+
+export function useDeleteAdmissionFile() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, fileId }: { id: number; fileId: number }) => deleteAdmissionFile(id, fileId),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.admissions.all });
     },

@@ -6,6 +6,11 @@ export type ProjetLocation = {
   lng: number;
 };
 
+export type ProjectSource = {
+  title: string;
+  url: string;
+};
+
 export type ProjetItem = {
   id: string;
   titre: string;
@@ -18,7 +23,7 @@ export type ProjetItem = {
   partenaires: string[];
   objectifs?: string[];
   image?: string;
-  sourceDonnees?: string;
+  sources?: ProjectSource[];
   galerie?: string[];
   location?: ProjetLocation;
 };
@@ -62,7 +67,7 @@ export type FeaturedProjetItem = {
   image?: string;
   budget?: string;
   objectifs?: string[];
-  sourceDonnees?: string;
+  sources?: ProjectSource[];
   galerie?: string[];
   location?: ProjetLocation;
 };

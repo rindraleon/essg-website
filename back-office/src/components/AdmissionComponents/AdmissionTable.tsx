@@ -1,6 +1,6 @@
-import { CircleCheck, Eye, FileText, Trash2 } from 'lucide-react';
+import { CircleCheck, Eye, Trash2 } from 'lucide-react';
 import React, { useMemo } from 'react';
-import type { Admission } from '../../types/admission.types';
+import type { Admission, AdmissionFile } from '../../types/admission.types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
 import { Badge } from '@/components/ui/badge';
@@ -18,9 +18,7 @@ interface AdmissionTableProps {
   onView: (admission: Admission) => void;
   onEdit: (admission: Admission) => void;
   onDelete: (id: number) => void;
-  onDownloadCV?: (admission: Admission) => void;
-  onDownloadLettre?: (admission: Admission) => void;
-  onPreviewDocument?: (admission: Admission, kind: 'cv' | 'lettre') => void;
+  onPreviewFile?: (admission: Admission, file: AdmissionFile) => void;
   loading?: boolean;
   emptyMessage?: string;
 }
@@ -58,6 +56,7 @@ const getStatusLabel = (statut: string): string => {
 const AdmissionTable: React.FC<AdmissionTableProps> = ({
   data,
   totalCount,
+  onPreviewFile,
   page,
   rowsPerPage,
   onPageChange,
@@ -65,9 +64,6 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
   onView,
   onEdit,
   onDelete,
-  onDownloadCV,
-  onDownloadLettre,
-  onPreviewDocument,
   loading = false,
   emptyMessage = 'Aucune admission trouvée',
 }) => {
@@ -89,9 +85,7 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
                 </span>
               </div>
               <div className="min-w-0">
-                <span className="font-semibold text-ink-900 block">
-                  {formatFullName(row)}
-                </span>
+                <span className="font-semibold text-ink-900 block">{formatFullName(row)}</span>
                 <p className="text-xs text-ink-500 truncate">{row.email}</p>
                 <p className="text-xs text-ink-500">{row.telephone}</p>
               </div>
@@ -124,54 +118,27 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
       {
         id: 'documents',
         label: 'Documents',
-        minWidth: 120,
+        minWidth: 100,
         align: 'center',
         render: (row) => (
-          <div className="flex items-center justify-center gap-1">
-            {row.cvPath && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        onPreviewDocument?.(row, 'cv') ?? onDownloadCV?.(row);
-                      }}
-                      className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-ink-100 transition-colors cursor-pointer"
-                    >
-                      <FileText className="h-4 w-4 text-red-600" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>CV</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-            {row.lettreMotivationPath && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        onPreviewDocument?.(row, 'lettre') ?? onDownloadLettre?.(row);
-                      }}
-                      className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-ink-100 transition-colors cursor-pointer"
-                    >
-                      <FileText className="h-4 w-4 text-brand-600" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Lettre de motivation</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-            {!row.cvPath && !row.lettreMotivationPath && (
-              <span className="text-xs text-ink-400">-</span>
-            )}
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onView(row);
+                  }}
+                  className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-ink-100 transition-colors cursor-pointer"
+                >
+                  <Eye className="h-4 w-4 text-brand-600" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>Consulter les documents</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         ),
       },
       {
@@ -236,7 +203,7 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
         ),
       },
     ],
-    [onView, onEdit, onDelete, onDownloadCV, onDownloadLettre]
+    [onView, onEdit, onDelete, onPreviewFile]
   );
 
   if (loading) {

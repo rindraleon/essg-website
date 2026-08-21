@@ -1,5 +1,10 @@
 export type ProjetType = 'International' | 'Service public' | 'Recherche' | 'Partenariat';
 
+export interface ProjectSource {
+  title: string;
+  url: string;
+}
+
 export interface Projet {
   id: number;
   titre: string;
@@ -12,6 +17,7 @@ export interface Projet {
   partenaires: string[];
   image: string;
   galerie?: string[];
+  sources?: ProjectSource[];
   latitude?: number;
   longitude?: number;
   ville?: string;

@@ -1,5 +1,5 @@
 import { apiClient } from '../api/client/http';
-import type { Admission, AdmissionStatus } from '../types/admission.types';
+import type { Admission, AdmissionFile, AdmissionStatus } from '../types/admission.types';
 
 export interface AdmissionQuery {
   page?: number;
@@ -21,7 +21,9 @@ export interface AdmissionsListResponse {
   totalPages: number;
 }
 
-export const getAllAdmissions = async (query: AdmissionQuery = {}): Promise<AdmissionsListResponse> => {
+export const getAllAdmissions = async (
+  query: AdmissionQuery = {}
+): Promise<AdmissionsListResponse> => {
   const result = await apiClient.getList<Admission>('/admissions', {
     page: query.page ?? 1,
     limit: query.limit ?? 10,
@@ -44,7 +46,7 @@ export const getAllAdmissions = async (query: AdmissionQuery = {}): Promise<Admi
 
 export const searchAdmissions = async (
   q: string,
-  query: AdmissionQuery = {},
+  query: AdmissionQuery = {}
 ): Promise<AdmissionsListResponse> => {
   return getAllAdmissions({ ...query, q });
 };
@@ -66,20 +68,28 @@ export type AdmissionDecisionPayload = {
 export const updateAdmissionStatus = async (
   id: number,
   statut: AdmissionStatus | AdmissionDecisionPayload,
-  commentaire?: string,
+  commentaire?: string
 ): Promise<Admission> => {
   const payload: AdmissionDecisionPayload =
     typeof statut === 'object' ? statut : { statut, commentaire };
   return apiClient.patch<Admission>(`/admissions/${id}/status`, payload);
 };
 
-export const getAdmissionDocumentBlob = async (
+export const getAdmissionFiles = async (id: number): Promise<AdmissionFile[]> => {
+  return apiClient.get<AdmissionFile[]>(`/admissions/${id}/files`);
+};
+
+export const getAdmissionFileBlob = async (
   id: number,
-  kind: 'cv' | 'lettre',
-  download = false,
+  fileId: number,
+  download = false
 ): Promise<Blob> => {
   const suffix = download ? '?download=1' : '';
-  return apiClient.getBlob(`/admissions/${id}/documents/${kind}${suffix}`);
+  return apiClient.getBlob(`/admissions/${id}/files/${fileId}${suffix}`);
+};
+
+export const deleteAdmissionFile = async (id: number, fileId: number): Promise<void> => {
+  await apiClient.delete(`/admissions/${id}/files/${fileId}`);
 };
 
 export const deleteAdmission = async (id: number): Promise<void> => {

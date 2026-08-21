@@ -216,41 +216,6 @@ const ActualiteViewDialog: React.FC<ActualiteViewDialogProps> = ({ open, onClose
                     </DetailSection>
                   )}
                 </div>
-
-                {/* Colonne secondaire */}
-                <div className="grid content-start gap-4 sm:grid-cols-2 xl:grid-cols-1">
-                  <div className="rounded-2xl border border-ink-100 bg-white p-4 shadow-sm">
-                    <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-ink-700">
-                      Informations
-                    </h3>
-                    <div className="space-y-3">
-                      <div>
-                        <p className="text-xs text-ink-500">Auteur</p>
-                        <p className="text-sm font-medium text-ink-900">{actualite.auteur}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-ink-500">Date de publication</p>
-                        <p className="text-sm font-medium text-ink-900">
-                          {new Date(actualite.date).toLocaleDateString('fr-FR', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-ink-500">Catégorie</p>
-                        <p className="text-sm font-medium text-ink-900">{actualite.categorie}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-ink-500">Statut</p>
-                        <div className="mt-1">
-                          <StatusBadge status={actualite.statut} />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
 

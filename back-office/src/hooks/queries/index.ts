@@ -39,9 +39,12 @@ export {
 } from './useMessagesQuery';
 export {
   useAdmissionsQuery,
+  useAdmissionDetailQuery,
   useRecentAdmissionsQuery,
   useUpdateAdmissionStatus,
   useDeleteAdmission,
+  useDeleteAdmissionFile,
 } from './useAdmissionsQuery';
+export { useSettingsQuery, useUpdateSettings } from './useSettingsQuery';
 export { useDashboardStatsQuery, useRecentActivitiesQuery } from './useDashboardQuery';
 export { useActivityLogsQuery, useActivityLogQuery } from './useActivityLogsQuery';

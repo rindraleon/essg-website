@@ -31,6 +31,7 @@ export const DEFAULT_FORM_DATA = {
   partenaireIds: [] as number[],
   image: '/images/hero-campus.jpg',
   galerie: [] as string[],
+  sources: [] as { title: string; url: string }[],
   latitude: undefined as number | undefined,
   longitude: undefined as number | undefined,
   ville: '',

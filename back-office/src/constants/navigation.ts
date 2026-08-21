@@ -7,6 +7,7 @@ import {
   Mail,
   Newspaper,
   ScrollText,
+  Settings,
   UserCheck,
   Users,
 } from 'lucide-react';
@@ -21,7 +22,12 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { name: 'Tableau de bord', label: 'Accueil', href: routesStatic.dashboard, icon: LayoutDashboard },
+  {
+    name: 'Tableau de bord',
+    label: 'Accueil',
+    href: routesStatic.dashboard,
+    icon: LayoutDashboard,
+  },
   { name: 'Actualités', label: 'Actualités', href: routesStatic.actualites, icon: Newspaper },
   { name: 'Formations', label: 'Formations', href: routesStatic.formations, icon: GraduationCap },
   { name: 'Projets', label: 'Projets', href: routesStatic.projets, icon: Folder },
@@ -48,6 +54,13 @@ export const NAV_ITEMS: NavItem[] = [
     label: 'Journal',
     href: routesStatic.activityLogs,
     icon: ScrollText,
+    adminOnly: true,
+  },
+  {
+    name: 'Paramètres',
+    label: 'Paramètres',
+    href: routesStatic.parametres,
+    icon: Settings,
     adminOnly: true,
   },
 ];

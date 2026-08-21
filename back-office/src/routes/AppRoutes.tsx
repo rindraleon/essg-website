@@ -14,6 +14,7 @@ import {
   Admissions,
   Profil,
   ActivityLogs,
+  Parametres,
 } from '../pages';
 import { routesStatic } from '.';
 import { Layout } from '../components';
@@ -32,8 +33,7 @@ const LoadingScreen = () => (
             animation: 'spin 1s linear infinite',
           }}
         />
-        <Fingerprint
-        />
+        <Fingerprint />
       </div>
       <p className="text-sage-300/60 text-sm tracking-widest animate-pulse">Vérification...</p>
     </div>
@@ -106,10 +106,7 @@ const AppRoutes = () => {
         }
       />
 
-      <Route
-        path="/"
-        element={<Navigate to={routesStatic.login} replace />}
-      />
+      <Route path="/" element={<Navigate to={routesStatic.login} replace />} />
 
       <Route
         path={routesStatic.dashboard}
@@ -234,6 +231,17 @@ const AppRoutes = () => {
             <ProtectedRoute>
               <Profil />
             </ProtectedRoute>
+          </Layout>
+        }
+      />
+
+      <Route
+        path={routesStatic.parametres}
+        element={
+          <Layout showSidebar>
+            <AdminRoute>
+              <Parametres />
+            </AdminRoute>
           </Layout>
         }
       />

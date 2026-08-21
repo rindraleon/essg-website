@@ -172,7 +172,7 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
                 {isRemoteImage(partenaire.logo) ? (
                   <div>
                     <p className="text-sm text-ink-600 block mb-2">
-                      <span className="font-semibold">Image:</span> {partenaire.logo}
+                      {/* <span className="font-semibold">Image:</span> {partenaire.logo} */}
                     </p>
                     <img
                       src={getImageUrl(partenaire.logo)}

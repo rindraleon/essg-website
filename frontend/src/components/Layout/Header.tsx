@@ -6,6 +6,7 @@ import { buttonVariants } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { playIntro } from '../../animations/presets';
 import useHeaderScroll from '../../hooks/useHeaderScroll';
+import { useAdmissionsOuvertes } from '../../hooks/useAdmissionsSettings';
 import { gsap, prefersReducedMotion, registerGsap } from '../../lib/gsap';
 
 const NAVIGATION = [
@@ -27,6 +28,7 @@ const MOBILE_NAV_LINK_CLASS =
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const admissionsOuvertes = useAdmissionsOuvertes();
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
   const logoRef = useRef<HTMLAnchorElement | null>(null);
@@ -59,11 +61,15 @@ const Header = () => {
       // §7.11 — Navigation : 180–220 ms. Une transition plus longue sur un
       // menu se ressent directement comme une lenteur de l'interface,
       // puisqu'elle s'interpose entre le clic et l'action voulue.
-      gsap.fromTo(node, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' });
+      gsap.fromTo(
+        node,
+        { opacity: 0, y: -8 },
+        { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' }
+      );
       gsap.fromTo(
         node.querySelectorAll('a'),
         { opacity: 0, x: -6 },
-        { opacity: 1, x: 0, duration: 0.18, stagger: 0.03, delay: 0.03 },
+        { opacity: 1, x: 0, duration: 0.18, stagger: 0.03, delay: 0.03 }
       );
     }, node);
 
@@ -77,7 +83,7 @@ const Header = () => {
         'sticky top-0 z-50 border-b backdrop-blur-md transition-[background-color,box-shadow,border-color] duration-300',
         scrolled
           ? 'border-ink-100 bg-white/95 shadow-[0_8px_24px_-18px_rgba(15,33,30,0.45)]'
-          : 'border-transparent bg-white/75',
+          : 'border-transparent bg-white/75'
       )}
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -96,7 +102,7 @@ const Header = () => {
               className={cn(
                 'h-14 w-auto origin-left object-contain transition-transform duration-300 ease-out sm:h-16',
                 'motion-reduce:transition-none',
-                scrolled && 'scale-[0.88]',
+                scrolled && 'scale-[0.88]'
               )}
             />
           </Link>
@@ -119,9 +125,11 @@ const Header = () => {
             <Link to="/contact" className={cn(buttonVariants({ variant: 'outline' }))}>
               Contact
             </Link>
-            <Link to="/admission" className={cn(buttonVariants({ variant: 'default' }))}>
-              Admission
-            </Link>
+            {admissionsOuvertes && (
+              <Link to="/admission" className={cn(buttonVariants({ variant: 'default' }))}>
+                Admission
+              </Link>
+            )}
           </div>
 
           <button
@@ -156,13 +164,15 @@ const Header = () => {
                 >
                   Contact
                 </Link>
-                <Link
-                  to="/admission"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
-                >
-                  Admission
-                </Link>
+                {admissionsOuvertes && (
+                  <Link
+                    to="/admission"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
+                  >
+                    Admission
+                  </Link>
+                )}
               </div>
             </div>
           </div>

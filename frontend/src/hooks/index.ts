@@ -19,4 +19,5 @@ export { default as usePartenaires } from './usePartenaires';
 export { usePartenaireBySlug } from './usePartenaires';
 export { default as useProjets } from './useProjets';
 export { useProjetBySlug } from './useProjets';
+export { useAdmissionsSettings, useAdmissionsOuvertes } from './useAdmissionsSettings';
 export { useCreateAdmission, useCreateContact } from './mutations';

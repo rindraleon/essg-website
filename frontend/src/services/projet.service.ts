@@ -30,12 +30,12 @@ const transformProjet = (projet: ApiProjet): ProjetItem => ({
   description: projet.description,
   partenaires:
     projet.partenaires?.map((partenaire) =>
-      typeof partenaire === 'string' ? partenaire : partenaire.nom,
+      typeof partenaire === 'string' ? partenaire : partenaire.nom
     ) || [],
   image: projet.image,
   budget: projet.budget,
   objectifs: projet.objectifs,
-  sourceDonnees: projet.sourceDonnees,
+  sources: projet.sources ?? [],
   galerie: projet.galerie ?? [],
   location:
     projet.latitude && projet.longitude
@@ -54,7 +54,7 @@ const projetService = {
     const result = await apiClient.getList<ApiProjet>(
       endpoints.projects,
       { page: 1, limit: 100, sortBy: 'date', sortOrder: 'DESC' },
-      signal,
+      signal
     );
     return result.data.map(transformProjet);
   },
@@ -73,7 +73,7 @@ const projetService = {
     const result = await apiClient.getList<ApiProjet>(
       endpoints.projectSearch,
       { q: query, page: 1, limit: 50 },
-      signal,
+      signal
     );
     return result.data.map(transformProjet);
   },

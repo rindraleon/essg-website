@@ -1,5 +1,16 @@
 import { Card, CardContent } from '@/components/compat/mui';
-import { ArrowLeft, Calendar, Database, Flag, GraduationCap, Map, MapPin, Rocket,Banknote } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  Calendar,
+  Database,
+  Flag,
+  GraduationCap,
+  Map,
+  MapPin,
+  Rocket,
+  Banknote,
+} from 'lucide-react';
 import React, { useEffect } from 'react';
 import Button from '@/components/compat/button';
 import { Link as RouterLink, useParams } from 'react-router-dom';
@@ -127,8 +138,7 @@ const ProjetDetailPage: React.FC = () => {
           {/* Colonne gauche - Sidebar */}
           <div className="space-y-6 lg:col-span-1">
             {/* Carte Informations clés */}
-            <Card
-            >
+            <Card>
               <CardContent className="p-6">
                 <h3 className="mb-5 text-caption font-semibold uppercase tracking-wider text-ink-500">
                   Informations clés
@@ -143,8 +153,7 @@ const ProjetDetailPage: React.FC = () => {
                         backgroundColor: isFinished ? '#d1fae5' : '#fef3c7',
                       }}
                     >
-                      <Flag
-                      />
+                      <Flag />
                     </div>
                     <div className="flex-1">
                       <div className="text-small text-ink-500">Statut</div>
@@ -208,17 +217,29 @@ const ProjetDetailPage: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Source de données */}
-                  {projet.sourceDonnees && (
+                  {/* Sources de données */}
+                  {projet.sources && projet.sources.length > 0 && (
                     <div className="flex items-start gap-3">
                       <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-sage-100">
                         <Database />
                       </div>
-                      <div className="flex-1">
-                        <div className="text-small text-ink-500">Source de données</div>
-                        <div className="mt-0.5 text-small leading-6 text-ink-900">
-                          {projet.sourceDonnees}
-                        </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-small text-ink-500">Sources de données</div>
+                        <ul className="mt-1.5 space-y-1.5">
+                          {projet.sources.map((source) => (
+                            <li key={`${source.title}-${source.url}`}>
+                              <a
+                                href={source.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group inline-flex max-w-full items-center gap-1.5 rounded-lg border border-ink-100 bg-white px-3 py-2 text-small font-medium text-brand-700 transition-colors hover:border-brand-300 hover:bg-brand-50"
+                              >
+                                <span className="truncate">{source.title}</span>
+                                <ArrowUpRight className="size-3.5 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
                   )}
@@ -228,8 +249,7 @@ const ProjetDetailPage: React.FC = () => {
 
             {/* Carte Partenaires */}
             {projet.partenaires && projet.partenaires.length > 0 && (
-              <Card
-              >
+              <Card>
                 <CardContent className="p-6">
                   <div className="mb-5 flex items-center gap-3">
                     <div className="h-6 w-1 rounded-full" style={{ backgroundColor: GREEN[600] }} />
@@ -264,8 +284,7 @@ const ProjetDetailPage: React.FC = () => {
           {/* Colonne droite - Contenu principal */}
           <div className="space-y-6 lg:col-span-2">
             {projet.location && (
-              <Card
-              >
+              <Card>
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-100">
@@ -301,8 +320,7 @@ const ProjetDetailPage: React.FC = () => {
 
             {/* Objectifs (si présents) */}
             {projet.objectifs && projet.objectifs.length > 0 && (
-              <Card
-              >
+              <Card>
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-3">
                     <div className="h-6 w-1 rounded-full" style={{ backgroundColor: GREEN[600] }} />

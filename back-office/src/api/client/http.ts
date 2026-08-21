@@ -76,7 +76,9 @@ function handleUnauthorized(requestUrl: string): void {
 }
 
 function buildUrl(path: string, params?: PaginationParams): string {
-  const url = new URL(path.startsWith('http') ? path : `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`);
+  const url = new URL(
+    path.startsWith('http') ? path : `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`
+  );
   if (params) {
     for (const [key, value] of Object.entries(params)) {
       if (value === undefined || value === null || value === '') continue;
@@ -160,7 +162,13 @@ function toApiError(error: unknown): ApiError {
     return new ApiError('La requête a expiré. Veuillez réessayer.', { kind: 'timeout' });
   }
   if (error instanceof TypeError) {
-    return new ApiError('Le serveur est inaccessible. Vérifiez votre connexion.', { kind: 'network' });
+    const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
+    return new ApiError(
+      offline
+        ? 'Vous êtes hors ligne. Vérifiez votre connexion Internet avant de réessayer.'
+        : 'Le serveur est inaccessible. Vérifiez votre connexion.',
+      { kind: 'network' }
+    );
   }
   return new ApiError('Une erreur inattendue est survenue.', { kind: 'unknown' });
 }
@@ -191,7 +199,7 @@ async function parseJsonSafe(response: Response): Promise<unknown> {
 
 async function request<T>(
   url: string,
-  options: RequestOptions = {},
+  options: RequestOptions = {}
 ): Promise<{ data: T; meta?: PaginationMeta; message?: string }> {
   const controller = new AbortController();
   const timeout = options.timeout ?? REQUEST_TIMEOUT;
@@ -265,7 +273,11 @@ export const apiClient = {
     const items = Array.isArray(result.data) ? result.data : [];
     return {
       data: items,
-      meta: result.meta ?? { ...EMPTY_META, total: items.length, limit: params?.limit ?? items.length },
+      meta: result.meta ?? {
+        ...EMPTY_META,
+        total: items.length,
+        limit: params?.limit ?? items.length,
+      },
       message: result.message ?? '',
     };
   },
@@ -302,7 +314,8 @@ export const apiClient = {
     // Accept large : le back-office accepte PDF, Word et images en pièce
     // jointe. Restreindre au PDF pouvait provoquer un 406 selon le serveur.
     const headers: Record<string, string> = {
-      Accept: 'application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/octet-stream,application/json',
+      Accept:
+        'application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/octet-stream,application/json',
       'X-Requested-With': 'XMLHttpRequest',
     };
     const token = getToken();

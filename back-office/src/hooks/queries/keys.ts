@@ -31,6 +31,12 @@ export const queryKeys = {
   admissions: {
     all: ['admissions'] as const,
     list: (params: object) => [...queryKeys.admissions.all, 'list', params] as const,
+    detail: (id: number) => [...queryKeys.admissions.all, 'detail', id] as const,
+    files: (id: number) => [...queryKeys.admissions.all, 'files', id] as const,
+  },
+  settings: {
+    all: ['settings'] as const,
+    get: () => [...queryKeys.settings.all, 'get'] as const,
   },
   dashboard: {
     all: ['dashboard'] as const,

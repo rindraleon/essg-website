@@ -1,4 +1,14 @@
-import { Calendar, Images, Info, MapPin, Tag, Users, X } from 'lucide-react';
+import {
+  Calendar,
+  Database,
+  ExternalLink,
+  Images,
+  Info,
+  MapPin,
+  Tag,
+  Users,
+  X,
+} from 'lucide-react';
 import React from 'react';
 import MapPicker from '../common/MapPicker';
 import type { Projet } from '../../types/projet.types';
@@ -61,7 +71,7 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
   // La galerie exclut la photo de couverture : elle est déjà affichée en
   // tête de fiche, la répéter dans le carrousel n'apporterait rien.
   const galerie = (projet.galerie ?? []).filter(
-    (image) => image?.trim() && image.trim() !== projet.image?.trim(),
+    (image) => image?.trim() && image.trim() !== projet.image?.trim()
   );
 
   const locationText = [projet.ville, projet.pays].filter(Boolean).join(', ');
@@ -200,6 +210,30 @@ const ProjetViewDialog: React.FC<ProjetViewDialogProps> = ({ open, onClose, proj
                       count={projet.partenaires.length}
                     >
                       <TagList items={projet.partenaires} />
+                    </DetailSection>
+                  )}
+
+                  {projet.sources && projet.sources.length > 0 && (
+                    <DetailSection
+                      title="Sources de données"
+                      icon={<Database className="size-4" />}
+                      count={projet.sources.length}
+                    >
+                      <ul className="space-y-2">
+                        {projet.sources.map((source) => (
+                          <li key={`${source.title}-${source.url}`}>
+                            <a
+                              href={source.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group flex items-center justify-between gap-2 rounded-lg border border-ink-100 bg-white px-3 py-2 text-sm text-ink-700 transition-colors hover:border-brand-300 hover:bg-brand-50"
+                            >
+                              <span className="min-w-0 truncate font-medium">{source.title}</span>
+                              <ExternalLink className="h-3.5 w-3.5 shrink-0 text-ink-400 transition-colors group-hover:text-brand-600" />
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
                     </DetailSection>
                   )}
 

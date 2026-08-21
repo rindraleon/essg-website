@@ -10,3 +10,4 @@ export { default as Contacts } from './ContactsPage/Contacts';
 export { default as Admissions } from './AdmissionsPage/Admissions';
 export { default as Profil } from './ProfilPage/Profil';
 export { default as ActivityLogs } from './ActivityLogsPage/ActivityLogs';
+export { default as Parametres } from './ParametresPage/Parametres';

@@ -12,6 +12,7 @@ import {
 
 import EssG from '../../assets/files/images/logo/EssG.png';
 import type { FooterProps, SocialItem } from '../../types/footer.types';
+import { useAdmissionsOuvertes } from '../../hooks/useAdmissionsSettings';
 
 const SOCIAL_ICONS = {
   web: Globe,
@@ -35,8 +36,7 @@ const DEFAULT_PROPS = {
   contact: {
     email: 'contact@essg.sn',
     phone: '+261 38 18 282 49',
-    address:
-      'ESSG e-atiala Andrainjato Université Fianarantsoa, Madagascar',
+    address: 'ESSG e-atiala Andrainjato Université Fianarantsoa, Madagascar',
   },
 
   socials: [
@@ -65,10 +65,13 @@ const Footer = ({
   socials = DEFAULT_PROPS.socials,
 }: FooterProps) => {
   const currentYear = new Date().getFullYear();
+  const admissionsOuvertes = useAdmissionsOuvertes();
+  const visibleNavLinks = admissionsOuvertes
+    ? navLinks
+    : navLinks.filter((item) => item.to !== '/admission');
 
   const SocialIcon = ({ kind }: { kind: SocialItem['kind'] }) => {
-    const IconComponent =
-      SOCIAL_ICONS[kind as keyof typeof SOCIAL_ICONS] || ExternalLink;
+    const IconComponent = SOCIAL_ICONS[kind as keyof typeof SOCIAL_ICONS] || ExternalLink;
 
     return <IconComponent className="size-[17px]" strokeWidth={1.8} />;
   };
@@ -192,7 +195,6 @@ const Footer = ({
 
       <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
-        
           <div className="lg:col-span-5">
             <Link
               to="/"
@@ -221,17 +223,11 @@ const Footer = ({
                   group-hover:scale-[1.03]
                 "
               >
-                <img
-                  src={EssG}
-                  alt="Logo ESSG"
-                  className="h-full w-full object-contain"
-                />
+                <img src={EssG} alt="Logo ESSG" className="h-full w-full object-contain" />
               </div>
 
               <div>
-                <p className="text-h5 font-bold tracking-tight text-white">
-                  {companyName}
-                </p>
+                <p className="text-h5 font-bold tracking-tight text-white">{companyName}</p>
 
                 <p className="mt-0.5 max-w-[240px] text-caption leading-5 text-ink-300">
                   École Supérieure de Sciences Géomatiques
@@ -241,15 +237,14 @@ const Footer = ({
 
             <div className="max-w-xl">
               <p className="text-small leading-7 text-ink-300">
-                L&apos;ESSG est un établissement d&apos;enseignement supérieur
-                spécialisé dans la formation, la recherche et l&apos;innovation
-                en sciences géomatiques, cartographie, télédétection et
-                systèmes d&apos;information géographique.
+                L&apos;ESSG est un établissement d&apos;enseignement supérieur spécialisé dans la
+                formation, la recherche et l&apos;innovation en sciences géomatiques, cartographie,
+                télédétection et systèmes d&apos;information géographique.
               </p>
 
               <p className="mt-4 text-small leading-7 text-ink-400">
-                Excellence académique, professionnalisation et ouverture vers
-                les technologies spatiales et numériques.
+                Excellence académique, professionnalisation et ouverture vers les technologies
+                spatiales et numériques.
               </p>
             </div>
 
@@ -308,7 +303,7 @@ const Footer = ({
               </h3>
 
               <ul className="space-y-1">
-                {navLinks.map((item) => (
+                {visibleNavLinks.map((item) => (
                   <li key={item.to}>
                     <Link
                       to={item.to}
@@ -384,9 +379,7 @@ const Footer = ({
                     <MapPin className="size-4" strokeWidth={1.8} />
                   </div>
 
-                  <p className="text-small leading-6 text-ink-300">
-                    {contact.address}
-                  </p>
+                  <p className="text-small leading-6 text-ink-300">{contact.address}</p>
                 </li>
 
                 {/* Phone */}
@@ -511,10 +504,7 @@ const Footer = ({
                 Mentions légales
               </Link>
 
-              <span
-                aria-hidden="true"
-                className="h-1 w-1 rounded-full bg-white/20"
-              />
+              <span aria-hidden="true" className="h-1 w-1 rounded-full bg-white/20" />
 
               <Link
                 to="/politique-confidentialite"

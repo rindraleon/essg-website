@@ -1,5 +1,14 @@
 import { useState } from 'react';
-import { IdCard, Mail, MessageSquare, Phone, Send, User } from 'lucide-react';
+import {
+  CheckCircle2,
+  IdCard,
+  LoaderCircle,
+  Mail,
+  MessageSquare,
+  Phone,
+  Send,
+  User,
+} from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { toUpperName } from '../../utils/slug.utils';
 import type { ContactFormData, ContactFormProps } from '../../types/contact.types';
@@ -29,11 +38,39 @@ const DEFAULT_SUJETS = [
 
 const ContactForm = ({ sujets = DEFAULT_SUJETS, onSubmit }: ContactFormProps) => {
   const [formData, setFormData] = useState<ContactFormData>(INITIAL_FORM_DATA);
+  const [submitted, setSubmitted] = useState(false);
   const createContact = useCreateContact();
   const loading = createContact.isPending;
 
+  if (submitted) {
+    return (
+      <div className="h-full overflow-hidden rounded-[1.5rem] border border-ink-100 bg-white p-6 shadow-card sm:p-8">
+        <div className="flex flex-col items-center gap-4 py-8 text-center">
+          <div className="grid size-16 place-items-center rounded-full bg-brand-100 text-brand-700">
+            <CheckCircle2 className="size-9" />
+          </div>
+          <h2 className="text-h4 font-bold text-ink-900">Message envoyé !</h2>
+          <p className="max-w-md text-small text-ink-500">
+            Merci pour votre message. Notre équipe vous répondra dans les plus brefs délais à
+            l'adresse indiquée.
+          </p>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setSubmitted(false);
+              setFormData(INITIAL_FORM_DATA);
+            }}
+          >
+            Envoyer un autre message
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -47,11 +84,11 @@ const ContactForm = ({ sujets = DEFAULT_SUJETS, onSubmit }: ContactFormProps) =>
     try {
       await createContact.mutateAsync(formData);
       onSubmit?.(formData);
-      toast.success('Message envoyé avec succès ! Vous recevrez un email de confirmation.', {
+      toast.success('Message envoyé avec succès !', {
         duration: 5000,
         position: 'top-right',
       });
-      setFormData(INITIAL_FORM_DATA);
+      setSubmitted(true);
     } catch (error) {
       const message =
         error instanceof ApiError
@@ -155,7 +192,13 @@ const ContactForm = ({ sujets = DEFAULT_SUJETS, onSubmit }: ContactFormProps) =>
             <h3 className="text-body font-semibold text-ink-900">Votre demande</h3>
           </div>
           <div className="space-y-4">
-            <Select name="sujet" label="Sujet" value={formData.sujet} onChange={handleChange} required>
+            <Select
+              name="sujet"
+              label="Sujet"
+              value={formData.sujet}
+              onChange={handleChange}
+              required
+            >
               <option value="">Choisir un sujet</option>
               {sujets.map((item) => (
                 <option key={item.value} value={item.value}>
@@ -180,7 +223,11 @@ const ContactForm = ({ sujets = DEFAULT_SUJETS, onSubmit }: ContactFormProps) =>
         <div className="flex justify-end pt-1">
           <Button type="submit" disabled={loading} className="w-full sm:min-w-[220px]">
             {loading ? 'Envoi en cours...' : 'Envoyer le message'}
-            {!loading && <Send className="size-4" />}
+            {loading ? (
+              <LoaderCircle className="size-4 animate-spin" />
+            ) : (
+              <Send className="size-4" />
+            )}
           </Button>
         </div>
       </form>

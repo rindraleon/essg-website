@@ -3,12 +3,26 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { ApiError } from '@/api/types/api';
 import ListPageHeader from '../../components/common/ListPageHeader';
-import { AdmissionFilters, ConfirmDialog, AdmissionTable, AdmissionDetailDialog, AdmissionDecisionDialog, PdfPreviewDialog } from '../../components';
+import {
+  AdmissionFilters,
+  ConfirmDialog,
+  AdmissionTable,
+  AdmissionDetailDialog,
+  AdmissionDecisionDialog,
+  PdfPreviewDialog,
+} from '../../components';
 import { useDebounce, useScrollToTop } from '../../hooks';
-import { useAdmissionsQuery, useDeleteAdmission, useUpdateAdmissionStatus } from '../../hooks/queries';
-import { getAdmissionDocumentBlob } from '../../services/admissions.service';
+import {
+  useAdmissionDetailQuery,
+  useAdmissionsQuery,
+  useDeleteAdmission,
+  useDeleteAdmissionFile,
+  useUpdateAdmissionStatus,
+} from '../../hooks/queries';
+import { getAdmissionFileBlob } from '../../services/admissions.service';
 import { useTitle } from '../../hooks/useTitle';
-import type { Admission, AdmissionStatus } from '../../types/admission.types';
+import type { Admission, AdmissionFile, AdmissionStatus } from '../../types/admission.types';
+import { ADMISSION_FILE_TYPE_LABELS } from '../../types/admission.types';
 import { formatFullName } from '../../utils/name.utils';
 
 const ITEMS_PER_PAGE = 10;
@@ -24,9 +38,14 @@ const Admissions = () => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [updating, setUpdating] = useState(false);
-  const [preview, setPreview] = useState<{ admission: Admission; kind: 'cv' | 'lettre' } | null>(
-    null,
+  const [detailId, setDetailId] = useState<number | null>(null);
+  const [preview, setPreview] = useState<{ admission: Admission; file: AdmissionFile } | null>(
+    null
   );
+  const [fileToDelete, setFileToDelete] = useState<{
+    admission: Admission;
+    file: AdmissionFile;
+  } | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Admission | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(ITEMS_PER_PAGE);
@@ -54,16 +73,22 @@ const Admissions = () => {
   });
   const updateStatusMutation = useUpdateAdmissionStatus();
   const deleteMutation = useDeleteAdmission();
+  const deleteFileMutation = useDeleteAdmissionFile();
+  const detailQuery = useAdmissionDetailQuery(detailId);
   const admissions = data?.data ?? [];
   const totalItems = data?.total ?? 0;
+  const detailAdmission = detailQuery.data ?? selectedAdmission;
   const niveaux = useMemo(
-    () => Array.from(new Set(admissions.map((item) => item.niveau))).sort((a, b) => a.localeCompare(b)),
-    [admissions],
+    () =>
+      Array.from(new Set(admissions.map((item) => item.niveau))).sort((a, b) => a.localeCompare(b)),
+    [admissions]
   );
   const formations = useMemo(
     () =>
-      Array.from(new Set(admissions.map((item) => item.formation))).sort((a, b) => a.localeCompare(b)),
-    [admissions],
+      Array.from(new Set(admissions.map((item) => item.formation))).sort((a, b) =>
+        a.localeCompare(b)
+      ),
+    [admissions]
   );
 
   useEffect(() => {
@@ -101,7 +126,7 @@ const Admissions = () => {
       toast.success(
         payload.statut === 'accepte'
           ? 'Admission validée. L’email a été transmis au candidat.'
-          : 'Décision enregistrée. L’email a été transmis au candidat.',
+          : 'Décision enregistrée. L’email a été transmis au candidat.'
       );
     } catch (error) {
       const message = error instanceof ApiError ? error.message : "Impossible d'envoyer l'email";
@@ -111,14 +136,30 @@ const Admissions = () => {
     }
   };
 
-  const openPreview = (admission: Admission, kind: 'cv' | 'lettre') => {
-    setPreview({ admission, kind });
+  const openPreview = (admission: Admission, file: AdmissionFile) => {
+    setPreview({ admission, file });
   };
 
   const loadPreview = useCallback(async () => {
     if (!preview) throw new Error('Document introuvable');
-    return getAdmissionDocumentBlob(preview.admission.id, preview.kind);
+    return getAdmissionFileBlob(preview.admission.id, preview.file.id);
   }, [preview]);
+
+  const handleConfirmDeleteFile = async () => {
+    if (!fileToDelete) return;
+    try {
+      await deleteFileMutation.mutateAsync({
+        id: fileToDelete.admission.id,
+        fileId: fileToDelete.file.id,
+      });
+      toast.success('Fichier supprimé avec succès');
+      setFileToDelete(null);
+    } catch (error) {
+      toast.error(
+        error instanceof ApiError ? error.message : 'Erreur lors de la suppression du fichier'
+      );
+    }
+  };
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
@@ -201,6 +242,7 @@ const Admissions = () => {
         }}
         onView={(admission) => {
           setSelectedAdmission(admission);
+          setDetailId(admission.id);
           setShowDetailModal(true);
         }}
         onEdit={(admission) => {
@@ -211,20 +253,24 @@ const Admissions = () => {
           const admission = admissions.find((item) => item.id === id);
           if (admission) setDeleteTarget(admission);
         }}
-        onPreviewDocument={openPreview}
+        onPreviewFile={openPreview}
         emptyMessage={getEmptyMessage()}
       />
 
-      {showDetailModal && selectedAdmission && (
+      {showDetailModal && detailAdmission && (
         <AdmissionDetailDialog
-          admission={selectedAdmission}
+          admission={detailAdmission}
           open={showDetailModal}
-          onClose={() => setShowDetailModal(false)}
+          onClose={() => {
+            setShowDetailModal(false);
+            setDetailId(null);
+          }}
           onEditStatus={() => {
             setShowDetailModal(false);
             setShowStatusModal(true);
           }}
-          onPreviewDocument={(kind) => openPreview(selectedAdmission, kind)}
+          onPreviewFile={(file) => openPreview(detailAdmission, file)}
+          onDeleteFile={(file) => setFileToDelete({ admission: detailAdmission, file })}
         />
       )}
 
@@ -238,24 +284,35 @@ const Admissions = () => {
         />
       )}
 
-      {preview && (() => {
-        const documentType = preview.kind === 'cv' ? 'CV' : 'Lettre de motivation';
-        const fileName = preview.kind === 'cv' ? 'CV' : 'Lettre';
-        const title = `${documentType} — ${formatFullName(preview.admission)}`;
-        // L'extension réelle est déterminée par le backend d'après la
-        // signature du fichier ; on n'impose plus « .pdf » ici.
-        const fileNameWithExt = `${fileName}-${preview.admission.nom}`;
+      {preview &&
+        (() => {
+          const title = `${ADMISSION_FILE_TYPE_LABELS[preview.file.type] ?? 'Document'} — ${formatFullName(preview.admission)}`;
+          return (
+            <PdfPreviewDialog
+              open={true}
+              title={title}
+              fileName={preview.file.originalName || 'document'}
+              loadDocument={loadPreview}
+              onClose={() => setPreview(null)}
+              showDownload={false}
+            />
+          );
+        })()}
 
-        return (
-          <PdfPreviewDialog
-            open={true}
-            title={title}
-            fileName={fileNameWithExt}
-            loadDocument={loadPreview}
-            onClose={() => setPreview(null)}
-          />
-        );
-      })()}
+      <ConfirmDialog
+        open={Boolean(fileToDelete)}
+        title="Supprimer le fichier"
+        message={
+          fileToDelete
+            ? `Êtes-vous sûr de vouloir supprimer « ${ADMISSION_FILE_TYPE_LABELS[fileToDelete.file.type] ?? 'ce document'} » de la candidature de ${formatFullName(fileToDelete.admission)} ?`
+            : ''
+        }
+        confirmLabel="Supprimer"
+        cancelLabel="Annuler"
+        onConfirm={handleConfirmDeleteFile}
+        onCancel={() => setFileToDelete(null)}
+        severity="error"
+      />
 
       <ConfirmDialog
         open={Boolean(deleteTarget)}
@@ -271,7 +328,6 @@ const Admissions = () => {
         onCancel={() => setDeleteTarget(null)}
         severity="error"
       />
-
     </div>
   );
 };

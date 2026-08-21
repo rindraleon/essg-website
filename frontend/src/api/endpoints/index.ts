@@ -21,5 +21,7 @@ export const endpoints = {
   staffSearch: '/ressources-humaines/search',
   messages: '/messages',
   admissions: '/admissions',
+  admissionsCheckDuplicate: '/admissions/check-duplicate',
+  settingsPublic: '/settings/public',
   health: '/health',
 } as const;

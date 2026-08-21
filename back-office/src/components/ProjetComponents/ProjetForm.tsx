@@ -3,12 +3,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { uploadImage } from '../../services';
 import { getImageUrl } from '../../utils/image.utils';
-import type { Projet, ProjetFormData } from '../../types/projet.types';
-import {
-  PROJET_TYPES,
-  PROJET_STATUTS,
-  DEFAULT_FORM_DATA,
-} from '../../constants/projet.constants';
+import { isValidSourceUrl } from '../../utils/projet.utils';
+import type { Projet, ProjetFormData, ProjectSource } from '../../types/projet.types';
+import SourcesField from './SourcesField';
+import { PROJET_TYPES, PROJET_STATUTS, DEFAULT_FORM_DATA } from '../../constants/projet.constants';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -61,7 +59,7 @@ type ProjetField = keyof ProjetFormState;
 
 const STEP_FIELDS_MAP: Record<number, ProjetField[]> = {
   0: ['titre', 'type', 'date'],
-  1: ['description'],
+  1: ['description', 'sources'],
   2: ['ville', 'pays', 'adresse'],
 };
 
@@ -100,6 +98,19 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
     type: { required: true },
     statut: { required: true },
     date: { required: true },
+    sources: {
+      custom: (value: unknown) => {
+        const list = (value ?? []) as ProjectSource[];
+        for (const source of list) {
+          if (!source.title?.trim()) return 'Chaque source doit avoir un titre.';
+          if (!source.url?.trim()) return 'Chaque source doit avoir une URL.';
+          if (!isValidSourceUrl(source.url)) {
+            return `L'URL « ${source.url} » est invalide.`;
+          }
+        }
+        return undefined;
+      },
+    },
   } as const;
 
   const {
@@ -136,6 +147,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
         partenaireIds: initialData.partenaireIds ?? [],
         image: imageUrl,
         galerie: initialData.galerie ?? [],
+        sources: initialData.sources ?? [],
         latitude: initialData.latitude,
         longitude: initialData.longitude,
         ville: initialData.ville,
@@ -216,7 +228,6 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
         error={errors.titre}
       />
 
-
       <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
         <FloatingSelect
           label="Type *"
@@ -281,6 +292,12 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
         placeholder="Rechercher un partenaire..."
         emptyMessage="Aucun partenaire disponible"
         hint="Sélectionnez un ou plusieurs partenaires associés au projet"
+      />
+
+      <SourcesField
+        value={(formData.sources ?? []) as ProjectSource[]}
+        error={errors.sources}
+        onChange={(sources) => handleChange('sources', sources)}
       />
     </div>
   );
@@ -373,7 +390,10 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
             step="any"
             value={formData.latitude?.toString() || ''}
             onChange={(e) =>
-              handleChange('latitude', e.target.value ? Number.parseFloat(e.target.value) : undefined)
+              handleChange(
+                'latitude',
+                e.target.value ? Number.parseFloat(e.target.value) : undefined
+              )
             }
           />
           <FloatingInput
@@ -383,7 +403,10 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
             step="any"
             value={formData.longitude?.toString() || ''}
             onChange={(e) =>
-              handleChange('longitude', e.target.value ? Number.parseFloat(e.target.value) : undefined)
+              handleChange(
+                'longitude',
+                e.target.value ? Number.parseFloat(e.target.value) : undefined
+              )
             }
           />
         </div>
