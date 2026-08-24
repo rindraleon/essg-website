@@ -2,10 +2,10 @@ import { Calendar } from 'lucide-react';
 import { useRecentActualites } from '../../hooks';
 import useSectionFilters, { type FilterDefinition } from '../../hooks/useSectionFilters';
 import FilterButton from '../common/FilterButton';
-import type { Actualite } from '../../types/actualite.types';
-import { getImageUrl } from '../../utils/image.utils';
-import { formatDate } from '../../utils/date.utils';
-import { CARD_WIDTH_CLASS } from '../../constants/layout';
+import type { Actualite } from '@/types';
+import { getImageUrl } from '@/utils';
+import { formatDate } from '@/utils';
+import { CARD_WIDTH_CLASS } from '@/constants';
 import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid } from '../../components';
 import MediaCard from '../common/MediaCard';
 import { MediaCardSkeletonGrid } from '../common/MediaCardSkeleton';
@@ -15,12 +15,6 @@ const FALLBACK_IMAGE =
 
 const SECTION_CTA = { label: 'Toutes les actualités', link: '/actualites' } as const;
 
-/**
- * Critères de filtrage (§5). Les options sont dérivées des actualités
- * réellement reçues : une catégorie sans article ne s'affiche pas.
- * L'année est extraite de la date — c'est le second axe de recherche
- * naturel pour une actualité, après la catégorie.
- */
 const FILTERS: FilterDefinition<Actualite>[] = [
   {
     key: 'categorie',
@@ -46,7 +40,6 @@ const ActualitesSection = () => {
   const count = filtered.length;
   const total = actualites.length;
 
-  /** « 4 actualités » ou « 2 sur 4 actualités » lorsqu'un filtre est posé. */
   const suffix = total > 1 ? 's' : '';
   const countLabel =
     count === total ? `${total} actualité${suffix}` : `${count} sur ${total} actualité${suffix}`;
@@ -64,23 +57,16 @@ const ActualitesSection = () => {
         />
       }
       loadingSkeletons={<MediaCardSkeletonGrid layout="home" />}
-      sectionClassName="bg-gradient-to-b from-white to-ink-50 py-20"
+      sectionClassName="bg-gradient-to-br from-white via-sage-50/55 to-brand-50/45 py-20"
       fluid
       containerClassName="max-w-none"
     >
       <ScrollableCardGrid
         className="w-full"
         ariaLabel="Dernières actualités"
+        resetKey={groups.map((group) => `${group.key}:${group.value}`).join('|')}
         toolbarStart={<span aria-live="polite">{countLabel}</span>}
-        controls={
-        groups.length > 0 && (
-          <FilterButton
-            groups={groups}
-            onChange={setFilter}
-            onReset={reset}
-          />
-        )
-      }
+        controls={<FilterButton groups={groups} onChange={setFilter} onReset={reset} />}
       >
         {filtered.map((actu) => (
           <MediaCard

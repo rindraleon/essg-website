@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
@@ -6,23 +7,13 @@ const buttonVariants = cva(
   [
     'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl',
     'text-small font-semibold outline-none select-none',
-    /*
-      `transition-all` animait TOUTE propriété qui change, y compris la
-      largeur et les marges lors d'un changement de libellé — d'où des
-      reflows évitables (§7.17). On énumère désormais les seules
-      propriétés concernées.
-      Durée : 200 ms, dans la fourchette micro-interaction du §7.14.
-    */
     'transition-[transform,background-color,border-color,color,box-shadow,opacity]',
-    'duration-200 ease-out motion-reduce:transition-none',
-    // §7.12 — Les quatre états sont couverts : hover (par variante),
-    // focus-visible, active et disabled.
+    'duration-(--duration-quick) ease-out motion-reduce:transition-none',
     'focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-2',
     'active:scale-[0.98] motion-reduce:active:scale-100',
     'disabled:pointer-events-none disabled:opacity-50',
-    // §7.5 — Glissement de l'icône, jamais un agrandissement du bouton.
-    "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:transition-transform",
-    '[&_svg]:duration-[--duration-micro] [&_svg]:ease-out hover:[&_svg]:translate-x-0.5',
+    '[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:transition-transform',
+    '[&_svg]:duration-(--duration-micro) [&_svg]:ease-out hover:[&_svg]:translate-x-0.5',
     'motion-reduce:[&_svg]:transition-none motion-reduce:hover:[&_svg]:translate-x-0',
     "[&_svg:not([class*='size-'])]:size-4",
   ].join(' '),
@@ -62,7 +53,7 @@ const buttonVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  },
+  }
 );
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
@@ -76,7 +67,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
-  ),
+  )
 );
 Button.displayName = 'Button';
 

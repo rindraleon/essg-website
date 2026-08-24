@@ -40,9 +40,7 @@ const DetailPageSkeleton: React.FC<DetailPageSkeletonProps> = ({
         )}
       </div>
 
-      <output className="sr-only">
-        {label}
-      </output>
+      <output className="sr-only">{label}</output>
     </div>
   </div>
 );

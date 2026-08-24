@@ -1,14 +1,14 @@
-import { apiClient } from '@/api/client/http';
-import { endpoints } from '@/api/endpoints';
-import type { PaginatedResult } from '@/api/types/api';
-import type { Formation } from '../types/formations.types';
+import { apiClient } from '@/api';
+import { endpoints } from '@/api';
+import type { PaginatedResult } from '@/api';
+import type { Formation } from '@/types';
 
 const formationService = {
   findAll(page = 1, limit = 10, signal?: AbortSignal): Promise<PaginatedResult<Formation>> {
     return apiClient.getList<Formation>(
       endpoints.formations,
       { page, limit, sortBy: 'id', sortOrder: 'ASC' },
-      signal,
+      signal
     );
   },
 
@@ -20,11 +20,16 @@ const formationService = {
     return apiClient.get<Formation>(endpoints.formationBySlug(slug), undefined, signal);
   },
 
-  search(query: string, page = 1, limit = 10, signal?: AbortSignal): Promise<PaginatedResult<Formation>> {
+  search(
+    query: string,
+    page = 1,
+    limit = 10,
+    signal?: AbortSignal
+  ): Promise<PaginatedResult<Formation>> {
     return apiClient.getList<Formation>(
       endpoints.formationSearch,
       { q: query, page, limit },
-      signal,
+      signal
     );
   },
 
@@ -32,7 +37,7 @@ const formationService = {
     const result = await apiClient.getList<Formation>(
       endpoints.formations,
       { page: 1, limit, sortBy: 'id', sortOrder: 'ASC' },
-      signal,
+      signal
     );
     return result.data.filter((item) => item.enVedette).slice(0, limit);
   },

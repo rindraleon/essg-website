@@ -1,17 +1,18 @@
+/* eslint-disable sonarjs/no-nested-conditional */
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { RotateCcw, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import {
+  Button,
+  Label,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { ActivityLogTable, ActivityLogViewDialog, ListPageHeader } from '../../components';
-import { useDebounce, useScrollToTop,useTitle, useActivityLogsQuery } from '../../hooks';
+} from '@/components/ui';
+import { ActivityLogTable, ActivityLogViewDialog, ListPageHeader } from '@/components';
+import { useDebounce, useScrollToTop, useTitle, useActivityLogsQuery } from '@/hooks';
 import type { ActivityLog } from '@/types';
 
 const MODULES = [
@@ -54,15 +55,17 @@ const ActivityLogs = () => {
       sortBy: 'createdAt',
       sortOrder: 'DESC' as const,
     }),
-    [page, rowsPerPage, debouncedSearch, moduleFilter, methodFilter, successFilter],
+    [page, rowsPerPage, debouncedSearch, moduleFilter, methodFilter, successFilter]
   );
 
   const { data, isLoading, isError, error, refetch } = useActivityLogsQuery(query);
   const logs = data?.data ?? [];
   const totalItems = data?.total ?? 0;
-  const activeFilterCount = [moduleFilter !== 'all', methodFilter !== 'all', successFilter !== 'all'].filter(
-    Boolean,
-  ).length;
+  const activeFilterCount = [
+    moduleFilter !== 'all',
+    methodFilter !== 'all',
+    successFilter !== 'all',
+  ].filter(Boolean).length;
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
@@ -177,7 +180,12 @@ const ActivityLogs = () => {
             </div>
             {activeFilterCount > 0 && (
               <div className="mt-3 flex justify-end">
-                <Button size="sm" variant="destructive" onClick={handleResetFilters} className="text-xs">
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={handleResetFilters}
+                  className="text-xs"
+                >
                   <RotateCcw className="mr-1 h-3 w-3" />
                   Réinitialiser tout
                 </Button>
@@ -228,7 +236,11 @@ const ActivityLogs = () => {
         );
       })()}
 
-      <ActivityLogViewDialog open={Boolean(selectedLog)} onClose={() => setSelectedLog(null)} log={selectedLog} />
+      <ActivityLogViewDialog
+        open={Boolean(selectedLog)}
+        onClose={() => setSelectedLog(null)}
+        log={selectedLog}
+      />
     </div>
   );
 };

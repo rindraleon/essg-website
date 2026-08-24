@@ -1,7 +1,7 @@
 import { Calendar, User } from 'lucide-react';
-import type { Actualite } from '../../types/actualite.types';
-import { formatDate } from '../../utils/date.utils';
-import { getImageUrl } from '../../utils/image.utils';
+import type { Actualite } from '@/types';
+import { formatDate } from '@/utils';
+import { getImageUrl } from '@/utils';
 import MediaCard from '../common/MediaCard';
 
 interface Props {
@@ -16,11 +16,14 @@ const ActualiteCard = ({ actualite }: Props) => (
     to={`/actualites/${actualite.slug}`}
     title={actualite.titre}
     imageUrl={actualite.image ? getImageUrl(actualite.image) : FALLBACK_IMAGE}
+    ratio="landscape"
     badge={actualite.categorie}
     description={actualite.resume}
     meta={[
       { icon: <Calendar className="size-3.5" />, label: formatDate(actualite.date) },
-      ...(actualite.auteur ? [{ icon: <User className="size-3.5" />, label: actualite.auteur }] : []),
+      ...(actualite.auteur
+        ? [{ icon: <User className="size-3.5" />, label: actualite.auteur }]
+        : []),
     ]}
     actionLabel="Lire l'article"
   />

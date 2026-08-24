@@ -1,7 +1,7 @@
 import { Plus, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { FloatingInput } from '@/components/ui/floating-input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui';
+import { FloatingInput } from '@/components/ui';
+import { Label } from '@/components/ui';
 
 interface DynamicListFieldProps {
   label: string;

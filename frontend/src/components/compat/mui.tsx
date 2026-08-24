@@ -1,18 +1,32 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Input } from '../ui/input';
 import { Skeleton as UiSkeleton } from '../ui/skeleton';
 import { Textarea } from '../ui/textarea';
 
-export function Card({ className, children, elevation: _e, sx: _sx, ...props }: React.HTMLAttributes<HTMLDivElement> & { elevation?: number; sx?: unknown }) {
+export function Card({
+  className,
+  children,
+  elevation: _e,
+  sx: _sx,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & { elevation?: number; sx?: unknown }) {
   return (
-    <div className={cn('rounded-2xl border border-ink-100 bg-white shadow-card', className)} {...props}>
+    <div
+      className={cn('rounded-2xl border border-ink-100 bg-white shadow-card', className)}
+      {...props}
+    >
       {children}
     </div>
   );
 }
 
-export function CardContent({ className, children, ...props }: Readonly<React.HTMLAttributes<HTMLDivElement>>) {
+export function CardContent({
+  className,
+  children,
+  ...props
+}: Readonly<React.HTMLAttributes<HTMLDivElement>>) {
   return (
     <div className={cn('p-6', className)} {...props}>
       {children}
@@ -42,11 +56,11 @@ export function IconButton({
 }) {
   const classes = cn(
     'inline-flex size-9 items-center justify-center rounded-lg text-ink-600 transition-colors hover:bg-ink-50',
-    className,
+    className
   );
-  if (component === 'a' || href) {
+  if (component === 'a' || href || to) {
     return (
-      <a href={href} target={target} rel={rel} className={classes}>
+      <a href={href ?? to} target={target} rel={rel} className={classes}>
         {children}
       </a>
     );
@@ -76,7 +90,12 @@ export function Chip({
   onDelete?: () => void;
 }>) {
   return (
-    <span className={cn('inline-flex items-center gap-1 rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-caption font-medium text-brand-800', className)}>
+    <span
+      className={cn(
+        'inline-flex items-center gap-1 rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-caption font-medium text-brand-800',
+        className
+      )}
+    >
       {icon}
       {label}
       {onDelete && (
@@ -113,7 +132,10 @@ export function Skeleton({
   );
 }
 
-export function Tooltip({ children, title }: Readonly<{ children: React.ReactElement; title?: React.ReactNode }>) {
+export function Tooltip({
+  children,
+  title,
+}: Readonly<{ children: React.ReactElement; title?: React.ReactNode }>) {
   return (
     <span className="inline-flex" title={typeof title === 'string' ? title : undefined}>
       {children}
@@ -132,11 +154,24 @@ export function Fade({
   return visible ? children : null;
 }
 
-export function FormControl({ children, className, fullWidth, size: _size, required: _required }: React.HTMLAttributes<HTMLDivElement> & { fullWidth?: boolean; size?: string; required?: boolean }) {
+export function FormControl({
+  children,
+  className,
+  fullWidth,
+  size: _size,
+  required: _required,
+}: React.HTMLAttributes<HTMLDivElement> & {
+  fullWidth?: boolean;
+  size?: string;
+  required?: boolean;
+}) {
   return <div className={cn(fullWidth && 'w-full', className)}>{children}</div>;
 }
 
-export function InputLabel({ children, htmlFor }: Readonly<{ children?: React.ReactNode; htmlFor?: string; id?: string; sx?: unknown }>) {
+export function InputLabel({
+  children,
+  htmlFor,
+}: Readonly<{ children?: React.ReactNode; htmlFor?: string; id?: string; sx?: unknown }>) {
   return (
     <label htmlFor={htmlFor} className="mb-1.5 block text-small font-medium text-ink-700">
       {children}
@@ -144,7 +179,9 @@ export function InputLabel({ children, htmlFor }: Readonly<{ children?: React.Re
   );
 }
 
-export function InputAdornment({ children }: Readonly<{ children?: React.ReactNode; position?: string; sx?: unknown }>) {
+export function InputAdornment({
+  children,
+}: Readonly<{ children?: React.ReactNode; position?: string; sx?: unknown }>) {
   return <span className="inline-flex items-center text-ink-400">{children}</span>;
 }
 
@@ -171,7 +208,12 @@ export function TextField({
   size?: string;
   sx?: unknown;
 }) {
-  const inputClass = cn('w-full', fullWidth && 'w-full', InputProps?.startAdornment && 'pl-9', className);
+  const inputClass = cn(
+    'w-full',
+    fullWidth && 'w-full',
+    InputProps?.startAdornment && 'pl-9',
+    className
+  );
   return (
     <div className={cn('space-y-1.5', fullWidth && 'w-full')}>
       {label && <label className="text-small font-medium text-ink-700">{label}</label>}
@@ -182,12 +224,18 @@ export function TextField({
           </span>
         )}
         {multiline ? (
-          <Textarea rows={rows} className={inputClass} {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)} />
+          <Textarea
+            rows={rows}
+            className={inputClass}
+            {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+          />
         ) : (
           <Input ref={inputRef} className={inputClass} {...props} />
         )}
         {InputProps?.endAdornment && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2">{InputProps.endAdornment}</span>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2">
+            {InputProps.endAdornment}
+          </span>
         )}
       </div>
     </div>
@@ -225,7 +273,7 @@ export function Select({
         value={value ?? ''}
         className={cn(
           'flex h-10 w-full rounded-xl border border-ink-200 bg-white px-3 py-2 text-small text-ink-900',
-          className,
+          className
         )}
         onChange={(event) => onChange?.({ target: { value: event.target.value } })}
       >
@@ -235,7 +283,10 @@ export function Select({
   );
 }
 
-export function MenuItem({ children, value }: Readonly<{ children?: React.ReactNode; value?: string }>) {
+export function MenuItem({
+  children,
+  value,
+}: Readonly<{ children?: React.ReactNode; value?: string }>) {
   return <option value={value}>{children}</option>;
 }
 

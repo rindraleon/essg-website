@@ -1,10 +1,10 @@
-import { Card, CardContent } from '@/components/compat/mui';
+import { Card, CardContent } from '@/components/compat';
 import { ArrowRight, CircleHelp } from 'lucide-react';
 import React from 'react';
-import Button from '@/components/compat/button';
+import { CompatButton as Button } from '@/components/compat';
 import { Link as RouterLink } from 'react-router-dom';
-import { GREEN } from '../../constants/colors';
-import type { ContactCardProps } from '../../types/faq.types';
+import { GREEN } from '@/constants';
+import type { ContactCardProps } from '@/types';
 
 const ContactCard: React.FC<ContactCardProps> = (props: Readonly<ContactCardProps>) => {
   const {
@@ -18,8 +18,7 @@ const ContactCard: React.FC<ContactCardProps> = (props: Readonly<ContactCardProp
   } = props;
 
   return (
-    <Card
-    >
+    <Card>
       <CardContent className="p-6 sm:p-8">
         <div className="flex items-start gap-4">
           <div
@@ -44,11 +43,7 @@ const ContactCard: React.FC<ContactCardProps> = (props: Readonly<ContactCardProp
                 {primaryLabel}
               </Button>
 
-              <Button
-                component={RouterLink}
-                to={secondaryLink}
-                variant="outlined"
-              >
+              <Button component={RouterLink} to={secondaryLink} variant="outlined">
                 {secondaryLabel}
               </Button>
             </div>

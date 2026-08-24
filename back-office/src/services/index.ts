@@ -1,74 +1,55 @@
-export { getNews, getNewsBySlug } from './news.service';
-export { login, verifyToken, logout } from './auth.service';
+export { login, logout, verifyToken } from './auth.service';
 export {
-  getAllFormations,
-  getFormationById,
-  searchFormations,
   createFormation,
-  updateFormation,
   deleteFormation,
+  getAllFormations,
+  updateFormation,
 } from './formations.service';
 export {
-  getAllActualites,
-  getActualiteById,
   createActualite,
-  updateActualite,
   deleteActualite,
+  getAllActualites,
+  updateActualite,
 } from './actualites.service';
 export {
-  getAllRessourcesHumaines,
-  getRessourceHumaineById,
   createRessourceHumaine,
-  updateRessourceHumaine,
   deleteRessourceHumaine,
+  getAllRessourcesHumaines,
+  updateRessourceHumaine,
 } from './ressources-humaines.service';
 export {
-  getAllProjets,
-  getProjetById,
   createProjet,
-  updateProjet,
   deleteProjet,
+  getAllProjets,
+  updateProjet,
   uploadImage,
 } from './projets.service';
 export {
-  getAllPartenaires,
-  getPartenaireById,
   createPartenaire,
-  updatePartenaire,
   deletePartenaire,
+  getAllPartenaires,
+  updatePartenaire,
 } from './partenaires.service';
-export { getDashboardStats, getRecentActivities, getDashboardOverview } from './dashboard.service';
+export { getDashboardStats, getRecentActivities } from './dashboard.service';
+export { createUser, deleteUser, getAllUsers, updateUser, uploadAvatar } from './users.service';
 export {
-  getAllUsers,
-  searchUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser,
-  uploadAvatar,
-} from './users.service';
-
-export {
-  getAllAdmissions,
-  searchAdmissions,
-  getAdmissionById,
-  updateAdmissionStatus,
   deleteAdmission,
+  deleteAdmissionFile,
+  getAdmissionById,
+  getAdmissionFileBlob,
+  getAllAdmissions,
+  updateAdmissionStatus,
 } from './admissions.service';
-
+export type { AdmissionQuery } from './admissions.service';
+export { getActivityLogs } from './activity-logs.service';
+export { getSettings, updateSettings } from './settings.service';
+export { ACCEPTED_CV_TYPES, OcrError, analyzeCv } from './ocr.service';
+export type { OcrProgress, OcrResult } from './ocr.service';
 export {
-  getActivityLogs,
-  getActivityLogById,
-} from './activity-logs.service';
-
-export {
-  getAllMessages,
-  searchMessages,
-  getMessageById,
-  updateMessage,
-  replyToMessage,
   deleteMessage,
-  type Message,
-  type PaginationResponse,
-  type PaginationQuery,
+  getAllMessages,
+  replyToMessage,
+  searchMessages,
+  updateMessage,
 } from './messages.service';
+export type { Message, PaginationQuery } from './messages.service';

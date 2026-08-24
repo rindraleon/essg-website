@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Locate, MapPin, Pencil } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { FloatingInput } from '@/components/ui/floating-input';
-import { Button } from '@/components/ui/button';
+import { FloatingInput } from '@/components/ui';
+import { Button } from '@/components/ui';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -41,7 +42,7 @@ const MapPicker: React.FC<MapPickerProps> = ({
   const lng = typeof longitude === 'string' ? parseFloat(longitude) : longitude;
 
   const [position, setPosition] = useState<[number, number]>(
-    lat && lng ? [lat, lng] : [48.8566, 2.3522] // Paris par défaut
+    lat && lng ? [lat, lng] : [48.8566, 2.3522]
   );
   const [manualLat, setManualLat] = useState<string>('');
   const [manualLng, setManualLng] = useState<string>('');

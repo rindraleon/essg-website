@@ -1,32 +1,30 @@
-import { ArrowLeft, ArrowRight, Briefcase, CircleCheck, Globe, GraduationCap, Info, Upload } from 'lucide-react';
+/* eslint-disable sonarjs/no-nested-conditional, @typescript-eslint/no-unused-vars */
+import {
+  ArrowLeft,
+  ArrowRight,
+  Briefcase,
+  CircleCheck,
+  Globe,
+  GraduationCap,
+  Info,
+  Upload,
+} from 'lucide-react';
 import React, { useRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { toUpperName } from '../../utils/slug.utils';
+import { toUpperName } from '@/utils';
 import { uploadImage } from '../../services';
-import { getImageUrl } from '../../utils/image.utils';
-import type {
-  RessourceHumaineItem,
-  RessourceHumaineFormData,
-} from '../../types/ressource-humaine.types';
-import { postes } from '../../data/mockData';
+import { getImageUrl } from '@/utils';
+import type { RessourceHumaineItem, RessourceHumaineFormData } from '@/types';
+import { RESSOURCE_HUMAINE_POSTES as postes } from '@/constants';
 import { useFormValidation } from '../../hooks/useFormValidation';
-import {
-  EMAIL_ERROR_MESSAGE,
-  EMAIL_PATTERN,
-} from '../../constants/validation.constants';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
-import { FloatingInput } from '@/components/ui/floating-input';
-import { FloatingTextarea } from '@/components/ui/floating-textarea';
-import { FloatingSelect } from '@/components/ui/floating-select';
+import { EMAIL_ERROR_MESSAGE, EMAIL_PATTERN } from '@/constants';
+import { Button } from '@/components/ui';
+import { Label } from '@/components/ui';
+import { Checkbox } from '@/components/ui';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui';
+import { FloatingInput } from '@/components/ui';
+import { FloatingTextarea } from '@/components/ui';
+import { FloatingSelect } from '@/components/ui';
 import CvImportPanel from './CvImportPanel';
 import ParcoursFields from './ParcoursFields';
 
@@ -64,7 +62,7 @@ const STEPS = [
 type RessourceHumaineField = keyof RessourceHumaineFormData;
 
 const STEP_FIELDS_MAP: Record<number, RessourceHumaineField[]> = {
-  0: ['prenom', 'nom', 'poste'],
+  0: ['nom', 'prenom', 'poste'],
   1: ['email', 'telephone', 'description'],
   2: ['experiences', 'formations', 'diplomes', 'competences', 'langues'],
   3: ['ordre'],
@@ -81,7 +79,6 @@ const defaultFormData: RessourceHumaineFormData = {
   photo: '',
   actif: true,
   ordre: 0,
-  // Parcours : vide par défaut, rempli par l'OCR ou manuellement.
   experiences: [],
   formations: [],
   diplomes: [],
@@ -100,7 +97,6 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
   const [imagePreview, setImagePreview] = useState<string>('');
   const [uploadingImage, setUploadingImage] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  /** Champs renseignés par l'OCR, signalés par un repère « Auto ». */
   const [autoFilled, setAutoFilled] = useState<Set<keyof RessourceHumaineFormData>>(new Set());
 
   const {
@@ -177,11 +173,10 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
       setImagePreview(getImageUrl(url));
       toast.success('Photo téléversée avec succès');
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Échec du téléversement de la photo.";
+      const message = err instanceof Error ? err.message : 'Échec du téléversement de la photo.';
       toast.error(message);
     } finally {
       setUploadingImage(false);
-      // Permet de re-sélectionner le même fichier après une erreur.
       e.target.value = '';
     }
   };
@@ -221,16 +216,12 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
   const dialogTitle =
     mode === 'create' ? 'Nouvelle ressource humaine' : 'Modifier la ressource humaine';
 
-  /* ─── Step 0 : Informations personnelles ─── */
   const renderStep0 = () => (
     <div className="space-y-3">
-      {/* Import de CV : préremplit les champs, l'utilisateur valide ensuite. */}
       {mode === 'create' && (
         <CvImportPanel
           disabled={submitting}
           onApply={(patch, champs) => {
-            // Les champs détectés sont injectés dans le formulaire, et les
-            // listes du parcours génèrent autant d'inputs que d'entrées.
             handleChanges(patch);
             setAutoFilled(champs);
           }}
@@ -239,15 +230,6 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
 
       <div className="grid grid-cols-1 items-start gap-x-3 sm:grid-cols-2">
         <FloatingInput
-          id="prenom"
-          label="Prénom *"
-          autoComplete="given-name"
-          value={formData.prenom}
-          onChange={(e) => handleChange('prenom', e.target.value)}
-          onBlur={() => handleBlur('prenom')}
-          error={errors.prenom}
-        />
-        <FloatingInput
           id="nom"
           label="Nom *"
           autoComplete="family-name"
@@ -255,6 +237,15 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
           onChange={(e) => handleChange('nom', toUpperName(e.target.value))}
           onBlur={() => handleBlur('nom')}
           error={errors.nom}
+        />
+        <FloatingInput
+          id="prenom"
+          label="Prénom *"
+          autoComplete="given-name"
+          value={formData.prenom}
+          onChange={(e) => handleChange('prenom', e.target.value)}
+          onBlur={() => handleBlur('prenom')}
+          error={errors.prenom}
         />
       </div>
 
@@ -266,7 +257,6 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
         error={errors.poste}
       />
 
-      {/* Photo Upload */}
       <div className="space-y-2">
         <Label className="text-xs font-semibold text-ink-600 uppercase tracking-wide">
           Photo de profil
@@ -274,6 +264,8 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
         <div className="flex items-start gap-3">
           {imagePreview && (
             <img
+              loading="lazy"
+              decoding="async"
               src={imagePreview}
               alt="Aperçu"
               className="w-24 h-24 object-cover rounded-md border border-ink-100 shrink-0"
@@ -294,7 +286,6 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingImage}
               size="sm"
-              
             >
               <Upload className="h-3.5 w-3.5" />
               {uploadingImage ? 'Upload...' : 'Choisir une photo'}
@@ -306,7 +297,6 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
     </div>
   );
 
-  /* ─── Step 1 : Contact et description ─── */
   const renderStep1 = () => (
     <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -348,7 +338,6 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
     </div>
   );
 
-  /* ─── Step 2 : Parcours (généré par l'OCR, éditable) ─── */
   const renderStep2 = () => (
     <ParcoursFields
       formData={formData}
@@ -358,7 +347,6 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
     />
   );
 
-  /* ─── Step 3 : Publication ─── */
   const renderStep3 = () => (
     <div className="space-y-4">
       <FloatingInput
@@ -399,10 +387,8 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
           p-0
           gap-0
           overflow-hidden
-          [&>button]:hidden
         "
       >
-        {/* ─── Header + Stepper ─── */}
         <DialogHeader className="px-5 pt-4 pb-3 border-b bg-ink-50/80">
           <DialogTitle className="text-lg font-bold text-ink-900">{dialogTitle}</DialogTitle>
 
@@ -445,10 +431,8 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
           </div>
         </DialogHeader>
 
-        {/* ─── Body ─── */}
         <div className="px-5 py-4 overflow-y-auto max-h-[58vh]">{stepRenderers[activeStep]()}</div>
 
-        {/* ─── Footer ─── */}
         <DialogFooter className="px-5 py-3 mb-4 mx-4 border-t bg-ink-50/80">
           <div className="flex items-center justify-between w-full">
             <span className="text-xs text-ink-400">
@@ -462,7 +446,6 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                 size="sm"
                 onClick={onClose}
                 disabled={submitting}
-                
               >
                 Annuler
               </Button>
@@ -474,7 +457,6 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                   size="sm"
                   onClick={handleBack}
                   disabled={submitting}
-                  
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
                   Précédent
@@ -482,24 +464,12 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
               )}
 
               {activeStep < STEPS.length - 1 ? (
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={handleNext}
-                  disabled={submitting}
-                  
-                >
+                <Button type="button" size="sm" onClick={handleNext} disabled={submitting}>
                   Suivant
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               ) : (
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={handleSubmit}
-                  disabled={submitting}
-                  
-                >
+                <Button type="button" size="sm" onClick={handleSubmit} disabled={submitting}>
                   <CircleCheck className="h-3.5 w-3.5" />
                   {submitting ? 'Enregistrement...' : mode === 'create' ? 'Créer' : 'Enregistrer'}
                 </Button>

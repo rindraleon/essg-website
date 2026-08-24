@@ -1,9 +1,9 @@
 export { default as useScrollToTop } from './useScrollToTop';
-export { default as useDebounce } from './useDebounce';
+export { default as usePagination } from './usePagination';
+export { useTitle } from './useTitle';
 export { default as useReveal } from './useReveal';
 export { default as useGsapReveal } from './useGsapReveal';
 export { default as useGsapHero } from './useGsapHero';
-export { default as useGsap } from './useGsap';
 export { default as useScrollAnimation } from './useScrollAnimation';
 export { default as useHeaderScroll } from './useHeaderScroll';
 export { default as useFormations } from './useFormations';
@@ -15,9 +15,11 @@ export { useActualiteBySlug } from './useActualites';
 export { default as useRessourcesHumaines } from './useRessourcesHumaines';
 export { useActiveRessourcesHumaines } from './useRessourcesHumaines';
 export { useRessourceHumaineBySlug } from './useRessourcesHumaines';
-export { default as usePartenaires } from './usePartenaires';
-export { usePartenaireBySlug } from './usePartenaires';
-export { default as useProjets } from './useProjets';
-export { useProjetBySlug } from './useProjets';
+export {
+  default as usePartenaires,
+  usePaginatedPartenaires,
+  usePartenaireBySlug,
+} from './usePartenaires';
+export { default as useProjets, usePaginatedProjets, useProjetBySlug } from './useProjets';
 export { useAdmissionsSettings, useAdmissionsOuvertes } from './useAdmissionsSettings';
-export { useCreateAdmission, useCreateContact } from './mutations';
+export { useCreateContact } from './mutations';

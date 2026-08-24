@@ -11,6 +11,7 @@ interface ScrollableCardGridProps {
   ariaLabel?: string;
   controls?: React.ReactNode;
   toolbarStart?: React.ReactNode;
+  resetKey?: string;
 }
 
 const ScrollableCardGrid: React.FC<ScrollableCardGridProps> = ({
@@ -20,6 +21,7 @@ const ScrollableCardGrid: React.FC<ScrollableCardGridProps> = ({
   ariaLabel = 'Liste défilante',
   controls,
   toolbarStart,
+  resetKey,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAtStart, setIsAtStart] = useState(true);
@@ -43,16 +45,25 @@ const ScrollableCardGrid: React.FC<ScrollableCardGridProps> = ({
 
     checkScrollPosition();
 
-    const observer = new ResizeObserver(checkScrollPosition);
-
-    observer.observe(element);
-
-    for (const child of Array.from(element.children)) {
-      observer.observe(child);
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', checkScrollPosition);
+      return () => window.removeEventListener('resize', checkScrollPosition);
     }
 
+    const observer = new ResizeObserver(checkScrollPosition);
+    observer.observe(element);
+    for (const child of Array.from(element.children)) observer.observe(child);
     return () => observer.disconnect();
   }, [children, checkScrollPosition]);
+
+  useEffect(() => {
+    if (resetKey === undefined) return;
+    const element = scrollContainerRef.current;
+    if (!element) return;
+    element.scrollTo({ left: 0, behavior: 'auto' });
+    const frame = window.requestAnimationFrame(checkScrollPosition);
+    return () => window.cancelAnimationFrame(frame);
+  }, [resetKey, checkScrollPosition]);
 
   const scroll = useCallback(
     (direction: 'left' | 'right') => {
@@ -60,28 +71,19 @@ const ScrollableCardGrid: React.FC<ScrollableCardGridProps> = ({
       if (!element) return;
 
       const firstCard = element.firstElementChild as HTMLElement | null;
-      const gap =
-        Number.parseFloat(getComputedStyle(element).columnGap || '0') || 0;
-      const oneCard = firstCard
-        ? firstCard.offsetWidth + gap
-        : element.clientWidth;
+      const gap = Number.parseFloat(getComputedStyle(element).columnGap || '0') || 0;
+      const oneCard = firstCard ? firstCard.offsetWidth + gap : element.clientWidth;
 
-      const amount =
-        scrollAmount ??
-        (oneCard >= element.clientWidth * 0.75
-          ? oneCard
-          : element.clientWidth * 0.85);
+      const amount = scrollAmount ?? oneCard;
 
-      const prefersReducedMotion = window.matchMedia(
-        '(prefers-reduced-motion: reduce)',
-      ).matches;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       element.scrollBy({
         left: direction === 'left' ? -amount : amount,
         behavior: prefersReducedMotion ? 'auto' : 'smooth',
       });
     },
-    [scrollAmount],
+    [scrollAmount]
   );
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -96,113 +98,58 @@ const ScrollableCardGrid: React.FC<ScrollableCardGridProps> = ({
 
   const arrowClass =
     'grid place-items-center rounded-full border border-ink-100 bg-white text-ink-700 shadow-card ' +
-    'transition-[background-color,border-color,color,opacity] duration-200 ease-out ' +
+    'transition-[background-color,border-color,color,opacity] duration-(--duration-quick) ease-out ' +
     'hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 ' +
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 ' +
     'disabled:cursor-not-allowed disabled:opacity-0 motion-reduce:transition-none';
 
-  const showToolbar =
-    isScrollable || Boolean(controls) || Boolean(toolbarStart);
-
   return (
     <div className={cn('w-full', className)}>
-      {showToolbar && (
-        <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          {toolbarStart ? (
-            <div className="min-w-0 text-small text-ink-500">
-              {toolbarStart}
-            </div>
-          ) : (
-            <span aria-hidden className="hidden sm:block" />
-          )}
+      <div className="mb-3 flex min-h-10 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        {toolbarStart ? (
+          <div className="min-w-0 text-small text-ink-500">{toolbarStart}</div>
+        ) : (
+          <span aria-hidden className="hidden sm:block" />
+        )}
 
-          <div className="group flex items-center justify-end gap-2">
-            {controls}
-
-            {isScrollable && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => scroll('left')}
-                  disabled={isAtStart}
-                  aria-label="Défiler vers la gauche"
-                  className={cn(arrowClass, 'hidden size-10 lg:grid')}
-                >
-                  <ChevronLeft className="size-5" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => scroll('right')}
-                  disabled={isAtEnd}
-                  aria-label="Défiler vers la droite"
-                  className={cn(arrowClass, 'hidden size-10 lg:grid')}
-                >
-                  <ChevronRight className="size-5" />
-                </button>
-              </>
-            )}
-          </div>
+        <div className="flex min-h-10 items-center justify-end gap-2">
+          {controls}
+          <button
+            type="button"
+            onClick={() => scroll('left')}
+            disabled={!isScrollable || isAtStart}
+            aria-label="Défiler vers la gauche"
+            className={cn(arrowClass, 'size-10')}
+          >
+            <ChevronLeft className="size-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => scroll('right')}
+            disabled={!isScrollable || isAtEnd}
+            aria-label="Défiler vers la droite"
+            className={cn(arrowClass, 'size-10')}
+          >
+            <ChevronRight className="size-5" />
+          </button>
         </div>
-      )}
+      </div>
 
       <div className="relative">
-        {isScrollable && (
-          <>
-            <button
-              type="button"
-              onClick={() => scroll('left')}
-              disabled={isAtStart}
-              aria-label="Carte précédente"
-              className={cn(
-                arrowClass,
-                'absolute left-1 top-1/2 z-20 size-11 -translate-y-1/2 lg:hidden',
-              )}
-            >
-              <ChevronLeft className="size-5" />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => scroll('right')}
-              disabled={isAtEnd}
-              aria-label="Carte suivante"
-              className={cn(
-                arrowClass,
-                'absolute right-1 top-1/2 z-20 size-11 -translate-y-1/2 lg:hidden',
-              )}
-            >
-              <ChevronRight className="size-5" />
-            </button>
-          </>
-        )}
-
-        {isScrollable && !isAtStart && (
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-10 bg-gradient-to-r from-ink-50 to-transparent lg:block"
-          />
-        )}
-
-        {isScrollable && !isAtEnd && (
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-10 bg-gradient-to-l from-ink-50 to-transparent lg:block"
-          />
-        )}
-
         <section
           ref={scrollContainerRef}
           onScroll={checkScrollPosition}
+          onKeyDown={handleKeyDown}
+          tabIndex={isScrollable ? 0 : -1}
           aria-label={ariaLabel}
           className={cn(
-            'flex overflow-x-auto overflow-y-hidden scroll-smooth pb-4 motion-reduce:scroll-auto',
-            'snap-x snap-mandatory',
+            'flex touch-pan-x overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-4 motion-reduce:scroll-auto',
+            'snap-x snap-proximity',
             '[-webkit-overflow-scrolling:touch]',
             'gap-4 sm:gap-5 lg:gap-6',
             'px-4 scroll-px-4 sm:px-0 sm:scroll-px-0',
             'scrollbar-hide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2',
-            '[&>*]:shrink-0',
+            '[&>*]:shrink-0'
           )}
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >

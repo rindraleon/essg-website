@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { FaqAccordionProps } from '../../types/faq.types';
+import type { FaqAccordionProps } from '@/types';
 
 const FaqAccordion = ({ faqs }: FaqAccordionProps) => {
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -16,7 +16,7 @@ const FaqAccordion = ({ faqs }: FaqAccordionProps) => {
             <div
               key={panelId}
               className={cn(
-                'overflow-hidden rounded-[0.9rem] border border-ink-100 transition-[border-color,box-shadow] duration-300',
+                'overflow-hidden rounded-[0.9rem] border border-ink-100 transition-[border-color,box-shadow] duration-(--duration-hover)',
                 isOpen && 'border-brand-200 shadow-[0_12px_32px_-16px_rgba(46,106,95,0.35)]'
               )}
             >
@@ -26,7 +26,7 @@ const FaqAccordion = ({ faqs }: FaqAccordionProps) => {
                 aria-controls={`${panelId}-content`}
                 onClick={() => setExpanded(isOpen ? null : panelId)}
                 className={cn(
-                  'flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left font-semibold transition-[background-color,color] duration-200',
+                  'flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left font-semibold transition-[background-color,color] duration-(--duration-quick)',
                   'motion-reduce:transition-none',
                   isOpen ? 'bg-brand-50 text-brand-800' : 'text-ink-900 hover:bg-ink-50'
                 )}
@@ -34,19 +34,17 @@ const FaqAccordion = ({ faqs }: FaqAccordionProps) => {
                 <span>{faq.question}</span>
                 <ChevronDown
                   className={cn(
-                    'size-5 shrink-0 text-ink-400 transition-transform duration-300 ease-out motion-reduce:transition-none',
+                    'size-5 shrink-0 text-ink-400 transition-transform duration-(--duration-hover) ease-out motion-reduce:transition-none',
                     isOpen && 'rotate-180 text-brand-600'
                   )}
                 />
               </button>
 
-              {/* Grid rows permet une ouverture progressive sans mesurer le
-                  contenu ni animer la hauteur à chaque frame. */}
               <div
                 id={`${panelId}-content`}
                 aria-hidden={!isOpen}
                 className={cn(
-                  'grid transition-[grid-template-rows,opacity] duration-300 ease-out motion-reduce:transition-none',
+                  'grid transition-[grid-template-rows,opacity] duration-(--duration-hover) ease-out motion-reduce:transition-none',
                   isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
                 )}
               >

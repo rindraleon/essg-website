@@ -1,7 +1,7 @@
-import { apiClient, API_BASE_URL } from '@/api/client/http';
-import { endpoints } from '@/api/endpoints';
-import { ApiError } from '@/api/types/api';
-import type { AdmissionDuplicateCheck } from '../types/admission.types';
+import { apiClient, API_BASE_URL } from '@/api';
+import { endpoints } from '@/api';
+import { ApiError } from '@/api';
+import type { AdmissionDuplicateCheck } from '@/types';
 
 export const ADMISSION_MAX_FILE_SIZE = 10 * 1024 * 1024;
 

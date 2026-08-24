@@ -1,6 +1,15 @@
-import { Box, FormControl, InputLabel, Select, MenuItem, Button, Chip, TextField } from '@/components/compat/mui';
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+  Chip,
+  TextField,
+} from '@/components/compat';
 import React from 'react';
-import type { RessourceHumaineFilterOptions } from '../../types/ressource-humaine.types';
+import type { RessourceHumaineFilterOptions } from '@/types';
 
 interface RessourceHumaineFilterProps {
   filters: RessourceHumaineFilterOptions;
@@ -22,7 +31,6 @@ const RessourceHumaineFilter: React.FC<RessourceHumaineFilterProps> = ({
   return (
     <Box className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Search */}
         <TextField
           label="Rechercher"
           placeholder="Nom, prénom, poste..."
@@ -32,7 +40,6 @@ const RessourceHumaineFilter: React.FC<RessourceHumaineFilterProps> = ({
           fullWidth
         />
 
-        {/* Poste Filter */}
         <FormControl size="small" fullWidth>
           <InputLabel>Poste</InputLabel>
           <Select
@@ -49,7 +56,6 @@ const RessourceHumaineFilter: React.FC<RessourceHumaineFilterProps> = ({
           </Select>
         </FormControl>
 
-        {/* Actif Filter */}
         <FormControl size="small" fullWidth>
           <InputLabel>Statut</InputLabel>
           <Select
@@ -64,7 +70,6 @@ const RessourceHumaineFilter: React.FC<RessourceHumaineFilterProps> = ({
         </FormControl>
       </div>
 
-      {/* Active Filters & Reset */}
       {activeFilterCount > 0 && (
         <Box className="flex items-center gap-2">
           <span className="text-sm text-ink-600">Filtres actifs:</span>

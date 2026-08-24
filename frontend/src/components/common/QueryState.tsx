@@ -2,7 +2,7 @@ import { AlertTriangle, RefreshCw, WifiOff } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
 import EmptyState from './EmptyState';
-import { ApiError } from '@/api/types/api';
+import { ApiError } from '@/api';
 
 interface QueryStateProps {
   loading?: boolean;

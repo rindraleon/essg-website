@@ -1,14 +1,14 @@
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import React from 'react';
-import { getImageUrl } from '../../utils/image.utils';
-import type { RessourceHumaineItem } from '../../types/ressource-humaine.types';
+import { getImageUrl } from '@/utils';
+import type { RessourceHumaineItem } from '@/types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { formatFullName, getPersonInitials } from '../../utils/name.utils';
+import { Badge } from '@/components/ui';
+import { Button } from '@/components/ui';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
+import { formatFullName, getPersonInitials } from '@/utils';
 
 interface RessourceHumaineTableProps {
   data: RessourceHumaineItem[];
@@ -56,10 +56,7 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
       minWidth: 180,
       render: (row) => (
         <div>
-          <span className="font-semibold text-ink-900">
-            {formatFullName(row)}
-          </span>
-          {/* <p className="text-xs text-ink-500 line-clamp-1 mt-0.5">{row.poste}</p> */}
+          <span className="font-semibold text-ink-900">{formatFullName(row)}</span>
         </div>
       ),
     },
@@ -81,16 +78,6 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
       minWidth: 120,
       render: (row) => <span className="text-sm text-ink-600">{row.telephone || '-'}</span>,
     },
-    // {
-    //   id: 'actif',
-    //   label: 'Statut',
-    //   minWidth: 90,
-    //   render: (row) => (
-    //     <Badge variant={row.actif ? 'default' : 'secondary'}>
-    //       {row.actif ? 'Actif' : 'Inactif'}
-    //     </Badge>
-    //   ),
-    // },
     {
       id: 'actions',
       label: 'Actions',

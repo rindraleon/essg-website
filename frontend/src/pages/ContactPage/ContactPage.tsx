@@ -1,13 +1,11 @@
-import { Clock, Contact, Mail, MapPin, Phone } from 'lucide-react';
+import { Clock, Mail, MapPin, Phone } from 'lucide-react';
 import React from 'react';
 
+import { PageHero, ContactForm, ContactInfoCards, MapEmbed, Breadcrumb } from '@/components';
+import type { ContactPageProps } from '@/types';
 
-import PageHero from '../../components/common/PageHero';
-import type { ContactPageProps } from '../../types/contact.types';
-import { ContactForm, ContactInfoCards, MapEmbed, Breadcrumb, CtaSection } from '../../components';
-
-import { SITE_HERO_IMAGE } from '../../constants/media';
-import { useTitle } from '@/hooks/useTitle';
+import { SITE_HERO_IMAGE } from '@/constants';
+import { useTitle } from '@/hooks';
 
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
@@ -64,8 +62,6 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
 
   return (
     <div className="min-h-screen bg-ink-50">
-      {/* Les toasts sont gérés globalement par <AppToaster /> (App.tsx). */}
-
       <PageHero
         image={HERO_IMAGE}
         imageAlt="Contact ESSG"
@@ -80,7 +76,6 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
 
       <Breadcrumb items={[{ label: 'Contact' }]} />
 
-      {/* Formulaire et Infos */}
       <section className="py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-3">
@@ -95,23 +90,12 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
         </div>
       </section>
 
-      {/* Carte */}
       <section className="bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="mb-6 text-h3 text-ink-900">Localisation</h2>
           <MapEmbed lat={mapLat} lng={mapLng} label={mapLabel} adresse={mapAdresse} zoom="city" />
         </div>
       </section>
-
-      <CtaSection
-        icon={<Contact />}
-        title="Un projet, une question ?"
-        description="Notre équipe vous répond dans les plus brefs délais. Contactez-nous ou découvrez nos formations."
-        primaryLabel="Voir les formations"
-        primaryLink="/formations"
-        secondaryLabel="Questions fréquentes"
-        secondaryLink="/faq"
-      />
     </div>
   );
 };

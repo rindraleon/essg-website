@@ -10,10 +10,10 @@ import {
   User,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { toUpperName } from '../../utils/slug.utils';
-import type { ContactFormData, ContactFormProps } from '../../types/contact.types';
+import { toUpperName } from '@/utils';
+import type { ContactFormData, ContactFormProps } from '@/types';
 import { useCreateContact } from '../../hooks/mutations';
-import { ApiError } from '@/api/types/api';
+import { ApiError } from '@/api';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';

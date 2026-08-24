@@ -2,7 +2,7 @@ import { ArrowUpRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { HOVER_CARD, HOVER_IMAGE_ZOOM } from '../../constants/motion';
+import { HOVER_CARD, HOVER_IMAGE_ZOOM } from '@/constants';
 
 export interface MediaCardMeta {
   icon?: React.ReactNode;
@@ -25,6 +25,26 @@ interface MediaCardProps {
   className?: string;
 }
 
+const normalize = (value?: string): string =>
+  (value ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toLowerCase();
+
+const dedupeMeta = (
+  meta: MediaCardMeta[],
+  ...alreadyShown: (string | undefined)[]
+): MediaCardMeta[] => {
+  const seen = new Set(alreadyShown.map(normalize).filter(Boolean));
+  return meta.filter((item) => {
+    const key = normalize(item.label);
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
 const MediaCard: React.FC<MediaCardProps> = ({
   to,
   title,
@@ -41,9 +61,11 @@ const MediaCard: React.FC<MediaCardProps> = ({
   className,
 }) => {
   const isHomeLayout = layout === 'home';
-  const hasDetails = Boolean(description) || meta.length > 0;
+  const visibleMeta = dedupeMeta(meta, title, badge, subtitle);
+  const showSubtitlePill = Boolean(subtitle) && !isHomeLayout;
+  const hasDetails = Boolean(description) || visibleMeta.length > 0;
   const surfaceClass = imageFit === 'contain' ? 'bg-white' : 'bg-ink-900';
-  const ratioClass = ratio === 'portrait' ? 'aspect-[4/5]' : 'aspect-[4/3]';
+  const ratioClass = ratio === 'portrait' ? 'aspect-[4/5]' : 'aspect-[16/10]';
   const titleLinkClass =
     "after:absolute after:inset-0 after:z-20 after:content-[''] focus-visible:outline-none";
 
@@ -69,6 +91,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
           src={imageUrl}
           alt={imageAlt ?? title}
           loading="lazy"
+          decoding="async"
           className={cn(
             'absolute inset-0 size-full',
             HOVER_IMAGE_ZOOM,
@@ -76,7 +99,6 @@ const MediaCard: React.FC<MediaCardProps> = ({
           )}
         />
 
-        {/* Voile permanent : garantit la lisibilité du titre sur toute image. */}
         <div
           aria-hidden="true"
           className={cn(
@@ -85,17 +107,16 @@ const MediaCard: React.FC<MediaCardProps> = ({
           )}
         />
 
-        {/* Voile de survol réservé au layout standard. */}
         <div
           aria-hidden="true"
           data-card-veil
           className={cn(
-            'absolute inset-0 bg-ink-950/45 opacity-0 transition-opacity duration-[--duration-hover] ease-out group-hover:opacity-100 group-focus-within:opacity-100 motion-reduce:transition-none',
+            'absolute inset-0 bg-ink-950/45 opacity-0 transition-opacity duration-(--duration-hover) ease-out group-hover:opacity-100 group-focus-within:opacity-100 motion-reduce:transition-none',
             isHomeLayout && 'hidden'
           )}
         />
 
-        {(badge || subtitle) && (
+        {(badge || showSubtitlePill) && (
           <div className="absolute left-4 right-4 top-4 z-10 flex items-center justify-between">
             {badge && (
               <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-caption text-brand-800 backdrop-blur-sm">
@@ -103,7 +124,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
               </span>
             )}
 
-            {subtitle && (
+            {showSubtitlePill && (
               <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-caption text-brand-800 backdrop-blur-sm">
                 {subtitle}
               </span>
@@ -123,9 +144,9 @@ const MediaCard: React.FC<MediaCardProps> = ({
               </Link>
             </h3>
             <p className="mt-1 h-5 truncate text-small text-sage-300">{subtitle || '\u00a0'}</p>
-            <span className="mt-2 inline-flex h-4 items-center gap-1.5 text-caption  text-white/85 transition-colors duration-[--duration-micro] group-hover:text-sage-300 group-focus-within:text-sage-300 motion-reduce:transition-none">
+            <span className="mt-2 inline-flex h-4 items-center gap-1.5 text-caption  text-white/85 transition-colors duration-(--duration-micro) group-hover:text-sage-300 group-focus-within:text-sage-300 motion-reduce:transition-none">
               {actionLabel}
-              <ArrowUpRight className="size-3.5 transition-transform duration-[--duration-micro] ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-focus-within:translate-x-[3px] group-focus-within:-translate-y-[3px] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" />
+              <ArrowUpRight className="size-3.5 transition-transform duration-(--duration-micro) ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-focus-within:translate-x-[3px] group-focus-within:-translate-y-[3px] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" />
             </span>
           </div>
         )}
@@ -142,9 +163,9 @@ const MediaCard: React.FC<MediaCardProps> = ({
             {description || '\u00a0'}
           </p>
 
-          {meta.length > 0 ? (
+          {visibleMeta.length > 0 ? (
             <ul className="mt-3 flex min-h-[1.75rem] flex-wrap content-start gap-x-4 gap-y-1">
-              {meta.map((item) => (
+              {visibleMeta.map((item) => (
                 <li
                   key={item.label}
                   className="flex min-w-0 items-center gap-1.5 text-caption text-ink-500"
@@ -159,13 +180,12 @@ const MediaCard: React.FC<MediaCardProps> = ({
           )}
         </div>
       ) : (
-        /* Bloc titre standard : ancré en bas, il ne se déplace jamais. */
         <div className="absolute inset-x-0 bottom-0 z-10 p-5">
           {hasDetails && (
             <div
               data-card-details
               className={cn(
-                'pointer-events-none absolute inset-x-5 bottom-full mb-3 translate-y-3 opacity-0 transition-[opacity,transform] duration-[--duration-hover] ease-out',
+                'pointer-events-none absolute inset-x-5 bottom-full mb-3 translate-y-3 opacity-0 transition-[opacity,transform] duration-(--duration-hover) ease-out',
                 'group-hover:translate-y-0 group-hover:opacity-100',
                 'group-focus-within:translate-y-0 group-focus-within:opacity-100',
                 'motion-reduce:transition-none'
@@ -177,9 +197,9 @@ const MediaCard: React.FC<MediaCardProps> = ({
                 </p>
               )}
 
-              {meta.length > 0 && (
+              {visibleMeta.length > 0 && (
                 <ul className="mt-2 flex flex-wrap justify-between gap-x-4 gap-y-1">
-                  {meta.map((item) => (
+                  {visibleMeta.map((item) => (
                     <li
                       key={item.label}
                       className="flex items-center gap-1.5 text-caption text-white/75"
@@ -203,11 +223,9 @@ const MediaCard: React.FC<MediaCardProps> = ({
             </Link>
           </h3>
 
-          
-
-          <span className="mt-2 inline-flex items-center gap-1.5 text-caption font-semibold uppercase text-white/85 transition-colors duration-[--duration-micro] group-hover:text-sage-300 group-focus-within:text-sage-300 motion-reduce:transition-none">
+          <span className="mt-2 inline-flex items-center gap-1.5 text-caption font-semibold uppercase text-white/85 transition-colors duration-(--duration-micro) group-hover:text-sage-300 group-focus-within:text-sage-300 motion-reduce:transition-none">
             {actionLabel}
-            <ArrowUpRight className="size-3.5 transition-transform duration-[--duration-micro] ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-focus-within:translate-x-[3px] group-focus-within:-translate-y-[3px] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" />
+            <ArrowUpRight className="size-3.5 transition-transform duration-(--duration-micro) ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-focus-within:translate-x-[3px] group-focus-within:-translate-y-[3px] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" />
           </span>
         </div>
       )}

@@ -1,14 +1,13 @@
 import { Globe, MapPin } from 'lucide-react';
 import React from 'react';
-import Button from '@/components/compat/button';
+import { CompatButton as Button } from '@/components/compat';
 import { Link as RouterLink } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import useGsapReveal from '../../hooks/useGsapReveal';
-import type { LocalisationSectionProps } from '../../types/sectionone.types';
+import type { LocalisationSectionProps } from '@/types';
 
-// Fix pour l'icône par défaut de Leaflet
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -34,13 +33,14 @@ const LocalisationSection: React.FC<LocalisationSectionProps> = (
   const revealRef = useGsapReveal<HTMLElement>();
 
   return (
-    <section ref={revealRef} className="py-20">
+    <section
+      ref={revealRef}
+      className="bg-gradient-to-br from-brand-50/60 via-white to-sage-50/45 py-20"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div data-gsap>
-            <h2 className="mb-4 text-h2 text-ink-900">
-              {title}
-            </h2>
+            <h2 className="mb-4 text-h2 text-ink-900">{title}</h2>
 
             <p className="mb-7 text-h5 leading-7 text-ink-500">{description}</p>
 
@@ -67,17 +67,16 @@ const LocalisationSection: React.FC<LocalisationSectionProps> = (
             </div>
 
             <div className="mt-8">
-              <Button
-                component={RouterLink}
-                to="/contact"
-                variant="contained"
-              >
+              <Button component={RouterLink} to="/contact" variant="contained">
                 Nous contacter
               </Button>
             </div>
           </div>
 
-          <div data-gsap className="aspect-video overflow-hidden rounded-2xl bg-ink-100 shadow-card ring-1 ring-ink-100 lg:h-96 lg:aspect-auto">
+          <div
+            data-gsap
+            className="aspect-video overflow-hidden rounded-2xl bg-ink-100 shadow-card ring-1 ring-ink-100 lg:h-96 lg:aspect-auto"
+          >
             <MapContainer
               center={[latitude, longitude]}
               zoom={15}

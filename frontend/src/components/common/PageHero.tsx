@@ -1,9 +1,9 @@
-import { SITE_HERO_ALT, SITE_HERO_IMAGE } from '../../constants/media';
+import { SITE_HERO_ALT, SITE_HERO_IMAGE } from '@/constants';
 import useGsapHero from '../../hooks/useGsapHero';
 import AnimatedBackground from '../animations/AnimatedBackground';
 import SplitTitle from '../animations/SplitTitle';
 import AnimatedNumber from './AnimatedNumber';
-import type { PageHeroProps } from '../../types/common.types';
+import type { PageHeroProps } from '@/types';
 
 const PageHero = ({
   image = SITE_HERO_IMAGE,
@@ -25,6 +25,9 @@ const PageHero = ({
         data-hero="media"
         src={image || SITE_HERO_IMAGE}
         alt={imageAlt}
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
         className="absolute inset-0 h-full w-full object-cover object-center will-change-transform"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-brand-950/30 via-brand-950/28 to-brand-950/72" />
@@ -71,7 +74,7 @@ const PageHero = ({
               <div
                 key={stat.label}
                 data-hero="stat"
-                className="rounded-2xl border border-white/18 bg-white/12 p-4 text-center shadow-lg backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                className="rounded-2xl border border-white/18 bg-white/12 p-4 text-center shadow-lg backdrop-blur-md transition-transform duration-(--duration-hover) hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               >
                 {stat.icon && <div className="mb-2 flex justify-center">{stat.icon}</div>}
                 <AnimatedNumber value={stat.value} className="block text-h3 font-bold text-white" />

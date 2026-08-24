@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link } from 'react-router-dom';
 import { Button as UiButton, buttonVariants, type ButtonProps } from '../ui/button';
 import { cn } from '@/lib/utils';
@@ -46,7 +47,11 @@ export default function Button({
 }: CompatButtonProps) {
   const mappedVariant = variantMap[String(variant)] ?? (variant as ButtonProps['variant']);
   const mappedSize = sizeMap[String(size)] ?? (size as ButtonProps['size']);
-  const classes = cn(buttonVariants({ variant: mappedVariant, size: mappedSize }), fullWidth && 'w-full', className);
+  const classes = cn(
+    buttonVariants({ variant: mappedVariant, size: mappedSize }),
+    fullWidth && 'w-full',
+    className
+  );
 
   if (component === Link || to) {
     return (

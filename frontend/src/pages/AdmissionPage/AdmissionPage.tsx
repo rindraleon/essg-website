@@ -1,20 +1,12 @@
-import { CalendarX2, CircleHelp, GraduationCap, LoaderCircle } from 'lucide-react';
+import { CalendarX2, LoaderCircle } from 'lucide-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import type { AdmissionPageProps } from '../../types/admission.types';
-import {
-  AdmissionForm,
-  ContactCard,
-  CtaSection,
-  PageHero,
-  Breadcrumb,
-  EmptyState,
-} from '../../components';
+import type { AdmissionPageProps } from '@/types';
+import { AdmissionForm, PageHero, Breadcrumb, EmptyState } from '@/components';
 
-import { SITE_HERO_IMAGE } from '../../constants/media';
-import { useAdmissionsSettings } from '@/hooks';
-import { useTitle } from '@/hooks/useTitle';
+import { SITE_HERO_IMAGE } from '@/constants';
+import { useAdmissionsSettings, useTitle } from '@/hooks';
 
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
@@ -70,30 +62,8 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPa
       <section className="py-12">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           {renderAdmissionContent()}
-
-          <div className="mt-8">
-            <ContactCard
-              icon={<CircleHelp />}
-              title="Besoin d'aide ?"
-              description="Si vous rencontrez des difficultés ou avez des questions sur le processus d'admission, notre équipe est là pour vous aider."
-              primaryLabel="admission@essg.mg"
-              primaryLink="admission@essg.mg"
-              secondaryLabel="+261 34 28 085 30"
-              secondaryLink="/contact"
-            />
-          </div>
         </div>
       </section>
-
-      <CtaSection
-        icon={<GraduationCap />}
-        title="Découvrez nos formations"
-        description="Explorez nos programmes d'excellence en sciences géomatiques avant de soumettre votre candidature."
-        primaryLabel="Voir les formations"
-        primaryLink="/formations"
-        secondaryLabel="Questions fréquentes"
-        secondaryLink="/faq"
-      />
     </div>
   );
 };

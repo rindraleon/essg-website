@@ -1,5 +1,5 @@
 import { Toaster } from 'react-hot-toast';
-import { GREEN } from '../../constants/colors';
+import { GREEN } from '@/constants';
 
 const AppToaster = () => (
   <Toaster

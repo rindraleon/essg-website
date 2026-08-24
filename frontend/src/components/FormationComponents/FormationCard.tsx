@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { Badge } from '../ui/badge';
 import { buttonVariants } from '../ui/button';
 import { cn } from '@/lib/utils';
-import { getImageUrl } from '../../utils/image.utils';
+import { getImageUrl } from '@/utils';
 import ViewDetailsButton from '../common/ViewDetailsButton';
-import type { FormationCardProps } from '../../types/formations.types';
-import { HOVER_CARD, HOVER_IMAGE_ZOOM } from '../../constants/motion';
+import type { FormationCardProps } from '@/types';
+import { HOVER_CARD, HOVER_IMAGE_ZOOM } from '@/constants';
 
 const FormationCard = ({
   formation,
@@ -26,6 +26,8 @@ const FormationCard = ({
           <div className="relative w-full shrink-0 overflow-hidden bg-ink-100 sm:w-[40%] sm:self-stretch">
             <div className="aspect-[16/9] w-full sm:aspect-auto sm:h-full">
               <img
+                loading="lazy"
+                decoding="async"
                 src={getImageUrl(formation.image)}
                 alt={formation.titre}
                 className={cn('h-full w-full object-cover', HOVER_IMAGE_ZOOM)}

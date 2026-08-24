@@ -13,19 +13,14 @@ import {
   X,
 } from 'lucide-react';
 import React from 'react';
-import { getImageUrl } from '../../utils/image.utils';
-import type { RessourceHumaineItem } from '../../types/ressource-humaine.types';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  BulletList,
-  DetailField,
-  DetailSection,
-  TagList,
-} from '../common/DetailSection';
-import { formatFullName, getPersonInitials } from '../../utils/name.utils';
+import { getImageUrl } from '@/utils';
+import type { RessourceHumaineItem } from '@/types';
+import { Button } from '@/components/ui';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui';
+import { Badge } from '@/components/ui';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
+import { BulletList, DetailField, DetailSection, TagList } from '../common/DetailSection';
+import { formatFullName, getPersonInitials } from '@/utils';
 
 interface RessourceHumaineViewDialogProps {
   open: boolean;
@@ -33,7 +28,6 @@ interface RessourceHumaineViewDialogProps {
   ressource: RessourceHumaineItem | null;
 }
 
-/** Formate une date en toutes lettres, avec repli si la valeur est absente. */
 function formatDate(value?: Date | string): string | undefined {
   if (!value) return undefined;
   const date = new Date(value);
@@ -41,14 +35,6 @@ function formatDate(value?: Date | string): string | undefined {
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-/**
- * Fiche détaillée d'une ressource humaine.
- *
- * Affiche désormais l'INTÉGRALITÉ des données disponibles. Le parcours
- * professionnel (expériences, formations, diplômes, compétences, langues)
- * était stocké et alimenté par l'import de CV, mais restait invisible :
- * seuls le nom, le poste et les coordonnées étaient rendus.
- */
 const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
   open,
   onClose,
@@ -65,7 +51,6 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
   const competences = ressource.competences ?? [];
   const langues = ressource.langues ?? [];
 
-  /** Vrai si la fiche contient au moins une donnée de parcours. */
   const aParcours =
     experiences.length > 0 ||
     formations.length > 0 ||
@@ -75,11 +60,12 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="!h-[90vh] !max-h-[90vh] !w-[96vw] !max-w-[calc(100%-1rem)] gap-0 overflow-hidden rounded-3xl border-2 border-ink-100 bg-white p-0 shadow-[0_24px_80px_rgba(15,23,42,0.35)] sm:!max-w-6xl [&>button]:hidden">
+      <DialogContent
+        showCloseButton={false}
+        className="!h-[90vh] !max-h-[90vh] !w-[96vw] !max-w-[calc(100%-1rem)] gap-0 overflow-hidden rounded-3xl border-2 border-ink-100 bg-white p-0 shadow-[0_24px_80px_rgba(15,23,42,0.35)] sm:!max-w-6xl"
+      >
         <div className="grid h-full min-h-0 lg:grid-cols-[340px_minmax(0,1fr)]">
-          {/* ═══ Colonne d'identité (desktop) ═══ */}
           <aside className="hidden min-h-0 flex-col overflow-y-auto border-r border-ink-100 bg-ink-950 p-5 text-white lg:flex">
-            {/* Photo de profil : cadrage carré, adapté à un portrait */}
             <div className="overflow-hidden rounded-2xl border border-white/10 bg-ink-800 shadow-[0_12px_30px_rgba(0,0,0,0.35)]">
               <div className="aspect-square w-full">
                 {ressource.photo ? (
@@ -121,7 +107,6 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                 </p>
               </div>
 
-              {/* Coordonnées */}
               <div className="space-y-2.5 border-t border-white/10 pt-4">
                 {ressource.email && (
                   <a
@@ -157,7 +142,6 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
             </div>
           </aside>
 
-          {/* ═══ Colonne de contenu ═══ */}
           <section className="flex min-h-0 flex-col">
             <DialogHeader className="shrink-0 border-b border-ink-100 bg-white px-5 py-4 lg:px-6">
               <div className="flex items-start justify-between gap-4">
@@ -182,7 +166,6 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
             </DialogHeader>
 
             <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 lg:px-6">
-              {/* ─── En-tête mobile : reprend l'identité de la colonne latérale ─── */}
               <div className="lg:hidden">
                 <div className="rounded-2xl border border-ink-100 bg-white p-4 shadow-sm">
                   <div className="mb-4 flex items-start gap-4">
@@ -230,7 +213,6 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                 </div>
               </div>
 
-              {/* ─── Présentation ─── */}
               {ressource.description && (
                 <DetailSection title="Présentation" icon={<User className="size-4" />}>
                   <p className="whitespace-pre-wrap break-words text-sm leading-7 text-ink-600">
@@ -239,7 +221,6 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                 </DetailSection>
               )}
 
-              {/* ─── Parcours professionnel ─── */}
               {experiences.length > 0 && (
                 <DetailSection
                   title="Expériences professionnelles"
@@ -250,7 +231,6 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                     {experiences.map((experience, position) => (
                       <li
                         key={`${experience.poste}-${position}`}
-                        // Repère visuel de chronologie, sans surcharger la mise en page.
                         className="border-l-2 border-brand-200 pl-3"
                       >
                         <p className="text-sm font-semibold text-ink-900">{experience.poste}</p>
@@ -269,7 +249,6 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                 </DetailSection>
               )}
 
-              {/* ─── Formation ─── */}
               {(diplomes.length > 0 || formations.length > 0) && (
                 <div className="grid gap-5 sm:grid-cols-2">
                   {diplomes.length > 0 && (
@@ -294,7 +273,6 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                 </div>
               )}
 
-              {/* ─── Compétences et langues ─── */}
               {(competences.length > 0 || langues.length > 0) && (
                 <div className="grid gap-5 sm:grid-cols-2">
                   {competences.length > 0 && (
@@ -319,7 +297,6 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                 </div>
               )}
 
-              {/* Aucune donnée de parcours : on l'indique plutôt que de laisser un vide */}
               {!aParcours && !ressource.description && (
                 <div className="rounded-2xl border border-dashed border-ink-200 px-5 py-8 text-center">
                   <p className="text-sm text-ink-500">
@@ -331,8 +308,10 @@ const RessourceHumaineViewDialog: React.FC<RessourceHumaineViewDialogProps> = ({
                 </div>
               )}
 
-              {/* ─── Informations administratives ─── */}
-              <DetailSection title="Informations administratives" icon={<IdCard className="size-4" />}>
+              <DetailSection
+                title="Informations administratives"
+                icon={<IdCard className="size-4" />}
+              >
                 <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
                   <DetailField label="Nom" value={ressource.nom} />
                   <DetailField label="Prénom" value={ressource.prenom} />

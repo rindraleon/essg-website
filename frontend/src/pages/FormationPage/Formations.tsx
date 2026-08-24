@@ -1,22 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { GraduationCap, Search, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import {
-  CtaSection,
   PageHero,
   Breadcrumb,
   FilterToolbar,
   FormationCard,
   Reveal,
-} from '../../components';
-import QueryState from '../../components/common/QueryState';
-import { Input } from '../../components/ui/input';
-import { Select } from '../../components/ui/select';
-import { Skeleton } from '../../components/ui/skeleton';
-import { useFormations } from '../../hooks';
-import type { Formation } from '../../types/formations.types';
+  QueryState,
+} from '@/components';
+import { Input, Select, Skeleton } from '@/components/ui';
+import { useFormations, useTitle } from '@/hooks';
+import type { Formation } from '@/types';
 
-import { SITE_HERO_IMAGE } from '../../constants/media';
-import { useTitle } from '@/hooks/useTitle';
+import { SITE_HERO_IMAGE } from '@/constants';
 
 const HERO_IMAGE = SITE_HERO_IMAGE;
 
@@ -33,8 +29,6 @@ const DOMAINES = [
   { value: 'Géomatique et Management', label: 'Géomatique et Management' },
   { value: 'Informatique et Données Spatiales', label: 'Informatique et Données Spatiales' },
 ];
-
-
 
 const FormationsPage = () => {
   useTitle('Formations | ESSG');
@@ -82,10 +76,22 @@ const FormationsPage = () => {
       ? [{ key: 'search', label: `Recherche: "${searchTerm}"`, onDelete: () => setSearchTerm('') }]
       : []),
     ...(niveauFilter !== 'all'
-      ? [{ key: 'niveau', label: `Niveau: ${niveauFilter}`, onDelete: () => setNiveauFilter('all') }]
+      ? [
+          {
+            key: 'niveau',
+            label: `Niveau: ${niveauFilter}`,
+            onDelete: () => setNiveauFilter('all'),
+          },
+        ]
       : []),
     ...(domaineFilter !== 'all'
-      ? [{ key: 'domaine', label: `Domaine: ${domaineFilter}`, onDelete: () => setDomaineFilter('all') }]
+      ? [
+          {
+            key: 'domaine',
+            label: `Domaine: ${domaineFilter}`,
+            onDelete: () => setDomaineFilter('all'),
+          },
+        ]
       : []),
   ];
 
@@ -142,14 +148,22 @@ const FormationsPage = () => {
         }
       >
         <div className="grid gap-4 md:grid-cols-2">
-          <Select label="Niveau" value={niveauFilter} onChange={(e) => setNiveauFilter(e.target.value)}>
+          <Select
+            label="Niveau"
+            value={niveauFilter}
+            onChange={(e) => setNiveauFilter(e.target.value)}
+          >
             {NIVEAUX.map((item) => (
               <option key={item.value} value={item.value}>
                 {item.label}
               </option>
             ))}
           </Select>
-          <Select label="Domaine" value={domaineFilter} onChange={(e) => setDomaineFilter(e.target.value)}>
+          <Select
+            label="Domaine"
+            value={domaineFilter}
+            onChange={(e) => setDomaineFilter(e.target.value)}
+          >
             {DOMAINES.map((item) => (
               <option key={item.value} value={item.value}>
                 {item.label}
@@ -172,7 +186,10 @@ const FormationsPage = () => {
             skeleton={
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 {Array.from({ length: 6 }).map((_, index) => (
-                  <div key={index} className="overflow-hidden rounded-2xl border border-ink-100 shadow-card">
+                  <div
+                    key={index}
+                    className="overflow-hidden rounded-2xl border border-ink-100 shadow-card"
+                  >
                     <Skeleton className="h-52 w-full rounded-none" />
                     <div className="space-y-3 p-5">
                       <Skeleton className="h-4 w-1/3" />
@@ -193,16 +210,6 @@ const FormationsPage = () => {
           </QueryState>
         </div>
       </section>
-
-      <CtaSection
-        icon={<GraduationCap className="size-12 text-brand-400" />}
-        title="Vous ne trouvez pas la formation idéale ?"
-        description="Contactez-nous pour obtenir des conseils personnalisés sur votre orientation académique et professionnelle."
-        primaryLabel="Demander des conseils"
-        primaryLink="/contact"
-        secondaryLabel="Postuler maintenant"
-        secondaryLink="/admission"
-      />
     </div>
   );
 };

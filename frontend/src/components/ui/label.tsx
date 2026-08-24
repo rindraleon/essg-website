@@ -8,7 +8,7 @@ const Label = React.forwardRef<HTMLLabelElement, React.ComponentProps<'label'>>(
       className={cn('text-small font-medium text-ink-700 leading-none', className)}
       {...props}
     />
-  ),
+  )
 );
 Label.displayName = 'Label';
 

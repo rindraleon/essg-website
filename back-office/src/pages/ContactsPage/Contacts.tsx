@@ -1,20 +1,27 @@
+/* eslint-disable sonarjs/no-nested-conditional */
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import ListPageHeader from '../../components/common/ListPageHeader';
-import { ApiError } from '@/api/types/api';
-import { ConfirmDialog, ContactFilters, ContactReplyDialog, MessageTable } from '../../components';
-
-import { useDebounce, useScrollToTop } from '../../hooks';
+import { Button } from '@/components/ui';
 import {
+  ListPageHeader,
+  ConfirmDialog,
+  ContactFilters,
+  ContactReplyDialog,
+  MessageTable,
+} from '@/components';
+import { ApiError } from '@/api';
+
+import {
+  useDebounce,
+  useScrollToTop,
   useDeleteMessage,
   useMarkMessageRead,
   useMessagesQuery,
   useReplyToMessage,
-} from '../../hooks/queries';
-import { useTitle } from '../../hooks/useTitle';
-import type { Message } from '../../services/messages.service';
-import { formatFullName } from '../../utils/name.utils';
+  useTitle,
+} from '@/hooks';
+import type { Message } from '@/services';
+import { formatFullName } from '@/utils';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -129,7 +136,7 @@ const Contacts = () => {
         setDeleteDialogOpen(true);
       }
     },
-    [messages],
+    [messages]
   );
 
   const handleConfirmDelete = useCallback(async () => {

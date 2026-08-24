@@ -1,6 +1,6 @@
 import React from 'react';
 import { Skeleton } from '../ui/skeleton';
-import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '../../constants/layout';
+import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '@/constants';
 import ScrollableCardGrid from './ScrollableCardGrid';
 import { cn } from '@/lib/utils';
 
@@ -53,7 +53,6 @@ export const MediaCardSkeleton: React.FC<MediaCardSkeletonProps> = ({
 };
 
 interface MediaCardSkeletonGridProps {
-  /** Nombre de silhouettes (4 au maximum, une par clé stable). */
   count?: number;
   ratio?: 'portrait' | 'landscape';
   layout?: 'default' | 'home';

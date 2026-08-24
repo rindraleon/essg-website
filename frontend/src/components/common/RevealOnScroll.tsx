@@ -23,43 +23,41 @@ interface VariantSpec {
 }
 
 function specFor(variant: RevealVariant, distance?: number): VariantSpec {
-  const d =
-    distance !== undefined ? `${distance}px` : 'var(--reveal-distance)';
-  const dSm =
-    distance !== undefined ? `${distance}px` : 'var(--reveal-distance-sm)';
+  const d = distance !== undefined ? `${distance}px` : 'var(--reveal-distance)';
+  const dSm = distance !== undefined ? `${distance}px` : 'var(--reveal-distance-sm)';
 
   switch (variant) {
     case 'fade-up-sm':
       return {
         from: { transform: `translate3d(0, ${dSm}, 0)` },
-        duration: '500ms',
+        duration: '650ms',
       };
 
     case 'fade-down':
     case 'down':
       return {
         from: { transform: `translate3d(0, calc(-1 * ${d}), 0)` },
-        duration: '650ms',
+        duration: '850ms',
       };
 
     case 'fade-left':
     case 'left':
       return {
         from: { transform: `translate3d(calc(-1 * ${d}), 0, 0)` },
-        duration: '650ms',
+        duration: '850ms',
       };
 
     case 'fade-right':
     case 'right':
       return {
         from: { transform: `translate3d(${d}, 0, 0)` },
-        duration: '650ms',
+        duration: '850ms',
       };
 
     case 'scale-in':
       return {
         from: { transform: 'scale(0.96)' },
-        duration: '700ms',
+        duration: '900ms',
       };
 
     case 'blur-in':
@@ -68,7 +66,7 @@ function specFor(variant: RevealVariant, distance?: number): VariantSpec {
           filter: 'blur(8px)',
           transform: 'scale(1.02)',
         },
-        duration: '900ms',
+        duration: '1150ms',
       };
 
     case 'fade':
@@ -81,7 +79,7 @@ function specFor(variant: RevealVariant, distance?: number): VariantSpec {
     default:
       return {
         from: { transform: `translate3d(0, ${d}, 0)` },
-        duration: '700ms',
+        duration: '900ms',
       };
   }
 }
@@ -142,7 +140,7 @@ export const RevealOnScroll: React.FC<RevealOnScrollProps> = ({
       {
         rootMargin: '0px 0px -12% 0px',
         threshold: 0.05,
-      },
+      }
     );
 
     observer.observe(element);
@@ -150,16 +148,9 @@ export const RevealOnScroll: React.FC<RevealOnScrollProps> = ({
     return () => observer.disconnect();
   }, [repeat]);
 
-  const spec = specFor(
-    variant ?? direction ?? 'fade-up',
-    distance,
-  );
+  const spec = specFor(variant ?? direction ?? 'fade-up', distance);
 
-  const animated = [
-    'opacity',
-    spec.from.transform && 'transform',
-    spec.from.filter && 'filter',
-  ]
+  const animated = ['opacity', spec.from.transform && 'transform', spec.from.filter && 'filter']
     .filter(Boolean)
     .join(', ');
 
@@ -175,10 +166,7 @@ export const RevealOnScroll: React.FC<RevealOnScrollProps> = ({
           ? 'none'
           : `${animated
               .split(', ')
-              .map(
-                (prop) =>
-                  `${prop} ${spec.duration} var(--ease-reveal) ${delay}ms`,
-              )
+              .map((prop) => `${prop} ${spec.duration} var(--ease-reveal) ${delay}ms`)
               .join(', ')}`,
       }}
     >
@@ -213,12 +201,9 @@ export const StaggerReveal: React.FC<StaggerProps> = ({
 }) => {
   const items = React.Children.toArray(children);
 
-  const compact =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(max-width: 767px)').matches;
+  const compact = typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
 
-  const effectiveStep =
-    step ?? (compact ? DEFAULT_STEP_COMPACT : DEFAULT_STEP);
+  const effectiveStep = step ?? (compact ? DEFAULT_STEP_COMPACT : DEFAULT_STEP);
 
   const MAX_TOTAL = 540;
 

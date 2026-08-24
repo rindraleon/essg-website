@@ -4,10 +4,8 @@ import { Menu, X } from 'lucide-react';
 import EssG from '../../assets/files/images/logo/EssG.png';
 import { buttonVariants } from '../ui/button';
 import { cn } from '@/lib/utils';
-import { playIntro } from '../../animations/presets';
 import useHeaderScroll from '../../hooks/useHeaderScroll';
 import { useAdmissionsOuvertes } from '../../hooks/useAdmissionsSettings';
-import { gsap, registerGsap } from '../../lib/gsap';
 
 const NAVIGATION = [
   { name: 'Accueil', href: '/' },
@@ -19,39 +17,20 @@ const NAVIGATION = [
 ] as const;
 
 const NAV_LINK_CLASS =
-  'relative py-2 text-small font-medium text-ink-600 transition-colors duration-200 hover:text-brand-700 ' +
+  'relative py-2 text-small font-medium text-ink-600 transition-colors duration-(--duration-quick) hover:text-brand-700 ' +
   'after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:rounded-full after:bg-brand-600 ' +
-  'after:origin-center after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100';
+  'after:origin-center after:scale-x-0 after:transition-transform after:duration-(--duration-hover) hover:after:scale-x-100';
 
 const MOBILE_NAV_LINK_CLASS =
-  'block rounded-xl px-4 py-3 text-body font-medium text-ink-700 transition-[background-color,color,transform] duration-200 ' +
-  'hover:translate-x-1 hover:bg-brand-50 hover:text-brand-700 motion-reduce:transition-none motion-reduce:hover:translate-x-0';
+  'block rounded-xl px-4 py-[clamp(0.5rem,1.4vh,0.75rem)] text-small font-medium text-ink-700 transition-[background-color,color,opacity,transform] duration-(--duration-hover) ease-[cubic-bezier(0.22,1,0.36,1)] sm:text-body ' +
+  'hover:-translate-x-1 hover:bg-brand-50 hover:text-brand-700 motion-reduce:transition-none motion-reduce:hover:translate-x-0';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const admissionsOuvertes = useAdmissionsOuvertes();
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
-  const headerRef = useRef<HTMLElement | null>(null);
-  const logoRef = useRef<HTMLAnchorElement | null>(null);
-  const navRef = useRef<HTMLDivElement | null>(null);
-  const actionsRef = useRef<HTMLDivElement | null>(null);
   const scrolled = useHeaderScroll(16);
-
-  useEffect(() => {
-    const header = headerRef.current;
-    if (!header) return;
-    registerGsap();
-    const ctx = gsap.context(() => {
-      playIntro({
-        header,
-        logo: logoRef.current,
-        nav: navRef.current ? Array.from(navRef.current.querySelectorAll('a')) : [],
-        actions: actionsRef.current,
-      });
-    }, header);
-    return () => ctx.revert();
-  }, []);
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -63,39 +42,73 @@ const Header = () => {
       }
     };
 
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) document.body.style.paddingRight = `${scrollbarWidth}px`;
+
     document.addEventListener('keydown', closeOnEscape);
     const firstLink = mobileMenuRef.current?.querySelector<HTMLAnchorElement>('a');
-    firstLink?.focus();
-    return () => document.removeEventListener('keydown', closeOnEscape);
+    const focusTimer = window.setTimeout(() => firstLink?.focus(), 120);
+
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+      document.removeEventListener('keydown', closeOnEscape);
+    };
   }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    const closeOnDesktop = (event: MediaQueryListEvent) => {
+      if (event.matches) setMobileMenuOpen(false);
+    };
+    desktop.addEventListener('change', closeOnDesktop);
+    return () => desktop.removeEventListener('change', closeOnDesktop);
+  }, []);
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
+  let headerSurface = 'border-ink-100/70 bg-white/90 backdrop-blur-sm';
+  if (scrolled) {
+    headerSurface =
+      'border-white/35 bg-white/40 shadow-[0_8px_28px_-18px_rgba(15,33,30,0.38)] backdrop-blur-xl backdrop-saturate-150';
+  }
+  if (mobileMenuOpen) {
+    headerSurface = 'border-ink-100 bg-white/95 shadow-card backdrop-blur-xl';
+  }
+
   return (
     <header
-      ref={headerRef}
       className={cn(
-        'sticky top-0 z-50 border-b backdrop-blur-md transition-[background-color,box-shadow,border-color] duration-300',
-        scrolled
-          ? 'border-ink-100 bg-white/95 shadow-[0_8px_24px_-18px_rgba(15,33,30,0.45)]'
-          : 'border-transparent bg-white/75'
+        'sticky top-0 z-50 border-b transition-[background-color,box-shadow,border-color,backdrop-filter] duration-(--duration-hover)',
+        headerSurface
       )}
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between sm:h-[4.5rem]">
-          <Link ref={logoRef} to="/" className="flex items-center" aria-label="Retour à l'accueil">
+          <Link to="/" className="flex items-center" aria-label="Retour à l'accueil">
             <img
               src={EssG}
               alt="Logo ESSG"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
               className={cn(
-                'h-14 w-auto origin-left object-contain transition-transform duration-300 ease-out sm:h-16',
+                'h-14 w-auto origin-left object-contain transition-transform duration-(--duration-hover) ease-out sm:h-16',
                 'motion-reduce:transition-none',
                 scrolled && 'scale-[0.88]'
               )}
             />
           </Link>
 
-          <div ref={navRef} className="hidden lg:flex lg:items-center lg:gap-7">
+          <div className="hidden lg:flex lg:items-center lg:gap-7">
             {NAVIGATION.map((item) => (
               <NavLink
                 key={item.name}
@@ -109,7 +122,7 @@ const Header = () => {
             ))}
           </div>
 
-          <div ref={actionsRef} className="hidden lg:flex lg:items-center lg:gap-3">
+          <div className="hidden lg:flex lg:items-center lg:gap-3">
             <Link to="/contact" className={cn(buttonVariants({ variant: 'outline' }))}>
               Contact
             </Link>
@@ -123,56 +136,80 @@ const Header = () => {
           <button
             ref={menuButtonRef}
             type="button"
-            className="inline-flex size-10 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-brand-800 transition-[background-color,color,transform] duration-200 hover:bg-brand-100 active:scale-[0.98] lg:hidden motion-reduce:transition-none motion-reduce:active:scale-100"
+            className={cn(
+              'relative inline-flex size-10 items-center justify-center overflow-hidden rounded-xl border border-brand-100 bg-brand-50 text-brand-800 transition-[background-color,color,transform] duration-(--duration-hover) hover:bg-brand-100 active:scale-[0.98] lg:hidden motion-reduce:transition-none motion-reduce:active:scale-100',
+              mobileMenuOpen && 'border-brand-200 bg-brand-100'
+            )}
             onClick={() => setMobileMenuOpen((open) => !open)}
             aria-label={mobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation"
           >
-            {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            <Menu
+              className={cn(
+                'absolute size-5 transition-[opacity,transform] duration-(--duration-hover) ease-out',
+                mobileMenuOpen ? 'rotate-90 scale-75 opacity-0' : 'rotate-0 scale-100 opacity-100'
+              )}
+            />
+            <X
+              className={cn(
+                'absolute size-5 transition-[opacity,transform] duration-(--duration-hover) ease-out',
+                mobileMenuOpen ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-75 opacity-0'
+              )}
+            />
           </button>
         </div>
       </nav>
 
-      {/* Voile séparé : le contenu sous le menu reste immobile. */}
       <button
         type="button"
         aria-label="Fermer le menu"
         tabIndex={mobileMenuOpen ? 0 : -1}
         onClick={closeMobileMenu}
         className={cn(
-          'fixed inset-0 top-16 z-40 bg-ink-950/30 transition-opacity duration-300 sm:top-[4.5rem] lg:hidden',
-          mobileMenuOpen ? 'opacity-100' : 'pointer-events-none opacity-0',
+          'absolute left-0 right-0 top-full z-40 h-[calc(100dvh-4rem)] bg-ink-950/25 transition-[opacity,backdrop-filter] duration-[420ms] ease-out sm:h-[calc(100dvh-4.5rem)] lg:hidden',
+          mobileMenuOpen
+            ? 'opacity-100 backdrop-blur-[2px]'
+            : 'pointer-events-none opacity-0 backdrop-blur-none',
           'motion-reduce:transition-none'
         )}
       />
 
-      {/* Menu mobile : panneau latéral, sans déplacement brutal de la page. */}
       <div
         id="mobile-navigation"
         ref={mobileMenuRef}
         aria-hidden={!mobileMenuOpen}
         className={cn(
-          'fixed bottom-0 left-0 top-16 z-50 w-[min(22rem,calc(100vw-2rem))] overflow-y-auto border-r border-ink-100 bg-white px-4 py-5 shadow-elevated transition-[opacity,transform] duration-300 sm:top-[4.5rem] lg:hidden',
+          'absolute right-0 top-full z-50 h-[calc(100dvh-4rem)] w-[min(22rem,calc(100vw-1.5rem))] transform-gpu overflow-hidden border-l border-ink-100 bg-white px-4 shadow-elevated will-change-transform transition-[opacity,transform] duration-[480ms] ease-[cubic-bezier(0.22,1,0.36,1)] sm:h-[calc(100dvh-4.5rem)] lg:hidden',
           mobileMenuOpen
             ? 'translate-x-0 opacity-100'
-            : 'pointer-events-none -translate-x-full opacity-0',
+            : 'pointer-events-none translate-x-[102%] opacity-0',
           'motion-reduce:transition-none'
         )}
       >
-        <div className="space-y-1.5">
-          {NAVIGATION.map((item) => (
+        <div className="flex h-full flex-col justify-center gap-[clamp(0.2rem,0.7vh,0.4rem)] py-[clamp(0.5rem,2vh,1.25rem)]">
+          {NAVIGATION.map((item, index) => (
             <NavLink
               key={item.name}
               to={item.href}
               tabIndex={mobileMenuOpen ? 0 : -1}
-              className={MOBILE_NAV_LINK_CLASS}
+              className={cn(
+                MOBILE_NAV_LINK_CLASS,
+                mobileMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-4 opacity-0'
+              )}
+              style={{ transitionDelay: mobileMenuOpen ? `${90 + index * 45}ms` : '0ms' }}
               onClick={closeMobileMenu}
             >
               {item.name}
             </NavLink>
           ))}
-          <div className="space-y-2.5 border-t border-ink-100 pt-5">
+          <div
+            className={cn(
+              'mt-[clamp(0.25rem,1vh,0.75rem)] space-y-2 border-t border-ink-100 pt-[clamp(0.5rem,1.5vh,1rem)] transition-[opacity,transform] duration-(--duration-hover) ease-out motion-reduce:transition-none',
+              mobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
+            )}
+            style={{ transitionDelay: mobileMenuOpen ? '380ms' : '0ms' }}
+          >
             <Link
               to="/contact"
               onClick={closeMobileMenu}

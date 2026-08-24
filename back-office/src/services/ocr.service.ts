@@ -1,5 +1,5 @@
 import type { PDFPageProxy } from 'pdfjs-dist';
-import { parseCvText, type ParsedCv } from '../utils/cv-parser.utils';
+import { parseCvText, type ParsedCv } from '@/utils';
 
 export const ACCEPTED_CV_TYPES = [
   'application/pdf',
@@ -11,24 +11,21 @@ export const ACCEPTED_CV_TYPES = [
   'image/tiff',
 ];
 
-export const MAX_CV_SIZE = 10 * 1024 * 1024; // 10 Mo
+const MAX_CV_SIZE = 10 * 1024 * 1024;
 
 export interface OcrProgress {
-  /** 0 → 100 */
   percent: number;
-  /** Libellé affiché à l'utilisateur. */
   label: string;
 }
 
 export interface OcrResult {
   text: string;
   parsed: ParsedCv;
-  /** Vrai si l'OCR (reconnaissance optique) a été nécessaire. */
   usedOcr: boolean;
   pages: number;
 }
 
-export type OcrErrorKind = 'unsupported' | 'too_large' | 'unreadable' | 'failed';
+type OcrErrorKind = 'unsupported' | 'too_large' | 'unreadable' | 'failed';
 
 export class OcrError extends Error {
   readonly kind: OcrErrorKind;
@@ -40,8 +37,7 @@ export class OcrError extends Error {
   }
 }
 
-/** Valide le fichier avant tout traitement coûteux. */
-export function validateCvFile(file: File): void {
+function validateCvFile(file: File): void {
   if (!ACCEPTED_CV_TYPES.includes(file.type)) {
     throw new OcrError(
       'Format non supporté. Utilisez un PDF ou une image (JPG, PNG, WebP).',
@@ -53,7 +49,6 @@ export function validateCvFile(file: File): void {
   }
 }
 
-/** Configure le worker pdf.js à partir du paquet installé (pas de CDN). */
 async function loadPdfjs() {
   const pdfjs = await import('pdfjs-dist');
   const workerUrl = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).href;
@@ -61,7 +56,6 @@ async function loadPdfjs() {
   return pdfjs;
 }
 
-/** Reconnaissance optique sur une image (Blob, File ou canvas). */
 async function recognize(
   image: Blob | HTMLCanvasElement,
   onProgress?: (progress: OcrProgress) => void,
@@ -70,7 +64,6 @@ async function recognize(
 ): Promise<string> {
   const { createWorker } = await import('tesseract.js');
 
-  // `fra+eng` : les CV malgaches mêlent souvent français et anglais.
   const worker = await createWorker(['fra', 'eng'], undefined, {
     logger: (message: { status: string; progress: number }) => {
       if (message.status === 'recognizing text') {
@@ -86,13 +79,11 @@ async function recognize(
     const { data } = await worker.recognize(image);
     return data.text ?? '';
   } finally {
-    // Le worker doit toujours être libéré, même en cas d'erreur.
     await worker.terminate();
   }
 }
 
 async function renderPageToCanvas(page: PDFPageProxy): Promise<HTMLCanvasElement> {
-  // Échelle 2 : compromis entre lisibilité pour l'OCR et consommation mémoire.
   const viewport = page.getViewport({ scale: 2 });
   const canvas = document.createElement('canvas');
   canvas.width = viewport.width;
@@ -124,31 +115,25 @@ function detectColumnCut(items: TextFragment[], pageWidth: number): number | nul
     }
   }
 
-  // Une marge de colonne rassemble plusieurs fragments ; un retrait isolé non.
   const anchors = groups.filter((group) => group.count >= 3);
   if (anchors.length < 2) return null;
 
   let best: { cut: number; score: number } | null = null;
 
   for (const anchor of anchors) {
-    // La coupe se place juste avant la marge candidate.
     const cut = anchor.x - 4;
-    // Une colonne latérale occupe rarement moins de 15 % ou plus de 70 %.
     if (cut < pageWidth * 0.15 || cut > pageWidth * 0.7) continue;
 
     const left = visible.filter((item) => (item.transform?.[4] ?? 0) < cut);
     const right = visible.filter((item) => (item.transform?.[4] ?? 0) >= cut);
     if (left.length < visible.length * 0.15 || right.length < visible.length * 0.15) continue;
 
-    // Fragments de gauche qui franchissent la coupe : sur une vraie
-    // gouttière il n'y en a quasiment aucun (hors titre pleine largeur).
     const overflow = left.filter(
-      (item) => (item.transform?.[4] ?? 0) + (item.width ?? 0) > cut + 6,
+      (item) => (item.transform?.[4] ?? 0) + (item.width ?? 0) > cut + 6
     ).length;
     const overflowRatio = overflow / left.length;
     if (overflowRatio > 0.15) continue;
 
-    // On privilégie un partage équilibré et une gouttière franche.
     const balance = Math.min(left.length, right.length) / visible.length;
     const score = balance - overflowRatio;
     if (!best || score > best.score) best = { cut, score };
@@ -158,7 +143,6 @@ function detectColumnCut(items: TextFragment[], pageWidth: number): number | nul
 }
 
 function itemsToLines(items: TextFragment[]): string {
-  /** Tolérance verticale : deux fragments à moins de 3pt sont sur la même ligne. */
   const Y_TOLERANCE = 3;
 
   const rows: Array<{ y: number; parts: Array<{ x: number; str: string }> }> = [];
@@ -168,9 +152,9 @@ function itemsToLines(items: TextFragment[]): string {
     if (!text) continue;
 
     const transform = item.transform;
-    // Sans coordonnées exploitables, on rattache le fragment à la ligne courante.
     if (!transform || transform.length < 6) {
-      if (rows.length > 0) rows[rows.length - 1].parts.push({ x: Number.MAX_SAFE_INTEGER, str: text });
+      if (rows.length > 0)
+        rows[rows.length - 1].parts.push({ x: Number.MAX_SAFE_INTEGER, str: text });
       continue;
     }
 
@@ -186,16 +170,14 @@ function itemsToLines(items: TextFragment[]): string {
   }
 
   return rows
-    // Ordre de lecture : du haut vers le bas de la page.
     .sort((a, b) => b.y - a.y)
     .map((row) =>
       row.parts
         .sort((a, b) => a.x - b.x)
         .map((part) => part.str)
         .join('')
-        // pdf.js insère parfois des espaces multiples entre les fragments.
         .replace(/\s+/g, ' ')
-        .trim(),
+        .trim()
     )
     .filter(Boolean)
     .join('\n');
@@ -222,7 +204,6 @@ async function extractFromPdf(
   const buffer = await file.arrayBuffer();
   const document_ = await pdfjs.getDocument({ data: buffer }).promise;
 
-  // Au-delà de 10 pages, l'OCR devient trop lent dans le navigateur.
   const pageCount = Math.min(document_.numPages, 10);
   const chunks: string[] = [];
 
@@ -240,13 +221,11 @@ async function extractFromPdf(
 
   const direct = chunks.join('\n').trim();
 
-  // Une couche texte exploitable évite complètement l'OCR (bien plus rapide).
   if (direct.length >= 120) {
     onProgress?.({ percent: 100, label: 'Analyse terminée' });
     return { text: direct, parsed: parseCvText(direct), usedOcr: false, pages: pageCount };
   }
 
-  // PDF scanné : rendu puis reconnaissance optique page par page.
   const ocrChunks: string[] = [];
   for (let index = 1; index <= pageCount; index++) {
     const page = await document_.getPage(index);
@@ -254,7 +233,6 @@ async function extractFromPdf(
     const base = 30 + ((index - 1) / pageCount) * 65;
     const text = await recognize(canvas, onProgress, base, 65 / pageCount);
     ocrChunks.push(text);
-    // Libération explicite du canvas (documents volumineux).
     canvas.width = 0;
     canvas.height = 0;
   }
@@ -264,7 +242,7 @@ async function extractFromPdf(
 
   if (ocrText.length < 40) {
     throw new OcrError(
-      "Le document semble illisible. Essayez un fichier plus net ou de meilleure résolution.",
+      'Le document semble illisible. Essayez un fichier plus net ou de meilleure résolution.',
       'unreadable'
     );
   }
@@ -272,7 +250,6 @@ async function extractFromPdf(
   return { text: ocrText, parsed: parseCvText(ocrText), usedOcr: true, pages: pageCount };
 }
 
-/** Extrait le texte d'une image par OCR. */
 async function extractFromImage(
   file: File,
   onProgress?: (progress: OcrProgress) => void
@@ -283,7 +260,7 @@ async function extractFromImage(
 
   if (text.length < 40) {
     throw new OcrError(
-      "Le document semble illisible. Essayez une image plus nette ou mieux cadrée.",
+      'Le document semble illisible. Essayez une image plus nette ou mieux cadrée.',
       'unreadable'
     );
   }
@@ -309,4 +286,3 @@ export async function analyzeCv(
     );
   }
 }
-export const __testing = { detectColumnCut, pageToText };

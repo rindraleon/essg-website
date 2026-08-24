@@ -1,10 +1,10 @@
 import { Calendar, MapPin } from 'lucide-react';
-import type { FeaturedProjetsSectionProps, ProjetItem } from '../../types/projets.types';
+import type { FeaturedProjetsSectionProps, ProjetItem } from '@/types';
 import { useProjets } from '../../hooks';
 import useSectionFilters, { type FilterDefinition } from '../../hooks/useSectionFilters';
 import FilterButton from '../common/FilterButton';
-import { getImageUrl } from '../../utils/image.utils';
-import { CARD_WIDTH_CLASS } from '../../constants/layout';
+import { getImageUrl } from '@/utils';
+import { CARD_WIDTH_CLASS } from '@/constants';
 import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid } from '../../components';
 import MediaCard from '../common/MediaCard';
 import { MediaCardSkeletonGrid } from '../common/MediaCardSkeleton';
@@ -13,7 +13,6 @@ const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
 
 const SECTION_CTA = { label: 'Découvrir tous nos projets', link: '/projets' } as const;
-
 
 const FILTERS: FilterDefinition<ProjetItem>[] = [
   { key: 'type', label: 'Type', accessor: (projet) => projet.type, allLabel: 'Tous' },
@@ -31,7 +30,6 @@ const ProjetsSection = ({
   const count = filtered.length;
   const total = projets.length;
 
-  /** « 4 projets » ou « 2 sur 4 projets » lorsqu'un filtre est posé. */
   const suffix = total > 1 ? 's' : '';
   const countLabel =
     count === total ? `${total} projet${suffix}` : `${count} sur ${total} projet${suffix}`;
@@ -44,19 +42,16 @@ const ProjetsSection = ({
       emptyMessage="Aucun projet disponible pour le moment."
       headerContent={<SectionHeader title={title} description={description} />}
       loadingSkeletons={<MediaCardSkeletonGrid layout="home" />}
-      sectionClassName="bg-ink-50 py-20"
+      sectionClassName="bg-gradient-to-b from-brand-50/45 via-ink-50 to-white py-20"
       fluid
       containerClassName="max-w-none"
     >
       <ScrollableCardGrid
         className="w-full"
         ariaLabel="Projets de l'école"
+        resetKey={groups.map((group) => `${group.key}:${group.value}`).join('|')}
         toolbarStart={<span aria-live="polite">{countLabel}</span>}
-        controls={
-          groups.length > 0 && (
-            <FilterButton groups={groups} onChange={setFilter} onReset={reset} />
-          )
-        }
+        controls={<FilterButton groups={groups} onChange={setFilter} onReset={reset} />}
       >
         {filtered.map((projet) => (
           <MediaCard

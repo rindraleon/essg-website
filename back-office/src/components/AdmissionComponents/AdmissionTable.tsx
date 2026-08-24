@@ -1,12 +1,12 @@
 import { CircleCheck, Eye, Trash2 } from 'lucide-react';
 import React, { useMemo } from 'react';
-import type { Admission, AdmissionFile } from '../../types/admission.types';
+import type { Admission, AdmissionFile } from '@/types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { formatFullName } from '../../utils/name.utils';
+import { Badge } from '@/components/ui';
+import { Button } from '@/components/ui';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
+import { formatFullName } from '@/utils';
 
 interface AdmissionTableProps {
   data: Admission[];

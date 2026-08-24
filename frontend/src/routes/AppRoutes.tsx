@@ -1,25 +1,42 @@
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import {
-  Home,
-  AboutPage,
-  FormationsPage,
-  FormationDetailPage,
-  PartenairesPage,
-  PartenaireDetailPage,
-  RessourcesHumainesPage,
-  RessourceHumaineDetailPage,
-  ProjetsPage,
-  ProjetDetailPage,
-  ActualitesPage,
-  ActualiteDetailPage,
-  FaqPage,
-  AdmissionPage,
-  ContactPage,
-} from '../pages';
 import { routesStatic } from '.';
 
-const AppRoutes = () => {
-  return (
+const Home = lazy(() => import('../pages/HomePage/Home'));
+const AboutPage = lazy(() => import('../pages/AboutPage/AboutPage'));
+const FormationsPage = lazy(() => import('../pages/FormationPage/Formations'));
+const FormationDetailPage = lazy(() => import('../pages/FormationPage/FormationDetailPage'));
+const ActualitesPage = lazy(() => import('../pages/ActualitePage/ActualitePage'));
+const ActualiteDetailPage = lazy(() => import('../pages/ActualitePage/ActualiteDetailPage'));
+const PartenairesPage = lazy(() => import('../pages/PartenairesPage/Partenaires'));
+const PartenaireDetailPage = lazy(() => import('../pages/PartenairesPage/PartenaireDetailPage'));
+const RessourcesHumainesPage = lazy(
+  () => import('../pages/RessourcesHumainesPage/RessourcesHumainesPage')
+);
+const RessourceHumaineDetailPage = lazy(
+  () => import('../pages/RessourcesHumainesPage/RessourceHumaineDetailPage')
+);
+const ProjetsPage = lazy(() => import('../pages/ProjetsPage/ProjetsPage'));
+const ProjetDetailPage = lazy(() => import('../pages/ProjetsPage/ProjetDetailPage'));
+const FaqPage = lazy(() => import('../pages/FaqPage/FaqPage'));
+const AdmissionPage = lazy(() => import('../pages/AdmissionPage/AdmissionPage'));
+const ContactPage = lazy(() => import('../pages/ContactPage/ContactPage'));
+
+const RouteLoading = () => (
+  <div
+    className="grid min-h-[55vh] place-items-center bg-gradient-to-b from-brand-50/40 to-white"
+    role="status"
+    aria-label="Chargement de la page"
+  >
+    <div className="flex flex-col items-center gap-3">
+      <div className="size-9 animate-spin rounded-full border-2 border-brand-100 border-t-brand-600 motion-reduce:animate-none" />
+      <span className="text-small text-ink-500">Chargement...</span>
+    </div>
+  </div>
+);
+
+const AppRoutes = () => (
+  <Suspense fallback={<RouteLoading />}>
     <Routes>
       <Route path={routesStatic.home} element={<Home />} />
       <Route path={routesStatic.about} element={<AboutPage />} />
@@ -37,7 +54,7 @@ const AppRoutes = () => {
       <Route path={routesStatic.admission} element={<AdmissionPage />} />
       <Route path={routesStatic.contact} element={<ContactPage />} />
     </Routes>
-  );
-};
+  </Suspense>
+);
 
 export default AppRoutes;

@@ -1,7 +1,7 @@
 import { Globe, Mail } from 'lucide-react';
 import React from 'react';
-import { getImageUrl } from '../../utils/image.utils';
-import { generateSlug } from '../../utils/slug.utils';
+import { getImageUrl } from '@/utils';
+import { generateSlug } from '@/utils';
 import MediaCard from '../common/MediaCard';
 import type { PartenaireCardProps } from '../../types';
 

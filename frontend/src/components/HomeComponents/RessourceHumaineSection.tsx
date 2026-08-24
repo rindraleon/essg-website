@@ -1,8 +1,8 @@
 import { Mail, Phone } from 'lucide-react';
 import { useActiveRessourcesHumaines } from '../../hooks';
-import { getImageUrl } from '../../utils/image.utils';
-import { formatFullName } from '../../utils/name.utils';
-import { CARD_WIDTH_CLASS } from '../../constants/layout';
+import { getImageUrl } from '@/utils';
+import { formatFullName } from '@/utils';
+import { CARD_WIDTH_CLASS } from '@/constants';
 import { SectionHeader, SectionContent, ScrollableCardGrid, SectionCta } from '../../components';
 import MediaCard from '../common/MediaCard';
 import { MediaCardSkeletonGrid } from '../common/MediaCardSkeleton';
@@ -28,7 +28,7 @@ const RessourceHumaineSection = () => {
         />
       }
       loadingSkeletons={<MediaCardSkeletonGrid layout="home" />}
-      sectionClassName="bg-gradient-to-b from-ink-50 to-white py-20"
+      sectionClassName="bg-gradient-to-br from-sage-50/55 via-white to-brand-50/40 py-20"
       fluid
       containerClassName="max-w-none"
     >

@@ -20,7 +20,7 @@ const CategoryChip = ({ category, size = 'small', className }: CategoryChipProps
       className={cn(
         categoryColors[category] || 'border-indigo-100 bg-indigo-50 text-indigo-800',
         size === 'medium' && 'text-caption px-3 py-1',
-        className,
+        className
       )}
     >
       {category}

@@ -22,7 +22,11 @@ const ViewDetailsButton = ({
     <Link
       to={to}
       aria-label={ariaLabel ?? label}
-      className={cn(buttonVariants({ variant }), variant === 'link' && 'mt-2 justify-start px-0', className)}
+      className={cn(
+        buttonVariants({ variant }),
+        variant === 'link' && 'mt-2 justify-start px-0',
+        className
+      )}
     >
       {label}
       <ArrowRight className="size-4" />

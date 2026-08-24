@@ -1,6 +1,6 @@
 import { Inbox } from 'lucide-react';
 import { Button } from '../ui/button';
-import type { EmptyStateProps } from '../../types/common.types';
+import type { EmptyStateProps } from '@/types';
 
 const EmptyState = ({
   icon,

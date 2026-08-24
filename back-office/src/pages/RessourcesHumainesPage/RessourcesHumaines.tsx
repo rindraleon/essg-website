@@ -1,4 +1,4 @@
-import { Card, CardContent } from '@/components/compat/mui';
+import { Card, CardContent } from '@/components/compat';
 import React, { useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import {
@@ -8,35 +8,34 @@ import {
   RessourceHumaineViewDialog,
   ConfirmDialog,
   ListPageHeader,
-} from '../../components';
+} from '@/components';
 import type {
   RessourceHumaineFormData,
   RessourceHumaineItem,
   RessourceHumaineFilterOptions,
-} from '../../types';
+} from '@/types';
 import {
   useCreateRessourceHumaine,
   useDeleteRessourceHumaine,
   useRessourcesHumainesQuery,
   useUpdateRessourceHumaine,
   useTitle,
-  usePagination, useScrollToTop,
-  useRessourceHumaineFilter
-} from '../../hooks/';
-import { ApiError } from '@/api/types/api';
-import { formatFullName } from '../../utils/name.utils';
+  usePagination,
+  useScrollToTop,
+  useRessourceHumaineFilter,
+} from '@/hooks';
+import { ApiError } from '@/api';
+import { formatFullName } from '@/utils';
 
 const RessourcesHumaines: React.FC = () => {
   useScrollToTop();
   useTitle('Ressources humaines');
-  // Data state
   const { data = [] } = useRessourcesHumainesQuery();
   const createMutation = useCreateRessourceHumaine();
   const updateMutation = useUpdateRessourceHumaine();
   const deleteMutation = useDeleteRessourceHumaine();
   const [searchTerm, setSearchTerm] = useState('');
 
-  // UI state
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
@@ -45,7 +44,6 @@ const RessourcesHumaines: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [ressourceToDelete, setRessourceToDelete] = useState<RessourceHumaineItem | null>(null);
 
-  // Hooks
   const { filters, filteredData, updateFilter, resetFilters, activeFilterCount } =
     useRessourceHumaineFilter({
       data,
@@ -61,7 +59,6 @@ const RessourcesHumaines: React.FC = () => {
     resetPage,
   } = usePagination({ data: filteredData, initialRowsPerPage: 5 });
 
-  // Handlers
   const handleSearchChange = useCallback(
     (value: string) => {
       setSearchTerm(value);
@@ -96,9 +93,7 @@ const RessourcesHumaines: React.FC = () => {
     if (ressourceToDelete) {
       try {
         await deleteMutation.mutateAsync(ressourceToDelete.id.toString());
-        toast.success(
-          `"${formatFullName(ressourceToDelete)}" a été supprimé(e) avec succès`
-        );
+        toast.success(`"${formatFullName(ressourceToDelete)}" a été supprimé(e) avec succès`);
         setDeleteDialogOpen(false);
         setRessourceToDelete(null);
       } catch (error) {
@@ -156,7 +151,6 @@ const RessourcesHumaines: React.FC = () => {
         onAction={handleOpenCreate}
       />
 
-      {/* Filters - Full Width Below */}
       {filtersOpen && (
         <Card variant="outlined">
           <CardContent>
@@ -175,7 +169,6 @@ const RessourcesHumaines: React.FC = () => {
         </Card>
       )}
 
-      {/* Table */}
       <RessourceHumaineTable
         data={paginatedData}
         totalCount={filteredData.length}
@@ -188,7 +181,6 @@ const RessourcesHumaines: React.FC = () => {
         onDelete={handleDeleteRequest}
       />
 
-      {/* Form Dialog (Create / Edit) */}
       <RessourceHumaineForm
         open={formOpen}
         onClose={() => setFormOpen(false)}
@@ -197,14 +189,12 @@ const RessourcesHumaines: React.FC = () => {
         mode={formMode}
       />
 
-      {/* View Dialog */}
       <RessourceHumaineViewDialog
         open={viewDialogOpen}
         onClose={() => setViewDialogOpen(false)}
         ressource={selectedRessource}
       />
 
-      {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         open={deleteDialogOpen}
         title="Supprimer la ressource humaine"

@@ -1,24 +1,18 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import {
-  login as loginService,
-  verifyToken,
-  logout as logoutService,
-} from '../services/auth.service';
-import { setAuthToken, clearAuthToken, hasAuthToken } from '../api/client/http';
-import type { User } from '../types/auth.types';
+import { login as loginService, verifyToken, logout as logoutService } from '@/services';
+import { setAuthToken, clearAuthToken, hasAuthToken } from '@/api';
+import type { User } from '@/types';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: User | null;
   username: string;
-  /** Vrai si l'utilisateur possède le rôle administrateur. */
   isAdmin: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  /** Met à jour l'utilisateur courant après une modification du profil. */
   updateUser: (patch: Partial<User>) => void;
-  /** Recharge le profil depuis l'API. */
   refreshUser: () => Promise<void>;
 }
 
@@ -61,7 +55,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const response = await loginService(email, password);
     setAuthToken(response.accessToken);
 
-    // Récupérer les informations complètes de l'utilisateur
     try {
       const userData = await verifyToken();
       if (userData) {
@@ -83,10 +76,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('userRole');
   };
 
-  /**
-   * Mise à jour optimiste : les informations affichées (header, profil)
-   * changent immédiatement après un enregistrement réussi.
-   */
   const updateUser = (patch: Partial<User>) => {
     setUser((current) => (current ? { ...current, ...patch } : current));
   };

@@ -1,54 +1,33 @@
 import { Briefcase, GraduationCap, Languages, Plus, Sparkles, Trash2, Wrench } from 'lucide-react';
 import React from 'react';
-import type {
-  ExperienceProfessionnelle,
-  RessourceHumaineFormData,
-} from '../../types/ressource-humaine.types';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { FloatingInput } from '@/components/ui/floating-input';
+import type { ExperienceProfessionnelle, RessourceHumaineFormData } from '@/types';
+import { Button } from '@/components/ui';
+import { Label } from '@/components/ui';
+import { FloatingInput } from '@/components/ui';
 
 interface ParcoursFieldsProps {
   formData: RessourceHumaineFormData;
   onChange: (patch: Partial<RessourceHumaineFormData>) => void;
-  /** Champs remplis automatiquement par l'OCR, signalés visuellement. */
   autoFilled?: Set<keyof RessourceHumaineFormData>;
   disabled?: boolean;
 }
 
-/** Clés des listes de chaînes simples gérées par ce composant. */
 type ListKey = 'formations' | 'diplomes' | 'competences' | 'langues';
 
-/**
- * Champs du parcours professionnel, générés dynamiquement.
- *
- * Après un scan de CV réussi, l'OCR remplit ces champs : une ligne d'entrée
- * est créée pour chaque expérience, formation, diplôme, compétence et langue
- * détectés. L'utilisateur voit donc immédiatement des inputs concrets qu'il
- * peut relire, corriger, compléter ou supprimer — les données ne partent
- * jamais au backend sans cette vérification.
- *
- * Les sections alimentées par l'OCR portent un repère « Auto » pour distinguer
- * ce qui a été détecté de ce qui a été saisi à la main.
- */
 const ParcoursFields: React.FC<ParcoursFieldsProps> = ({
   formData,
   onChange,
   autoFilled,
   disabled = false,
 }) => {
-  /* ─────────────── Expériences (objets) ─────────────── */
-
   const experiences = formData.experiences ?? [];
 
   const updateExperience = (
     index: number,
     field: keyof ExperienceProfessionnelle,
-    value: string,
+    value: string
   ) => {
-    const next = experiences.map((item, i) =>
-      i === index ? { ...item, [field]: value } : item,
-    );
+    const next = experiences.map((item, i) => (i === index ? { ...item, [field]: value } : item));
     onChange({ experiences: next });
   };
 
@@ -57,8 +36,6 @@ const ParcoursFields: React.FC<ParcoursFieldsProps> = ({
 
   const removeExperience = (index: number) =>
     onChange({ experiences: experiences.filter((_, i) => i !== index) });
-
-  /* ─────────────── Listes simples ─────────────── */
 
   const updateItem = (key: ListKey, index: number, value: string) => {
     const list = formData[key] ?? [];
@@ -70,7 +47,6 @@ const ParcoursFields: React.FC<ParcoursFieldsProps> = ({
   const removeItem = (key: ListKey, index: number) =>
     onChange({ [key]: (formData[key] ?? []).filter((_, i) => i !== index) });
 
-  /** Badge indiquant qu'une section provient de l'analyse du CV. */
   const AutoBadge = ({ field }: { field: keyof RessourceHumaineFormData }) =>
     autoFilled?.has(field) ? (
       <span className="inline-flex items-center gap-1 rounded-md bg-brand-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-700">
@@ -79,7 +55,6 @@ const ParcoursFields: React.FC<ParcoursFieldsProps> = ({
       </span>
     ) : null;
 
-  /** En-tête commun à toutes les sections. */
   const SectionHeader = ({
     icon,
     label,
@@ -113,13 +88,7 @@ const ParcoursFields: React.FC<ParcoursFieldsProps> = ({
     </div>
   );
 
-  /** Rendu générique d'une liste de chaînes. */
-  const renderList = (
-    key: ListKey,
-    label: string,
-    icon: React.ReactNode,
-    placeholder: string,
-  ) => {
+  const renderList = (key: ListKey, label: string, icon: React.ReactNode, placeholder: string) => {
     const list = formData[key] ?? [];
     return (
       <section>
@@ -138,8 +107,6 @@ const ParcoursFields: React.FC<ParcoursFieldsProps> = ({
         ) : (
           <div className="space-y-2">
             {list.map((value, index) => (
-              // L'index est ici une clé légitime : les lignes sont ordonnées
-              // et éditées en place, sans identifiant métier disponible.
               <div key={`${key}-${index}`} className="flex items-start gap-2">
                 <div className="min-w-0 flex-1">
                   <FloatingInput
@@ -171,7 +138,6 @@ const ParcoursFields: React.FC<ParcoursFieldsProps> = ({
 
   return (
     <div className="space-y-5">
-      {/* ─── Expériences professionnelles ─── */}
       <section>
         <SectionHeader
           icon={<Briefcase className="size-4" />}

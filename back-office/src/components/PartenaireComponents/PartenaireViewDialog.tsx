@@ -1,12 +1,12 @@
 import { Calendar, Globe, Mail, Tag, X } from 'lucide-react';
 import React from 'react';
-import { getImageUrl, isRemoteImage } from '../../utils/image.utils';
-import type { Partenaire } from '../../types/partenaire.types';
-import { PARTENAIRE_TYPE_COLORS } from '../../constants/partenaire.constants';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { getImageUrl, isRemoteImage } from '@/utils';
+import type { Partenaire } from '@/types';
+import { PARTENAIRE_TYPE_COLORS } from '@/constants';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui';
+import { Button } from '@/components/ui';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
+import { Badge } from '@/components/ui';
 import { formatDate } from '@/utils';
 
 interface PartenaireViewDialogProps {
@@ -15,9 +15,7 @@ interface PartenaireViewDialogProps {
   partenaire: Partenaire | null;
 }
 
-const getBadgeVariant = (
-  colorType: string,
-): React.ComponentProps<typeof Badge>['variant'] => {
+const getBadgeVariant = (colorType: string): React.ComponentProps<typeof Badge>['variant'] => {
   switch (colorType) {
     case 'primary':
       return 'default';
@@ -40,12 +38,13 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
   if (!partenaire) return null;
 
   const badgeVariant: React.ComponentProps<typeof Badge>['variant'] = getBadgeVariant(
-    PARTENAIRE_TYPE_COLORS[partenaire.type],
+    PARTENAIRE_TYPE_COLORS[partenaire.type]
   );
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent
+        showCloseButton={false}
         className="
           !w-[96vw]
           !max-w-[calc(100%-1rem)]
@@ -59,7 +58,6 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
           bg-white
           p-0
           shadow-[0_24px_80px_rgba(15,23,42,0.35)]
-          [&>button]:hidden
         "
       >
         <div className="flex min-h-0 flex-col">
@@ -84,7 +82,6 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
           </DialogHeader>
 
           <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 lg:px-6">
-            {/* Logo and Title */}
             <div className="flex items-center gap-4 mb-4">
               <Avatar className="h-20 w-20">
                 {partenaire.logo &&
@@ -110,7 +107,6 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
 
             <hr className="my-4" />
 
-            {/* Metadata */}
             <div className="flex flex-wrap gap-4 mb-4">
               <div className="flex items-center gap-1 text-ink-600 text-sm">
                 <Tag className="size-4" />
@@ -126,7 +122,6 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
 
             <hr className="my-4" />
 
-            {/* Description */}
             <div className="mb-4">
               <h4 className="font-semibold text-ink-700 mb-2">Description</h4>
               <p className="text-ink-700 leading-relaxed whitespace-pre-wrap">
@@ -136,7 +131,6 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
 
             <hr className="my-4" />
 
-            {/* Contact Information */}
             <div className="space-y-3">
               {partenaire.siteWeb && (
                 <div className="flex items-center gap-2">
@@ -165,16 +159,14 @@ const PartenaireViewDialog: React.FC<PartenaireViewDialogProps> = ({
               )}
             </div>
 
-            {/* Logo Info */}
             <div className="mt-4 pt-4 border-t border-ink-100">
               <h4 className="font-semibold text-ink-700 mb-2">Logo</h4>
               <div className="bg-ink-50 p-3 rounded-lg border border-ink-100">
                 {isRemoteImage(partenaire.logo) ? (
                   <div>
-                    <p className="text-sm text-ink-600 block mb-2">
-                      {/* <span className="font-semibold">Image:</span> {partenaire.logo} */}
-                    </p>
                     <img
+                      loading="lazy"
+                      decoding="async"
                       src={getImageUrl(partenaire.logo)}
                       alt={`Logo de ${partenaire.nom}`}
                       className="max-w-[200px] max-h-[200px] rounded-lg"

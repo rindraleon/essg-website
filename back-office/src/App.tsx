@@ -2,8 +2,8 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import './styles/index.css';
 import { AppRoutes } from './routes';
-import { AuthProvider } from './contexts/AuthContext';
-import { queryClient } from './lib/query-client';
+import { AuthProvider } from '@/contexts';
+import { queryClient } from '@/lib';
 
 function App() {
   return (

@@ -2,28 +2,22 @@ import { Bell, CircleHelp, LogOut, Mail, Menu, Settings, User, X } from 'lucide-
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { routesStatic } from '../../routes';
-import { useAuth } from '../../contexts/AuthContext';
-import { getImageUrl } from '../../utils/image.utils';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
+import { useAuth } from '@/contexts';
+import { getImageUrl } from '@/utils';
+import { Button } from '@/components/ui';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Badge } from '@/components/ui/badge';
+} from '@/components/ui';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
+import { Badge } from '@/components/ui';
 import { useRecentAdmissionsQuery, useRecentMessagesQuery } from '../../hooks/queries';
-import { formatFullName } from '../../utils/name.utils';
+import { formatFullName } from '@/utils';
 
 const Header: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -48,7 +42,6 @@ const Header: React.FC = () => {
     setLogoutDialogOpen(false);
   };
 
-  // Fonction pour générer les initiales
   const getInitials = (name: string) => {
     if (!name) return 'U';
     return name
@@ -59,14 +52,11 @@ const Header: React.FC = () => {
       .slice(0, 2);
   };
 
-  // Récupérer le prénom et l'avatar
-  const prenom = user?.prenom || username || 'Utilisateur';
+  const displayName = formatFullName(user) || username || 'Utilisateur';
   const avatarUrl = user?.avatar ? getImageUrl(user.avatar) : undefined;
 
-  // Compter les admissions en attente
   const pendingAdmissionsCount = recentAdmissions.filter((a) => a.statut === 'en_attente').length;
 
-  // Compter les messages non lus
   const unreadMessagesCount = recentMessages.filter((m) => !m.lu).length;
 
   const getStatusColor = (statut: string) => {
@@ -102,19 +92,15 @@ const Header: React.FC = () => {
   return (
     <header className="bg-white shadow-sm z-20 sticky top-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-1">
-        {/* Partie haute : logo, nav desktop, actions */}
         <div className="flex items-center justify-between">
-          {/* Brand */}
           <div className="flex items-center gap-4">
             <p className="text-ink-600 text-sm">
               Bienvenue dans l'espace d'administration de l'ESSG
             </p>
           </div>
 
-          {/* Actions à droite - Desktop */}
           {isAuthenticated && (
             <div className="hidden md:flex items-center gap-1 lg:gap-2">
-              {/* Messages */}
               <DropdownMenu>
                 <TooltipProvider>
                   <Tooltip>
@@ -189,7 +175,6 @@ const Header: React.FC = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Notifications */}
               <DropdownMenu>
                 <TooltipProvider>
                   <Tooltip>
@@ -263,36 +248,6 @@ const Header: React.FC = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Aide */}
-              {/* <DropdownMenu>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <DropdownMenuTrigger>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-ink-700 hover:text-brand-600"
-                          aria-label="aide"
-                        >
-                          <CircleHelp className="h-5 w-5" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>Aide et informations</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-
-                <DropdownMenuContent align="end" className="w-48 shadow-none ring-0 bg-white border border-ink-100">
-                  <DropdownMenuItem>Centre d'aide</DropdownMenuItem>
-                  <DropdownMenuItem>Documentation</DropdownMenuItem>
-                  <DropdownMenuItem>Contactez-nous</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>À propos</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu> */}
-
-              {/* Profil */}
               <DropdownMenu>
                 <TooltipProvider>
                   <Tooltip>
@@ -306,18 +261,18 @@ const Header: React.FC = () => {
                           <Avatar className="h-8 w-8">
                             <AvatarImage
                               src={avatarUrl || undefined}
-                              alt={prenom}
+                              alt={displayName}
                               onError={(e) => {
                                 e.currentTarget.style.display = 'none';
                               }}
                             />
                             <AvatarFallback className="bg-brand-600 text-white text-xs">
-                              {getInitials(prenom)}
+                              {getInitials(displayName)}
                             </AvatarFallback>
                           </Avatar>
                           <div className="hidden lg:flex flex-col items-start mr-1">
                             <p className="text-xs font-medium text-ink-900 leading-tight">
-                              {prenom}
+                              {displayName}
                             </p>
                           </div>
                         </button>
@@ -352,7 +307,6 @@ const Header: React.FC = () => {
             </div>
           )}
 
-          {/* Mobile menu button */}
           <div className="md:hidden">
             <Button
               variant="ghost"
@@ -367,35 +321,32 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile panel */}
       {open && (
         <div className="md:hidden bg-white border-t shadow-sm">
           <div className="px-4 sm:px-6 py-4 flex flex-col gap-4">
-            {/* Profil mobile */}
             {isAuthenticated && (
               <div className="flex items-center justify-between pb-4 border-b border-ink-100">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-10 w-10">
                     <AvatarImage
                       src={avatarUrl || undefined}
-                      alt={prenom}
+                      alt={displayName}
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
                       }}
                     />
                     <AvatarFallback className="bg-brand-600 text-white text-sm">
-                      {getInitials(prenom)}
+                      {getInitials(displayName)}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-medium text-ink-900">{prenom}</p>
+                    <p className="text-sm font-medium text-ink-900">{displayName}</p>
                     <p className="text-xs text-ink-500">Administrateur</p>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Navigation mobile */}
             <nav className="flex flex-col gap-1">
               <NavLink
                 to={routesStatic.dashboard}
@@ -489,7 +440,6 @@ const Header: React.FC = () => {
               )}
             </nav>
 
-            {/* Actions mobile */}
             {isAuthenticated && (
               <>
                 <hr className="border-ink-100" />
@@ -566,7 +516,6 @@ const Header: React.FC = () => {
         </div>
       )}
 
-      {/* Dialog de confirmation de déconnexion */}
       <Dialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
         <DialogContent className="bg-white border-2 border-ink-100 shadow-2xl">
           <DialogHeader className="bg-gradient-to-r from-brand-500 to-purple-600 -mx-4 -mt-4 px-6 py-4 rounded-t-xl">

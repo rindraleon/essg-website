@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { routesStatic } from '../routes';
 
-export interface NavItem {
+interface NavItem {
   name: string;
   label: string;
   href: string;
@@ -20,7 +20,7 @@ export interface NavItem {
   adminOnly?: boolean;
 }
 
-export const NAV_ITEMS: NavItem[] = [
+const NAV_ITEMS: NavItem[] = [
   {
     name: 'Tableau de bord',
     label: 'Accueil',
@@ -44,8 +44,6 @@ export const NAV_ITEMS: NavItem[] = [
     label: 'Utilisateurs',
     href: routesStatic.utilisateurs,
     icon: Users,
-    // Gestion des comptes : réservée aux administrateurs.
-    // Le backend applique la même règle (@Roles('admin') sur /users).
     adminOnly: true,
   },
   {
@@ -64,25 +62,7 @@ export const isNavActive = (href: string, pathname: string): boolean => {
   return pathname.startsWith(href);
 };
 
-export const PRIMARY_NAV_LABELS = ['Tableau de bord', 'Formations', 'Actualités', 'Projets'];
-
 export const isAdminRole = (role?: string): boolean => role === 'admin';
 
-/** Éléments de navigation visibles selon le rôle réel de l'utilisateur. */
 export const getVisibleNavItems = (role?: string): NavItem[] =>
   NAV_ITEMS.filter((item) => !item.adminOnly || isAdminRole(role));
-
-/**
- * Routes réservées aux administrateurs.
- *
- * Paramètres n'est plus un item de sidebar, mais reste bien protégé comme les
- * autres routes d'administration.
- */
-const ADMIN_ONLY_ROUTES = [
-  routesStatic.utilisateurs,
-  routesStatic.activityLogs,
-  routesStatic.parametres,
-] as const;
-
-export const isAdminOnlyRoute = (pathname: string): boolean =>
-  ADMIN_ONLY_ROUTES.some((href) => isNavActive(href, pathname));

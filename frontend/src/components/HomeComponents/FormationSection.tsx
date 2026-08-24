@@ -1,8 +1,8 @@
-import { Clock, GraduationCap } from 'lucide-react';
+import { BookOpen, GraduationCap } from 'lucide-react';
 import { useMemo } from 'react';
-import { getImageUrl } from '../../utils/image.utils';
-import { CARD_WIDTH_CLASS } from '../../constants/layout';
-import { NIVEAU_ORDER } from '../../constants/formation';
+import { getImageUrl } from '@/utils';
+import { CARD_WIDTH_CLASS } from '@/constants';
+import { NIVEAU_ORDER } from '@/constants';
 import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid } from '../../components';
 import MediaCard from '../common/MediaCard';
 import FilterButton from '../common/FilterButton';
@@ -10,7 +10,7 @@ import { MediaCardSkeletonGrid } from '../common/MediaCardSkeleton';
 import { useFeaturedFormations } from '../../hooks';
 import useSectionFilters, { type FilterDefinition } from '../../hooks/useSectionFilters';
 import type { FeaturedFormationsSectionProps } from '../../types';
-import type { Formation } from '../../types/formations.types';
+import type { Formation } from '@/types';
 
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1523050854058-8df90110a6f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';
@@ -72,19 +72,16 @@ const FormationsSection = ({
       emptyMessage="Aucune formation disponible pour le moment."
       headerContent={<SectionHeader title={title} description={description} />}
       loadingSkeletons={<MediaCardSkeletonGrid count={3} layout="home" />}
-      sectionClassName="bg-white py-20"
+      sectionClassName="bg-gradient-to-b from-brand-50/65 via-white to-white py-20"
       fluid
       containerClassName="max-w-none"
     >
       <ScrollableCardGrid
         className="w-full"
         ariaLabel="Formations mises en avant"
+        resetKey={groups.map((group) => `${group.key}:${group.value}`).join('|')}
         toolbarStart={<span aria-live="polite">{countLabel}</span>}
-        controls={
-          groups.length > 0 && (
-            <FilterButton groups={groups} onChange={setFilter} onReset={reset} />
-          )
-        }
+        controls={<FilterButton groups={groups} onChange={setFilter} onReset={reset} />}
       >
         {filtered.map((formation) => (
           <MediaCard
@@ -99,7 +96,7 @@ const FormationsSection = ({
             description={formation.description || "Découvrez cette formation d'excellence."}
             meta={[
               ...(formation.mention
-                ? [{ icon: <Clock className="size-3.5" />, label: formation.mention }]
+                ? [{ icon: <BookOpen className="size-3.5" />, label: formation.mention }]
                 : []),
               ...(formation.credits
                 ? [
@@ -115,7 +112,6 @@ const FormationsSection = ({
         ))}
       </ScrollableCardGrid>
 
-      {/* Filtre trop restrictif : on l'indique plutôt que d'afficher un vide. */}
       {count === 0 && total > 0 && (
         <p className="py-10 text-center text-body text-ink-500">
           Aucune formation ne correspond à ces critères.{' '}

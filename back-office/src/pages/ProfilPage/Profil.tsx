@@ -1,12 +1,10 @@
 import { IdCard, Mail, Pencil, Shield, User as UserIcon } from 'lucide-react';
 import React, { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { getImageUrl } from '../../utils/image.utils';
-import { useTitle } from '@/hooks/useTitle';
-import useScrollToTop from '@/hooks/useScrollToTop';
-import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts';
+import { getImageUrl, formatFullName, getPersonInitials } from '@/utils';
+import { useTitle, useScrollToTop } from '@/hooks';
+import { Button } from '@/components/ui';
 import ProfilEditDialog from './ProfilEditDialog';
-import { formatFullName, getPersonInitials } from '../../utils/name.utils';
 
 const ROLE_LABELS: Record<string, string> = {
   admin: 'Administrateur',
@@ -25,7 +23,6 @@ function formatDate(value?: string): string {
   });
 }
 
-/** Carte d'information réutilisée pour chaque champ du profil. */
 const InfoCard: React.FC<{ icon: React.ReactNode; label: string; value: string }> = ({
   icon,
   label,
@@ -74,6 +71,8 @@ const Profil: React.FC = () => {
         <div className="flex flex-col items-center gap-5 sm:flex-row">
           {showAvatar ? (
             <img
+              loading="lazy"
+              decoding="async"
               src={getImageUrl(user.avatar as string)}
               alt={formatFullName(user)}
               onError={() => setAvatarError(true)}
@@ -86,15 +85,11 @@ const Profil: React.FC = () => {
           )}
 
           <div className="min-w-0 flex-1 text-center sm:text-left">
-            <h1 className="mb-1.5 text-2xl font-bold text-ink-900">
-              {formatFullName(user)}
-            </h1>
+            <h1 className="mb-1.5 text-2xl font-bold text-ink-900">{formatFullName(user)}</h1>
             <span className="inline-block rounded-md bg-brand-600 px-2.5 py-1 text-xs font-medium text-white">
               {ROLE_LABELS[user.role] ?? user.role}
             </span>
-            <p className="mt-2 text-sm text-ink-600">
-              Membre depuis le {formatDate(user.creeLe)}
-            </p>
+            <p className="mt-2 text-sm text-ink-600">Membre depuis le {formatDate(user.creeLe)}</p>
           </div>
 
           <Button onClick={() => setEditOpen(true)} className="w-full shrink-0 sm:w-auto">

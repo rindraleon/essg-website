@@ -32,10 +32,8 @@ function parseNumericValue(value: string): NumericParts | null {
 interface AnimatedNumberProps {
   value: string;
   className?: string;
-  /** Durée en millisecondes, alignée sur le système de compteurs. */
   duration?: number;
 }
-
 
 const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ value, className, duration = 1800 }) => {
   const parts = parseNumericValue(value);
@@ -72,7 +70,6 @@ const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ value, className, durat
         const startTime = performance.now();
         const tick = (now: number) => {
           const elapsed = Math.min(1, (now - startTime) / duration);
-          // Ease out cubic : départ rapide, arrivée naturellement amortie.
           const eased = 1 - (1 - elapsed) ** 3;
           setCurrent(parts.value * eased);
           if (elapsed < 1) window.requestAnimationFrame(tick);
