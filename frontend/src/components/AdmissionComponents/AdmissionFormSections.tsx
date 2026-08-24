@@ -67,11 +67,11 @@ export function PersonalInformation({
   data,
   errors,
   onChange,
-}: {
+}: Readonly<{
   data: AdmissionFormData;
   errors: Errors;
   onChange: ChangeHandler;
-}) {
+}>) {
   return (
     <section>
       <AdmissionSectionTitle number={1}>Informations personnelles</AdmissionSectionTitle>
@@ -175,13 +175,13 @@ export function BacInformation({
   errors,
   onChange,
   onDuplicateCheck,
-}: {
+}: Readonly<{
   data: AdmissionFormData;
   series: readonly BacSeriesOption[];
   errors: Errors;
   onChange: ChangeHandler;
   onDuplicateCheck: () => void;
-}) {
+}>) {
   const category = data.bacCategorie
     ? BAC_CATEGORIES[data.bacCategorie as keyof typeof BAC_CATEGORIES]
     : null;
@@ -272,11 +272,11 @@ export function PreviousEducationInformation({
   data,
   errors,
   onChange,
-}: {
+}: Readonly<{
   data: AdmissionFormData;
   errors: Errors;
   onChange: ChangeHandler;
-}) {
+}>) {
   if (data.niveau !== 'master') return null;
   return (
     <section>
@@ -325,11 +325,11 @@ export function LevelSelection({
   data,
   errors,
   onChange,
-}: {
+}: Readonly<{
   data: AdmissionFormData;
   errors: Errors;
   onChange: ChangeHandler;
-}) {
+}>) {
   return (
     <section>
       <AdmissionSectionTitle number={3}>Formation souhaitée à l’ESSG</AdmissionSectionTitle>
@@ -358,13 +358,13 @@ export function FormationSelection({
   parcours,
   errors,
   onChange,
-}: {
+}: Readonly<{
   data: AdmissionFormData;
   mentions: AdmissionProgram[];
   parcours: AdmissionProgram[];
   errors: Errors;
   onChange: ChangeHandler;
-}) {
+}>) {
   const hasProfile = Boolean(data.bacCategorie && data.niveau);
   return (
     <section>
