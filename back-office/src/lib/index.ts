@@ -1,2 +1,2 @@
-export * from './query-client';
-export * from './utils';
+export { queryClient } from './query-client';
+export { cn } from './utils';

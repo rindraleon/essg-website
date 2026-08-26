@@ -1,9 +1,9 @@
 import { RotateCcw, X } from 'lucide-react';
 import React from 'react';
 import type { FormationFilterOptions } from '@/types';
-import { Button } from '@/components/ui';
-import { Label } from '@/components/ui';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Label } from '../ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface FormationFiltersProps {
   filters: FormationFilterOptions;

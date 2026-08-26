@@ -1,4 +1,4 @@
-import { Fade, IconButton, Tooltip } from '@/components/compat';
+import { Fade, IconButton, Tooltip } from '../compat/mui';
 import { ExternalLink, MapPin } from 'lucide-react';
 import React, { useState } from 'react';
 import { GREEN } from '@/constants';
@@ -55,7 +55,7 @@ const MapEmbed: React.FC<MapEmbedProps> = (props: Readonly<MapEmbedProps>) => {
             referrerPolicy="no-referrer"
           />
 
-          <Fade in={isHovered} timeout={300}>
+          <Fade in={isHovered}>
             <div
               className="pointer-events-none absolute bottom-4 left-4 right-4 flex items-start gap-3 rounded-xl p-4 text-center shadow-lg backdrop-blur-sm"
               style={{

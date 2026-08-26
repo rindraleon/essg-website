@@ -1,20 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CircleCheck, ImageUp, Loader2, Trash2, TriangleAlert, UserPlus } from 'lucide-react';
 import React, { useRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { ACCEPTED_IMAGE_MIME_TYPES, MAX_IMAGE_UPLOAD_SIZE, isAcceptedImage } from '@/utils';
-import { toUpperName } from '@/utils';
-import { uploadAvatar } from '../../services';
-import type { User, UserFormData } from '../../types';
-import { useFormValidation } from '../../hooks/useFormValidation';
+import { ACCEPTED_IMAGE_MIME_TYPES, MAX_IMAGE_UPLOAD_SIZE, isAcceptedImage , toUpperName } from '@/utils';
+import { uploadAvatar } from '@/services';
+import type { User, UserFormData } from '@/types';
+import { useFormValidation } from '@/hooks';
 import { EMAIL_ERROR_MESSAGE, EMAIL_PATTERN } from '@/constants';
-import { Button } from '@/components/ui';
-import { Label } from '@/components/ui';
-import { Checkbox } from '@/components/ui';
-import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '@/components/ui';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
-import { FloatingInput } from '@/components/ui';
-import { FloatingSelect } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Label } from '../ui/label';
+import { Checkbox } from '../ui/checkbox';
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '../ui/dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { FloatingInput } from '../ui/floating-input';
+import { FloatingSelect } from '../ui/floating-select';
 
 interface UsersFormProps {
   open: boolean;

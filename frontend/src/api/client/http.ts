@@ -5,7 +5,7 @@ import {
   type PaginatedResult,
   type PaginationMeta,
   type PaginationParams,
-} from '@/api/types';
+} from '../types/api';
 
 const DEFAULT_API_URL = 'http://localhost:3000';
 const REQUEST_TIMEOUT = 15_000;

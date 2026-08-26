@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-nested-conditional, @typescript-eslint/no-unused-vars */
 import {
   ArrowLeft,
   ArrowRight,
@@ -11,20 +10,18 @@ import {
 } from 'lucide-react';
 import React, { useRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { toUpperName } from '@/utils';
-import { uploadImage } from '../../services';
-import { getImageUrl } from '@/utils';
+import { toUpperName , getImageUrl } from '@/utils';
+import { uploadImage } from '@/services';
 import type { RessourceHumaineItem, RessourceHumaineFormData } from '@/types';
-import { RESSOURCE_HUMAINE_POSTES as postes } from '@/constants';
-import { useFormValidation } from '../../hooks/useFormValidation';
-import { EMAIL_ERROR_MESSAGE, EMAIL_PATTERN } from '@/constants';
-import { Button } from '@/components/ui';
-import { Label } from '@/components/ui';
-import { Checkbox } from '@/components/ui';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui';
-import { FloatingInput } from '@/components/ui';
-import { FloatingTextarea } from '@/components/ui';
-import { FloatingSelect } from '@/components/ui';
+import { RESSOURCE_HUMAINE_POSTES as postes , EMAIL_ERROR_MESSAGE, EMAIL_PATTERN } from '@/constants';
+import { useFormValidation } from '@/hooks';
+import { Button } from '../ui/button';
+import { Label } from '../ui/label';
+import { Checkbox } from '../ui/checkbox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
+import { FloatingInput } from '../ui/floating-input';
+import { FloatingTextarea } from '../ui/floating-textarea';
+import { FloatingSelect } from '../ui/floating-select';
 import CvImportPanel from './CvImportPanel';
 import ParcoursFields from './ParcoursFields';
 
@@ -216,6 +213,13 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
   const dialogTitle =
     mode === 'create' ? 'Nouvelle ressource humaine' : 'Modifier la ressource humaine';
 
+  let submitButtonLabel = 'Enregistrer';
+  if (submitting) {
+    submitButtonLabel = 'Enregistrement...';
+  } else if (mode === 'create') {
+    submitButtonLabel = 'Créer';
+  }
+
   const renderStep0 = () => (
     <div className="space-y-3">
       {mode === 'create' && (
@@ -354,7 +358,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
         label="Ordre d'affichage"
         type="number"
         value={formData.ordre.toString()}
-        onChange={(e) => handleChange('ordre', parseInt(e.target.value) || 0)}
+        onChange={(e) => handleChange('ordre', Number.parseInt(e.target.value) || 0)}
         min="0"
       />
       <p className="text-xs text-ink-500 -mt-2">
@@ -397,6 +401,14 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
               const isCompleted = index < activeStep;
               const isActive = index === activeStep;
 
+              let stepButtonClasses = 'bg-ink-100 text-ink-400';
+
+              if (isActive) {
+                stepButtonClasses = 'bg-brand-600 text-white shadow-sm';
+              } else if (isCompleted) {
+                stepButtonClasses = 'bg-brand-50 text-brand-700 hover:bg-brand-100';
+              }
+
               return (
                 <React.Fragment key={step.id}>
                   {index > 0 && (
@@ -412,13 +424,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
                     className={`
                       flex items-center gap-1.5 px-3 py-1.5 rounded-md
                       text-xs font-medium transition-all
-                      ${
-                        isActive
-                          ? 'bg-brand-600 text-white shadow-sm'
-                          : isCompleted
-                            ? 'bg-brand-50 text-brand-700 hover:bg-brand-100'
-                            : 'bg-ink-100 text-ink-400'
-                      }
+                      ${stepButtonClasses}
                     `}
                   >
                     {isCompleted ? <CircleCheck className="h-4 w-4" /> : step.icon}
@@ -471,7 +477,7 @@ const RessourceHumaineForm: React.FC<RessourceHumaineFormProps> = ({
               ) : (
                 <Button type="button" size="sm" onClick={handleSubmit} disabled={submitting}>
                   <CircleCheck className="h-3.5 w-3.5" />
-                  {submitting ? 'Enregistrement...' : mode === 'create' ? 'Créer' : 'Enregistrer'}
+                  {submitButtonLabel}
                 </Button>
               )}
             </div>

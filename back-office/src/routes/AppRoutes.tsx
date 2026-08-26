@@ -1,24 +1,24 @@
 import { Fingerprint } from 'lucide-react';
 import React, { lazy, Suspense } from 'react';
 import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
-import { routesStatic } from '.';
-import { Layout } from '@/components/Layout';
+import routesStatic from './routes';
+import { Layout } from '@/components';
 import { useAuth } from '@/contexts';
 import { isAdminRole } from '@/constants';
 
-const Login = lazy(() => import('../pages/LoginPage/Login'));
-const Dashboard = lazy(() => import('../pages/DashboardPage/Dashboard'));
-const Actualites = lazy(() => import('../pages/ActualitesPage/Actualites'));
-const RessourcesHumaines = lazy(() => import('../pages/RessourcesHumainesPage/RessourcesHumaines'));
-const Utilisateurs = lazy(() => import('../pages/UtilisateursPage/Utilisateurs'));
-const Formations = lazy(() => import('../pages/FormationsPage/Formations'));
-const Projets = lazy(() => import('../pages/ProjetsPage/Projets'));
-const Partenaires = lazy(() => import('../pages/PartenairesPage/Partenaires'));
-const Contacts = lazy(() => import('../pages/ContactsPage/Contacts'));
-const Admissions = lazy(() => import('../pages/AdmissionsPage/Admissions'));
-const Profil = lazy(() => import('../pages/ProfilPage/Profil'));
-const ActivityLogs = lazy(() => import('../pages/ActivityLogsPage/ActivityLogs'));
-const Parametres = lazy(() => import('../pages/ParametresPage/Parametres'));
+const Login = lazy(() => import('@/pages/LoginPage/Login'));
+const Dashboard = lazy(() => import('@/pages/DashboardPage/Dashboard'));
+const Actualites = lazy(() => import('@/pages/ActualitesPage/Actualites'));
+const RessourcesHumaines = lazy(() => import('@/pages/RessourcesHumainesPage/RessourcesHumaines'));
+const Utilisateurs = lazy(() => import('@/pages/UtilisateursPage/Utilisateurs'));
+const Formations = lazy(() => import('@/pages/FormationsPage/Formations'));
+const Projets = lazy(() => import('@/pages/ProjetsPage/Projets'));
+const Partenaires = lazy(() => import('@/pages/PartenairesPage/Partenaires'));
+const Contacts = lazy(() => import('@/pages/ContactsPage/Contacts'));
+const Admissions = lazy(() => import('@/pages/AdmissionsPage/Admissions'));
+const Profil = lazy(() => import('@/pages/ProfilPage/Profil'));
+const ActivityLogs = lazy(() => import('@/pages/ActivityLogsPage/ActivityLogs'));
+const Parametres = lazy(() => import('@/pages/ParametresPage/Parametres'));
 
 const LoadingScreen = () => (
   <div className="min-h-screen flex items-center justify-center bg-ink-950">

@@ -108,7 +108,7 @@ const AboutPage: React.FC = () => {
       <PageHero
         image={SITE_HERO_IMAGE}
         imageAlt="Campus de l'École Supérieure de Sciences Géomatiques"
-        title="Comprendre le territoire pour mieux le transformer"
+        title="A propos"
         description="L’ESSG forme une nouvelle génération de professionnels capables de convertir la donnée géographique en décisions utiles, durables et responsables."
         minHeight="72vh"
         stats={[

@@ -1,6 +1,6 @@
 import { Filter, X } from 'lucide-react';
 import React, { useEffect, useId, useRef, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 
 export interface FilterGroup {
   key: string;

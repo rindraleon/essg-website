@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Button as UiButton } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 
 export function Box({
   className,

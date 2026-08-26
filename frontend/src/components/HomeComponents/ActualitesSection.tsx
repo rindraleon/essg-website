@@ -1,12 +1,14 @@
 import { Calendar } from 'lucide-react';
-import { useRecentActualites } from '../../hooks';
-import useSectionFilters, { type FilterDefinition } from '../../hooks/useSectionFilters';
+import { useRecentActualites } from '@/hooks';
+import useSectionFilters, { type FilterDefinition } from '@/hooks/useSectionFilters';
 import FilterButton from '../common/FilterButton';
 import type { Actualite } from '@/types';
-import { getImageUrl } from '@/utils';
-import { formatDate } from '@/utils';
+import { getImageUrl , formatDate } from '@/utils';
 import { CARD_WIDTH_CLASS } from '@/constants';
-import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid } from '../../components';
+import SectionHeader from '../common/SectionHeader';
+import SectionCta from '../common/SectionCta';
+import SectionContent from '../common/SectionContent';
+import ScrollableCardGrid from '../common/ScrollableCardGrid';
 import MediaCard from '../common/MediaCard';
 import { MediaCardSkeletonGrid } from '../common/MediaCardSkeleton';
 

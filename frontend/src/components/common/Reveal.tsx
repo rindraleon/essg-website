@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
-import useGsapReveal from '../../hooks/useGsapReveal';
-import { cn } from '@/lib/utils';
+import useGsapReveal from '@/hooks/useGsapReveal';
+import { cn } from '@/lib';
 
 interface RevealProps {
   children: ReactNode;

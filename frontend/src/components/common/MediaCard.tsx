@@ -1,7 +1,7 @@
 import { ArrowUpRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 import { HOVER_CARD, HOVER_IMAGE_ZOOM } from '@/constants';
 
 export interface MediaCardMeta {

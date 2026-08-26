@@ -6,7 +6,7 @@ import {
   searchMessages,
   updateMessage,
   type PaginationQuery,
-} from '../../services';
+} from '@/services';
 import { queryKeys } from './keys';
 
 export function useRecentMessagesQuery(limit = 4, enabled = true) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Search } from 'lucide-react';
-import { Input } from '@/components/ui';
-import { cn } from '@/lib/utils';
+import { Input } from '../ui/input';
+import { cn } from '@/lib';
 
 interface SearchInputProps {
   value: string;

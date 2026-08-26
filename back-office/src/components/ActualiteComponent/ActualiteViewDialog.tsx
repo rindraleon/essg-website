@@ -5,9 +5,9 @@ import StatusBadge from '../common/StatusBadge';
 import CoverImage from '../common/CoverImage';
 import ImageGallery from '../common/ImageGallery';
 import { DetailSection } from '../common/DetailSection';
-import { Button } from '@/components/ui';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui';
-import { Badge } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Badge } from '../ui/badge';
 
 interface ActualiteViewDialogProps {
   open: boolean;

@@ -12,7 +12,7 @@ import {
 import { toast } from 'react-hot-toast';
 import { toUpperName } from '@/utils';
 import type { ContactFormData, ContactFormProps } from '@/types';
-import { useCreateContact } from '../../hooks/mutations';
+import { useCreateContact } from '@/hooks';
 import { ApiError } from '@/api';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';

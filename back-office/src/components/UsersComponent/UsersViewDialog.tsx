@@ -1,13 +1,11 @@
-/* eslint-disable sonarjs/no-nested-conditional */
 import { Image, Mail, User as UserIcon, X } from 'lucide-react';
 import React from 'react';
-import { getImageUrl } from '@/utils';
-import type { User } from '../../types';
-import { Button } from '@/components/ui';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui';
-import { Badge } from '@/components/ui';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
-import { formatFullName, getPersonInitials } from '@/utils';
+import { getImageUrl , formatFullName, getPersonInitials } from '@/utils';
+import type { User } from '@/types';
+import { Button } from '../ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Badge } from '../ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 interface UsersViewDialogProps {
   open: boolean;
@@ -40,6 +38,13 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
       day: 'numeric',
     });
   };
+
+  let roleBadgeVariant: 'default' | 'secondary' | 'outline' = 'outline';
+  if (user.role === 'admin') {
+    roleBadgeVariant = 'default';
+  } else if (user.role === 'editeur') {
+    roleBadgeVariant = 'secondary';
+  }
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -227,13 +232,7 @@ const UsersViewDialog: React.FC<UsersViewDialogProps> = ({ open, onClose, user }
                         <p className="text-xs text-ink-500">Rôle</p>
                         <div className="mt-1">
                           <Badge
-                            variant={
-                              user.role === 'admin'
-                                ? 'default'
-                                : user.role === 'editeur'
-                                  ? 'secondary'
-                                  : 'outline'
-                            }
+                            variant={roleBadgeVariant}
                           >
                             {getRoleLabel(user.role)}
                           </Badge>

@@ -2,7 +2,7 @@ import { Briefcase, Clock, GraduationCap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Badge } from '../ui/badge';
 import { buttonVariants } from '../ui/button';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 import { getImageUrl } from '@/utils';
 import ViewDetailsButton from '../common/ViewDetailsButton';
 import type { FormationCardProps } from '@/types';
@@ -48,8 +48,9 @@ const FormationCard = ({
           <div className="mb-4 flex items-start justify-between">
             <Badge>{formation.niveau}</Badge>
             <div className="flex items-center gap-1 text-caption text-ink-500">
-              <Clock className="size-3.5" />
+              <Clock className="size-3.5" >
               {formation.duree}
+              </Clock>
             </div>
           </div>
 

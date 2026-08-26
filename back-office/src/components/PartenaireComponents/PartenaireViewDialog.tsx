@@ -1,13 +1,12 @@
 import { Calendar, Globe, Mail, Tag, X } from 'lucide-react';
 import React from 'react';
-import { getImageUrl, isRemoteImage } from '@/utils';
+import { getImageUrl, isRemoteImage , formatDate } from '@/utils';
 import type { Partenaire } from '@/types';
 import { PARTENAIRE_TYPE_COLORS } from '@/constants';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui';
-import { Button } from '@/components/ui';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
-import { Badge } from '@/components/ui';
-import { formatDate } from '@/utils';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Button } from '../ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Badge } from '../ui/badge';
 
 interface PartenaireViewDialogProps {
   open: boolean;

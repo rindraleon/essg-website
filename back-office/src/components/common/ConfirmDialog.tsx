@@ -1,7 +1,7 @@
 import { CircleAlert, Info, Loader2, TriangleAlert } from 'lucide-react';
 import React from 'react';
-import { Button } from '@/components/ui';
-import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '../ui/dialog';
 
 type ConfirmSeverity = 'warning' | 'error' | 'info';
 

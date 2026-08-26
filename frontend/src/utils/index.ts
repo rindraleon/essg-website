@@ -1,5 +1,6 @@
-export * from './date.utils';
-export * from './image.utils';
-export * from './name.utils';
-export * from './query-error.utils';
-export * from './slug.utils';
+// Point d'entrée unique des exports du répertoire "utils".
+export { formatDate } from './date.utils';
+export { getImageUrl, getFormationImage } from './image.utils';
+export { formatFullName, getPersonInitials } from './name.utils';
+export { toErrorMessage, toError } from './query-error.utils';
+export { generateSlug, toUpperName, toCapitalizedWords } from './slug.utils';

@@ -47,6 +47,9 @@ export type AdmissionDocumentKind =
 export type AdmissionDuplicateCheck = {
   numeroBaccalaureatDisponible?: boolean;
   numeroBordereauDisponible?: boolean;
+  emailDisponible?: boolean;
+  telephoneDisponible?: boolean;
+  annee?: number;
 };
 
 export type AdmissionFormProps = {

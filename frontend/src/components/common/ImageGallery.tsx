@@ -1,8 +1,8 @@
 import { ChevronLeft, ChevronRight, Images, X } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { getImageUrl } from '@/utils';
-import useGsapReveal from '../../hooks/useGsapReveal';
-import { gsap, prefersReducedMotion, registerGsap } from '../../lib/gsap';
+import useGsapReveal from '@/hooks/useGsapReveal';
+import { gsap, prefersReducedMotion, registerGsap } from '@/lib';
 
 interface ImageGalleryProps {
   images: string[];

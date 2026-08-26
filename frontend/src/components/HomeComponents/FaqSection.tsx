@@ -1,4 +1,6 @@
-import { SectionContent, SectionCta, SectionHeader } from '../../components';
+import SectionContent from '../common/SectionContent';
+import SectionCta from '../common/SectionCta';
+import SectionHeader from '../common/SectionHeader';
 import { HOME_FAQ_ITEMS } from '@/constants';
 import FaqAccordion from './FaqAccordion';
 

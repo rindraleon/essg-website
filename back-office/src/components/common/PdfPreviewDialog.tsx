@@ -12,8 +12,8 @@ import {
   X,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button } from '@/components/ui';
-import { Dialog, DialogContent } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Dialog, DialogContent } from '../ui/dialog';
 import { ApiError } from '@/api';
 import type { DocumentBlob } from '@/api';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';

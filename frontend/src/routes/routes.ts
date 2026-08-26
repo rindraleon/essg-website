@@ -1,7 +1,6 @@
 const routesStatic = {
   home: '/',
   about: '/about',
-  example: '/example',
   formations: '/formations',
   formationDetail: '/formations/:slug',
   actualites: '/actualites',

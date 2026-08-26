@@ -1,9 +1,9 @@
 import { Loader2, Reply } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui';
-import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '@/components/ui';
-import { Input } from '@/components/ui';
-import { Label } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '../ui/dialog';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 import type { Message } from '@/services';
 import { formatFullName } from '@/utils';
 

@@ -1,14 +1,13 @@
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import React from 'react';
-import { getImageUrl } from '@/utils';
+import { getImageUrl , formatFullName, getPersonInitials } from '@/utils';
 import type { RessourceHumaineItem } from '@/types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
-import { Badge } from '@/components/ui';
-import { Button } from '@/components/ui';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
-import { formatFullName, getPersonInitials } from '@/utils';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 interface RessourceHumaineTableProps {
   data: RessourceHumaineItem[];
@@ -39,7 +38,7 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
       label: 'Photo',
       minWidth: 60,
       render: (row) => (
-        <Avatar className="h-9 w-9">
+        <Avatar className="h-9 w-8">
           {row.photo ? (
             <AvatarImage src={getImageUrl(row.photo)} alt={formatFullName(row)} />
           ) : (
@@ -63,7 +62,7 @@ const RessourceHumaineTable: React.FC<RessourceHumaineTableProps> = ({
     {
       id: 'poste',
       label: 'Poste',
-      minWidth: 140,
+      minWidth: 120,
       render: (row) => <Badge variant="outline">{row.poste}</Badge>,
     },
     {

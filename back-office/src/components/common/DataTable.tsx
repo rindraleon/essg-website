@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Inbox } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { Button } from '../ui/button';
 
 export interface Column<T> {
   id: string;

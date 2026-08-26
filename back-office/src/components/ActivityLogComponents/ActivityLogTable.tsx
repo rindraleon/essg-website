@@ -1,5 +1,5 @@
 import { Eye } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { Button } from '../ui/button';
 import DataTable, { type Column } from '../common/DataTable';
 import type { ActivityLog } from '@/types';
 

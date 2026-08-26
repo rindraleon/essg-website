@@ -11,11 +11,10 @@ import {
 import React from 'react';
 import type { Admission, AdmissionFile } from '@/types';
 import { ADMISSION_FILE_TYPE_LABELS } from '@/types';
-import { Badge } from '@/components/ui';
-import { Button } from '@/components/ui';
-import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '@/components/ui';
-import { formatFullName } from '@/utils';
-import { formatFileSize, getFileExtension } from '@/utils';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '../ui/dialog';
+import { formatFullName , formatFileSize, getFileExtension } from '@/utils';
 
 interface AdmissionDetailDialogProps {
   admission: Admission;

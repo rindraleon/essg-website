@@ -1,11 +1,14 @@
 import { Calendar, MapPin } from 'lucide-react';
 import type { FeaturedProjetsSectionProps, ProjetItem } from '@/types';
-import { useProjets } from '../../hooks';
-import useSectionFilters, { type FilterDefinition } from '../../hooks/useSectionFilters';
+import { useProjets } from '@/hooks';
+import useSectionFilters, { type FilterDefinition } from '@/hooks/useSectionFilters';
 import FilterButton from '../common/FilterButton';
 import { getImageUrl } from '@/utils';
 import { CARD_WIDTH_CLASS } from '@/constants';
-import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid } from '../../components';
+import SectionHeader from '../common/SectionHeader';
+import SectionCta from '../common/SectionCta';
+import SectionContent from '../common/SectionContent';
+import ScrollableCardGrid from '../common/ScrollableCardGrid';
 import MediaCard from '../common/MediaCard';
 import { MediaCardSkeletonGrid } from '../common/MediaCardSkeleton';
 

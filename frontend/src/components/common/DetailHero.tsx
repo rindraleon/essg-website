@@ -1,7 +1,7 @@
 import { ArrowLeft, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 import RevealOnScroll from './RevealOnScroll';
 
 export interface DetailHeroMeta {
@@ -36,7 +36,7 @@ const DetailHero = ({
   actions,
   className,
 }: DetailHeroProps) => (
-  <header className={cn('relative isolate overflow-hidden bg-brand-950 text-white', className)}>
+  <header className={cn('relative isolate overflow-hidden bg-brand-650 text-white', className)}>
     {image && (
       <img
         src={image}

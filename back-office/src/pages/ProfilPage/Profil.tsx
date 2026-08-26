@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useAuth } from '@/contexts';
 import { getImageUrl, formatFullName, getPersonInitials } from '@/utils';
 import { useTitle, useScrollToTop } from '@/hooks';
-import { Button } from '@/components/ui';
+import { Button } from '@/components';
 import ProfilEditDialog from './ProfilEditDialog';
 
 const ROLE_LABELS: Record<string, string> = {
@@ -12,16 +12,7 @@ const ROLE_LABELS: Record<string, string> = {
   lecteur: 'Lecteur',
 };
 
-function formatDate(value?: string): string {
-  if (!value) return '—';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-  return date.toLocaleDateString('fr-FR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
-}
+
 
 const InfoCard: React.FC<{ icon: React.ReactNode; label: string; value: string }> = ({
   icon,
@@ -89,7 +80,6 @@ const Profil: React.FC = () => {
             <span className="inline-block rounded-md bg-brand-600 px-2.5 py-1 text-xs font-medium text-white">
               {ROLE_LABELS[user.role] ?? user.role}
             </span>
-            <p className="mt-2 text-sm text-ink-600">Membre depuis le {formatDate(user.creeLe)}</p>
           </div>
 
           <Button onClick={() => setEditOpen(true)} className="w-full shrink-0 sm:w-auto">

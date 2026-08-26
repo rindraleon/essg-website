@@ -1,7 +1,6 @@
 import { Calendar, User } from 'lucide-react';
 import type { Actualite } from '@/types';
-import { formatDate } from '@/utils';
-import { getImageUrl } from '@/utils';
+import { formatDate , getImageUrl } from '@/utils';
 import MediaCard from '../common/MediaCard';
 
 interface Props {

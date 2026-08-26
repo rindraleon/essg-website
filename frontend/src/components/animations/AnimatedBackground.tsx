@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 
 interface AnimatedBackgroundProps {
   variant?: 'hero' | 'section' | 'cta';

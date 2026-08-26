@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { toErrorMessage } from '@/utils';
-import { projetService } from '../services';
+import { projetService } from '@/services';
 
 export function usePaginatedProjets(page = 1, limit = 6, search = '', type = '', statut = '') {
   const query = useQuery({

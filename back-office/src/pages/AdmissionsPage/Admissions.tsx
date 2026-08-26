@@ -1,9 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Download, LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui';
-import { ApiError } from '@/api';
-import {
+import { Button ,
   ListPageHeader,
   AdmissionFilters,
   ConfirmDialog,
@@ -11,6 +9,7 @@ import {
   AdmissionDetailDialog,
   AdmissionDecisionDialog,
 } from '@/components';
+import { ApiError } from '@/api';
 import {
   useDebounce,
   useScrollToTop,
@@ -31,7 +30,7 @@ import {
   ADMISSION_FILE_TYPE_LABELS,
 } from '@/types';
 
-const PdfPreviewDialog = lazy(() => import('../../components/common/PdfPreviewDialog'));
+const PdfPreviewDialog = lazy(() => import('@/components/common/PdfPreviewDialog'));
 
 const ITEMS_PER_PAGE = 10;
 

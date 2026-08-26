@@ -1,8 +1,8 @@
 export const RESSOURCE_HUMAINE_POSTES = [
   'Directeur',
   'Enseignant',
-  'Administratif',
+  'Personnel Administratif',
   'Technicien',
-  'Responsable',
+  'Responsable de mention',
   'Autre',
 ] as const;

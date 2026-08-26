@@ -3,9 +3,9 @@ import { Link, NavLink } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import EssG from '../../assets/files/images/logo/EssG.png';
 import { buttonVariants } from '../ui/button';
-import { cn } from '@/lib/utils';
-import useHeaderScroll from '../../hooks/useHeaderScroll';
-import { useAdmissionsOuvertes } from '../../hooks/useAdmissionsSettings';
+import { cn } from '@/lib';
+import useHeaderScroll from '@/hooks/useHeaderScroll';
+import { useAdmissionsOuvertes } from '@/hooks';
 
 const NAVIGATION = [
   { name: 'Accueil', href: '/' },
@@ -180,54 +180,56 @@ const Header = () => {
         ref={mobileMenuRef}
         aria-hidden={!mobileMenuOpen}
         className={cn(
-          'absolute right-0 top-full z-50 h-[calc(100dvh-4rem)] w-[min(22rem,calc(100vw-1.5rem))] transform-gpu overflow-hidden border-l border-ink-100 bg-white px-4 shadow-elevated will-change-transform transition-[opacity,transform] duration-[480ms] ease-[cubic-bezier(0.22,1,0.36,1)] sm:h-[calc(100dvh-4.5rem)] lg:hidden',
+          'absolute right-0 top-full z-50 h-[calc(100dvh-4rem)] w-[min(18rem,calc(100vw-1.5rem))] transform-gpu overflow-hidden border-l border-ink-100 bg-white px-4 shadow-elevated will-change-transform transition-[opacity,transform] duration-[480ms] ease-[cubic-bezier(0.22,1,0.36,1)] sm:h-[calc(100dvh-4.5rem)] lg:hidden',
           mobileMenuOpen
             ? 'translate-x-0 opacity-100'
             : 'pointer-events-none translate-x-[102%] opacity-0',
           'motion-reduce:transition-none'
         )}
       >
-        <div className="flex h-full flex-col justify-center gap-[clamp(0.2rem,0.7vh,0.4rem)] py-[clamp(0.5rem,2vh,1.25rem)]">
-          {NAVIGATION.map((item, index) => (
-            <NavLink
-              key={item.name}
-              to={item.href}
-              tabIndex={mobileMenuOpen ? 0 : -1}
+        <div className="h-full overflow-y-auto overscroll-contain">
+          <div className="flex min-h-full flex-col justify-start gap-[clamp(0.2rem,0.7vh,0.4rem)] py-[clamp(0.5rem,2vh,1.25rem)]">
+            {NAVIGATION.map((item, index) => (
+              <NavLink
+                key={item.name}
+                to={item.href}
+                tabIndex={mobileMenuOpen ? 0 : -1}
+                className={cn(
+                  MOBILE_NAV_LINK_CLASS,
+                  mobileMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-4 opacity-0'
+                )}
+                style={{ transitionDelay: mobileMenuOpen ? `${90 + index * 45}ms` : '0ms' }}
+                onClick={closeMobileMenu}
+              >
+                {item.name}
+              </NavLink>
+            ))}
+            <div
               className={cn(
-                MOBILE_NAV_LINK_CLASS,
-                mobileMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-4 opacity-0'
+                'mt-[clamp(0.25rem,1vh,0.75rem)] space-y-2 border-t border-ink-100 pt-[clamp(0.5rem,1.5vh,1rem)] transition-[opacity,transform] duration-(--duration-hover) ease-out motion-reduce:transition-none',
+                mobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
               )}
-              style={{ transitionDelay: mobileMenuOpen ? `${90 + index * 45}ms` : '0ms' }}
-              onClick={closeMobileMenu}
+              style={{ transitionDelay: mobileMenuOpen ? '380ms' : '0ms' }}
             >
-              {item.name}
-            </NavLink>
-          ))}
-          <div
-            className={cn(
-              'mt-[clamp(0.25rem,1vh,0.75rem)] space-y-2 border-t border-ink-100 pt-[clamp(0.5rem,1.5vh,1rem)] transition-[opacity,transform] duration-(--duration-hover) ease-out motion-reduce:transition-none',
-              mobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
-            )}
-            style={{ transitionDelay: mobileMenuOpen ? '380ms' : '0ms' }}
-          >
-            <Link
-              to="/contact"
-              onClick={closeMobileMenu}
-              tabIndex={mobileMenuOpen ? 0 : -1}
-              className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}
-            >
-              Contact
-            </Link>
-            {admissionsOuvertes && (
               <Link
-                to="/admission"
+                to="/contact"
                 onClick={closeMobileMenu}
                 tabIndex={mobileMenuOpen ? 0 : -1}
-                className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
+                className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}
               >
-                Admission
+                Contact
               </Link>
-            )}
+              {admissionsOuvertes && (
+                <Link
+                  to="/admission"
+                  onClick={closeMobileMenu}
+                  tabIndex={mobileMenuOpen ? 0 : -1}
+                  className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
+                >
+                  Admission
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>

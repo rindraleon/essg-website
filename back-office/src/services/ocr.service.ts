@@ -100,7 +100,7 @@ interface TextFragment {
   width?: number;
 }
 
-function detectColumnCut(items: TextFragment[], pageWidth: number): number | null {
+function detectColumnCut({ items, pageWidth }: { items: TextFragment[]; pageWidth: number; }): number | null {
   const visible = items.filter((item) => item.str?.trim());
   if (visible.length < 20) return null;
 
@@ -121,25 +121,32 @@ function detectColumnCut(items: TextFragment[], pageWidth: number): number | nul
   let best: { cut: number; score: number } | null = null;
 
   for (const anchor of anchors) {
-    const cut = anchor.x - 4;
-    if (cut < pageWidth * 0.15 || cut > pageWidth * 0.7) continue;
-
-    const left = visible.filter((item) => (item.transform?.[4] ?? 0) < cut);
-    const right = visible.filter((item) => (item.transform?.[4] ?? 0) >= cut);
-    if (left.length < visible.length * 0.15 || right.length < visible.length * 0.15) continue;
-
-    const overflow = left.filter(
-      (item) => (item.transform?.[4] ?? 0) + (item.width ?? 0) > cut + 6
-    ).length;
-    const overflowRatio = overflow / left.length;
-    if (overflowRatio > 0.15) continue;
-
-    const balance = Math.min(left.length, right.length) / visible.length;
-    const score = balance - overflowRatio;
-    if (!best || score > best.score) best = { cut, score };
+    const candidate = scoreColumnCut(anchor.x - 4, visible, pageWidth);
+    if (candidate && (!best || candidate.score > best.score)) best = candidate;
   }
 
   return best?.cut ?? null;
+}
+
+function scoreColumnCut(
+  cut: number,
+  visible: TextFragment[],
+  pageWidth: number
+): { cut: number; score: number } | null {
+  if (cut < pageWidth * 0.15 || cut > pageWidth * 0.7) return null;
+
+  const left = visible.filter((item) => (item.transform?.[4] ?? 0) < cut);
+  const rightCount = visible.length - left.length;
+  if (left.length < visible.length * 0.15 || rightCount < visible.length * 0.15) return null;
+
+  const overflow = left.filter(
+    (item) => (item.transform?.[4] ?? 0) + (item.width ?? 0) > cut + 6
+  ).length;
+  const overflowRatio = overflow / left.length;
+  if (overflowRatio > 0.15) return null;
+
+  const balance = Math.min(left.length, rightCount) / visible.length;
+  return { cut, score: balance - overflowRatio };
 }
 
 function itemsToLines(items: TextFragment[]): string {
@@ -154,7 +161,7 @@ function itemsToLines(items: TextFragment[]): string {
     const transform = item.transform;
     if (!transform || transform.length < 6) {
       if (rows.length > 0)
-        rows[rows.length - 1].parts.push({ x: Number.MAX_SAFE_INTEGER, str: text });
+        rows.at(-1)!.parts.push({ x: Number.MAX_SAFE_INTEGER, str: text });
       continue;
     }
 
@@ -169,22 +176,23 @@ function itemsToLines(items: TextFragment[]): string {
     }
   }
 
+  rows.sort((a, b) => b.y - a.y);
+
   return rows
-    .sort((a, b) => b.y - a.y)
-    .map((row) =>
-      row.parts
-        .sort((a, b) => a.x - b.x)
+    .map((row) => {
+      const sortedParts = [...row.parts].sort((a, b) => a.x - b.x);
+      return sortedParts
         .map((part) => part.str)
         .join('')
         .replace(/\s+/g, ' ')
-        .trim()
-    )
+        .trim();
+    })
     .filter(Boolean)
     .join('\n');
 }
 
 function pageToText(items: TextFragment[], pageWidth: number): string {
-  const cut = detectColumnCut(items, pageWidth);
+  const cut = detectColumnCut({ items, pageWidth });
   if (cut === null) return itemsToLines(items);
 
   const left = items.filter((item) => item.str?.trim() && (item.transform?.[4] ?? 0) < cut);

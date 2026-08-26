@@ -1,9 +1,11 @@
 import { Mail, Phone } from 'lucide-react';
-import { useActiveRessourcesHumaines } from '../../hooks';
-import { getImageUrl } from '@/utils';
-import { formatFullName } from '@/utils';
+import { useActiveRessourcesHumaines } from '@/hooks';
+import { getImageUrl , formatFullName } from '@/utils';
 import { CARD_WIDTH_CLASS } from '@/constants';
-import { SectionHeader, SectionContent, ScrollableCardGrid, SectionCta } from '../../components';
+import SectionHeader from '../common/SectionHeader';
+import SectionContent from '../common/SectionContent';
+import ScrollableCardGrid from '../common/ScrollableCardGrid';
+import SectionCta from '../common/SectionCta';
 import MediaCard from '../common/MediaCard';
 import { MediaCardSkeletonGrid } from '../common/MediaCardSkeleton';
 

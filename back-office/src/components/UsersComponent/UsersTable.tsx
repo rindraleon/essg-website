@@ -1,12 +1,11 @@
 import { Eye, Pencil, Trash2 } from 'lucide-react';
 import React from 'react';
-import { getImageUrl } from '@/utils';
-import type { User } from '../../types';
+import { getImageUrl , formatFullName, getPersonInitials } from '@/utils';
+import type { User } from '@/types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
-import { Badge } from '@/components/ui';
-import { Button } from '@/components/ui';
-import { formatFullName, getPersonInitials } from '@/utils';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 
 interface UsersTableProps {
   data: User[];

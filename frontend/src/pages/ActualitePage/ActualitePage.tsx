@@ -8,8 +8,8 @@ import {
   QueryState,
   Pagination,
 } from '@/components';
-import { Input, Select, Skeleton } from '@/components/ui';
-import { cn } from '@/lib/utils';
+import { Input, Select, Skeleton } from '@/components';
+import { cn } from '@/lib';
 import { useActualites, useTitle } from '@/hooks';
 import type { Actualite } from '@/types';
 

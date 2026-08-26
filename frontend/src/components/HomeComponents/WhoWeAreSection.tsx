@@ -31,7 +31,7 @@ const WhoWeAreSection = () => {
       />
       <div className="absolute inset-0 -z-20 bg-[linear-gradient(90deg,rgba(15,33,30,.97)_0%,rgba(15,33,30,.9)_48%,rgba(15,33,30,.6)_100%)]" />
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_78%_40%,rgba(152,192,112,.18),transparent_34%)]" />
-      <div className="absolute inset-0 -z-10 opacity-[0.08] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:54px_54px]" />
+      <div className="absolute inset-0 -z-10 opacity-[0.05] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:54px_54px]" />
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
         <div className="grid items-end gap-14 lg:grid-cols-[1.08fr_.92fr]">

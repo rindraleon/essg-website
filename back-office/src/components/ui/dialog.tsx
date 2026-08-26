@@ -1,10 +1,9 @@
-/* eslint-disable react-refresh/only-export-components */
 import * as React from 'react';
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { XIcon } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 import { Button } from './button';
 
 function Dialog({ ...props }: Readonly<DialogPrimitive.Root.Props>) {

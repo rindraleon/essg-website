@@ -2,10 +2,10 @@ import { RotateCcw, X } from 'lucide-react';
 import React from 'react';
 import type { FilterOptions } from '@/types';
 import { ACTUALITE_CATEGORIES as categories, ACTUALITE_STATUTS as statuts } from '@/constants';
-import { Button } from '@/components/ui';
-import { Input } from '@/components/ui';
-import { Label } from '@/components/ui';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface ActualiteFiltersProps {
   filters: FilterOptions;

@@ -4,8 +4,8 @@ import type { ActualiteItem } from '@/types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
 import StatusBadge from '../common/StatusBadge';
-import { Badge } from '@/components/ui';
-import { Button } from '@/components/ui';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 
 interface ActualiteTableProps {
   data: ActualiteItem[];

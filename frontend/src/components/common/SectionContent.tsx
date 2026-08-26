@@ -1,5 +1,5 @@
 import React from 'react';
-import useReveal from '../../hooks/useReveal';
+import useReveal from '@/hooks/useReveal';
 
 interface SectionContentProps {
   children: React.ReactNode;

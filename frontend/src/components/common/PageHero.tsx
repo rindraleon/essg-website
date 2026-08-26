@@ -1,5 +1,5 @@
 import { SITE_HERO_ALT, SITE_HERO_IMAGE } from '@/constants';
-import useGsapHero from '../../hooks/useGsapHero';
+import useGsapHero from '@/hooks/useGsapHero';
 import AnimatedBackground from '../animations/AnimatedBackground';
 import SplitTitle from '../animations/SplitTitle';
 import AnimatedNumber from './AnimatedNumber';

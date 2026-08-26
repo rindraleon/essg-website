@@ -6,7 +6,7 @@ import {
   type AdmissionProgram,
   type BacSeriesOption,
 } from '@/config';
-import type { AdmissionFormData } from '../../types';
+import type { AdmissionFormData } from '@/types';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Select } from '../ui/select';
@@ -67,10 +67,12 @@ export function PersonalInformation({
   data,
   errors,
   onChange,
+  onDuplicateCheck,
 }: Readonly<{
   data: AdmissionFormData;
   errors: Errors;
   onChange: ChangeHandler;
+  onDuplicateCheck?: (field: 'email' | 'telephone') => void;
 }>) {
   return (
     <section>
@@ -137,6 +139,7 @@ export function PersonalInformation({
           name="telephone"
           value={data.telephone}
           onChange={onChange}
+          onBlur={() => onDuplicateCheck?.('telephone')}
           errors={errors}
           type="tel"
           autoComplete="tel"
@@ -147,6 +150,7 @@ export function PersonalInformation({
           name="email"
           value={data.email}
           onChange={onChange}
+          onBlur={() => onDuplicateCheck?.('email')}
           errors={errors}
           type="email"
           autoComplete="email"

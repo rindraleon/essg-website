@@ -1,16 +1,17 @@
 import { BookOpen, GraduationCap } from 'lucide-react';
 import { useMemo } from 'react';
 import { getImageUrl } from '@/utils';
-import { CARD_WIDTH_CLASS } from '@/constants';
-import { NIVEAU_ORDER } from '@/constants';
-import { SectionHeader, SectionCta, SectionContent, ScrollableCardGrid } from '../../components';
+import { CARD_WIDTH_CLASS , NIVEAU_ORDER } from '@/constants';
+import SectionHeader from '../common/SectionHeader';
+import SectionCta from '../common/SectionCta';
+import SectionContent from '../common/SectionContent';
+import ScrollableCardGrid from '../common/ScrollableCardGrid';
 import MediaCard from '../common/MediaCard';
 import FilterButton from '../common/FilterButton';
 import { MediaCardSkeletonGrid } from '../common/MediaCardSkeleton';
-import { useFeaturedFormations } from '../../hooks';
-import useSectionFilters, { type FilterDefinition } from '../../hooks/useSectionFilters';
-import type { FeaturedFormationsSectionProps } from '../../types';
-import type { Formation } from '@/types';
+import { useFeaturedFormations } from '@/hooks';
+import useSectionFilters, { type FilterDefinition } from '@/hooks/useSectionFilters';
+import type { FeaturedFormationsSectionProps , Formation } from '@/types';
 
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1523050854058-8df90110a6f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800';

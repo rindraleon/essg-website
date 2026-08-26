@@ -18,8 +18,8 @@ import {
   type OcrResult,
 } from '@/services';
 import type { RessourceHumaineFormData } from '@/types';
-import { Button } from '@/components/ui';
-import { Label } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Label } from '../ui/label';
 
 interface CvImportPanelProps {
   onApply: (
@@ -97,7 +97,6 @@ const CvImportPanel: React.FC<CvImportPanelProps> = ({ onApply, disabled = false
     set('telephone', parsed.telephone);
     set('adresse', parsed.adresse);
     set('poste', parsed.poste);
-
     set('experiences', parsed.experiences);
     set('formations', parsed.formations);
     set('diplomes', parsed.diplomes);
@@ -176,18 +175,13 @@ const CvImportPanel: React.FC<CvImportPanelProps> = ({ onApply, disabled = false
               {progress.percent}%
             </span>
           </div>
-          <div
+          <progress
             className="h-1.5 w-full overflow-hidden rounded-full bg-ink-100"
-            role="progressbar"
-            aria-valuenow={progress.percent}
-            aria-valuemin={0}
-            aria-valuemax={100}
+            value={progress.percent}
+            max={100}
           >
-            <div
-              className="h-full rounded-full bg-brand-600 transition-[width] duration-300 ease-out motion-reduce:transition-none"
-              style={{ width: `${progress.percent}%` }}
-            />
-          </div>
+            {progress.percent}%
+          </progress>
           <p className="truncate text-xs text-ink-400">{file?.name}</p>
         </div>
       )}

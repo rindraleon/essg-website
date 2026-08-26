@@ -1,23 +1,22 @@
 import { Bell, CircleHelp, LogOut, Mail, Menu, Settings, User, X } from 'lucide-react';
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { routesStatic } from '../../routes';
+import { routesStatic } from '@/routes';
 import { useAuth } from '@/contexts';
-import { getImageUrl } from '@/utils';
-import { Button } from '@/components/ui';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui';
+import { getImageUrl , formatFullName } from '@/utils';
+import { Button } from '../ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
-import { Badge } from '@/components/ui';
-import { useRecentAdmissionsQuery, useRecentMessagesQuery } from '../../hooks/queries';
-import { formatFullName } from '@/utils';
+} from '../ui/dropdown-menu';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { Badge } from '../ui/badge';
+import { useRecentAdmissionsQuery, useRecentMessagesQuery } from '@/hooks';
 
 const Header: React.FC = () => {
   const [open, setOpen] = useState(false);

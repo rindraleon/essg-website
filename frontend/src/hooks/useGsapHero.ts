@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { clearMotion, floatOrbs, kenBurns } from '../animations/presets';
-import { gsap, isCompactViewport, motion, prefersReducedMotion, registerGsap } from '../lib/gsap';
+import { clearMotion, floatOrbs, kenBurns } from '@/animations';
+import { gsap, isCompactViewport, motion, prefersReducedMotion, registerGsap } from '@/lib';
 
 export default function useGsapHero<T extends HTMLElement>() {
   const ref = useRef<T | null>(null);

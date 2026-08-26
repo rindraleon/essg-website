@@ -13,14 +13,13 @@ import {
   X,
 } from 'lucide-react';
 import React from 'react';
-import { getImageUrl } from '@/utils';
+import { getImageUrl , formatFullName, getPersonInitials } from '@/utils';
 import type { RessourceHumaineItem } from '@/types';
-import { Button } from '@/components/ui';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui';
-import { Badge } from '@/components/ui';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Badge } from '../ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { BulletList, DetailField, DetailSection, TagList } from '../common/DetailSection';
-import { formatFullName, getPersonInitials } from '@/utils';
 
 interface RessourceHumaineViewDialogProps {
   open: boolean;

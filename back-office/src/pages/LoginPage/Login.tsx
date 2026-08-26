@@ -1,8 +1,8 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type ComponentProps } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AlertCircle, Eye, EyeOff, LoaderCircle, Lock, LogIn, Mail } from 'lucide-react';
 import { useAuth } from '@/contexts';
-import { routesStatic } from '../../routes';
+import { routesStatic } from '@/routes';
 import loginBg from '../../assets/files/images/background/login-bg.webp';
 import loginBgMobile from '../../assets/files/images/background/login-bg-mobile.webp';
 import { EMAIL_PATTERN } from '@/constants';
@@ -74,6 +74,8 @@ const styles = `
 const TOPO_PATTERN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='110' height='110'><path d='M0 55 Q27.5 27.5 55 55 T110 55' stroke='rgba(152,192,112,0.20)' fill='none' stroke-width='0.7'/><path d='M0 20 Q27.5 -7.5 55 20 T110 20' stroke='rgba(152,192,112,0.12)' fill='none' stroke-width='0.7'/><path d='M0 90 Q27.5 62.5 55 90 T110 90' stroke='rgba(152,192,112,0.12)' fill='none' stroke-width='0.7'/></svg>\")";
 
+type FormSubmitEvent = Parameters<NonNullable<ComponentProps<'form'>['onSubmit']>>[0];
+
 export default function Login() {
   useScrollToTop();
   useTitle('Authentification');
@@ -117,7 +119,7 @@ export default function Login() {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormSubmitEvent) => {
     e.preventDefault();
     setError('');
 

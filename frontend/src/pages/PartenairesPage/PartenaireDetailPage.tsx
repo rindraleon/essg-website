@@ -12,7 +12,7 @@ import {
   Tag,
 } from 'lucide-react';
 import React, { useEffect, useMemo } from 'react';
-import { CompatButton as Button } from '@/components/compat';
+import { CompatButton as Button } from '@/components';
 import { Link, Link as RouterLink, useParams } from 'react-router-dom';
 import { Breadcrumb, DetailHero, EmptyState, InfoTile, ProfileSection } from '@/components';
 import { usePartenaireBySlug, useProjets, useTitle } from '@/hooks';

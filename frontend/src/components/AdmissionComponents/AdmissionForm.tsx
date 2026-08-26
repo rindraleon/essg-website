@@ -17,7 +17,7 @@ import {
   UserRound,
 } from 'lucide-react';
 import { ApiError } from '@/api';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 import {
   BAC_CATEGORIES,
   getBacCategory,
@@ -26,7 +26,7 @@ import {
   getRequiredDocumentIds,
   type AdmissionProgram,
 } from '@/config';
-import type { AdmissionDocumentKind, AdmissionFormData, AdmissionFormProps } from '../../types';
+import type { AdmissionDocumentKind, AdmissionFormData, AdmissionFormProps } from '@/types';
 import { toCapitalizedWords, toUpperName } from '@/utils';
 import { admissionService, formatFileSize, isProofFileValid } from '@/services';
 import { Button } from '../ui/button';
@@ -399,25 +399,30 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
   };
 
   const checkDuplicate = async (
-    kind: 'numeroBaccalaureat' | 'numeroBordereau'
+    kind: 'numeroBaccalaureat' | 'numeroBordereau' | 'email' | 'telephone'
   ): Promise<boolean> => {
     const value = formData[kind].trim();
     if (!value) return true;
     try {
-      const result = await admissionService.checkDuplicate(
-        kind === 'numeroBaccalaureat' ? { numeroBaccalaureat: value } : { numeroBordereau: value }
-      );
-      const available =
-        kind === 'numeroBaccalaureat'
-          ? result.numeroBaccalaureatDisponible
-          : result.numeroBordereauDisponible;
-      if (available === false) {
+      const result = await admissionService.checkDuplicate({ [kind]: value });
+      const disponibilites = {
+        numeroBaccalaureat: result.numeroBaccalaureatDisponible,
+        numeroBordereau: result.numeroBordereauDisponible,
+        email: result.emailDisponible,
+        telephone: result.telephoneDisponible,
+      } as const;
+      const disponible = disponibilites[kind];
+      if (disponible === false) {
+        const annee = result.annee ? ` pour l'année ${result.annee}` : '';
+        const messages = {
+          numeroBaccalaureat: 'Ce numéro de baccalauréat est déjà utilisé.',
+          numeroBordereau: 'Ce numéro de bordereau est déjà utilisé.',
+          email: `Une candidature avec cette adresse email a déjà été déposée${annee}. Une seule inscription est autorisée par an.`,
+          telephone: `Une candidature avec ce numéro de téléphone a déjà été déposée${annee}. Une seule inscription est autorisée par an.`,
+        } as const;
         setErrors((previous) => ({
           ...previous,
-          [kind]:
-            kind === 'numeroBaccalaureat'
-              ? 'Ce numéro de baccalauréat est déjà utilisé.'
-              : 'Ce numéro de bordereau est déjà utilisé.',
+          [kind]: messages[kind],
         }));
         return false;
       }
@@ -468,6 +473,11 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
     if (!validateStep(currentStep)) {
       toast.error('Veuillez compléter les champs signalés.');
       return;
+    }
+    if (currentStep === 1) {
+      // Une seule candidature par an : email et téléphone vérifiés indépendamment.
+      if (!(await checkDuplicate('email'))) return;
+      if (!(await checkDuplicate('telephone'))) return;
     }
     if (currentStep === 2) {
       const available = await checkDuplicate('numeroBaccalaureat');
@@ -625,7 +635,12 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
 
         <div key={currentStep} className="animate-fade-in-up">
           {currentStep === 1 && (
-            <PersonalInformation data={formData} errors={errors} onChange={handleChange} />
+            <PersonalInformation
+              data={formData}
+              errors={errors}
+              onChange={handleChange}
+              onDuplicateCheck={(field) => void checkDuplicate(field)}
+            />
           )}
 
           {currentStep === 2 && (

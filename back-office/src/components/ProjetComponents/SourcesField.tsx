@@ -1,7 +1,7 @@
 import { Database, Link2, Plus, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui';
-import { FloatingInput } from '@/components/ui';
-import { Label } from '@/components/ui';
+import { Button } from '../ui/button';
+import { FloatingInput } from '../ui/floating-input';
+import { Label } from '../ui/label';
 import { isValidSourceUrl, normalizeSourceUrl } from '@/utils';
 import type { ProjectSource } from '@/types';
 

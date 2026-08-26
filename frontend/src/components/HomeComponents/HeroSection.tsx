@@ -2,7 +2,7 @@ import { ArrowDown, ArrowRight, Crosshair, Database, MapPin, Satellite } from 'l
 import { Link } from 'react-router-dom';
 import React, { useRef } from 'react';
 import { SITE_HERO_ALT, SITE_HERO_IMAGE } from '@/constants';
-import type { HeroSectionProps } from '../../types';
+import type { HeroSectionProps } from '@/types';
 
 const SIGNALS = [
   { icon: Satellite, value: 'SIG', label: 'Données spatiales' },
@@ -11,7 +11,7 @@ const SIGNALS = [
 ] as const;
 
 const HeroSection: React.FC<HeroSectionProps> = ({
-  badge = 'Université de Fianarantsoa · Madagascar',
+  //badge = 'Université de Fianarantsoa · Madagascar',
   title = 'École Supérieure de Sciences Géomatiques',
   description = 'Apprenez à observer, mesurer et transformer les territoires grâce aux sciences géomatiques et aux technologies spatiales.',
   primaryButton = { text: 'Explorer les formations', link: '/formations' },
@@ -47,28 +47,28 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         fetchPriority="high"
         decoding="async"
       />
-      <div className="absolute inset-0 -z-20 bg-[linear-gradient(90deg,rgba(15,33,30,.97)_0%,rgba(15,33,30,.88)_43%,rgba(15,33,30,.42)_76%,rgba(15,33,30,.66)_100%)]" />
-      <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_74%_46%,rgba(152,192,112,.18),transparent_32%)]" />
+      <div className="absolute inset-0 -z-20 bg-[linear-gradient(90deg,rgba(15,33,30,.97)_0%,rgba(15,33,30,.88)_8%,rgba(15,33,30,.42)_76%,rgba(15,33,30,.66)_100%)]" />
+      <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_74%_46%,rgba(152,192,112,.18),transparent_12%)]" />
       <div className="hero-home-grid absolute inset-0 -z-10 opacity-35" />
       <div className="hero-home-glow absolute -right-36 top-1/2 -z-10 size-[36rem] -translate-y-1/2 rounded-full bg-sage-400/15 blur-3xl" />
 
       <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-5 pb-24 pt-20 sm:px-6 lg:grid-cols-[1.08fr_.92fr] lg:px-8 lg:pb-20 lg:pt-16">
         <div className="max-w-3xl">
-          <div className="hero-home-enter mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.07] px-3.5 py-2 text-caption font-semibold uppercase tracking-[0.13em] text-sage-200 backdrop-blur-md">
+          {/* <div className="hero-home-enter mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.07] px-3.5 py-2 text-caption font-semibold uppercase tracking-[0.13em] text-sage-200 backdrop-blur-md">
             <span className="relative flex size-2">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-sage-300 opacity-60 motion-reduce:animate-none" />
               <span className="relative inline-flex size-2 rounded-full bg-sage-300" />
             </span>
             {badge}
-          </div>
+          </div> */}
 
           <p className="hero-home-enter mb-4 text-small font-semibold uppercase tracking-[0.14em] text-white/55 [animation-delay:50ms]">
             {title}
           </p>
-          <h1 className="hero-home-enter text-[clamp(2.8rem,6.2vw,5.8rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-white [animation-delay:100ms]">
-            Cartographier le présent.
+          <h1 className="hero-home-enter text-[clamp(1.8rem,4.2vw,3.8rem)] font-semibold leading-[0.98] tracking-[-0.055em] text-white [animation-delay:100ms]">
+            Ecole Supérieure des
             <span className="mt-2 block bg-gradient-to-r from-sage-300 via-sage-400 to-brand-300 bg-clip-text text-transparent">
-              Imaginer demain.
+              Sciences Géomatiques
             </span>
           </h1>
 

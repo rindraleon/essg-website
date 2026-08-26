@@ -1,7 +1,7 @@
 import { AlertCircle, Check, ChevronDown, Loader2, Search, X } from 'lucide-react';
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
-import useDebounce from '../../hooks/useDebounce';
-import { cn } from '@/lib/utils';
+import useDebounce from '@/hooks/useDebounce';
+import { cn } from '@/lib';
 
 export interface SearchSelectOption {
   value: string;
@@ -161,15 +161,14 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
         {isLoading && <Loader2 className="size-4 shrink-0 animate-spin text-ink-400" />}
 
         {clearable && selected && !disabled && (
-          <span
-            role="button"
-            tabIndex={-1}
+          <button
+            type="button"
             aria-label="Effacer la sélection"
             onClick={clear}
-            className="grid size-5 shrink-0 place-items-center rounded text-ink-400 hover:bg-ink-100 hover:text-ink-700"
+            className="grid size-5 shrink-0 place-items-center rounded border-0 bg-transparent p-0 text-ink-400 hover:bg-ink-100 hover:text-ink-700"
           >
             <X className="size-3.5" />
-          </span>
+          </button>
         )}
 
         <ChevronDown

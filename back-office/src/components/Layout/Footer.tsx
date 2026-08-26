@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import LogoITDC from '../../assets/files/images/logo/itdc_logo.png';
 import type { FooterProps, SocialItem } from '@/types';
-import { FloatingInput } from '@/components/ui';
-import { Button } from '@/components/ui';
+import { FloatingInput } from '../ui/floating-input';
+import { Button } from '../ui/button';
 
-function SocialIcon({ kind }: Readonly<{ kind?: SocialItem['kind'] }>) {
+function SocialIcon({ kind }: Readonly<{ kind: SocialItem['kind'] }>) {
   switch (kind) {
     case 'web':
       return <Link2 className="size-5" />;
@@ -48,7 +48,7 @@ const Footer: React.FC<FooterProps> = (props: Readonly<FooterProps>) => {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubscribe = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage(null);
 

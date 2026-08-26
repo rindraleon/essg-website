@@ -11,7 +11,7 @@ export const BAC_CATEGORIES = {
 } as const;
 
 export type BacCategoryId = keyof typeof BAC_CATEGORIES;
-export type BacTypeId = 'general' | 'technologique' | 'professionnel-technique';
+export type BacTypeId = 'general' | 'technologique';
 export type AdmissionLevelId = (typeof ADMISSION_LEVELS)[number]['id'];
 
 export type BacSeriesOption = {
@@ -45,16 +45,6 @@ export const BAC_TYPES: ReadonlyArray<{
       { id: 'tgc', label: 'TGC — Génie Civil', categoryId: 'technologique' },
       { id: 'tgi', label: 'TGI — Industriel', categoryId: 'technologique' },
       { id: 'tter', label: 'TTER — Tertiaire', categoryId: 'technologique' },
-    ],
-  },
-  {
-    id: 'professionnel-technique',
-    label: 'Professionnel et Technique',
-    series: [
-      { id: 'genie-civil', label: 'Génie Civil', categoryId: 'technologique' },
-      { id: 'industriel', label: 'Industriel', categoryId: 'technologique' },
-      { id: 'tertiaire', label: 'Tertiaire', categoryId: 'technologique' },
-      { id: 'agricole', label: 'Agricole', categoryId: 'technologique' },
     ],
   },
 ];

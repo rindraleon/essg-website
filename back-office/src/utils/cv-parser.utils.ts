@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/super-linear-regex, sonarjs/regex-complexity */
 export interface ParsedExperience {
   poste: string;
   organisation?: string;
@@ -22,7 +21,7 @@ export interface ParsedCv {
   confiance: number;
 }
 
-const EMAIL_RE = /[\w.+-]+@[\w-]+\.[\w.-]{2,}/;
+const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+/;
 
 const PHONE_RE = /(?:\+?\d{1,3}[\s.-]?)?(?:\(\d{1,4}\)[\s.-]?)?\d{2,3}(?:[\s.-]?\d{2,3}){2,4}/;
 
@@ -53,7 +52,7 @@ const SECTION_PATTERNS: Record<string, RegExp> = {
   langue: /^(langues?( parlees?| vivantes?)?|linguistique|languages)\b(?! de )/,
   contact: /^(contacts?|coordonnees|informations? personnelles?|etat civil)\b/,
   interet:
-    /^(centres? d.?interets?|interets?|loisirs|hobbies|divers|interests?|qualites?|soft skills|activites?)\b/,
+    /^(?:centres? d['’]?interets?|interets?|loisirs|hobbies|divers|interests?|qualites?|soft skills|activites?)\b/,
   profil:
     /^(profils?( professionnel)?|a propos( de moi)?|presentation|resume|objectifs?( professionnels?)?|profile|about( me)?|summary|career objective)\b/,
 };

@@ -1,24 +1,21 @@
-/* eslint-disable sonarjs/no-nested-conditional, @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
 import { ArrowLeft, ArrowRight, Briefcase, CircleCheck, Globe, Info, Upload } from 'lucide-react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { uploadImage } from '../../services';
-import { getImageUrl } from '@/utils';
-import { isValidSourceUrl } from '@/utils';
+import { uploadImage } from '@/services';
+import { getImageUrl, isValidSourceUrl } from '@/utils';
 import type { Projet, ProjetFormData, ProjectSource } from '@/types';
 import SourcesField from './SourcesField';
 import { PROJET_TYPES, PROJET_STATUTS, DEFAULT_FORM_DATA } from '@/constants';
-import { useFormValidation } from '../../hooks/useFormValidation';
-import { Button } from '@/components/ui';
-import { Label } from '@/components/ui';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui';
-import { FloatingInput } from '@/components/ui';
-import { FloatingTextarea } from '@/components/ui';
-import { FloatingSelect } from '@/components/ui';
+import { useFormValidation , usePartenairesQuery } from '@/hooks';
+import { Button } from '../ui/button';
+import { Label } from '../ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
+import { FloatingInput } from '../ui/floating-input';
+import { FloatingTextarea } from '../ui/floating-textarea';
+import { FloatingSelect } from '../ui/floating-select';
 import MultiImageUpload from '../common/MultiImageUpload';
 import MultiSearchSelect from '../common/MultiSearchSelect';
 import type { SearchSelectOption } from '../common/SearchSelect';
-import { usePartenairesQuery } from '../../hooks/queries';
 
 interface ProjetFormProps {
   open: boolean;
@@ -260,7 +257,7 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
         value={formData.description}
         onChange={(e) => handleChange('description', e.target.value)}
         onBlur={() => handleBlur('description')}
-        rows={5}
+        rows={3}
         error={errors.description}
         hint={!errors.description ? `${formData.description.length} caractère(s)` : undefined}
       />
@@ -423,11 +420,13 @@ const ProjetForm: React.FC<ProjetFormProps> = ({ open, onClose, onSubmit, initia
             {STEPS.map((step, index) => {
               const isCompleted = index < activeStep;
               const isActive = index === activeStep;
-              const buttonClassName = isActive
-                ? 'bg-brand-600 text-white shadow-sm'
-                : isCompleted
-                  ? 'bg-brand-50 text-brand-700 hover:bg-brand-100'
-                  : 'bg-ink-100 text-ink-400';
+              let buttonClassName = 'bg-ink-100 text-ink-400';
+
+              if (isActive) {
+                buttonClassName = 'bg-brand-600 text-white shadow-sm';
+              } else if (isCompleted) {
+                buttonClassName = 'bg-brand-50 text-brand-700 hover:bg-brand-100';
+              }
 
               return (
                 <React.Fragment key={step.id}>

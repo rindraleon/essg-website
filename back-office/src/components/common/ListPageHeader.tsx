@@ -1,8 +1,8 @@
 import { Filter, Plus } from 'lucide-react';
 import React from 'react';
-import { Button } from '@/components/ui';
+import { Button } from '../ui/button';
 import SearchInput from './SearchInput';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 
 interface ListPageHeaderProps {
   title: string;

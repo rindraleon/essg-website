@@ -1,7 +1,6 @@
-import { apiClient, API_BASE_URL } from '@/api';
-import { endpoints } from '@/api';
-import { ApiError } from '@/api';
+import { apiClient, API_BASE_URL , endpoints , ApiError } from '@/api';
 import type { AdmissionDuplicateCheck } from '@/types';
+
 
 export const ADMISSION_MAX_FILE_SIZE = 10 * 1024 * 1024;
 
@@ -87,8 +86,9 @@ const admissionService = {
   },
 
   async checkDuplicate(params: {
-    numeroBaccalaureat?: string;
     numeroBordereau?: string;
+    email?: string;
+    telephone?: string;
   }): Promise<AdmissionDuplicateCheck> {
     return apiClient.get<AdmissionDuplicateCheck>(endpoints.admissionsCheckDuplicate, params);
   },

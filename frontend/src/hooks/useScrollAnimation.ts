@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { revealFrom } from '../animations/presets';
-import { gsap, motion, prefersReducedMotion, registerGsap, ScrollTrigger } from '../lib/gsap';
+import { revealFrom } from '@/animations';
+import { gsap, motion, prefersReducedMotion, registerGsap, ScrollTrigger } from '@/lib';
 
 interface UseScrollAnimationOptions {
   start?: string;
@@ -48,7 +48,7 @@ export default function useScrollAnimation<T extends HTMLElement>(
       const targets = items.length > 0 ? items : [node];
 
       targets.forEach((target) => {
-        const kind = target.getAttribute('data-gsap');
+        const kind = target.dataset.gsap;
         gsap.set(target, revealFrom(kind));
       });
 

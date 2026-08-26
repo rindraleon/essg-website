@@ -1,7 +1,7 @@
-import { Card, CardContent } from '@/components/compat';
+import { Card, CardContent } from '../compat/mui';
 import { ArrowRight, CircleHelp } from 'lucide-react';
 import React from 'react';
-import { CompatButton as Button } from '@/components/compat';
+import Button from '../compat/button';
 import { Link as RouterLink } from 'react-router-dom';
 import { GREEN } from '@/constants';
 import type { ContactCardProps } from '@/types';

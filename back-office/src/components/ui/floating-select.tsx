@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 import type { SelectRootChangeEventDetails } from '@base-ui/react/select';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
 

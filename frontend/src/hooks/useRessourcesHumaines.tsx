@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { toErrorMessage } from '@/utils';
-import { ressourceHumaineService } from '../services';
+import { ressourceHumaineService } from '@/services';
 
 export default function useRessourcesHumaines(page = 1, limit = 10, search = '', poste = '') {
   const query = useQuery({

@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight, Images } from 'lucide-react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { getImageUrl } from '@/utils';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 
 interface ImageGalleryProps {
   images?: string[] | null;
@@ -42,17 +42,6 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     [count]
   );
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (count < 2) return;
-    if (event.key === 'ArrowLeft') {
-      event.preventDefault();
-      goTo(index - 1);
-    } else if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      goTo(index + 1);
-    }
-  };
-
   const markBroken = (src: string) => setBroken((current) => new Set(current).add(src));
 
   if (count === 0) {
@@ -72,15 +61,10 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
 
   return (
     <div className={cn('w-full', className)}>
-      <div
-        role="group"
-        aria-roledescription="carrousel"
+      <fieldset
         aria-label={`Galerie : ${alt}`}
-        tabIndex={0}
-        onKeyDown={handleKeyDown}
         className={cn(
           'group relative w-full overflow-hidden rounded-2xl border border-ink-100 bg-ink-950',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2',
           aspect
         )}
       >
@@ -90,7 +74,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
             <img
               key={src}
               src={getImageUrl(src)}
-              alt={`${alt} — image ${slideIndex + 1} sur ${count}`}
+              alt={`${alt} — ${slideIndex + 1} sur ${count}`}
               loading={slideIndex === 0 ? 'eager' : 'lazy'}
               decoding="async"
               onError={() => markBroken(src)}
@@ -132,7 +116,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
         >
           {index + 1} / {count}
         </span>
-      </div>
+      </fieldset>
 
       {showThumbnails && count > 1 && (
         <div className="mt-2.5 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">

@@ -1,5 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, type ReactNode } from 'react';
 import { login as loginService, verifyToken, logout as logoutService } from '@/services';
 import { setAuthToken, clearAuthToken, hasAuthToken } from '@/api';
 import type { User } from '@/types';
@@ -87,21 +86,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const username = user?.email || '';
   const isAdmin = user?.role === 'admin';
+  const contextValue = useMemo(
+    () => ({
+      isAuthenticated,
+      isLoading,
+      user,
+      username,
+      isAdmin,
+      login,
+      logout,
+      updateUser,
+      refreshUser,
+    }),
+    [isAuthenticated, isLoading, user, username, isAdmin],
+  );
 
   return (
-    <AuthContext.Provider
-      value={{
-        isAuthenticated,
-        isLoading,
-        user,
-        username,
-        isAdmin,
-        login,
-        logout,
-        updateUser,
-        refreshUser,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

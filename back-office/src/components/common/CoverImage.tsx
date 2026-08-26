@@ -1,7 +1,7 @@
 import { ImageOff } from 'lucide-react';
 import React, { useState } from 'react';
 import { getImageUrl } from '@/utils';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 
 interface CoverImageProps {
   src?: string | null;

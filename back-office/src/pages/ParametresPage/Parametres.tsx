@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { ApiError } from '@/api';
 import { useSettingsQuery, useUpdateSettings, useTitle, useScrollToTop } from '@/hooks';
-import { Button } from '@/components/ui';
+import { Button } from '@/components';
 
 const Parametres: React.FC = () => {
   useScrollToTop();

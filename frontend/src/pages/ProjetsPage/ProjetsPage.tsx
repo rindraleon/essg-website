@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 import { usePaginatedProjets, useTitle } from '@/hooks';
 import {
   Pagination,
@@ -14,11 +14,11 @@ import {
   InputAdornment,
   InputLabel,
   MenuItem,
-  Select,
-  Skeleton,
+  CompatSelect as Select,
+  CompatSkeleton as Skeleton,
   TextField,
   type SelectChangeEvent,
-} from '@/components/compat';
+} from '@/components';
 import { Rocket, Search, X } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import type { ProjetsPageProps } from '@/types';

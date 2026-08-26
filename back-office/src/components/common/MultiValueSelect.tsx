@@ -1,6 +1,6 @@
 import { Check, ChevronDown, Plus, Search, X } from 'lucide-react';
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 
 interface MultiValueSelectProps {
   label: string;
@@ -123,9 +123,8 @@ const MultiValueSelect: React.FC<MultiValueSelectProps> = ({
               className="inline-flex max-w-full items-center gap-1 rounded-md border border-brand-200 bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700"
             >
               <span className="truncate">{value}</span>
-              <span
-                role="button"
-                tabIndex={-1}
+              <button
+                type="button"
                 aria-label={`Retirer ${value}`}
                 onClick={(event) => {
                   event.stopPropagation();
@@ -134,7 +133,7 @@ const MultiValueSelect: React.FC<MultiValueSelectProps> = ({
                 className="shrink-0 rounded hover:text-red-600"
               >
                 <X className="size-3" />
-              </span>
+              </button>
             </span>
           ))}
         </span>

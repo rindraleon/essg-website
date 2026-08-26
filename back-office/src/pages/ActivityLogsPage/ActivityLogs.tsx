@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-nested-conditional */
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { RotateCcw, X } from 'lucide-react';
@@ -10,8 +9,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui';
-import { ActivityLogTable, ActivityLogViewDialog, ListPageHeader } from '@/components';
+ ActivityLogTable, ActivityLogViewDialog, ListPageHeader } from '@/components';
 import { useDebounce, useScrollToTop, useTitle, useActivityLogsQuery } from '@/hooks';
 import type { ActivityLog } from '@/types';
 
@@ -109,7 +107,7 @@ const ActivityLogs = () => {
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="space-y-2">
-                <Label>Module</Label>
+                <Label htmlFor={''}>Module</Label>
                 <Select
                   value={moduleFilter}
                   onValueChange={(value) => {
@@ -133,7 +131,7 @@ const ActivityLogs = () => {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Méthode</Label>
+                <Label htmlFor={''}>Méthode</Label>
                 <Select
                   value={methodFilter}
                   onValueChange={(value) => {
@@ -157,7 +155,7 @@ const ActivityLogs = () => {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Résultat</Label>
+                <Label htmlFor={''}>Résultat</Label>
                 <Select
                   value={successFilter}
                   onValueChange={(value) => {
@@ -213,11 +211,14 @@ const ActivityLogs = () => {
       )}
 
       {(() => {
-        const emptyMessage = isLoading
-          ? 'Chargement...'
-          : searchTerm || activeFilterCount > 0
-            ? 'Aucun résultat trouvé'
-            : 'Aucune action enregistrée';
+        const hasActiveFiltersOrSearch = searchTerm || activeFilterCount > 0;
+        let emptyMessage = 'Aucune action enregistrée';
+
+        if (isLoading) {
+          emptyMessage = 'Chargement...';
+        } else if (hasActiveFiltersOrSearch) {
+          emptyMessage = 'Aucun résultat trouvé';
+        }
 
         return (
           <ActivityLogTable

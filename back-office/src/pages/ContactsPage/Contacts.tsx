@@ -1,8 +1,6 @@
-/* eslint-disable sonarjs/no-nested-conditional */
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui';
-import {
+import { Button ,
   ListPageHeader,
   ConfirmDialog,
   ContactFilters,
@@ -51,6 +49,12 @@ const Contacts = () => {
     Boolean(filterDateFin),
   ].filter(Boolean).length;
 
+  const getLuFilter = (): boolean | undefined => {
+    if (filterStatut === 'lu') return true;
+    if (filterStatut === 'non_lu') return false;
+    return undefined;
+  };
+
   const { data, isLoading, isError, error, refetch } = useMessagesQuery({
     page: currentPage,
     limit: ITEMS_PER_PAGE,
@@ -58,7 +62,7 @@ const Contacts = () => {
     sortBy: 'creeLe',
     sortOrder: 'DESC',
     sujet: filterSujet,
-    lu: filterStatut === 'lu' ? true : filterStatut === 'non_lu' ? false : undefined,
+    lu: getLuFilter(),
     dateDebut: filterDateDebut || undefined,
     dateFin: filterDateFin || undefined,
   });

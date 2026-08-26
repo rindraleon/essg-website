@@ -12,7 +12,7 @@ import {
 
 import EssG from '../../assets/files/images/logo/EssG.png';
 import type { FooterProps, SocialItem } from '@/types';
-import { useAdmissionsOuvertes } from '../../hooks/useAdmissionsSettings';
+import { useAdmissionsOuvertes } from '@/hooks';
 
 const SOCIAL_ICONS = {
   web: Globe,

@@ -1,19 +1,17 @@
-/* eslint-disable sonarjs/no-nested-conditional, @typescript-eslint/no-unused-vars */
 import { ArrowLeft, ArrowRight, Briefcase, CircleCheck, Globe, Info, Upload } from 'lucide-react';
 import React, { useRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { getImageUrl } from '@/utils';
-import { toUpperName } from '@/utils';
-import { uploadImage } from '../../services';
-import type { Partenaire, PartenaireFormData } from '../../types';
+import { getImageUrl , toUpperName } from '@/utils';
+import { uploadImage } from '@/services';
+import type { Partenaire, PartenaireFormData } from '@/types';
 import { PARTENAIRE_TYPES, DEFAULT_PARTENAIRE_FORM_DATA } from '@/constants';
-import { useFormValidation } from '../../hooks/useFormValidation';
-import { Button } from '@/components/ui';
-import { Label } from '@/components/ui';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui';
-import { FloatingInput } from '@/components/ui';
-import { FloatingTextarea } from '@/components/ui';
-import { FloatingSelect } from '@/components/ui';
+import { useFormValidation } from '@/hooks';
+import { Button } from '../ui/button';
+import { Label } from '../ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
+import { FloatingInput } from '../ui/floating-input';
+import { FloatingTextarea } from '../ui/floating-textarea';
+import { FloatingSelect } from '../ui/floating-select';
 
 interface PartenaireFormProps {
   open: boolean;

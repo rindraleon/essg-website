@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { SectionCta } from '../../components';
+import SectionCta from '../common/SectionCta';
 import RevealOnScroll from '../common/RevealOnScroll';
 import PartnerChipCard from '../PartenaireComponents/PartnerChipCard';
-import { usePartenaires } from '../../hooks';
-import { gsap, prefersReducedMotion, registerGsap } from '../../lib/gsap';
-import type { PartenairesSectionProps } from '../../types';
-import type { PartenaireItem } from '@/types';
+import { usePartenaires } from '@/hooks';
+import { gsap, prefersReducedMotion, registerGsap } from '@/lib';
+import type { PartenairesSectionProps , PartenaireItem } from '@/types';
 
 const SECTION_CTA = { label: 'Voir tous nos partenaires', link: '/partenaires' } as const;
 

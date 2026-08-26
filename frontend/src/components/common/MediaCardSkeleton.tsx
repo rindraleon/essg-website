@@ -2,7 +2,7 @@ import React from 'react';
 import { Skeleton } from '../ui/skeleton';
 import { CARD_WIDTH_CLASS, SKELETON_KEYS } from '@/constants';
 import ScrollableCardGrid from './ScrollableCardGrid';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 
 interface MediaCardSkeletonProps {
   ratio?: 'portrait' | 'landscape';

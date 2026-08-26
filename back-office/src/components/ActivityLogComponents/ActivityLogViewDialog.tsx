@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import type { ActivityLog } from '@/types';
 
 interface ActivityLogViewDialogProps {

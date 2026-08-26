@@ -8,7 +8,7 @@ import {
   Collapse,
   Box,
   IconButton,
-} from '@/components/compat';
+} from '../compat/mui';
 import { RotateCcw, X } from 'lucide-react';
 import React from 'react';
 import type { ProjetFilterOptions } from '@/types';

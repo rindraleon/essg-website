@@ -1,5 +1,5 @@
 import { Badge } from '../ui/badge';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 
 interface CategoryChipProps {
   category: string;

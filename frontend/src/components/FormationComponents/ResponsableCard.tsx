@@ -1,10 +1,9 @@
 import { ArrowRight, Mail, User } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { useActiveRessourcesHumaines } from '../../hooks/useRessourcesHumaines';
-import { getImageUrl } from '@/utils';
+import { useActiveRessourcesHumaines } from '@/hooks';
+import { getImageUrl , formatFullName } from '@/utils';
 import type { RessourceHumaine } from '@/types';
-import { formatFullName } from '@/utils';
 
 interface ResponsableCardProps {
   responsableId?: number | null;
@@ -20,7 +19,7 @@ function normalizeName(value: string): string {
     .replace(/[^a-z0-9]+/g, ' ')
     .trim()
     .split(' ')
-    .sort()
+    .sort((a, b) => a.localeCompare(b))
     .join(' ');
 }
 

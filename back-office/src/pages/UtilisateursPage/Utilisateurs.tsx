@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, sonarjs/no-unused-vars */
 import React, { useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import {

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { toErrorMessage } from '@/utils';
-import { actualiteService } from '../services';
+import { actualiteService } from '@/services';
 
 export default function useActualites(page = 1, limit = 10, search = '', categorie = '') {
   const query = useQuery({

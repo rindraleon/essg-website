@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 import { useRessourcesHumaines, useTitle } from '@/hooks';
 import {
   Pagination,
@@ -14,11 +14,11 @@ import {
   InputAdornment,
   InputLabel,
   MenuItem,
-  Select,
-  Skeleton,
+  CompatSelect as Select,
+  CompatSkeleton as Skeleton,
   TextField,
   type SelectChangeEvent,
-} from '@/components/compat';
+} from '@/components';
 import { Search, Users, X } from 'lucide-react';
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { generateSlug, formatFullName } from '@/utils';

@@ -4,14 +4,14 @@ import Footer from './Footer';
 import BackToTop from '../common/BackToTop';
 import ScrollProgress from '../common/ScrollProgress';
 import type { LayoutProps } from '@/types';
-import { useScrollToTop } from '../../hooks';
+import { useScrollToTop } from '@/hooks';
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   useScrollToTop();
   const location = useLocation();
 
   return (
-    <div className="min-h-screen flex flex-col bg-ink-50 text-ink-900">
+    <div className="flex min-h-screen flex-col overflow-x-clip bg-ink-50 text-ink-900">
       <ScrollProgress />
       <Header />
       <main className="flex-1 w-full">

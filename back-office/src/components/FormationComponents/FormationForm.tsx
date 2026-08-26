@@ -10,14 +10,11 @@ import {
 } from 'lucide-react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { getImageUrl } from '@/utils';
-import { uploadImage } from '../../services';
-import type { FormationFormData, FormationFormProps } from '../../types';
-import { useFormValidation } from '../../hooks/useFormValidation';
-import { EMAIL_ERROR_MESSAGE, EMAIL_PATTERN } from '@/constants';
-import { useFormationMentionsQuery } from '../../hooks/queries/useFormationMentionsQuery';
-import { useRessourcesHumainesQuery } from '../../hooks/queries';
-import {
+import { getImageUrl , formatFullName } from '@/utils';
+import { uploadImage } from '@/services';
+import type { FormationFormData, FormationFormProps } from '@/types';
+import { useFormValidation , useFormationMentionsQuery , useRessourcesHumainesQuery } from '@/hooks';
+import { EMAIL_ERROR_MESSAGE, EMAIL_PATTERN ,
   CONDITION_ACCES_OPTIONS,
   DUREE_OPTIONS,
   NIVEAU_OPTIONS,
@@ -25,17 +22,16 @@ import {
   getTitreOptions,
   isTitreInMention,
 } from '@/constants';
-import { Button } from '@/components/ui';
-import { Label } from '@/components/ui';
-import { Checkbox } from '@/components/ui';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui';
-import { FloatingInput } from '@/components/ui';
-import { FloatingTextarea } from '@/components/ui';
-import { FloatingSelect } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Label } from '../ui/label';
+import { Checkbox } from '../ui/checkbox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
+import { FloatingInput } from '../ui/floating-input';
+import { FloatingTextarea } from '../ui/floating-textarea';
+import { FloatingSelect } from '../ui/floating-select';
 import DynamicListField from '../common/DynamicListField';
 import MultiValueSelect from '../common/MultiValueSelect';
 import SearchSelect, { type SearchSelectOption } from '../common/SearchSelect';
-import { formatFullName } from '@/utils';
 
 const STEPS = [
   { id: 0, label: 'Informations', icon: <Info className="h-4 w-4" /> },

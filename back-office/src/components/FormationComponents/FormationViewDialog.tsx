@@ -2,9 +2,9 @@ import { Clock, GraduationCap, Image, Mail, Sparkles, User, X } from 'lucide-rea
 import React from 'react';
 import { getImageUrl } from '@/utils';
 import type { Formation } from '@/types';
-import { Button } from '@/components/ui';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui';
-import { Badge } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Badge } from '../ui/badge';
 
 interface FormationViewDialogProps {
   open: boolean;

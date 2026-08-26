@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { toError } from '@/utils';
-import { formationService } from '../services';
+import { formationService } from '@/services';
 
 export default function useFormations(page = 1, limit = 10) {
   const query = useQuery({

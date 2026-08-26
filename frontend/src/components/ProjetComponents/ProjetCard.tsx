@@ -1,7 +1,6 @@
 import { Calendar, MapPin } from 'lucide-react';
 import React from 'react';
-import { getImageUrl } from '@/utils';
-import { generateSlug } from '@/utils';
+import { getImageUrl , generateSlug } from '@/utils';
 import MediaCard from '../common/MediaCard';
 import type { ProjetCardProps } from '@/types';
 

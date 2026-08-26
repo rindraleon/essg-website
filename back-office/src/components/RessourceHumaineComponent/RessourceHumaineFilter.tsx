@@ -7,7 +7,7 @@ import {
   Button,
   Chip,
   TextField,
-} from '@/components/compat';
+} from '../compat/mui';
 import React from 'react';
 import type { RessourceHumaineFilterOptions } from '@/types';
 
@@ -16,8 +16,6 @@ interface RessourceHumaineFilterProps {
   onUpdateFilter: (key: keyof RessourceHumaineFilterOptions, value: string) => void;
   onResetFilters: () => void;
   activeFilterCount: number;
-  open: boolean;
-  onToggle: () => void;
 }
 
 const postes = ['Directeur', 'Enseignant', 'Administratif', 'Technicien', 'Responsable', 'Autre'];

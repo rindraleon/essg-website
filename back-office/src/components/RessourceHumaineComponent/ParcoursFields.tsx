@@ -1,9 +1,9 @@
 import { Briefcase, GraduationCap, Languages, Plus, Sparkles, Trash2, Wrench } from 'lucide-react';
 import React from 'react';
 import type { ExperienceProfessionnelle, RessourceHumaineFormData } from '@/types';
-import { Button } from '@/components/ui';
-import { Label } from '@/components/ui';
-import { FloatingInput } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Label } from '../ui/label';
+import { FloatingInput } from '../ui/floating-input';
 
 interface ParcoursFieldsProps {
   formData: RessourceHumaineFormData;
@@ -14,6 +14,57 @@ interface ParcoursFieldsProps {
 
 type ListKey = 'formations' | 'diplomes' | 'competences' | 'langues';
 
+const AutoBadge = ({
+  field,
+  autoFilled,
+}: {
+  field: keyof RessourceHumaineFormData;
+  autoFilled?: Set<keyof RessourceHumaineFormData>;
+}) =>
+  autoFilled?.has(field) ? (
+    <span className="inline-flex items-center gap-1 rounded-md bg-brand-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-700">
+      <Sparkles className="size-2.5" />
+      Auto
+    </span>
+  ) : null;
+
+const SectionHeader = ({
+  icon,
+  label,
+  field,
+  count,
+  onAdd,
+  autoFilled,
+  disabled,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  field: keyof RessourceHumaineFormData;
+  count: number;
+  onAdd: () => void;
+  autoFilled?: Set<keyof RessourceHumaineFormData>;
+  disabled: boolean;
+}) => (
+  <div className="mb-2 flex items-center justify-between gap-2">
+    <div className="flex min-w-0 items-center gap-1.5">
+      <span className="text-ink-400">{icon}</span>
+      <Label className="text-xs font-semibold uppercase tracking-wide text-ink-600">
+        {label}
+      </Label>
+      {count > 0 && (
+        <span data-numeric className="text-xs text-ink-400">
+          ({count})
+        </span>
+      )}
+      <AutoBadge field={field} autoFilled={autoFilled} />
+    </div>
+    <Button type="button" variant="outline" size="sm" onClick={onAdd} disabled={disabled}>
+      <Plus className="size-3.5" />
+      Ajouter
+    </Button>
+  </div>
+);
+
 const ParcoursFields: React.FC<ParcoursFieldsProps> = ({
   formData,
   onChange,
@@ -21,18 +72,38 @@ const ParcoursFields: React.FC<ParcoursFieldsProps> = ({
   disabled = false,
 }) => {
   const experiences = formData.experiences ?? [];
+  const experienceKeys = React.useRef(new WeakMap<ExperienceProfessionnelle, string>());
+  const nextExperienceKey = React.useRef(0);
+
+  const getExperienceKey = (experience: ExperienceProfessionnelle) => {
+    let key = experienceKeys.current.get(experience);
+    if (!key) {
+      key = `experience-${nextExperienceKey.current++}`;
+      experienceKeys.current.set(experience, key);
+    }
+    return key;
+  };
 
   const updateExperience = (
     index: number,
     field: keyof ExperienceProfessionnelle,
     value: string
   ) => {
-    const next = experiences.map((item, i) => (i === index ? { ...item, [field]: value } : item));
+    const next = experiences.map((item, i) => {
+      if (i !== index) return item;
+
+      const updated = { ...item, [field]: value };
+      experienceKeys.current.set(updated, getExperienceKey(item));
+      return updated;
+    });
     onChange({ experiences: next });
   };
 
-  const addExperience = () =>
-    onChange({ experiences: [...experiences, { poste: '', organisation: '', periode: '' }] });
+  const addExperience = () => {
+    const experience = { poste: '', organisation: '', periode: '' };
+    getExperienceKey(experience);
+    onChange({ experiences: [...experiences, experience] });
+  };
 
   const removeExperience = (index: number) =>
     onChange({ experiences: experiences.filter((_, i) => i !== index) });
@@ -47,47 +118,6 @@ const ParcoursFields: React.FC<ParcoursFieldsProps> = ({
   const removeItem = (key: ListKey, index: number) =>
     onChange({ [key]: (formData[key] ?? []).filter((_, i) => i !== index) });
 
-  const AutoBadge = ({ field }: { field: keyof RessourceHumaineFormData }) =>
-    autoFilled?.has(field) ? (
-      <span className="inline-flex items-center gap-1 rounded-md bg-brand-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-700">
-        <Sparkles className="size-2.5" />
-        Auto
-      </span>
-    ) : null;
-
-  const SectionHeader = ({
-    icon,
-    label,
-    field,
-    count,
-    onAdd,
-  }: {
-    icon: React.ReactNode;
-    label: string;
-    field: keyof RessourceHumaineFormData;
-    count: number;
-    onAdd: () => void;
-  }) => (
-    <div className="mb-2 flex items-center justify-between gap-2">
-      <div className="flex min-w-0 items-center gap-1.5">
-        <span className="text-ink-400">{icon}</span>
-        <Label className="text-xs font-semibold uppercase tracking-wide text-ink-600">
-          {label}
-        </Label>
-        {count > 0 && (
-          <span data-numeric className="text-xs text-ink-400">
-            ({count})
-          </span>
-        )}
-        <AutoBadge field={field} />
-      </div>
-      <Button type="button" variant="outline" size="sm" onClick={onAdd} disabled={disabled}>
-        <Plus className="size-3.5" />
-        Ajouter
-      </Button>
-    </div>
-  );
-
   const renderList = (key: ListKey, label: string, icon: React.ReactNode, placeholder: string) => {
     const list = formData[key] ?? [];
     return (
@@ -98,6 +128,8 @@ const ParcoursFields: React.FC<ParcoursFieldsProps> = ({
           field={key}
           count={list.length}
           onAdd={() => addItem(key)}
+          autoFilled={autoFilled}
+          disabled={disabled}
         />
 
         {list.length === 0 ? (
@@ -145,6 +177,8 @@ const ParcoursFields: React.FC<ParcoursFieldsProps> = ({
           field="experiences"
           count={experiences.length}
           onAdd={addExperience}
+          autoFilled={autoFilled}
+          disabled={disabled}
         />
 
         {experiences.length === 0 ? (
@@ -155,7 +189,7 @@ const ParcoursFields: React.FC<ParcoursFieldsProps> = ({
           <div className="space-y-3">
             {experiences.map((experience, index) => (
               <div
-                key={`experience-${index}`}
+                key={getExperienceKey(experience)}
                 className="rounded-md border border-ink-100 bg-ink-50/50 p-3"
               >
                 <div className="mb-1 flex items-center justify-between">

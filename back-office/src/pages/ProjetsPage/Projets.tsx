@@ -1,7 +1,4 @@
-import { Card, CardContent } from '@/components/compat';
-import React, { useState, useCallback } from 'react';
-import { toast } from 'sonner';
-import {
+import { CompatCard as Card, CompatCardContent as CardContent ,
   ProjetFilters,
   ProjetForm,
   ProjetTable,
@@ -9,6 +6,8 @@ import {
   ConfirmDialog,
   ListPageHeader,
 } from '@/components';
+import React, { useState, useCallback } from 'react';
+import { toast } from 'sonner';
 import {
   usePagination,
   useProjetFilter,

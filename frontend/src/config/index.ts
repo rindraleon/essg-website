@@ -1,1 +1,16 @@
-export * from './admission.config';
+export {
+  ADMISSION_LEVELS,
+  BAC_CATEGORIES,
+  BAC_TYPES,
+  getBacSeries,
+  getBacCategory,
+  getEligiblePrograms,
+  getRequiredDocumentIds,
+} from './admission.config';
+export type {
+  BacCategoryId,
+  BacTypeId,
+  AdmissionLevelId,
+  BacSeriesOption,
+  AdmissionProgram,
+} from './admission.config';

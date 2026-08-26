@@ -3,8 +3,8 @@ import React from 'react';
 import type { Formation } from '@/types';
 import DataTable from '../common/DataTable';
 import type { Column } from '../common/DataTable';
-import { Badge } from '@/components/ui';
-import { Button } from '@/components/ui';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 
 interface FormationTableProps {
   data: Formation[];

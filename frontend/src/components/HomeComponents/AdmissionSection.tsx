@@ -1,9 +1,9 @@
 import { ArrowRight } from 'lucide-react';
 import React from 'react';
-import { CompatButton as Button } from '@/components/compat';
+import Button from '../compat/button';
 import { Link as RouterLink } from 'react-router-dom';
-import useGsapReveal from '../../hooks/useGsapReveal';
-import { useAdmissionsOuvertes } from '../../hooks/useAdmissionsSettings';
+import useGsapReveal from '@/hooks/useGsapReveal';
+import { useAdmissionsOuvertes } from '@/hooks';
 import type { AdmissionCtaSectionProps } from '@/types';
 
 const AdmissionSection: React.FC<AdmissionCtaSectionProps> = (

@@ -13,7 +13,7 @@ import {
   Wrench,
 } from 'lucide-react';
 import React, { useEffect, useMemo } from 'react';
-import { CompatButton as Button } from '@/components/compat';
+import { CompatButton as Button } from '@/components';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import {
   Breadcrumb,

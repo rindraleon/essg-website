@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/super-linear-regex */
-export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+export const EMAIL_PATTERN = /^[^\s@]{1,64}@[^^\s@]{1,253}\.[^\s@]{2,63}$/;
 
 export const EMAIL_ERROR_MESSAGE = 'Email invalide';

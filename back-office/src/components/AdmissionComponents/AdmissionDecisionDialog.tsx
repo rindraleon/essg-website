@@ -1,9 +1,9 @@
 import { GraduationCap, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui';
-import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '@/components/ui';
-import { Input } from '@/components/ui';
-import { Label } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '../ui/dialog';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 import type { Admission, AdmissionStatus } from '@/types';
 import { formatFullName } from '@/utils';
 

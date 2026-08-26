@@ -6,7 +6,7 @@ import {
   type PaginatedResult,
   type PaginationMeta,
   type PaginationParams,
-} from '@/api/types';
+} from '../types/api';
 
 const DEFAULT_API_URL = 'http://localhost:3000';
 const TOKEN_COOKIE_NAME = 'token_name';

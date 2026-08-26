@@ -10,7 +10,7 @@ import {
   UserCheck,
   Users,
 } from 'lucide-react';
-import { routesStatic } from '../routes';
+import { routesStatic } from '@/routes';
 
 interface NavItem {
   name: string;

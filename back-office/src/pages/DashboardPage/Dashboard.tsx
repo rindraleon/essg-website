@@ -6,7 +6,7 @@ import {
   useRecentActivitiesQuery,
 } from '@/hooks';
 import { StatCard, RecentActivity } from '@/components';
-import { routesStatic } from '../../routes';
+import { routesStatic } from '@/routes';
 
 const Dashboard = () => {
   useScrollToTop();

@@ -1,7 +1,6 @@
 import { Mail, Phone } from 'lucide-react';
 import React from 'react';
-import { getImageUrl } from '@/utils';
-import { formatFullName } from '@/utils';
+import { getImageUrl , formatFullName } from '@/utils';
 import MediaCard from '../common/MediaCard';
 import type { RessourceHumaine } from '@/types';
 

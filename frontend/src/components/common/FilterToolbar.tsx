@@ -1,7 +1,7 @@
 import { Filter, Search, X } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 import type { FilterToolbarProps } from '@/types';
 
 const FilterToolbar = ({

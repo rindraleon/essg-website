@@ -1,4 +1,4 @@
-import { Card, CardContent } from '@/components/compat';
+import { Card, CardContent } from '../compat/mui';
 import React from 'react';
 import { GREEN } from '@/constants';
 import type { ContactInfoCardsProps } from '@/types';

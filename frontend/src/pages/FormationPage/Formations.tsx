@@ -8,7 +8,7 @@ import {
   Reveal,
   QueryState,
 } from '@/components';
-import { Input, Select, Skeleton } from '@/components/ui';
+import { Input, Select, Skeleton } from '@/components';
 import { useFormations, useTitle } from '@/hooks';
 import type { Formation } from '@/types';
 

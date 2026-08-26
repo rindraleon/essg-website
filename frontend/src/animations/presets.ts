@@ -1,4 +1,4 @@
-import { gsap, isCompactViewport, motion, prefersReducedMotion } from '../lib/gsap';
+import { gsap, isCompactViewport, motion, prefersReducedMotion } from '@/lib';
 
 export function revealFrom(kind: string | null | undefined) {
   const compact = isCompactViewport();

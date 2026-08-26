@@ -1,10 +1,10 @@
 import { ImagePlus, LoaderCircle, Trash2, Upload } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { uploadImage } from '../../services';
+import { uploadImage } from '@/services';
 import { getImageUrl } from '@/utils';
-import { Button } from '@/components/ui';
-import { Label } from '@/components/ui';
+import { Button } from '../ui/button';
+import { Label } from '../ui/label';
 
 interface MultiImageUploadProps {
   label?: string;
@@ -27,7 +27,7 @@ export default function MultiImageUpload({
   max = 12,
   disabled = false,
   folder = 'images',
-}: MultiImageUploadProps) {
+}: Readonly<MultiImageUploadProps>) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);

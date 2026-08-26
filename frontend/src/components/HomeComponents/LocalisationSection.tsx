@@ -1,11 +1,11 @@
 import { Globe, MapPin } from 'lucide-react';
 import React from 'react';
-import { CompatButton as Button } from '@/components/compat';
+import Button from '../compat/button';
 import { Link as RouterLink } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import useGsapReveal from '../../hooks/useGsapReveal';
+import useGsapReveal from '@/hooks/useGsapReveal';
 import type { LocalisationSectionProps } from '@/types';
 
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;

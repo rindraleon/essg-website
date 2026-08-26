@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import type { FilterGroup } from '../components/common/FilterButton';
+import type { FilterGroup } from '@/components';
 
 export const ALL = 'all';
 
@@ -37,15 +37,18 @@ export function useSectionFilters<T>(
         const present = new Set<string>();
         for (const item of items) {
           const raw = definition.accessor(item);
-          if (raw && raw.trim()) present.add(raw.trim());
+          const trimmed = raw?.trim();
+          if (trimmed) present.add(trimmed);
         }
 
         const ordered = definition.order
           ? [
               ...definition.order.filter((value) => present.has(value)),
-              ...[...present].filter((value) => !definition.order?.includes(value)).sort(),
+              ...[...present]
+                .filter((value) => !definition.order?.includes(value))
+                .sort((a, b) => a.localeCompare(b)),
             ]
-          : [...present].sort();
+          : [...present].sort((a, b) => a.localeCompare(b));
 
         return {
           key: definition.key,

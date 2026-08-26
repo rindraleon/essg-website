@@ -1,7 +1,7 @@
 import { AlertCircle, Check, ChevronDown, Loader2, Search, X } from 'lucide-react';
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
-import useDebounce from '../../hooks/useDebounce';
-import { cn } from '@/lib/utils';
+import useDebounce from '@/hooks/useDebounce';
+import { cn } from '@/lib';
 import type { SearchSelectOption } from './SearchSelect';
 
 interface MultiSearchSelectProps {
@@ -126,8 +126,8 @@ const MultiSearchSelect: React.FC<MultiSearchSelectProps> = ({
               className="inline-flex max-w-full items-center gap-1 rounded-md border border-brand-200 bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700"
             >
               <span className="truncate">{option.label}</span>
-              <span
-                role="button"
+              <button
+                type="button"
                 tabIndex={-1}
                 aria-label={`Retirer ${option.label}`}
                 onClick={(event) => {
@@ -137,7 +137,7 @@ const MultiSearchSelect: React.FC<MultiSearchSelectProps> = ({
                 className="shrink-0 rounded hover:text-red-600"
               >
                 <X className="size-3" />
-              </span>
+              </button>
             </span>
           ))}
         </span>

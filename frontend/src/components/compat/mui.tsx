@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 import { Input } from '../ui/input';
 import { Skeleton as UiSkeleton } from '../ui/skeleton';
 import { Textarea } from '../ui/textarea';
@@ -48,7 +47,7 @@ export function IconButton({
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   sx?: unknown;
   size?: string;
-  component?: React.ElementType | string;
+  component?: React.ElementType;
   href?: string;
   to?: string;
   target?: string;
@@ -148,7 +147,6 @@ export function Fade({
   children,
 }: {
   in?: boolean;
-  timeout?: number;
   children: React.ReactElement;
 }) {
   return visible ? children : null;

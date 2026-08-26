@@ -1,6 +1,6 @@
 import { ArrowUp } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib';
 
 const SHOW_AFTER = 480;
 
