@@ -3,10 +3,10 @@ import type { PaginatedResult } from '@/api';
 import type { Formation } from '@/types';
 
 const formationService = {
-  findAll(page = 1, limit = 10, signal?: AbortSignal): Promise<PaginatedResult<Formation>> {
+  findAll(page = 1, limit = 6, signal?: AbortSignal): Promise<PaginatedResult<Formation>> {
     return apiClient.getList<Formation>(
       endpoints.formations,
-      { page, limit, sortBy: 'id', sortOrder: 'ASC' },
+      { page, limit, sortBy: 'creeLe', sortOrder: 'DESC' },
       signal
     );
   },

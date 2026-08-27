@@ -72,7 +72,7 @@ const Admissions = () => {
     Boolean(filterDateFin),
   ].filter(Boolean).length;
 
-  const { data, isError, error, refetch } = useAdmissionsQuery({
+  const { data, isLoading, isError, error, refetch } = useAdmissionsQuery({
     page: currentPage + 1,
     limit: rowsPerPage,
     q: debouncedSearch || undefined,
@@ -304,6 +304,7 @@ const Admissions = () => {
         totalCount={totalItems}
         page={currentPage}
         rowsPerPage={rowsPerPage}
+        loading={isLoading}
         onPageChange={setCurrentPage}
         onRowsPerPageChange={(rows) => {
           setRowsPerPage(rows);
@@ -361,7 +362,7 @@ const Admissions = () => {
             fileName={preview.file.originalName || 'document'}
             loadDocument={loadPreview}
             onClose={() => setPreview(null)}
-            showDownload={false}
+            showDownload={true}
           />
         </Suspense>
       )}

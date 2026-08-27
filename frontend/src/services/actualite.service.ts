@@ -5,7 +5,7 @@ import type { Actualite } from '@/types';
 const actualiteService = {
   findAll(
     page = 1,
-    limit = 10,
+    limit = 6,
     query = '',
     categorie = '',
     signal?: AbortSignal

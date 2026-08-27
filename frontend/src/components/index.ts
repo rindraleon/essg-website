@@ -14,6 +14,7 @@ export {
 //background animation
 export { default as AnimatedBackground } from './animations/AnimatedBackground';
 export { default as SplitTitle } from './animations/SplitTitle';
+export { default as ParticlesBackground } from './animations/ParticlesBackground';
 
 //common component
 export { default as AnimatedNumber } from './common/AnimatedNumber';
@@ -49,6 +50,7 @@ export { default as SectionContent } from './common/SectionContent';
 export { default as SectionCta } from './common/SectionCta';
 export { default as SectionHeader } from './common/SectionHeader';
 export { default as ViewDetailsButton } from './common/ViewDetailsButton';
+export { default as SocialLinks } from './common/SocialLinks';
 
 //compat component
 export { default as CompatButton } from './compat/button';
@@ -81,6 +83,9 @@ export { default as FaqAccordion } from './HomeComponents/FaqAccordion';
 export { default as FaqSection } from './HomeComponents/FaqSection';
 export { default as FormationsSection } from './HomeComponents/FormationSection';
 export { default as HeroSection } from './HomeComponents/HeroSection';
+export { default as ValuesSection } from './HomeComponents/ValuesSection';
+export { default as WhyChooseSection } from './HomeComponents/WhyChooseSection';
+export { default as FormationsDomainSection } from './HomeComponents/FormationsDomainSection';
 export { default as LocalisationSection } from './HomeComponents/LocalisationSection';
 export { default as PartenairesSection } from './HomeComponents/PartenairesSection';
 export { default as ProjetsSection } from './HomeComponents/ProjetsSection';

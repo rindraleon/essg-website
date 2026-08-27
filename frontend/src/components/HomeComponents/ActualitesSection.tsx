@@ -54,8 +54,9 @@ const ActualitesSection = () => {
       emptyMessage="Aucune actualité disponible pour le moment."
       headerContent={
         <SectionHeader
+          eyebrow="Vie de l'école & Recherche"
           title="Dernières Actualités"
-          description="Restez informé de la vie de l'ESSG"
+          description="Restez informé des innovations, conférences et événements marquants de l'ESSG"
         />
       }
       loadingSkeletons={<MediaCardSkeletonGrid layout="home" />}

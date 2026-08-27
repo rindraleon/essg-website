@@ -14,6 +14,8 @@ const routesStatic = {
   faq: '/faq',
   admission: '/admission',
   contact: '/contact',
+  mentionsLegales: '/mentions-legales',
+  politiqueConfidentialite: '/politique-confidentialite',
 };
 
 export default routesStatic;

@@ -13,8 +13,9 @@ const FaqSection = () => {
       emptyMessage="Aucune question fréquente disponible pour le moment."
       headerContent={
         <SectionHeader
+          eyebrow="Aide & Réponses"
           title="Questions Fréquentes"
-          description="Les réponses aux questions les plus posées sur l'ESSG"
+          description="Les réponses aux questions les plus posées sur l'admission, le cursus et la vie à l'ESSG"
         />
       }
       sectionClassName="bg-gradient-to-br from-white via-brand-50/45 to-sage-50/50 py-20"

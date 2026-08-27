@@ -35,10 +35,29 @@ const Header = () => {
   useEffect(() => {
     if (!mobileMenuOpen) return;
 
-    const closeOnEscape = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setMobileMenuOpen(false);
         menuButtonRef.current?.focus();
+        return;
+      }
+
+      if (event.key === 'Tab') {
+        const focusableElements = mobileMenuRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex="0"]'
+        );
+        if (!focusableElements || focusableElements.length === 0) return;
+
+        const firstEl = focusableElements[0];
+        const lastEl = focusableElements[focusableElements.length - 1];
+
+        if (event.shiftKey && document.activeElement === firstEl) {
+          event.preventDefault();
+          lastEl.focus();
+        } else if (!event.shiftKey && document.activeElement === lastEl) {
+          event.preventDefault();
+          firstEl.focus();
+        }
       }
     };
 
@@ -51,7 +70,7 @@ const Header = () => {
     document.documentElement.style.overflow = 'hidden';
     if (scrollbarWidth > 0) document.body.style.paddingRight = `${scrollbarWidth}px`;
 
-    document.addEventListener('keydown', closeOnEscape);
+    document.addEventListener('keydown', handleKeyDown);
     const firstLink = mobileMenuRef.current?.querySelector<HTMLAnchorElement>('a');
     const focusTimer = window.setTimeout(() => firstLink?.focus(), 120);
 
@@ -60,7 +79,7 @@ const Header = () => {
       document.body.style.overflow = previousBodyOverflow;
       document.documentElement.style.overflow = previousHtmlOverflow;
       document.body.style.paddingRight = previousPaddingRight;
-      document.removeEventListener('keydown', closeOnEscape);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [mobileMenuOpen]);
 

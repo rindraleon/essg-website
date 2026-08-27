@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import SectionCta from '../common/SectionCta';
+import SectionHeader from '../common/SectionHeader';
 import RevealOnScroll from '../common/RevealOnScroll';
 import PartnerChipCard from '../PartenaireComponents/PartnerChipCard';
 import { usePartenaires } from '@/hooks';
@@ -145,10 +146,11 @@ const PartenairesSection = ({
   return (
     <section className="overflow-hidden bg-gradient-to-br from-ink-50 via-white to-sage-50/55 py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <RevealOnScroll className="mb-12 text-center">
-          <h2 className="text-h2 text-ink-900">{title}</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-body-lg text-ink-500">{description}</p>
-        </RevealOnScroll>
+        <SectionHeader
+          eyebrow="Réseau & Coopérations"
+          title={title}
+          description={description}
+        />
       </div>
 
       {renderContenu()}

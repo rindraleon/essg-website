@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { toErrorMessage } from '@/utils';
 import { actualiteService } from '@/services';
 
-export default function useActualites(page = 1, limit = 10, search = '', categorie = '') {
+export default function useActualites(page = 1, limit = 6, search = '', categorie = '') {
   const query = useQuery({
     queryKey: ['actualites', 'list', page, limit, search, categorie],
     queryFn: () => actualiteService.findAll(page, limit, search, categorie),

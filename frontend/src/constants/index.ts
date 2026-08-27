@@ -6,3 +6,4 @@ export { CARD_WIDTH_CLASS, SKELETON_KEYS } from './layout';
 export { SITE_HERO_IMAGE, SITE_HERO_ALT, CAMPUS_GALLERY } from './media';
 export type { CampusImage } from './media';
 export { HOVER_CARD, HOVER_IMAGE_ZOOM } from './motion';
+export {TYPEWRITER_WORDS} from './typewritter'

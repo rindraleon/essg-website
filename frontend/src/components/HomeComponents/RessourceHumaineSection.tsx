@@ -25,8 +25,9 @@ const RessourceHumaineSection = () => {
       emptyMessage="Aucun membre de l'équipe disponible pour le moment."
       headerContent={
         <SectionHeader
+          eyebrow="Corps Professoral & Encadrement"
           title="Notre Équipe"
-          description="Des professionnels qualifiés et passionnés au service de votre réussite"
+          description="Des enseignants-chercheurs et experts qualifiés au service de l'excellence académique"
         />
       }
       loadingSkeletons={<MediaCardSkeletonGrid layout="home" />}

@@ -17,7 +17,7 @@ const TRANSITION_MS = 260;
 
 export function usePagination<T>(
   items: T[],
-  { pageSize = 9 }: UsePaginationOptions = {}
+  { pageSize = 6 }: UsePaginationOptions = {}
 ): UsePaginationResult<T> {
   const [page, setPage] = useState(1);
   const [isChanging, setIsChanging] = useState(false);

@@ -178,13 +178,11 @@ export function BacInformation({
   series,
   errors,
   onChange,
-  onDuplicateCheck,
 }: Readonly<{
   data: AdmissionFormData;
   series: readonly BacSeriesOption[];
   errors: Errors;
   onChange: ChangeHandler;
-  onDuplicateCheck: () => void;
 }>) {
   const category = data.bacCategorie
     ? BAC_CATEGORIES[data.bacCategorie as keyof typeof BAC_CATEGORIES]
@@ -242,7 +240,6 @@ export function BacInformation({
           value={data.numeroBaccalaureat}
           onChange={onChange}
           errors={errors}
-          onBlur={onDuplicateCheck}
           placeholder="Ex : BAC-2026-012345"
           required
         />
@@ -253,6 +250,7 @@ export function BacInformation({
           onChange={onChange}
           errors={errors}
           type="number"
+          placeholder="Ex : 2024"
           min={1980}
           max={new Date().getFullYear()}
           required
@@ -264,6 +262,7 @@ export function BacInformation({
             value={data.bacCentreExamen}
             onChange={onChange}
             errors={errors}
+            placeholder="Ex : Lycée Rabearivelo, Antananarivo"
             required
           />
         </div>

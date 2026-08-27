@@ -43,7 +43,7 @@ const ProjetsSection = ({
       error={error}
       isEmpty={!loading && total === 0}
       emptyMessage="Aucun projet disponible pour le moment."
-      headerContent={<SectionHeader title={title} description={description} />}
+      headerContent={<SectionHeader eyebrow="Impact & Applications Géomatiques" title={title} description={description} />}
       loadingSkeletons={<MediaCardSkeletonGrid layout="home" />}
       sectionClassName="bg-gradient-to-b from-brand-50/45 via-ink-50 to-white py-20"
       fluid

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { cn } from '@/lib';
 
-function Label({ className, htmlFor, ...props }: Omit<React.ComponentProps<'label'>, 'htmlFor'> & { htmlFor: string }) {
+function Label({ className, htmlFor, ...props }: React.ComponentProps<'label'>) {
   return (
     <label
       data-slot="label"

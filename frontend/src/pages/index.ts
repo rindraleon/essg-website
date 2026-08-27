@@ -8,6 +8,8 @@ export { default as FaqPage } from './FaqPage/FaqPage';
 export { default as FormationDetailPage } from './FormationPage/FormationDetailPage';
 export { default as FormationsPage } from './FormationPage/Formations';
 export { default as Home } from './HomePage/Home';
+export { default as MentionsLegalesPage } from './LegalPage/MentionsLegalesPage';
+export { default as PolitiqueConfidentialitePage } from './LegalPage/PolitiqueConfidentialitePage';
 export { default as PartenaireDetailPage } from './PartenairesPage/PartenaireDetailPage';
 export { default as PartenairesPage } from './PartenairesPage/Partenaires';
 export { default as ProjetDetailPage } from './ProjetsPage/ProjetDetailPage';

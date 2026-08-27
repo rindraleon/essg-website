@@ -30,11 +30,12 @@ const DEFAULT_PROPS = {
     { label: 'Projets', to: '/projets' },
     { label: 'Actualités', to: '/actualites' },
     { label: 'Partenaires', to: '/partenaires' },
+    { label: 'FAQ', to: '/faq' },
     { label: 'Admission', to: '/admission' },
   ],
 
   contact: {
-    email: 'contact@essg.sn',
+    email: 'essg@univ-fianarantsoa.mg',
     phone: '+261 38 18 282 49',
     address: 'Andrainjato, Université de Fianarantsoa, Madagascar',
   },

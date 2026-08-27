@@ -71,7 +71,7 @@ const FormationsSection = ({
       error={error}
       isEmpty={!loading && total === 0}
       emptyMessage="Aucune formation disponible pour le moment."
-      headerContent={<SectionHeader title={title} description={description} />}
+      headerContent={<SectionHeader eyebrow="Diplômes & Cursus LMD" title={title} description={description} />}
       loadingSkeletons={<MediaCardSkeletonGrid count={3} layout="home" />}
       sectionClassName="bg-gradient-to-b from-brand-50/65 via-white to-white py-20"
       fluid

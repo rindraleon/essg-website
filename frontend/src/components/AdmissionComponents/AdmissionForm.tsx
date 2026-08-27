@@ -31,6 +31,7 @@ import { toCapitalizedWords, toUpperName } from '@/utils';
 import { admissionService, formatFileSize, isProofFileValid } from '@/services';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
+import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import {
   AdmissionSectionTitle,
@@ -57,7 +58,7 @@ const INITIAL_FORM_DATA: AdmissionFormData = {
   bacSerie: '',
   bacCategorie: '',
   numeroBaccalaureat: '',
-  bacAnneeObtention: String(CURRENT_YEAR),
+  bacAnneeObtention: '',
   bacCentreExamen: '',
   niveau: '',
   mention: '',
@@ -156,6 +157,12 @@ function bacStepErrors(data: AdmissionFormData): FormErrors {
   const errors: FormErrors = {};
   addRequiredErrors(data, BAC_FIELDS, errors);
   if (!data.bacCategorie) errors.bacSerie = 'Sélectionnez une série valide';
+  if (data.bacAnneeObtention) {
+    const year = Number(data.bacAnneeObtention);
+    if (!/^\d{4}$/.test(data.bacAnneeObtention) || year < 1980 || year > CURRENT_YEAR) {
+      errors.bacAnneeObtention = `L'année d'obtention doit être comprise entre 1980 et ${CURRENT_YEAR}`;
+    }
+  }
   return errors;
 }
 
@@ -399,14 +406,13 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
   };
 
   const checkDuplicate = async (
-    kind: 'numeroBaccalaureat' | 'numeroBordereau' | 'email' | 'telephone'
+    kind: 'numeroBordereau' | 'email' | 'telephone'
   ): Promise<boolean> => {
     const value = formData[kind].trim();
     if (!value) return true;
     try {
       const result = await admissionService.checkDuplicate({ [kind]: value });
       const disponibilites = {
-        numeroBaccalaureat: result.numeroBaccalaureatDisponible,
         numeroBordereau: result.numeroBordereauDisponible,
         email: result.emailDisponible,
         telephone: result.telephoneDisponible,
@@ -415,7 +421,6 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
       if (disponible === false) {
         const annee = result.annee ? ` pour l'année ${result.annee}` : '';
         const messages = {
-          numeroBaccalaureat: 'Ce numéro de baccalauréat est déjà utilisé.',
           numeroBordereau: 'Ce numéro de bordereau est déjà utilisé.',
           email: `Une candidature avec cette adresse email a déjà été déposée${annee}. Une seule inscription est autorisée par an.`,
           telephone: `Une candidature avec ce numéro de téléphone a déjà été déposée${annee}. Une seule inscription est autorisée par an.`,
@@ -479,10 +484,6 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
       if (!(await checkDuplicate('email'))) return;
       if (!(await checkDuplicate('telephone'))) return;
     }
-    if (currentStep === 2) {
-      const available = await checkDuplicate('numeroBaccalaureat');
-      if (!available) return;
-    }
     if (currentStep < 4) moveToStep((currentStep + 1) as AdmissionStep);
   };
 
@@ -509,6 +510,10 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
     finalSubmitRequestedRef.current = false;
     if (submitting || !validateAll()) {
       if (!submitting) toast.error('Veuillez joindre les pièces obligatoires signalées.');
+      return;
+    }
+    if (formData.numeroBordereau.trim() && !(await checkDuplicate('numeroBordereau'))) {
+      toast.error('Le numéro de bordereau saisi est déjà utilisé.');
       return;
     }
     const categoryLabel =
@@ -631,6 +636,9 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
             <span>Étape {currentStep} sur 4</span>
             <strong className="text-brand-700">{STEPS[currentStep - 1].label}</strong>
           </div>
+          <div aria-live="polite" className="sr-only">
+            Étape {currentStep} sur 4 : {STEPS[currentStep - 1].label}
+          </div>
         </nav>
 
         <div key={currentStep} className="animate-fade-in-up">
@@ -649,7 +657,6 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
               series={bacSeries}
               errors={errors}
               onChange={handleChange}
-              onDuplicateCheck={() => void checkDuplicate('numeroBaccalaureat')}
             />
           )}
 
@@ -679,7 +686,7 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
           {currentStep === 4 && (
             <div className="space-y-8">
               <section>
-                <AdmissionSectionTitle number={4}>Pièces jointes</AdmissionSectionTitle>
+                <AdmissionSectionTitle number={4}>Pièces jointes & Paiement</AdmissionSectionTitle>
                 <div className="mb-6 grid gap-3 rounded-2xl border border-brand-100 bg-brand-50/70 p-4 sm:grid-cols-3">
                   <div>
                     <span className="text-caption text-ink-500">Candidat</span>
@@ -701,9 +708,27 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
                     </strong>
                   </div>
                 </div>
+
+                <div className="mb-6 rounded-xl border border-brand-100 bg-white p-4 shadow-sm space-y-2">
+                  <Label htmlFor="numeroBordereau">Numéro de bordereau de versement</Label>
+                  <Input
+                    id="numeroBordereau"
+                    name="numeroBordereau"
+                    value={formData.numeroBordereau}
+                    onChange={handleChange}
+                    onBlur={() => void checkDuplicate('numeroBordereau')}
+                    placeholder="Ex : VER-2026-987456"
+                    maxLength={15}
+                  />
+                  {fieldError(errors, 'numeroBordereau')}
+                  <p className="text-caption text-ink-400">
+                    Référence du reçu de paiement des droits d'inscription (60 000 Ar).
+                  </p>
+                </div>
+
                 <div className="mb-5 flex items-start gap-2 rounded-xl border border-brand-100 bg-brand-50 p-3 text-small text-brand-800">
                   <Info className="mt-0.5 size-4 shrink-0" />
-                  {Number(formData.bacAnneeObtention) === CURRENT_YEAR
+                  {formData.bacAnneeObtention && Number(formData.bacAnneeObtention) === CURRENT_YEAR
                     ? "Pour un Bac obtenu cette année, le relevé de notes ou l'extrait de liste est demandé."
                     : 'Pour un Bac obtenu avant cette année, la photocopie du diplôme est demandée.'}
                 </div>

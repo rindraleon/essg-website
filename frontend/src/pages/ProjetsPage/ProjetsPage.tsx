@@ -72,6 +72,10 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
     }
   }, [showSearch]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, typeFilter, statutFilter]);
+
   const hasActiveFilters = typeFilter !== 'all' || statutFilter !== 'all' || searchTerm !== '';
   const activeFilterCount = (typeFilter !== 'all' ? 1 : 0) + (statutFilter !== 'all' ? 1 : 0);
 

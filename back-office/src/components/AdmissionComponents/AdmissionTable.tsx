@@ -6,7 +6,7 @@ import type { Column } from '../common/DataTable';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
-import { formatFullName } from '@/utils';
+import { formatFullName, getPersonInitials } from '@/utils';
 
 interface AdmissionTableProps {
   data: Admission[];
@@ -78,10 +78,7 @@ const AdmissionTable: React.FC<AdmissionTableProps> = ({
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center flex-shrink-0">
                 <span className="text-sm font-semibold text-brand-600">
-                  {row.nom
-                    .split(' ')
-                    .map((n) => n[0])
-                    .join('')}
+                  {getPersonInitials(row)}
                 </span>
               </div>
               <div className="min-w-0">

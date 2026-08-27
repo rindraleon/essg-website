@@ -73,10 +73,9 @@ const MediaCard: React.FC<MediaCardProps> = ({
     <article
       data-gsap
       className={cn(
-        'media-card group relative isolate overflow-hidden rounded-2xl shadow-card',
+        'media-card group relative isolate overflow-hidden rounded-2xl shadow-card transition-all duration-300 ease-out hover:-translate-y-2 hover:border-brand-300 hover:shadow-card-hover focus-within:shadow-card-hover',
         isHomeLayout ? 'flex h-full flex-col border border-ink-100 bg-white' : surfaceClass,
         HOVER_CARD,
-        'hover:shadow-card-hover focus-within:shadow-card-hover',
         !isHomeLayout && ratioClass,
         className
       )}
@@ -93,7 +92,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
           loading="lazy"
           decoding="async"
           className={cn(
-            'absolute inset-0 size-full',
+            'absolute inset-0 size-full transition-transform duration-500 ease-out group-hover:scale-108',
             HOVER_IMAGE_ZOOM,
             imageFit === 'contain' ? 'object-contain p-8' : 'object-cover'
           )}
@@ -119,13 +118,13 @@ const MediaCard: React.FC<MediaCardProps> = ({
         {(badge || showSubtitlePill) && (
           <div className="absolute left-4 right-4 top-4 z-10 flex items-center justify-between">
             {badge && (
-              <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-caption text-brand-800 backdrop-blur-sm">
+              <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-caption font-semibold text-brand-800 backdrop-blur-sm shadow-xs transition-transform duration-300 group-hover:scale-105">
                 {badge}
               </span>
             )}
 
             {showSubtitlePill && (
-              <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-caption text-brand-800 backdrop-blur-sm">
+              <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-caption font-semibold text-brand-800 backdrop-blur-sm shadow-xs">
                 {subtitle}
               </span>
             )}
@@ -134,7 +133,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
 
         {isHomeLayout && (
           <div className="absolute inset-x-0 bottom-0 z-10 flex h-[9.25rem] flex-col justify-end bg-gradient-to-t from-ink-950/95 via-ink-950/65 to-transparent p-5 pt-12">
-            <h3 className="flex h-[3.75rem] items-end text-h4 text-white">
+            <h3 className="flex h-[3.75rem] items-end text-h4 font-bold text-white group-hover:text-sage-200 transition-colors">
               <Link
                 to={to}
                 className={titleLinkClass}
@@ -144,9 +143,9 @@ const MediaCard: React.FC<MediaCardProps> = ({
               </Link>
             </h3>
             <p className="mt-1 h-5 truncate text-small text-sage-300">{subtitle || '\u00a0'}</p>
-            <span className="mt-2 inline-flex h-4 items-center gap-1.5 text-caption  text-white/85 transition-colors duration-(--duration-micro) group-hover:text-sage-300 group-focus-within:text-sage-300 motion-reduce:transition-none">
+            <span className="mt-2 inline-flex h-4 items-center gap-1.5 text-caption font-semibold text-white/85 transition-colors duration-(--duration-micro) group-hover:text-sage-300 group-focus-within:text-sage-300 motion-reduce:transition-none">
               {actionLabel}
-              <ArrowUpRight className="size-3.5 transition-transform duration-(--duration-micro) ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-focus-within:translate-x-[3px] group-focus-within:-translate-y-[3px] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" />
+              <ArrowUpRight className="size-3.5 transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1 motion-reduce:transition-none" />
             </span>
           </div>
         )}
@@ -156,7 +155,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
         <div className="flex min-h-[9.5rem] flex-1 flex-col bg-white p-5">
           <p
             className={cn(
-              'line-clamp-3 min-h-[4.5rem] text-small leading-relaxed text-ink-500',
+              'line-clamp-3 min-h-[4.5rem] text-justify text-small leading-relaxed text-ink-600',
               !description && 'text-transparent'
             )}
           >
@@ -168,9 +167,9 @@ const MediaCard: React.FC<MediaCardProps> = ({
               {visibleMeta.map((item) => (
                 <li
                   key={item.label}
-                  className="flex min-w-0 items-center gap-1.5 text-caption text-ink-500"
+                  className="flex min-w-0 items-center gap-1.5 text-caption font-medium text-ink-500"
                 >
-                  {item.icon}
+                  <span className="text-brand-600">{item.icon}</span>
                   <span className="line-clamp-1">{item.label}</span>
                 </li>
               ))}
@@ -192,7 +191,12 @@ const MediaCard: React.FC<MediaCardProps> = ({
               )}
             >
               {description && (
-                <p className="line-clamp-3 text-small leading-relaxed text-white/90">
+                <p
+                  className={cn(
+                    ratio === 'landscape' ? 'line-clamp-2' : 'line-clamp-3',
+                    'text-justify text-small leading-relaxed text-white/95'
+                  )}
+                >
                   {description}
                 </p>
               )}
@@ -202,7 +206,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
                   {visibleMeta.map((item) => (
                     <li
                       key={item.label}
-                      className="flex items-center gap-1.5 text-caption text-white/75"
+                      className="flex items-center gap-1.5 text-caption text-white/85"
                     >
                       {item.icon}
                       <span className="normal-case tracking-normal">{item.label}</span>
@@ -213,7 +217,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
             </div>
           )}
 
-          <h3 className="text-h3 text-white">
+          <h3 className="text-h3 font-bold text-white group-hover:text-sage-200 transition-colors">
             <Link
               to={to}
               className={titleLinkClass}
@@ -225,7 +229,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
 
           <span className="mt-2 inline-flex items-center gap-1.5 text-caption font-semibold uppercase text-white/85 transition-colors duration-(--duration-micro) group-hover:text-sage-300 group-focus-within:text-sage-300 motion-reduce:transition-none">
             {actionLabel}
-            <ArrowUpRight className="size-3.5 transition-transform duration-(--duration-micro) ease-out group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-focus-within:translate-x-[3px] group-focus-within:-translate-y-[3px] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" />
+            <ArrowUpRight className="size-3.5 transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1 motion-reduce:transition-none" />
           </span>
         </div>
       )}

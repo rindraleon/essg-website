@@ -21,6 +21,10 @@ const ProjetDetailPage = lazy(() => import('@/pages/ProjetsPage/ProjetDetailPage
 const FaqPage = lazy(() => import('@/pages/FaqPage/FaqPage'));
 const AdmissionPage = lazy(() => import('@/pages/AdmissionPage/AdmissionPage'));
 const ContactPage = lazy(() => import('@/pages/ContactPage/ContactPage'));
+const MentionsLegalesPage = lazy(() => import('@/pages/LegalPage/MentionsLegalesPage'));
+const PolitiqueConfidentialitePage = lazy(
+  () => import('@/pages/LegalPage/PolitiqueConfidentialitePage')
+);
 
 const RouteLoading = () => (
   <output
@@ -52,6 +56,11 @@ const AppRoutes = () => (
       <Route path={routesStatic.faq} element={<FaqPage />} />
       <Route path={routesStatic.admission} element={<AdmissionPage />} />
       <Route path={routesStatic.contact} element={<ContactPage />} />
+      <Route path={routesStatic.mentionsLegales} element={<MentionsLegalesPage />} />
+      <Route
+        path={routesStatic.politiqueConfidentialite}
+        element={<PolitiqueConfidentialitePage />}
+      />
     </Routes>
   </Suspense>
 );

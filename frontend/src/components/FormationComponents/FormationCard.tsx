@@ -17,7 +17,7 @@ const FormationCard = ({
     <article
       data-gsap
       className={cn(
-        'group overflow-hidden rounded-[1.25rem] border border-ink-100 bg-white shadow-card hover:border-brand-100 hover:shadow-card-hover',
+        'group overflow-hidden rounded-[1.25rem] border border-ink-100 bg-white shadow-card transition-all duration-300 ease-out hover:-translate-y-2 hover:border-brand-300 hover:shadow-card-hover',
         HOVER_CARD
       )}
     >
@@ -30,7 +30,7 @@ const FormationCard = ({
                 decoding="async"
                 src={getImageUrl(formation.image)}
                 alt={formation.titre}
-                className={cn('h-full w-full object-cover', HOVER_IMAGE_ZOOM)}
+                className={cn('h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105', HOVER_IMAGE_ZOOM)}
               />
             </div>
             <div
@@ -48,17 +48,16 @@ const FormationCard = ({
           <div className="mb-4 flex items-start justify-between">
             <Badge>{formation.niveau}</Badge>
             <div className="flex items-center gap-1 text-caption text-ink-500">
-              <Clock className="size-3.5" >
-              {formation.duree}
-              </Clock>
+              <Clock className="size-3.5" />
+              <span>{formation.duree}</span>
             </div>
           </div>
 
-          <h3 className="mb-2 text-h4 font-bold text-ink-900">{formation.titre}</h3>
+          <h3 className="mb-2 text-h4 font-bold text-ink-900 group-hover:text-brand-700 transition-colors">{formation.titre}</h3>
           <p className="mb-4 text-small font-medium text-brand-600">
             {formation.domaine.join(', ')}
           </p>
-          <p className="mb-6 leading-relaxed text-ink-500">{formation.description}</p>
+          <p className="mb-6 leading-relaxed text-justify text-ink-600">{formation.description}</p>
           <div className="mb-6 h-px bg-ink-100" />
 
           <div className="mb-5">
@@ -66,13 +65,13 @@ const FormationCard = ({
               <GraduationCap className="size-4 text-brand-600" />
               Objectifs principaux
             </div>
-            <ul className="space-y-2 text-small text-ink-500">
+            <ul className="space-y-2 text-small text-ink-600">
               {formation.objectifs.slice(0, 3).map((obj) => (
                 <li key={obj} className="flex items-start gap-2">
                   <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-500 text-caption font-bold text-white">
                     ✓
                   </span>
-                  <span>{obj}</span>
+                  <span className="text-justify">{obj}</span>
                 </li>
               ))}
             </ul>

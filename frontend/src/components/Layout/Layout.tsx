@@ -5,6 +5,7 @@ import BackToTop from '../common/BackToTop';
 import ScrollProgress from '../common/ScrollProgress';
 import type { LayoutProps } from '@/types';
 import { useScrollToTop } from '@/hooks';
+import SocialLinks from '../common/SocialLinks';
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   useScrollToTop();
@@ -20,6 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
       </main>
       <Footer />
+      <SocialLinks fixed size={24} />
       <BackToTop />
     </div>
   );
