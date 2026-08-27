@@ -15,6 +15,7 @@ import {
   Trash2,
   Upload,
   UserRound,
+  AlertCircle,
 } from 'lucide-react';
 import { ApiError } from '@/api';
 import { cn } from '@/lib';
@@ -283,7 +284,7 @@ function FilePicker({
           <button
             type="button"
             onClick={() => onChange(null)}
-            className="rounded-lg border border-red-200 bg-white p-2 text-red-600 hover:bg-red-50"
+            className="rounded-lg border border-danger-100 bg-white p-2 text-danger-600 hover:bg-danger-50"
             aria-label={`Supprimer ${config.label}`}
           >
             <Trash2 className="size-3.5" />
@@ -310,13 +311,23 @@ function FilePicker({
         }}
       />
       <p className="text-caption text-ink-400">{config.hint}</p>
-      {error && <p className="text-caption text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="flex items-center gap-1.5 text-caption text-danger-600">
+          <AlertCircle aria-hidden="true" className="size-3.5 shrink-0" />
+          {error}
+        </p>
+      )}
     </div>
   );
 }
 
 const fieldError = (errors: Record<string, string | undefined>, key: string) =>
-  errors[key] ? <p className="mt-1 text-caption text-red-600">{errors[key]}</p> : null;
+  errors[key] ? (
+    <p role="alert" className="mt-1 flex items-center gap-1.5 text-caption text-danger-600">
+      <AlertCircle aria-hidden="true" className="size-3.5 shrink-0" />
+      {errors[key]}
+    </p>
+  ) : null;
 
 const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
   const [formData, setFormData] = useState<AdmissionFormData>(INITIAL_FORM_DATA);
@@ -554,7 +565,7 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
 
   if (submitted) {
     return (
-      <div className="rounded-[1.5rem] border border-ink-100 bg-white p-6 shadow-card sm:p-10">
+      <div className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card sm:p-10">
         <div className="flex flex-col items-center gap-4 py-6 text-center">
           <div className="grid size-16 place-items-center rounded-full bg-brand-100 text-brand-700">
             <CheckCircle2 className="size-9" />
@@ -574,7 +585,7 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
   return (
     <div
       ref={formTopRef}
-      className="scroll-mt-24 overflow-hidden rounded-[1.5rem] border border-ink-100 bg-white p-6 shadow-card sm:p-8"
+      className="scroll-mt-24 overflow-hidden rounded-2xl border border-ink-100 bg-white p-6 shadow-card sm:p-8"
     >
       <h2 className="mb-2 text-h3 text-ink-900">Formulaire de candidature</h2>
       <p className="mb-8 text-small text-ink-500">
@@ -612,7 +623,7 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
                       'relative z-10 grid size-10 place-items-center rounded-full border-2 transition-[background-color,border-color,color,transform] duration-(--duration-hover)',
                       completed && 'border-brand-600 bg-brand-600 text-white hover:scale-105',
                       active &&
-                        'border-brand-600 bg-white text-brand-700 shadow-[0_0_0_5px_rgba(46,106,95,.12)]',
+                        'border-brand-600 bg-white text-brand-700 shadow-[0_0_0_5px_rgb(84_124_54_/_.12)]',
                       !completed && !active && 'border-ink-200 bg-white text-ink-400'
                     )}
                   >
@@ -676,7 +687,7 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
                 onChange={handleChange}
               />
               {errors.eligibility && (
-                <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-small text-red-700">
+                <p className="rounded-xl border border-danger-100 bg-danger-50 p-3 text-small text-danger-700">
                   {errors.eligibility}
                 </p>
               )}
@@ -735,7 +746,7 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
                 {documentValidationRequested && missingDocumentCount > 0 && (
                   <div
                     role="alert"
-                    className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-small text-red-700"
+                    className="mb-5 rounded-xl border border-danger-100 bg-danger-50 px-4 py-3 text-small text-danger-700"
                   >
                     Il reste {missingDocumentCount} pièce{missingDocumentCount > 1 ? 's' : ''}{' '}
                     obligatoire{missingDocumentCount > 1 ? 's' : ''} à joindre.

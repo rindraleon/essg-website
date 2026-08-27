@@ -88,14 +88,14 @@ const Footer = ({
 
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -left-24 top-1/2 size-72 -translate-y-1/2 rounded-full bg-sage-400/[0.07] blur-3xl"
+        className="pointer-events-none absolute -left-24 top-1/2 size-72 -translate-y-1/2 rounded-full bg-brand-400/[0.07] blur-3xl"
       />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -right-24 top-1/2 size-72 -translate-y-1/2 rounded-full bg-brand-500/[0.07] blur-3xl"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="section-shell relative py-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
           <div className="flex items-center gap-3">
             <Link
@@ -142,7 +142,7 @@ const Footer = ({
                 target="_blank"
                 rel="noreferrer"
                 aria-label={social.ariaLabel}
-                className="flex size-9 items-center justify-center rounded-lg border border-white/[0.08] text-ink-300 transition-[color,border-color,background-color,transform] duration-(--duration-hover) hover:-translate-y-0.5 hover:border-sage-400/30 hover:bg-sage-400/10 hover:text-sage-300 motion-reduce:hover:translate-y-0"
+                className="flex size-9 items-center justify-center rounded-lg border border-white/[0.08] text-ink-300 transition-[color,border-color,background-color,transform] duration-(--duration-hover) hover:-translate-y-0.5 hover:border-brand-400/30 hover:bg-brand-400/10 hover:text-brand-300 motion-reduce:hover:translate-y-0"
               >
                 <SocialIcon kind={social.kind} />
               </a>
@@ -150,7 +150,7 @@ const Footer = ({
 
             <Link
               to="/contact"
-              className="group ml-1 inline-flex h-9 items-center gap-1.5 rounded-lg border border-sage-400/25 bg-sage-400/[0.08] px-3 text-caption font-medium text-sage-300 transition-colors duration-(--duration-hover) hover:border-sage-400/40 hover:bg-sage-400/[0.14] hover:text-sage-200"
+              className="group ml-1 inline-flex h-9 items-center gap-1.5 rounded-lg border border-brand-400/25 bg-brand-400/[0.08] px-3 text-caption font-medium text-brand-300 transition-colors duration-(--duration-hover) hover:border-brand-400/40 hover:bg-brand-400/[0.14] hover:text-brand-200"
             >
               Nous contacter
               <ArrowUpRight className="size-3.5 transition-transform duration-(--duration-hover) group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" />
@@ -161,14 +161,14 @@ const Footer = ({
         <ul className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-white/[0.07] pt-5 text-small text-ink-300">
           {contact.address && (
             <li className="flex items-center gap-2">
-              <MapPin className="size-4 shrink-0 text-sage-400/80" strokeWidth={1.8} />
+              <MapPin className="size-4 shrink-0 text-brand-400/80" strokeWidth={1.8} />
               <span className="leading-5">{contact.address}</span>
             </li>
           )}
 
           {contact.phone && (
             <li className="flex items-center gap-2">
-              <Phone className="size-4 shrink-0 text-sage-400/80" strokeWidth={1.8} />
+              <Phone className="size-4 shrink-0 text-brand-400/80" strokeWidth={1.8} />
               <a href={`tel:${contact.phone.replaceAll(/\s+/g, '')}`} className={LINK_CLASS}>
                 {contact.phone}
               </a>
@@ -177,7 +177,7 @@ const Footer = ({
 
           {contact.email && (
             <li className="flex items-center gap-2">
-              <Mail className="size-4 shrink-0 text-sage-400/80" strokeWidth={1.8} />
+              <Mail className="size-4 shrink-0 text-brand-400/80" strokeWidth={1.8} />
               <a href={`mailto:${contact.email}`} className={`${LINK_CLASS} break-all`}>
                 {contact.email}
               </a>

@@ -6,7 +6,8 @@ import campusBelvedere from '../assets/files/images/campus/campus-belvedere.webp
 
 export const SITE_HERO_IMAGE = heroImage;
 
-export const SITE_HERO_ALT = 'Campus ESSG — École Supérieure de Sciences Géomatiques';
+export const SITE_HERO_ALT =
+  "Vue aérienne du campus de l'ESSG à Fianarantsoa : le bâtiment pédagogique et ses abords boisés";
 
 export interface CampusImage {
   src: string;

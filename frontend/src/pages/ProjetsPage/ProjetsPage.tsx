@@ -221,8 +221,8 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
       </FilterToolbar>
 
       {loading && (
-        <section className="py-12">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="section-y-tight">
+          <div className="section-shell">
             <div className="grid gap-8 md:grid-cols-2">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
@@ -243,18 +243,18 @@ const ProjetsPage: React.FC<ProjetsPageProps> = (props: Readonly<ProjetsPageProp
       )}
 
       {error && (
-        <section className="py-12">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="section-y-tight">
+          <div className="section-shell">
             <div className="text-center">
-              <p className="text-red-600">{error}</p>
+              <p className="text-danger-600">{error}</p>
             </div>
           </div>
         </section>
       )}
 
       {!loading && !error && (
-        <section className="py-12">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="section-y-tight">
+          <div className="section-shell">
             {resultCount === 0 ? (
               <EmptyState
                 icon={<Rocket />}

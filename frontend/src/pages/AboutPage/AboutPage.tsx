@@ -104,7 +104,7 @@ const AboutPage: React.FC = () => {
   const teamFallbackImage = CAMPUS_GALLERY[0]?.src ?? SITE_HERO_IMAGE;
 
   return (
-    <div className="min-h-screen overflow-hidden bg-[#f8faf9]">
+    <div className="min-h-screen overflow-hidden bg-[var(--color-ink-50)]">
       <PageHero
         image={SITE_HERO_IMAGE}
         imageAlt="Campus de l'École Supérieure de Sciences Géomatiques"
@@ -115,26 +115,26 @@ const AboutPage: React.FC = () => {
           {
             value: '2026',
             label: 'Année de création',
-            icon: <Compass className="mx-auto size-5 text-sage-300" />,
+            icon: <Compass className="mx-auto size-5 text-brand-300" />,
           },
           {
             value: '2',
             label: 'Cycles de formation',
-            icon: <GraduationCap className="mx-auto size-5 text-sage-300" />,
+            icon: <GraduationCap className="mx-auto size-5 text-brand-300" />,
           },
           {
             value: '1',
             label: 'Campus à Andrainjato',
-            icon: <Map className="mx-auto size-5 text-sage-300" />,
+            icon: <Map className="mx-auto size-5 text-brand-300" />,
           },
         ]}
       />
       <Breadcrumb items={[{ label: 'À propos' }]} />
 
-      <section className="py-20 sm:py-24">
-        <div className="mx-auto grid max-w-7xl items-center gap-14 px-5 sm:px-6 lg:grid-cols-[.92fr_1.08fr] lg:px-8">
+      <section className="section-y">
+        <div className="section-shell grid items-center gap-14 lg:grid-cols-[.92fr_1.08fr] ">
           <RevealOnScroll variant="fade-left" className="relative min-h-[30rem]">
-            <div className="absolute left-0 top-0 w-[72%] overflow-hidden rounded-[2rem] shadow-elevated">
+            <div className="absolute left-0 top-0 w-[72%] overflow-hidden rounded-3xl shadow-elevated">
               <img
                 loading="lazy"
                 decoding="async"
@@ -143,7 +143,7 @@ const AboutPage: React.FC = () => {
                 className="aspect-[4/5] w-full object-cover transition-transform duration-(--duration-section) hover:scale-[1.03] motion-reduce:transform-none"
               />
             </div>
-            <div className="absolute bottom-0 right-0 w-[52%] overflow-hidden rounded-[1.5rem] border-[6px] border-[#f8faf9] shadow-elevated">
+            <div className="absolute bottom-0 right-0 w-[52%] overflow-hidden rounded-2xl border-[6px] border-[var(--color-ink-50)] shadow-elevated">
               <img
                 loading="lazy"
                 decoding="async"
@@ -160,7 +160,7 @@ const AboutPage: React.FC = () => {
           </RevealOnScroll>
 
           <RevealOnScroll variant="fade-right" delay={120}>
-            <span className="inline-flex items-center gap-2 text-caption font-bold uppercase tracking-[0.14em] text-brand-700">
+            <span className="inline-flex items-center gap-2 text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
               <Binoculars className="size-4" />
               Notre identité
             </span>
@@ -183,8 +183,8 @@ const AboutPage: React.FC = () => {
                   Comprendre avec précision
                 </span>
               </div>
-              <div className="rounded-2xl border border-sage-100 bg-white p-4 shadow-card">
-                <strong className="font-tech text-h4 text-sage-700">IMPACT</strong>
+              <div className="rounded-2xl border border-brand-100 bg-white p-4 shadow-card">
+                <strong className="font-tech text-h4 text-brand-700">IMPACT</strong>
                 <span className="mt-1 block text-caption text-ink-500">
                   Décider avec responsabilité
                 </span>
@@ -194,10 +194,10 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="border-y border-ink-100 bg-white py-20 sm:py-24">
-        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+      <section className="border-y border-ink-100 bg-white section-y">
+        <div className="section-shell">
           <RevealOnScroll className="mb-10 max-w-2xl">
-            <span className="text-caption font-bold uppercase tracking-[0.14em] text-brand-700">
+            <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
               Notre cap
             </span>
             <h2 className="mt-3 text-h2 text-ink-950">Une vision claire, une mission concrète</h2>
@@ -205,11 +205,11 @@ const AboutPage: React.FC = () => {
 
           <div className="grid gap-5 lg:grid-cols-2">
             <RevealOnScroll variant="fade-left">
-              <article className="group relative min-h-72 overflow-hidden rounded-[2rem] bg-brand-950 p-7 text-white sm:p-9">
-                <div className="absolute -right-16 -top-16 size-56 rounded-full border border-sage-300/20 transition-transform duration-(--duration-section) group-hover:scale-125 motion-reduce:transform-none" />
-                <div className="absolute -right-4 top-4 size-36 rounded-full border border-sage-300/15" />
-                <Eye className="size-8 text-sage-300" />
-                <span className="mt-12 block font-tech text-caption tracking-[0.18em] text-sage-300">
+              <article className="group relative min-h-72 overflow-hidden rounded-3xl bg-brand-950 p-7 text-white sm:p-9">
+                <div className="absolute -right-16 -top-16 size-56 rounded-full border border-brand-300/20 transition-transform duration-(--duration-section) group-hover:scale-125 motion-reduce:transform-none" />
+                <div className="absolute -right-4 top-4 size-36 rounded-full border border-brand-300/15" />
+                <Eye className="size-8 text-brand-300" />
+                <span className="mt-12 block font-tech text-caption tracking-[0.18em] text-brand-300">
                   VISION
                 </span>
                 <h3 className="mt-3 max-w-lg text-h3">
@@ -222,7 +222,7 @@ const AboutPage: React.FC = () => {
               </article>
             </RevealOnScroll>
             <RevealOnScroll variant="fade-right" delay={100}>
-              <article className="group relative min-h-72 overflow-hidden rounded-[2rem] border border-brand-100 bg-brand-50 p-7 sm:p-9">
+              <article className="group relative min-h-72 overflow-hidden rounded-3xl border border-brand-100 bg-brand-50 p-7 sm:p-9">
                 <ArrowDownRight className="absolute right-7 top-7 size-8 text-brand-300 transition-transform duration-(--duration-hover) group-hover:translate-x-1 group-hover:translate-y-1 motion-reduce:transform-none" />
                 <Rocket className="size-8 text-brand-700" />
                 <span className="mt-12 block font-tech text-caption tracking-[0.18em] text-brand-700">
@@ -241,10 +241,10 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="py-20 sm:py-24">
-        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+      <section className="section-y">
+        <div className="section-shell">
           <RevealOnScroll className="text-center">
-            <span className="text-caption font-bold uppercase tracking-[0.14em] text-brand-700">
+            <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
               Notre trajectoire
             </span>
             <h2 className="mt-3 text-h2 text-ink-950">Une école jeune, pensée pour durer</h2>
@@ -253,11 +253,11 @@ const AboutPage: React.FC = () => {
             <div className="absolute left-[16%] right-[16%] top-8 hidden h-px bg-gradient-to-r from-transparent via-brand-300 to-transparent lg:block" />
             {TIMELINE.map((item, index) => (
               <RevealOnScroll key={item.title} delay={index * 100} className="relative">
-                <article className="group h-full rounded-[1.75rem] border border-ink-100 bg-white p-6 shadow-card transition-[transform,box-shadow,border-color] duration-(--duration-hover) hover:-translate-y-2 hover:border-brand-200 hover:shadow-card-hover motion-reduce:transform-none">
-                  <div className="relative z-10 grid size-16 place-items-center rounded-full border-[6px] border-[#f8faf9] bg-brand-700 font-tech text-small font-bold text-white shadow-lg">
+                <article className="group h-full rounded-2xl border border-ink-100 bg-white p-6 shadow-card transition-[transform,box-shadow,border-color] duration-(--duration-hover) hover:-translate-y-2 hover:border-brand-200 hover:shadow-card-hover motion-reduce:transform-none">
+                  <div className="relative z-10 grid size-16 place-items-center rounded-full border-[6px] border-[var(--color-ink-50)] bg-brand-700 font-tech text-small font-bold text-white shadow-lg">
                     0{index + 1}
                   </div>
-                  <span className="mt-7 block text-caption font-bold uppercase tracking-[0.13em] text-brand-700">
+                  <span className="mt-7 block text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
                     {item.step} · {item.date}
                   </span>
                   <h3 className="mt-2 text-h5 text-ink-950">{item.title}</h3>
@@ -269,10 +269,10 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-brand-50 py-20 sm:py-24">
-        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+      <section className="bg-brand-50 section-y">
+        <div className="section-shell">
           <RevealOnScroll className="mb-12 max-w-2xl">
-            <span className="text-caption font-bold uppercase tracking-[0.14em] text-brand-700">
+            <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
               Notre culture
             </span>
             <h2 className="mt-3 text-h2 text-ink-950">
@@ -282,7 +282,7 @@ const AboutPage: React.FC = () => {
           <div className="grid auto-rows-[minmax(14rem,auto)] gap-4 md:grid-cols-4">
             {VALUES.map(({ icon: Icon, number, title, description, className }, index) => (
               <RevealOnScroll key={title} delay={index * 70} className={className}>
-                <article className="group relative h-full overflow-hidden rounded-[1.75rem] border border-brand-100 bg-white p-6 transition-[transform,box-shadow,border-color] duration-(--duration-hover) hover:-translate-y-1 hover:border-brand-300 hover:shadow-card-hover motion-reduce:transform-none">
+                <article className="group relative h-full overflow-hidden rounded-2xl border border-brand-100 bg-white p-6 transition-[transform,box-shadow,border-color] duration-(--duration-hover) hover:-translate-y-1 hover:border-brand-300 hover:shadow-card-hover motion-reduce:transform-none">
                   <span className="absolute right-5 top-3 font-tech text-[4rem] font-bold leading-none text-brand-950/[0.04]">
                     {number}
                   </span>
@@ -298,11 +298,11 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-ink-950 py-20 text-white sm:py-24">
+      <section className="relative overflow-hidden bg-ink-950 section-y text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_50%,rgba(152,192,112,.14),transparent_30%)]" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-5 sm:px-6 lg:grid-cols-[1.05fr_.95fr] lg:px-8">
+        <div className="relative section-shell grid items-center gap-14 lg:grid-cols-[1.05fr_.95fr] ">
           <RevealOnScroll variant="fade-left">
-            <span className="inline-flex items-center gap-2 text-caption font-bold uppercase tracking-[0.14em] text-sage-300">
+            <span className="inline-flex items-center gap-2 text-caption font-semibold uppercase tracking-[0.14em] text-brand-300">
               <GraduationCap className="size-4" />
               Nos objectifs
             </span>
@@ -315,7 +315,7 @@ const AboutPage: React.FC = () => {
                   key={objective}
                   className="group flex items-start gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.035] p-4 transition-colors duration-(--duration-hover) hover:bg-white/[0.07]"
                 >
-                  <span className="grid size-7 shrink-0 place-items-center rounded-full bg-sage-300/15 font-tech text-caption text-sage-300">
+                  <span className="grid size-7 shrink-0 place-items-center rounded-full bg-brand-300/15 font-tech text-caption text-brand-300">
                     {index + 1}
                   </span>
                   <p className="leading-7 text-white/72">{objective}</p>
@@ -329,11 +329,11 @@ const AboutPage: React.FC = () => {
             className="relative mx-auto aspect-square w-full max-w-md"
           >
             <div className="absolute inset-0 rounded-full border border-white/10" />
-            <div className="absolute inset-[13%] animate-[spin_28s_linear_infinite] rounded-full border border-dashed border-sage-300/25 motion-reduce:animate-none" />
-            <div className="absolute inset-[27%] rounded-full border border-sage-300/25 bg-sage-300/[0.06]" />
+            <div className="absolute inset-[13%] animate-[spin_28s_linear_infinite] rounded-full border border-dashed border-brand-300/25 motion-reduce:animate-none" />
+            <div className="absolute inset-[27%] rounded-full border border-brand-300/25 bg-brand-300/[0.06]" />
             <div className="absolute inset-0 grid place-items-center text-center">
               <div>
-                <Map className="mx-auto size-10 text-sage-300" />
+                <Map className="mx-auto size-10 text-brand-300" />
                 <strong className="mt-4 block font-tech tracking-[0.15em]">TERRITOIRE</strong>
                 <span className="mt-1 block text-caption text-white/45">
                   Observer · Analyser · Agir
@@ -347,7 +347,7 @@ const AboutPage: React.FC = () => {
             ].map(([position, label]) => (
               <span
                 key={label}
-                className={`absolute ${position} rounded-full border border-white/10 bg-ink-950 px-3 py-1.5 font-tech text-[0.6rem] tracking-wider text-sage-300`}
+                className={`absolute ${position} rounded-full border border-white/10 bg-ink-950 px-3 py-1.5 font-tech text-[0.6rem] tracking-wider text-brand-300`}
               >
                 {label}
               </span>
@@ -363,7 +363,7 @@ const AboutPage: React.FC = () => {
         emptyMessage="L'équipe sera présentée prochainement."
         headerContent={
           <RevealOnScroll className="mb-12 text-center">
-            <span className="text-caption font-bold uppercase tracking-[0.14em] text-brand-700">
+            <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
               Les expertises
             </span>
             <h2 className="mt-3 text-h2 text-ink-950">Notre équipe pédagogique</h2>
@@ -374,7 +374,7 @@ const AboutPage: React.FC = () => {
           </RevealOnScroll>
         }
         loadingSkeletons={<MediaCardSkeletonGrid />}
-        sectionClassName="bg-white py-20 sm:py-24"
+        sectionClassName="bg-white section-y"
         containerClassName="w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12"
       >
         <ScrollableCardGrid className="mt-2 w-full" ariaLabel="Équipe pédagogique">
@@ -397,11 +397,11 @@ const AboutPage: React.FC = () => {
         </ScrollableCardGrid>
       </SectionContent>
 
-      <section className="py-20 sm:py-24">
-        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+      <section className="section-y">
+        <div className="section-shell">
           <RevealOnScroll className="mb-12 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <span className="text-caption font-bold uppercase tracking-[0.14em] text-brand-700">
+              <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
                 Le cadre d’étude
               </span>
               <h2 className="mt-3 text-h2 text-ink-950">Le campus, sous un autre angle</h2>
@@ -414,7 +414,7 @@ const AboutPage: React.FC = () => {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-12">
             {CAMPUS_GALLERY.map((image, index) => (
               <RevealOnScroll key={image.src} delay={index * 70} className={gallerySpan(index)}>
-                <figure className="group relative overflow-hidden rounded-[1.75rem] bg-ink-100 shadow-card">
+                <figure className="group relative overflow-hidden rounded-2xl bg-ink-100 shadow-card">
                   <img
                     src={image.src}
                     alt={image.alt}
@@ -427,7 +427,7 @@ const AboutPage: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-ink-950/75 via-transparent to-transparent opacity-75 transition-opacity duration-(--duration-hover) group-hover:opacity-100" />
                   <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 p-5 text-small font-semibold text-white">
                     <span>{image.alt}</span>
-                    <Check className="size-4 text-sage-300" />
+                    <Check className="size-4 text-brand-300" />
                   </figcaption>
                 </figure>
               </RevealOnScroll>

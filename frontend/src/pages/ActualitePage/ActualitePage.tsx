@@ -7,8 +7,7 @@ import {
   FilterToolbar,
   QueryState,
   Pagination,
-} from '@/components';
-import { Input, Select, Skeleton } from '@/components';
+ Input, Select, Skeleton } from '@/components';
 import { cn } from '@/lib';
 import { useActualites, useTitle } from '@/hooks';
 import type { Actualite } from '@/types';
@@ -133,8 +132,8 @@ const ActualitesPage = () => {
         </Select>
       </FilterToolbar>
 
-      <section className="py-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="section-y-tight">
+        <div className="section-shell">
           <QueryState
             loading={loading}
             error={error}

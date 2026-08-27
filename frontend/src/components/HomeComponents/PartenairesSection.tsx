@@ -109,7 +109,7 @@ const PartenairesSection = ({
   const renderContenu = () => {
     if (loading) {
       return (
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="section-shell">
           <div className="flex gap-4 overflow-hidden">
             {Array.from({ length: 4 }).map((_, index) => (
               <div
@@ -144,8 +144,8 @@ const PartenairesSection = ({
   };
 
   return (
-    <section className="overflow-hidden bg-gradient-to-br from-ink-50 via-white to-sage-50/55 py-20 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="overflow-hidden bg-gradient-to-br from-ink-50 via-white to-brand-50/55 section-y">
+      <div className="section-shell">
         <SectionHeader
           eyebrow="Réseau & Coopérations"
           title={title}
@@ -155,7 +155,7 @@ const PartenairesSection = ({
 
       {renderContenu()}
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="section-shell">
         <SectionCta label={SECTION_CTA.label} link={SECTION_CTA.link} />
       </div>
     </section>

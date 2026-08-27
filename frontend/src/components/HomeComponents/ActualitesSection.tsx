@@ -60,7 +60,7 @@ const ActualitesSection = () => {
         />
       }
       loadingSkeletons={<MediaCardSkeletonGrid layout="home" />}
-      sectionClassName="bg-gradient-to-br from-white via-sage-50/55 to-brand-50/45 py-20"
+      sectionClassName="bg-gradient-to-br from-white via-brand-50/55 to-brand-50/45 section-y"
       fluid
       containerClassName="max-w-none"
     >

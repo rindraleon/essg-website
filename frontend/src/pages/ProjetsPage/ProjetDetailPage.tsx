@@ -54,7 +54,7 @@ const ProjetDetailPage: React.FC = () => {
 
   if (error || !projet) {
     return (
-      <div className="min-h-screen bg-ink-50 px-5 py-24">
+      <div className="min-h-screen bg-ink-50 px-5 section-y">
         <EmptyState
           icon={<Rocket />}
           title="Projet introuvable"
@@ -72,7 +72,7 @@ const ProjetDetailPage: React.FC = () => {
     : 'Madagascar';
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-ink-50 via-white to-sage-50/30">
+    <div className="min-h-screen bg-gradient-to-b from-ink-50 via-white to-brand-50/30">
       <DetailHero
         eyebrow={projet.type || 'Projet ESSG'}
         title={projet.titre}
@@ -90,12 +90,12 @@ const ProjetDetailPage: React.FC = () => {
 
       <Breadcrumb items={[{ label: 'Projets', to: '/projets' }, { label: projet.titre }]} />
 
-      <main className="mx-auto max-w-7xl px-5 py-14 sm:px-6 lg:px-8 lg:py-20">
+      <main className="section-shell section-y-tight">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
           <div className="space-y-7">
             <RevealOnScroll>
-              <section className="rounded-[2rem] border border-ink-100 bg-white p-6 shadow-card sm:p-9">
-                <span className="text-caption font-bold uppercase tracking-[0.14em] text-brand-700">
+              <section className="rounded-3xl border border-ink-100 bg-white p-6 shadow-card sm:p-9">
+                <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
                   Le projet
                 </span>
                 <h2 className="mt-3 text-h2 text-ink-950">Contexte et ambition</h2>
@@ -107,8 +107,8 @@ const ProjetDetailPage: React.FC = () => {
 
             {projet.objectifs && projet.objectifs.length > 0 && (
               <RevealOnScroll delay={80}>
-                <section className="rounded-[2rem] border border-brand-100 bg-brand-50/60 p-6 sm:p-9">
-                  <span className="text-caption font-bold uppercase tracking-[0.14em] text-brand-700">
+                <section className="rounded-3xl border border-brand-100 bg-brand-50/60 p-6 sm:p-9">
+                  <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
                     Résultats attendus
                   </span>
                   <h2 className="mt-3 text-h3 text-ink-950">Objectifs du projet</h2>
@@ -131,10 +131,10 @@ const ProjetDetailPage: React.FC = () => {
 
             {projet.location && (
               <RevealOnScroll delay={120}>
-                <section className="overflow-hidden rounded-[2rem] border border-ink-100 bg-white shadow-card">
+                <section className="overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-card">
                   <div className="flex items-center justify-between gap-4 p-6 sm:p-7">
                     <div>
-                      <span className="text-caption font-bold uppercase tracking-[0.14em] text-brand-700">
+                      <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
                         Implantation
                       </span>
                       <h2 className="mt-2 text-h3 text-ink-950">Localisation du projet</h2>
@@ -157,7 +157,7 @@ const ProjetDetailPage: React.FC = () => {
 
           <aside className="space-y-5 lg:sticky lg:top-28">
             <RevealOnScroll variant="fade-right">
-              <section className="rounded-[1.75rem] border border-ink-100 bg-white p-6 shadow-card">
+              <section className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card">
                 <h2 className="text-h5 text-ink-950">Informations clés</h2>
                 <dl className="mt-6 space-y-5">
                   <div className="flex gap-3">
@@ -189,9 +189,9 @@ const ProjetDetailPage: React.FC = () => {
 
             {projet.partenaires && projet.partenaires.length > 0 && (
               <RevealOnScroll variant="fade-right" delay={80}>
-                <section className="rounded-[1.75rem] border border-sage-100 bg-sage-50/70 p-6">
+                <section className="rounded-2xl border border-brand-100 bg-brand-50/70 p-6">
                   <h2 className="flex items-center gap-2 text-h5 text-ink-950">
-                    <Handshake className="size-5 text-sage-700" />
+                    <Handshake className="size-5 text-brand-700" />
                     Partenaires
                   </h2>
                   <ul className="mt-4 space-y-2">
@@ -200,7 +200,7 @@ const ProjetDetailPage: React.FC = () => {
                         key={partenaire}
                         className="flex items-start gap-2 text-small text-ink-700"
                       >
-                        <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-sage-600" />
+                        <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-brand-600" />
                         {partenaire}
                       </li>
                     ))}
@@ -211,9 +211,9 @@ const ProjetDetailPage: React.FC = () => {
 
             {projet.sources && projet.sources.length > 0 && (
               <RevealOnScroll variant="fade-right" delay={140}>
-                <section className="rounded-[1.75rem] border border-ink-100 bg-ink-950 p-6 text-white">
+                <section className="rounded-2xl border border-ink-100 bg-ink-950 p-6 text-white">
                   <h2 className="flex items-center gap-2 text-h5">
-                    <Database className="size-5 text-sage-300" />
+                    <Database className="size-5 text-brand-300" />
                     Sources
                   </h2>
                   <ul className="mt-4 space-y-2">
@@ -226,7 +226,7 @@ const ProjetDetailPage: React.FC = () => {
                           className="group flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2.5 text-small text-white/75 hover:bg-white/10 hover:text-white"
                         >
                           <span className="truncate">{source.title}</span>
-                          <ArrowUpRight className="size-4 shrink-0 text-sage-300" />
+                          <ArrowUpRight className="size-4 shrink-0 text-brand-300" />
                         </a>
                       </li>
                     ))}
@@ -239,10 +239,10 @@ const ProjetDetailPage: React.FC = () => {
       </main>
 
       {galleryImages.length > 0 && (
-        <section className="border-y border-ink-100 bg-sage-50/55 py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+        <section className="border-y border-ink-100 bg-brand-50/55 section-y-tight">
+          <div className="section-shell">
             <RevealOnScroll className="mb-9 max-w-2xl">
-              <span className="text-caption font-bold uppercase tracking-[0.14em] text-sage-700">
+              <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
                 Documentation visuelle
               </span>
               <h2 className="mt-3 text-h2 text-ink-950">Galerie du projet</h2>
@@ -255,7 +255,7 @@ const ProjetDetailPage: React.FC = () => {
         </section>
       )}
 
-      <div className="mx-auto max-w-7xl px-5 py-10 sm:px-6 lg:px-8">
+      <div className="section-shell py-10">
         <Link
           to="/projets"
           className="inline-flex items-center gap-2 text-small font-semibold text-brand-700 hover:text-brand-800"

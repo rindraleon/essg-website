@@ -29,7 +29,7 @@ const FaqPage: React.FC<FaqPageProps> = (props: Readonly<FaqPageProps>) => {
 
       <Breadcrumb items={[{ label: 'FAQ' }]} />
 
-      <section className="py-12">
+      <section className="section-y-tight">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <FaqAccordion faqs={faqs} />
 

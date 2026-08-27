@@ -44,19 +44,19 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
       id: 'telephone',
       icon: <Phone />,
       title: 'Téléphone',
-      lines: ['+261 34 28 085 30', '+261 33 12 345 67'],
+      lines: ['+261 xx xx xxx xx'],
     },
     {
       id: 'email',
       icon: <Mail />,
       title: 'Email',
-      lines: ['contact@essg.mg', 'admission@essg.mg'],
+      lines: ['essg@unif-fianarantsoa.mg'],
     },
     {
       id: 'horaires',
       icon: <Clock />,
       title: 'Horaires',
-      lines: ['Lundi - Vendredi : 8h - 17h', 'Samedi : 9h - 13h', 'Dimanche : Fermé'],
+      lines: ['Lundi - Vendredi : 8h - 17h'],
     },
   ];
 
@@ -76,8 +76,8 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
 
       <Breadcrumb items={[{ label: 'Contact' }]} />
 
-      <section className="py-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="section-y-tight">
+        <div className="section-shell">
           <div className="grid gap-8 lg:grid-cols-3">
             <div className="lg:col-span-1">
               <ContactInfoCards items={contactItems} />
@@ -90,8 +90,8 @@ const ContactPage: React.FC<ContactPageProps> = (props: Readonly<ContactPageProp
         </div>
       </section>
 
-      <section className="bg-white py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="bg-white section-y-tight">
+        <div className="section-shell">
           <h2 className="mb-6 text-h3 text-ink-900">Localisation</h2>
           <MapEmbed lat={mapLat} lng={mapLng} label={mapLabel} adresse={mapAdresse} zoom="city" />
         </div>

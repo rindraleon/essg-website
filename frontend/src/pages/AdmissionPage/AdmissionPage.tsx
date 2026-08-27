@@ -13,7 +13,7 @@ const HERO_IMAGE = SITE_HERO_IMAGE;
 const AdmissionClosed = () => {
   const navigate = useNavigate();
   return (
-    <div className="mx-auto max-w-xl px-4 py-16 sm:px-6">
+    <div className="mx-auto max-w-xl px-4 section-y-tight sm:px-6">
       <EmptyState
         icon={<CalendarX2 className="size-10" />}
         title="Les inscriptions sont actuellement fermées"
@@ -39,7 +39,7 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPa
   const renderAdmissionContent = () => {
     if (isLoading) {
       return (
-        <div className="flex flex-col items-center gap-3 rounded-[1.5rem] border border-ink-100 bg-white py-16 text-ink-500 shadow-card">
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-ink-100 bg-white section-y-tight text-ink-500 shadow-card">
           <LoaderCircle className="size-8 animate-spin text-brand-600" />
           <p className="text-small">Chargement du formulaire...</p>
         </div>
@@ -59,7 +59,7 @@ const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPa
 
       <Breadcrumb items={[{ label: 'Admission' }]} />
 
-      <section className="py-12">
+      <section className="section-y-tight">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           {renderAdmissionContent()}
         </div>

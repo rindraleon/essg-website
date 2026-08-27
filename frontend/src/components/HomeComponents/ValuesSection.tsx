@@ -47,11 +47,11 @@ const VALUES: ValueItem[] = [
 
 const ValuesSection: React.FC = () => {
   return (
-    <section className="relative overflow-hidden bg-brand-300/10 py-12 sm:py-14">
+    <section className="relative overflow-hidden bg-brand-300/10 section-y-tight">
       <ParticlesBackground particleCount={85} />
-      <div className="absolute inset-0 -z-10 opacity-[0.03] [background-image:radial-gradient(circle_at_50%_50%,#2e6a5f_1px,transparent_1px)] [background-size:24px_24px]" />
+      <div className="absolute inset-0 -z-10 opacity-[0.03] [background-image:radial-gradient(circle_at_50%_50%,var(--color-brand-700)_1px,transparent_1px)] [background-size:24px_24px]" />
       
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="section-shell">
         <SectionHeader
           eyebrow="Principes Directeurs"
           title="Nos valeurs"

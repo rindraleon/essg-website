@@ -17,7 +17,7 @@ const FormationCard = ({
     <article
       data-gsap
       className={cn(
-        'group overflow-hidden rounded-[1.25rem] border border-ink-100 bg-white shadow-card transition-all duration-300 ease-out hover:-translate-y-2 hover:border-brand-300 hover:shadow-card-hover',
+        'group overflow-hidden rounded-xl border border-ink-100 bg-white shadow-card transition-all duration-300 ease-out hover:-translate-y-2 hover:border-brand-300 hover:shadow-card-hover',
         HOVER_CARD
       )}
     >

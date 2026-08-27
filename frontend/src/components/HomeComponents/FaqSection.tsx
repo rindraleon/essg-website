@@ -18,7 +18,7 @@ const FaqSection = () => {
           description="Les réponses aux questions les plus posées sur l'admission, le cursus et la vie à l'ESSG"
         />
       }
-      sectionClassName="bg-gradient-to-br from-white via-brand-50/45 to-sage-50/50 py-20"
+      sectionClassName="bg-gradient-to-br from-white via-brand-50/45 to-brand-50/50 section-y"
     >
       <div className="mx-auto max-w-4xl">
         <FaqAccordion faqs={HOME_FAQ_ITEMS} />

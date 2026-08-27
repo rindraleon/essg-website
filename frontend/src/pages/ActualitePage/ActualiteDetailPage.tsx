@@ -60,7 +60,7 @@ const ActualiteDetailPage: React.FC = () => {
 
   if (error || !actualite) {
     return (
-      <div className="min-h-screen bg-ink-50 px-5 py-24">
+      <div className="min-h-screen bg-ink-50 px-5 section-y">
         <EmptyState
           icon={<Newspaper />}
           title="Article introuvable"
@@ -94,7 +94,7 @@ const ActualiteDetailPage: React.FC = () => {
           <button
             type="button"
             onClick={() => void handleShare()}
-            className="inline-flex items-center gap-2 rounded-full bg-sage-400 px-5 py-2.5 text-small font-bold text-brand-950 transition-[transform,background-color] hover:-translate-y-0.5 hover:bg-sage-300 motion-reduce:transform-none"
+            className="inline-flex items-center gap-2 rounded-full bg-brand-400 px-5 py-2.5 text-small font-bold text-brand-950 transition-[transform,background-color] hover:-translate-y-0.5 hover:bg-brand-300 motion-reduce:transform-none"
           >
             <Share2 className="size-4" />
             Partager l’article
@@ -106,9 +106,9 @@ const ActualiteDetailPage: React.FC = () => {
         items={[{ label: 'Actualités', to: '/actualites' }, { label: actualite.titre }]}
       />
 
-      <main className="mx-auto grid max-w-7xl gap-8 px-5 py-14 sm:px-6 lg:grid-cols-[minmax(0,1fr)_18rem] lg:px-8 lg:py-20">
+      <main className="section-shell grid gap-8 section-y-tight lg:grid-cols-[minmax(0,1fr)_18rem]">
         <RevealOnScroll variant="fade-up">
-          <article className="overflow-hidden rounded-[2rem] border border-ink-100 bg-white shadow-card">
+          <article className="overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-card">
             <div className="p-6 sm:p-9 lg:p-12">
               <div className="mb-8 flex flex-wrap items-center gap-3 border-b border-ink-100 pb-6">
                 <CategoryChip category={actualite.categorie} size="small" />
@@ -117,7 +117,7 @@ const ActualiteDetailPage: React.FC = () => {
                 </span>
               </div>
               {actualite.resume && (
-                <p className="mb-8 border-l-4 border-sage-400 pl-5 text-h5 leading-8 text-ink-800">
+                <p className="mb-8 border-l-4 border-brand-400 pl-5 text-h5 leading-8 text-ink-800">
                   {actualite.resume}
                 </p>
               )}
@@ -137,8 +137,8 @@ const ActualiteDetailPage: React.FC = () => {
 
         <aside className="space-y-5 lg:sticky lg:top-28 lg:self-start">
           <RevealOnScroll variant="fade-right" delay={100}>
-            <div className="rounded-[1.5rem] border border-brand-100 bg-brand-50 p-5">
-              <span className="text-caption font-bold uppercase tracking-[0.14em] text-brand-700">
+            <div className="rounded-2xl border border-brand-100 bg-brand-50 p-5">
+              <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
                 Publication
               </span>
               <dl className="mt-5 space-y-4">
@@ -167,10 +167,10 @@ const ActualiteDetailPage: React.FC = () => {
       </main>
 
       {galleryImages.length > 0 && (
-        <section className="border-y border-ink-100 bg-brand-50/45 py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+        <section className="border-y border-ink-100 bg-brand-50/45 section-y-tight">
+          <div className="section-shell">
             <RevealOnScroll className="mb-9 max-w-2xl">
-              <span className="text-caption font-bold uppercase tracking-[0.14em] text-brand-700">
+              <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
                 En images
               </span>
               <h2 className="mt-3 text-h2 text-ink-950">Galerie de l’événement</h2>
@@ -184,17 +184,17 @@ const ActualiteDetailPage: React.FC = () => {
       )}
 
       {relatedItems.length > 0 && (
-        <section className="bg-white py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+        <section className="bg-white section-y-tight">
+          <div className="section-shell">
             <h2 className="text-h3 text-ink-950">À lire également</h2>
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               {relatedItems.map((item, index) => (
                 <RevealOnScroll key={item.id} delay={index * 80}>
                   <Link
                     to={`/actualites/${item.slug}`}
-                    className="group block h-full rounded-[1.5rem] border border-ink-100 bg-ink-50/55 p-5 transition-[transform,border-color,box-shadow] hover:-translate-y-1 hover:border-brand-200 hover:shadow-card-hover motion-reduce:transform-none"
+                    className="group block h-full rounded-2xl border border-ink-100 bg-ink-50/55 p-5 transition-[transform,border-color,box-shadow] hover:-translate-y-1 hover:border-brand-200 hover:shadow-card-hover motion-reduce:transform-none"
                   >
-                    <span className="text-caption font-bold uppercase tracking-wider text-brand-700">
+                    <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
                       {item.categorie}
                     </span>
                     <h3 className="mt-3 text-h5 text-ink-950 group-hover:text-brand-700">

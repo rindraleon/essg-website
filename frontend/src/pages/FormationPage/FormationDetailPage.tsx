@@ -24,7 +24,7 @@ const FormationDetailPage: React.FC = () => {
 
   if (error || !formation) {
     return (
-      <div className="min-h-screen bg-ink-50 px-5 py-24">
+      <div className="min-h-screen bg-ink-50 px-5 section-y">
         <EmptyState
           icon={<BookOpen />}
           title="Formation introuvable"
@@ -55,7 +55,7 @@ const FormationDetailPage: React.FC = () => {
           <>
             <a
               href="#programme"
-              className="inline-flex items-center rounded-full bg-sage-400 px-5 py-2.5 text-small font-bold text-brand-950 hover:bg-sage-300"
+              className="inline-flex items-center rounded-full bg-brand-400 px-5 py-2.5 text-small font-bold text-brand-950 hover:bg-brand-300"
             >
               Voir le programme
             </a>

@@ -133,7 +133,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
 
         {isHomeLayout && (
           <div className="absolute inset-x-0 bottom-0 z-10 flex h-[9.25rem] flex-col justify-end bg-gradient-to-t from-ink-950/95 via-ink-950/65 to-transparent p-5 pt-12">
-            <h3 className="flex h-[3.75rem] items-end text-h4 font-bold text-white group-hover:text-sage-200 transition-colors">
+            <h3 className="flex h-[3.75rem] items-end text-h4 font-bold text-white group-hover:text-brand-200 transition-colors">
               <Link
                 to={to}
                 className={titleLinkClass}
@@ -142,8 +142,8 @@ const MediaCard: React.FC<MediaCardProps> = ({
                 <span className="line-clamp-2">{title}</span>
               </Link>
             </h3>
-            <p className="mt-1 h-5 truncate text-small text-sage-300">{subtitle || '\u00a0'}</p>
-            <span className="mt-2 inline-flex h-4 items-center gap-1.5 text-caption font-semibold text-white/85 transition-colors duration-(--duration-micro) group-hover:text-sage-300 group-focus-within:text-sage-300 motion-reduce:transition-none">
+            <p className="mt-1 h-5 truncate text-small text-brand-300">{subtitle || '\u00a0'}</p>
+            <span className="mt-2 inline-flex h-4 items-center gap-1.5 text-caption font-semibold text-white/85 transition-colors duration-(--duration-micro) group-hover:text-brand-300 group-focus-within:text-brand-300 motion-reduce:transition-none">
               {actionLabel}
               <ArrowUpRight className="size-3.5 transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1 motion-reduce:transition-none" />
             </span>
@@ -217,7 +217,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
             </div>
           )}
 
-          <h3 className="text-h3 font-bold text-white group-hover:text-sage-200 transition-colors">
+          <h3 className="text-h3 font-bold text-white group-hover:text-brand-200 transition-colors">
             <Link
               to={to}
               className={titleLinkClass}
@@ -227,7 +227,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
             </Link>
           </h3>
 
-          <span className="mt-2 inline-flex items-center gap-1.5 text-caption font-semibold uppercase text-white/85 transition-colors duration-(--duration-micro) group-hover:text-sage-300 group-focus-within:text-sage-300 motion-reduce:transition-none">
+          <span className="mt-2 inline-flex items-center gap-1.5 text-caption font-semibold uppercase text-white/85 transition-colors duration-(--duration-micro) group-hover:text-brand-300 group-focus-within:text-brand-300 motion-reduce:transition-none">
             {actionLabel}
             <ArrowUpRight className="size-3.5 transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:-translate-y-1 motion-reduce:transition-none" />
           </span>
@@ -236,7 +236,7 @@ const MediaCard: React.FC<MediaCardProps> = ({
 
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-30 rounded-2xl ring-2 ring-sage-400 opacity-0 group-focus-within:opacity-100"
+        className="pointer-events-none absolute inset-0 z-30 rounded-2xl ring-2 ring-brand-400 opacity-0 group-focus-within:opacity-100"
       />
     </article>
   );

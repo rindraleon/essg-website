@@ -28,4 +28,3 @@ export { default as useScrollToTop } from './useScrollToTop';
 export { ALL, useSectionFilters } from './useSectionFilters';
 export type { FilterDefinition } from './useSectionFilters';
 export { useTitle } from './useTitle';
-export { default as useTyped } from './useTyped';

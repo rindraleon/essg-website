@@ -67,7 +67,7 @@ const PartenaireDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-ink-50">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="section-shell section-y">
           <div className="space-y-8">
             <div className="skeleton-shimmer h-64 rounded-3xl" />
             <div className="grid gap-8 lg:grid-cols-3">
@@ -84,7 +84,7 @@ const PartenaireDetailPage: React.FC = () => {
   if (error || !partenaire) {
     return (
       <div className="min-h-screen bg-ink-50">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="section-shell section-y">
           <EmptyState
             icon={<Handshake />}
             title="Partenaire introuvable"
@@ -156,7 +156,7 @@ const PartenaireDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-ink-50 via-white to-sage-50/35">
+    <div className="min-h-screen bg-gradient-to-b from-ink-50 via-white to-brand-50/35">
       <DetailHero
         eyebrow="Partenaire ESSG"
         title={partenaire.nom}
@@ -169,7 +169,7 @@ const PartenaireDetailPage: React.FC = () => {
           ...(partenaire.pays ? [{ icon: Globe, label: partenaire.pays }] : []),
         ]}
         visual={
-          <div className="grid size-40 place-items-center overflow-hidden rounded-[2rem] border-4 border-white/15 bg-white p-5 shadow-2xl sm:size-48">
+          <div className="grid size-40 place-items-center overflow-hidden rounded-3xl border-4 border-white/15 bg-white p-5 shadow-2xl sm:size-48">
             {logoUrl ? (
               <img
                 src={logoUrl}
@@ -189,7 +189,7 @@ const PartenaireDetailPage: React.FC = () => {
               href={partenaire.siteWeb}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-sage-400 px-5 py-2.5 text-small font-bold text-brand-950 hover:bg-sage-300"
+              className="inline-flex items-center gap-2 rounded-full bg-brand-400 px-5 py-2.5 text-small font-bold text-brand-950 hover:bg-brand-300"
             >
               <Globe className="size-4" />
               Visiter le site
@@ -203,7 +203,7 @@ const PartenaireDetailPage: React.FC = () => {
         items={[{ label: 'Partenaires', to: '/partenaires' }, { label: partenaire.nom }]}
       />
 
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+      <div className="section-shell section-y-tight">
         <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
           <div className="space-y-6 lg:col-span-2">
             <ProfileSection

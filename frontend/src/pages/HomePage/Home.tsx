@@ -26,7 +26,6 @@ const Home = () => {
     <div className="flex flex-col">
       {/* 1. Slogan & Hero */}
       <HeroSection />
-      <div id="contenu" className="sr-only" aria-hidden="true" />
 
       {/* 2. Qui sommes-nous ? */}
       <WhoWeAreSection />

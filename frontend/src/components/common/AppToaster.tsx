@@ -8,7 +8,7 @@ const AppToaster = () => (
     toastOptions={{
       duration: 5000,
       style: {
-        background: '#1e2829',
+        background: 'var(--color-ink-950)',
         color: '#ffffff',
         borderRadius: '0.75rem',
         padding: '12px 16px',
@@ -22,7 +22,7 @@ const AppToaster = () => (
       },
       error: {
         duration: 7000,
-        iconTheme: { primary: '#ef4444', secondary: '#ffffff' },
+        iconTheme: { primary: 'var(--color-danger-500)', secondary: '#ffffff' },
       },
     }}
   />

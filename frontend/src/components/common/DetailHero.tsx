@@ -51,13 +51,13 @@ const DetailHero = ({
       className={cn(
         'absolute inset-0 -z-20',
         image
-          ? 'bg-[linear-gradient(90deg,rgba(15,33,30,.97)_0%,rgba(15,33,30,.84)_52%,rgba(15,33,30,.52)_100%)]'
-          : 'bg-[radial-gradient(circle_at_82%_30%,rgba(152,192,112,.18),transparent_30%),linear-gradient(135deg,#0f211e,#1e3a35)]'
+          ? 'bg-[linear-gradient(90deg,rgb(27_31_34_/_.97)_0%,rgb(27_31_34_/_.84)_52%,rgb(27_31_34_/_.52)_100%)]'
+          : 'bg-[radial-gradient(circle_at_82%_30%,rgb(152_192_112_/_.18),transparent_30%),linear-gradient(135deg,var(--color-ink-950),var(--color-ink-900))]'
       )}
     />
     <div className="absolute inset-0 -z-10 opacity-[0.07] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:56px_56px]" />
 
-    <div className="mx-auto grid min-h-[34rem] max-w-7xl items-center gap-10 px-5 pb-16 pt-20 sm:px-6 sm:pt-24 lg:grid-cols-[1fr_auto] lg:px-8">
+    <div className="section-shell grid min-h-[34rem] items-center gap-10 pb-16 pt-20 sm:pt-24 lg:grid-cols-[1fr_auto]">
       <RevealOnScroll variant="fade-left" className="max-w-4xl">
         <Link
           to={backTo}
@@ -66,7 +66,7 @@ const DetailHero = ({
           <ArrowLeft className="size-3.5" />
           {backLabel}
         </Link>
-        <p className="font-tech text-caption uppercase tracking-[0.16em] text-sage-300">
+        <p className="font-tech text-caption uppercase tracking-[0.16em] text-brand-300">
           {eyebrow}
         </p>
         <h1 className="mt-4 max-w-4xl text-[clamp(2.5rem,5.5vw,5rem)] font-semibold leading-[1.02] tracking-[-0.045em] text-white">
@@ -82,7 +82,7 @@ const DetailHero = ({
                 key={label}
                 className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.07] px-3.5 py-2 text-small text-white/80 backdrop-blur-md"
               >
-                {Icon && <Icon className="size-4 text-sage-300" />}
+                {Icon && <Icon className="size-4 text-brand-300" />}
                 {label}
               </li>
             ))}

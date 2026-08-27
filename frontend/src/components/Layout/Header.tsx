@@ -11,8 +11,8 @@ const NAVIGATION = [
   { name: 'Accueil', href: '/' },
   { name: 'À propos', href: '/about' },
   { name: 'Formations', href: '/formations' },
-  { name: 'Actualités', href: '/actualites' },
   { name: 'Projets', href: '/projets' },
+  { name: 'Actualités', href: '/actualites' },
   { name: 'Partenaires', href: '/partenaires' },
 ] as const;
 
@@ -97,7 +97,7 @@ const Header = () => {
   let headerSurface = 'border-ink-100/70 bg-white/90 backdrop-blur-sm';
   if (scrolled) {
     headerSurface =
-      'border-white/35 bg-white/40 shadow-[0_8px_28px_-18px_rgba(15,33,30,0.38)] backdrop-blur-xl backdrop-saturate-150';
+      'border-white/35 bg-white/40 shadow-[0_8px_28px_-18px_rgba(27,31,34,0.38)] backdrop-blur-xl backdrop-saturate-150';
   }
   if (mobileMenuOpen) {
     headerSurface = 'border-ink-100 bg-white/95 shadow-card backdrop-blur-xl';
@@ -110,7 +110,7 @@ const Header = () => {
         headerSurface
       )}
     >
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <nav className="section-shell">
         <div className="flex h-16 items-center justify-between sm:h-[4.5rem]">
           <Link to="/" className="flex items-center" aria-label="Retour à l'accueil">
             <img
@@ -120,7 +120,7 @@ const Header = () => {
               fetchPriority="high"
               decoding="async"
               className={cn(
-                'h-14 w-auto origin-left object-contain transition-transform duration-(--duration-hover) ease-out sm:h-16',
+                'h-11 w-auto origin-left object-contain transition-transform duration-(--duration-hover) ease-out sm:h-12',
                 'motion-reduce:transition-none',
                 scrolled && 'scale-[0.88]'
               )}

@@ -33,9 +33,9 @@ const LocalisationSection: React.FC<LocalisationSectionProps> = (
   return (
     <section
       ref={revealRef}
-      className="relative overflow-hidden bg-gradient-to-b from-ink-50/50 via-white to-brand-50/30 py-24"
+      className="relative overflow-hidden bg-gradient-to-b from-ink-50/50 via-white to-brand-50/30 section-y"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="section-shell">
         <SectionHeader
           eyebrow="Contact & Accès"
           title = 'Restons en contact'
@@ -58,7 +58,7 @@ const LocalisationSection: React.FC<LocalisationSectionProps> = (
               </div>
 
               <div className="flex items-start gap-4 rounded-2xl border border-ink-100 bg-white p-4.5 shadow-sm transition-all duration-300 hover:border-brand-300 hover:shadow-card">
-                <div className="grid size-11 shrink-0 place-items-center rounded-xl bg-sage-50 text-sage-800">
+                <div className="grid size-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-800">
                   <Globe className="size-5 text-brand-700" />
                 </div>
                 <div className="space-y-2 flex-1">

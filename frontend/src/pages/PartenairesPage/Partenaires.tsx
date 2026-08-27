@@ -185,8 +185,8 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
       </FilterToolbar>
 
       {loading && (
-        <section className="py-12">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="section-y-tight">
+          <div className="section-shell">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={i} className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card">
@@ -204,18 +204,18 @@ const PartenairesPage: React.FC<PartenairesPageProps> = (props: Readonly<Partena
       )}
 
       {error && (
-        <section className="py-12">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="section-y-tight">
+          <div className="section-shell">
             <div className="text-center">
-              <p className="text-red-600">{error}</p>
+              <p className="text-danger-600">{error}</p>
             </div>
           </div>
         </section>
       )}
 
       {!loading && !error && (
-        <section className="py-12">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="section-y-tight">
+          <div className="section-shell">
             {resultCount === 0 ? (
               <EmptyState
                 icon={<Handshake />}

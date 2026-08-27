@@ -7,7 +7,7 @@ const FaqAccordion = ({ faqs }: FaqAccordionProps) => {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
-    <div className="rounded-[1.5rem] border border-ink-100 bg-white p-6 shadow-card sm:p-8">
+    <div className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card sm:p-8">
       <div className="space-y-3">
         {faqs.map((faq, index) => {
           const panelId = `faq-${index}`;
@@ -16,8 +16,8 @@ const FaqAccordion = ({ faqs }: FaqAccordionProps) => {
             <div
               key={panelId}
               className={cn(
-                'overflow-hidden rounded-[0.9rem] border border-ink-100 transition-[border-color,box-shadow] duration-(--duration-hover)',
-                isOpen && 'border-brand-200 shadow-[0_12px_32px_-16px_rgba(46,106,95,0.35)]'
+                'overflow-hidden rounded-lg border border-ink-100 transition-[border-color,box-shadow] duration-(--duration-hover)',
+                isOpen && 'border-brand-200 shadow-[0_12px_32px_-16px_rgb(84_124_54_/_0.35)]'
               )}
             >
               <button

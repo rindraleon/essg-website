@@ -251,7 +251,7 @@ const PolitiqueConfidentialitePage: React.FC = () => {
 
       <Breadcrumb items={[{ label: 'Politique de confidentialité' }]} />
 
-      <section className="py-14 sm:py-20">
+      <section className="section-y-tight">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <RevealOnScroll variant="fade-up" className="mb-12">
             <div className="grid gap-4 sm:grid-cols-3">
@@ -302,7 +302,7 @@ const PolitiqueConfidentialitePage: React.FC = () => {
               </div>
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 rounded-xl bg-sage-400 px-5 py-3 text-small font-semibold text-ink-950 shadow-sm transition-transform duration-200 hover:scale-[1.03] hover:bg-sage-300"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand-400 px-5 py-3 text-small font-semibold text-ink-950 shadow-sm transition-transform duration-200 hover:scale-[1.03] hover:bg-brand-300"
               >
                 Nous contacter
                 <ArrowRight className="size-4" />

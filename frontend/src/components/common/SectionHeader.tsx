@@ -3,84 +3,112 @@ import React from 'react';
 import { Sparkles } from 'lucide-react';
 
 import { cn } from '@/lib';
+import Eyebrow from './Eyebrow';
 
 import { RevealOnScroll } from './RevealOnScroll';
 
 export interface SectionHeaderProps {
   title: string;
-  description?: string;
+  /** Accepte du texte enrichi (mises en valeur, liens) et pas seulement une chaîne. */
+  description?: React.ReactNode;
   eyebrow?: string;
   dark?: boolean;
+  /**
+   * Composition de l'en-tête :
+   *  - `split`  : surtitre à gauche, titre aligné à droite (sections pleine largeur) ;
+   *  - `left`   : tout aligné à gauche (colonne étroite d'une mise en page en deux volets) ;
+   *  - `center` : tout centré (bandeaux d'appel à l'action).
+   */
+  align?: 'split' | 'left' | 'center';
+  /** `lg` réserve un titre plus imposant aux bandeaux de conversion. */
+  size?: 'md' | 'lg';
+  /** Masque l'icône du surtitre lorsque la section en porte déjà une. */
+  eyebrowIcon?: React.ReactNode | false;
   className?: string;
 }
 
+/**
+ * En-tête de section — composant unique de toutes les sections du site.
+ *
+ * Il garantit qu'un surtitre, un titre, un filet d'accent et un chapô
+ * conservent partout la même échelle, le même rythme et les mêmes
+ * couleurs, quelle que soit la composition de la section qui l'accueille.
+ */
 const SectionHeader: React.FC<SectionHeaderProps> = ({
   title,
   description,
   eyebrow,
   dark = false,
+  align = 'split',
+  size = 'md',
+  eyebrowIcon,
   className,
 }) => {
+  const isSplit = align === 'split';
+  const isCenter = align === 'center';
+  const icon = eyebrowIcon === false ? undefined : (eyebrowIcon ?? <Sparkles />);
+
   return (
     <RevealOnScroll
       variant="fade-up"
-      className={cn(
-        'mb-12 flex w-full flex-col sm:mb-16',
-        className
-      )}
+      className={cn('mb-12 flex w-full flex-col sm:mb-16', className)}
     >
       <div className="w-full">
-        <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div
+          className={cn(
+            'flex w-full flex-col gap-4',
+            isSplit && 'sm:flex-row sm:items-center sm:justify-between',
+            isCenter && 'items-center'
+          )}
+        >
           {eyebrow && (
-            <div
-              className={cn(
-                'inline-flex w-fit items-center gap-2 rounded-full px-4 py-1.5 text-caption font-bold uppercase tracking-[0.15em] backdrop-blur-md transition-all duration-300 hover:scale-105',
-                dark
-                  ? 'border border-sage-300/30 bg-sage-400/10 text-sage-200'
-                  : 'border border-brand-200 bg-brand-50/90 text-brand-800 shadow-xs'
-              )}
-            >
-              <Sparkles
-                className={cn(
-                  'size-3.5',
-                  dark ? 'text-sage-300' : 'text-brand-600'
-                )}
-              />
-
-              <span>{eyebrow}</span>
-            </div>
+            <Eyebrow variant="pill" dark={dark} icon={icon}>
+              {eyebrow}
+            </Eyebrow>
           )}
 
-          <div className="group relative text-left sm:text-right">
+          <div
+            className={cn(
+              'group relative',
+              isSplit && 'text-left sm:text-right',
+              isCenter && 'text-center',
+              align === 'left' && 'text-left'
+            )}
+          >
             <h2
               className={cn(
-                'font-display text-[clamp(1.9rem,3.8vw,2.85rem)] font-bold leading-[1.12] tracking-tight',
+                'text-balance font-display font-bold tracking-tight',
+                size === 'lg' ? 'text-h1' : 'text-h2',
                 dark ? 'text-white' : 'text-ink-900'
               )}
             >
               {title}
             </h2>
 
+            {/* Filet d'accent : rappel discret du vert du logo, aligné sur
+                le bord du titre selon la composition retenue. */}
             <div
               className={cn(
-                'mt-3 h-1 w-16 rounded-full transition-all duration-500 group-hover:w-28 sm:ml-auto',
-                dark
-                  ? 'bg-gradient-to-r from-sage-400 to-brand-400'
-                  : 'bg-gradient-to-r from-brand-600 via-sage-500 to-brand-400'
+                'mt-3 h-1 w-16 rounded-full bg-brand-500 transition-all duration-500 group-hover:w-28',
+                dark && 'bg-brand-400',
+                isSplit && 'sm:ml-auto',
+                isCenter && 'mx-auto'
               )}
             />
           </div>
         </div>
 
         {description && (
-          <p
+          <div
             className={cn(
-              'mt-4 max-w-2xl text-justify text-body-lg leading-relaxed',
-              dark ? 'text-white/75' : 'text-ink-600'
+              'mt-4 max-w-2xl text-body-lg leading-relaxed',
+              isCenter && 'mx-auto text-center',
+              !isCenter && 'text-justify',
+              dark ? 'text-white/80' : 'text-ink-600'
             )}
           >
-            {description}
-          </p>
+            {typeof description === 'string' ? <p>{description}</p> : description}
+          </div>
         )}
       </div>
     </RevealOnScroll>

@@ -3,10 +3,8 @@
 
 
 
-@import '@fontsource-variable/outfit/wght.css';
-@import '@fontsource-variable/manrope/wght.css';
-@import '@fontsource/space-mono/400.css';
-@import '@fontsource/space-mono/700.css';
+/* Polices auto-hébergées depuis src/assets/fonts (Manrope, Outfit, Space Mono). */
+@import '../assets/fonts/fonts.css';
 
 /* ---------- Tokens Tailwind ---------- */
 @theme {
@@ -127,51 +125,93 @@
   --duration-marquee-1: 42s;
   --duration-marquee-2: 50s;
 
-  /* Couleurs primaires « brand » (vert profond ESSG) */
-  --color-brand-50: #eff7f4;
-  --color-brand-100: #d9ece7;
-  --color-brand-200: #b6d9d0;
-  --color-brand-300: #8abfb3;
-  --color-brand-400: #5ba092;
-  --color-brand-500: #3d8376;
-  --color-brand-600: #2e6a5f;
-  --color-brand-700: #27564e;
-  --color-brand-800: #224640;
-  --color-brand-900: #1e3a35;
-  --color-brand-950: #0f211e;
+  /* ============================================================
+     PALETTE — dérivée directement du logo ESSG
+     Le logo ne contient que trois couleurs : un vert feuille
+     (#98c070), un anthracite ardoise (#586068) et un point rouge.
+     Toute la charte est construite sur ces trois ancrages ; aucune
+     teinte « hors logo » n'est introduite.
+     Chaque palier a été vérifié en contraste WCAG 2.2 AA.
+     ============================================================ */
 
-  /* Couleurs secondaires « sage » (vert sauge du logo) */
-  --color-sage-50: #f7faf1;
-  --color-sage-100: #eef4df;
-  --color-sage-200: #dce9c2;
-  --color-sage-300: #c2d799;
-  --color-sage-400: #98c070;
-  --color-sage-500: #7fa757;
-  --color-sage-600: #648640;
-  --color-sage-700: #4f6834;
-  --color-sage-800: #41542d;
-  --color-sage-900: #374727;
-  --color-sage-950: #1d2712;
+  /* Vert institutionnel — couleur primaire.
+     400 = vert exact du logo. Les paliers 600+ sont les seuls
+     autorisés pour du texte ou un aplat portant du texte blanc :
+       600 sur blanc  → 4.87:1  (AA, remplissage des CTA)
+       700 sur blanc  → 7.05:1  (AAA, liens et eyebrows)
+       300 sur ink-950 → 10.49:1 (AAA, accents sur fond sombre) */
+  --color-brand-50: #f5faef;
+  --color-brand-100: #e8f3db;
+  --color-brand-200: #d3e8bd;
+  --color-brand-300: #b7d897;
+  --color-brand-400: #98c070;
+  --color-brand-500: #78a44e;
+  --color-brand-600: #547c36;
+  --color-brand-700: #42612c;
+  --color-brand-800: #374e27;
+  --color-brand-900: #2f4123;
+  --color-brand-950: #17220f;
 
-  /* Neutres profonds « ink » (grandes surfaces sombres) */
-  --color-ink-50: #f5f7f7;
-  --color-ink-100: #e5eaeb;
-  --color-ink-200: #c8d3d5;
-  --color-ink-300: #9fb1b4;
-  --color-ink-400: #6f888c;
-  --color-ink-500: #546c70;
-  --color-ink-600: #43575b;
-  --color-ink-700: #38474b;
-  --color-ink-800: #303c3f;
-  --color-ink-900: #1e2829;
-  --color-ink-950: #11191a;
+  /* Anthracite ardoise — neutres et grandes surfaces sombres.
+     600 = gris exact du logo.
+       800 sur blanc → 10.18:1 (texte courant)
+       600 sur blanc →  6.39:1 (texte secondaire)
+       500 sur blanc →  4.90:1 (texte tertiaire, plancher AA) */
+  --color-ink-50: #f6f7f8;
+  --color-ink-100: #e9ebed;
+  --color-ink-200: #d4d8dc;
+  --color-ink-300: #b0b7bd;
+  --color-ink-400: #848d96;
+  --color-ink-500: #68727c;
+  --color-ink-600: #586068;
+  --color-ink-700: #4a5158;
+  --color-ink-800: #3c4247;
+  --color-ink-900: #2b3034;
+  --color-ink-950: #1b1f22;
+
+  /* Rouge du logo — accent strictement exceptionnel : erreurs de
+     formulaire, alertes critiques, suppression. Jamais un CTA. */
+  --color-danger-50: #fdecea;
+  --color-danger-100: #fbd5d1;
+  --color-danger-500: #e53935;
+  --color-danger-600: #d32f2f;
+  --color-danger-700: #c62828;
+
+  /* ============================================================
+     RAYONS — 5 paliers, aucun rayon arbitraire ailleurs.
+     L'audit relevait 12 rayons différents dont 5 en valeur libre
+     (rounded-[2rem], [1.75rem], [1.5rem], [0.9rem]…) : la hiérarchie
+     des surfaces n'était plus lisible.
+       sm  : puces, tags
+       md  : champs, petits boutons
+       lg  : boutons, inputs
+       xl  : cartes
+       2xl : grands blocs et sections encadrées
+     ============================================================ */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.75rem;
+  --radius-3xl: 2rem;
+
+  /* ============================================================
+     ESPACEMENT VERTICAL DES SECTIONS
+     Un seul rythme pour tout le site, au lieu des 8 valeurs
+     relevées (py-10/12/14/16/18/20/24/28).
+     ============================================================ */
+  --space-section: 4rem; /* mobile  : 64px */
+  --space-section-md: 5.5rem; /* tablette : 88px */
+  --space-section-lg: 7rem; /* desktop  : 112px */
+  --space-section-tight: 3rem;
+  --space-section-tight-lg: 4.5rem;
 
   /* Ombres cohérentes */
-  --shadow-card: 0 1px 2px rgb(15 33 30 / 0.04), 0 4px 16px -4px rgb(15 33 30 / 0.08);
-  --shadow-card-hover: 0 2px 4px rgb(15 33 30 / 0.05), 0 16px 40px -12px rgb(15 33 30 / 0.16);
-  --shadow-soft: 0 1px 3px rgb(15 33 30 / 0.05), 0 8px 24px -8px rgb(15 33 30 / 0.1);
-  --shadow-elevated: 0 8px 20px -6px rgb(15 33 30 / 0.12), 0 24px 56px -16px rgb(15 33 30 / 0.2);
-  --shadow-focus: 0 0 0 4px rgb(46 106 95 / 0.18);
+  --shadow-card: 0 1px 2px rgb(27 31 34 / 0.04), 0 4px 16px -4px rgb(27 31 34 / 0.08);
+  --shadow-card-hover: 0 2px 4px rgb(27 31 34 / 0.05), 0 16px 40px -12px rgb(27 31 34 / 0.16);
+  --shadow-soft: 0 1px 3px rgb(27 31 34 / 0.05), 0 8px 24px -8px rgb(27 31 34 / 0.1);
+  --shadow-elevated: 0 8px 20px -6px rgb(27 31 34 / 0.12), 0 24px 56px -16px rgb(27 31 34 / 0.2);
+  --shadow-focus: 0 0 0 4px rgb(84 124 54 / 0.22);
 
   /* Animations */
   --animate-fade-in: fade-in 0.6s ease-out both;
@@ -344,7 +384,7 @@
   }
 
   [data-surface='dark'] :focus-visible {
-    outline-color: var(--color-sage-400);
+    outline-color: var(--color-brand-400);
   }
 
   /* Sélection de texte aux couleurs de la marque */
@@ -398,6 +438,34 @@
   h5,
   h6 {
     font-family: var(--font-sans);
+  }
+
+  /* Un titre n'est pas toujours une balise h1–h4 : certains blocs utilisent
+     un <div>, un <span> ou un <p> porteur d'une classe de l'échelle
+     typographique. On rattache donc la police d'affichage à l'échelle
+     elle-même, pour que TOUTES les pages rendent exactement comme la Home. */
+  .text-display,
+  .text-h1,
+  .text-h2,
+  .text-h3,
+  .text-h4 {
+    font-family: var(--font-display);
+  }
+
+  .text-h5,
+  .text-h6,
+  .text-body-lg,
+  .text-body,
+  .text-small,
+  .text-caption,
+  .text-label {
+    font-family: var(--font-sans);
+  }
+
+  /* Accent technologique : coordonnées, indicateurs géospatiaux, compteurs. */
+  .text-tech,
+  .font-tech {
+    font-family: var(--font-tech);
   }
 
   /* Chaque niveau reprend l'échelle typographique : un composant qui
@@ -493,7 +561,11 @@
   display: none;
 }
 
-/* Conteneur de section standardisé */
+/* ---------- Conteneur et rythme de page ----------
+   `section-shell` est LE conteneur unique du site : toutes les
+   sections s'alignent sur la même grille (max 1280px + gouttières
+   progressives). Il remplace les 46 répétitions de
+   « mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 » relevées à l'audit. */
 .section-shell {
   margin-inline: auto;
   width: 100%;
@@ -513,6 +585,31 @@
   }
 }
 
+/* Rythme vertical standard d'une section. */
+.section-y {
+  padding-block: var(--space-section);
+}
+
+.section-y-tight {
+  padding-block: var(--space-section-tight);
+}
+
+@media (min-width: 768px) {
+  .section-y {
+    padding-block: var(--space-section-md);
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-y {
+    padding-block: var(--space-section-lg);
+  }
+
+  .section-y-tight {
+    padding-block: var(--space-section-tight-lg);
+  }
+}
+
 /* Équilibrage de texte sur les titres longs */
 .text-balance {
   text-wrap: balance;
@@ -527,8 +624,8 @@
   border-radius: var(--radius-2xl, 1.25rem);
   box-shadow: var(
     --shadow-card,
-    0 1px 2px rgb(15 33 30 / 0.04),
-    0 4px 16px -4px rgb(15 33 30 / 0.08)
+    0 1px 2px rgb(27 31 34 / 0.04),
+    0 4px 16px -4px rgb(27 31 34 / 0.08)
   );
 }
 
@@ -552,9 +649,9 @@
   /* Voile de lisibilité sous un texte posé sur une image. */
   background-image: linear-gradient(
     to bottom,
-    rgb(15 33 30 / 0.35) 0%,
-    rgb(15 33 30 / 0.45) 45%,
-    rgb(15 33 30 / 0.78) 100%
+    rgb(27 31 34 / 0.35) 0%,
+    rgb(27 31 34 / 0.45) 45%,
+    rgb(27 31 34 / 0.78) 100%
   );
 }
 
@@ -574,7 +671,7 @@
    les surfaces pour ne jamais dégrader la lisibilité du texte. */
 @supports not (backdrop-filter: blur(1px)) {
   .surface-glass {
-    background-color: rgb(15 33 30 / 0.72);
+    background-color: rgb(27 31 34 / 0.72);
   }
 
   .surface-glass-light {
@@ -851,10 +948,10 @@
   background: linear-gradient(
     90deg,
     var(--color-brand-600),
-    var(--color-sage-400),
+    var(--color-brand-400),
     var(--color-brand-500)
   );
-  box-shadow: 0 1px 8px rgb(46 106 95 / 0.35);
+  box-shadow: 0 1px 8px rgb(84 124 54 / 0.35);
   pointer-events: none;
   transform-origin: left center;
 }

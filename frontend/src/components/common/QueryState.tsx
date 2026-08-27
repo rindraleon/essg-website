@@ -75,8 +75,8 @@ export default function QueryState({
     const copy = getErrorCopy(error);
     const Icon = copy.network ? WifiOff : AlertTriangle;
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-16 text-center animate-fade-in">
-        <div className="flex size-16 items-center justify-center rounded-2xl bg-red-50 text-red-600 ring-1 ring-red-100">
+      <div className="flex flex-col items-center justify-center gap-4 section-y-tight text-center animate-fade-in">
+        <div className="flex size-16 items-center justify-center rounded-2xl bg-danger-50 text-danger-600 ring-1 ring-danger-100">
           <Icon className="size-7" />
         </div>
         <div>

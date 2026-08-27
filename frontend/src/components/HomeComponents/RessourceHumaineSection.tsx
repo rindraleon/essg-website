@@ -31,7 +31,7 @@ const RessourceHumaineSection = () => {
         />
       }
       loadingSkeletons={<MediaCardSkeletonGrid layout="home" />}
-      sectionClassName="bg-gradient-to-br from-sage-50/55 via-white to-brand-50/40 py-20"
+      sectionClassName="bg-gradient-to-br from-brand-50/55 via-white to-brand-50/40 section-y"
       fluid
       containerClassName="max-w-none"
     >

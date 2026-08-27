@@ -77,7 +77,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-ink-50">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="section-shell section-y">
           <div className="space-y-8">
             <div className="skeleton-shimmer h-64 rounded-3xl" />
             <div className="grid gap-8 lg:grid-cols-3">
@@ -94,7 +94,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
   if (error || !ressourceHumaine) {
     return (
       <div className="min-h-screen bg-ink-50">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="section-shell section-y">
           <EmptyState
             icon={<Users />}
             title="Profil introuvable"
@@ -147,7 +147,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
           ...(ressourceHumaine.adresse ? [{ icon: MapPin, label: ressourceHumaine.adresse }] : []),
         ]}
         visual={
-          <div className="size-40 overflow-hidden rounded-[2rem] border-4 border-white/15 bg-brand-900 shadow-2xl sm:size-48">
+          <div className="size-40 overflow-hidden rounded-3xl border-4 border-white/15 bg-brand-900 shadow-2xl sm:size-48">
             {photoUrl ? (
               <img
                 src={photoUrl}
@@ -158,7 +158,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
               />
             ) : (
               <div className="grid size-full place-items-center">
-                <span className="text-display font-bold text-sage-300">{initials}</span>
+                <span className="text-display font-bold text-brand-300">{initials}</span>
               </div>
             )}
           </div>
@@ -168,7 +168,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
             {ressourceHumaine.email && (
               <a
                 href={`mailto:${ressourceHumaine.email}`}
-                className="inline-flex items-center gap-2 rounded-full bg-sage-400 px-5 py-2.5 text-small font-bold text-brand-950 hover:bg-sage-300"
+                className="inline-flex items-center gap-2 rounded-full bg-brand-400 px-5 py-2.5 text-small font-bold text-brand-950 hover:bg-brand-300"
               >
                 <Mail className="size-4" /> Contacter
               </a>
@@ -189,7 +189,7 @@ const RessourceHumaineDetailPage: React.FC = () => {
         items={[{ label: 'Ressources Humaines', to: '/ressources-humaines' }, { label: fullName }]}
       />
 
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+      <div className="section-shell section-y-tight">
         <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
           <div className="space-y-6 lg:col-span-2">
             <ProfileSection

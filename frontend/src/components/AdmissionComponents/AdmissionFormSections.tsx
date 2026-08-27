@@ -1,4 +1,4 @@
-import { Info } from 'lucide-react';
+import { Info, AlertCircle } from 'lucide-react';
 import {
   ADMISSION_LEVELS,
   BAC_CATEGORIES,
@@ -15,7 +15,12 @@ type Errors = Record<string, string | undefined>;
 type ChangeHandler = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 
 const ErrorText = ({ errors, name }: { errors: Errors; name: string }) =>
-  errors[name] ? <p className="mt-1 text-caption text-red-600">{errors[name]}</p> : null;
+  errors[name] ? (
+    <p role="alert" className="mt-1 flex items-center gap-1.5 text-caption text-danger-600">
+      <AlertCircle aria-hidden="true" className="size-3.5 shrink-0" />
+      {errors[name]}
+    </p>
+  ) : null;
 
 const Field = ({
   label,

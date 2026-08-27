@@ -25,8 +25,8 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
     as="section"
     delay={delay}
     className={cn(
-      'relative overflow-hidden rounded-[1.75rem] border border-ink-100 bg-white p-6 shadow-card sm:p-8',
-      'before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-gradient-to-r before:from-brand-600 before:via-sage-400 before:to-transparent',
+      'relative overflow-hidden rounded-2xl border border-ink-100 bg-white p-6 shadow-card sm:p-8',
+      'before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-gradient-to-r before:from-brand-600 before:via-brand-400 before:to-transparent',
       className
     )}
   >

@@ -47,7 +47,7 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
 
   return (
     <div className="bg-transparent text-ink-900 antialiased">
-      <section className="mx-auto grid max-w-[1280px] grid-cols-4 gap-6 px-4 py-16 md:grid-cols-12 md:px-8">
+      <section className="mx-auto grid max-w-[1280px] grid-cols-4 gap-6 px-4 section-y-tight md:grid-cols-12 md:px-8">
         <div className="col-span-4 space-y-8 md:col-span-8">
           <div className="rounded-xl border border-ink-100 bg-white p-6 md:p-8">
             <h2 className="mb-4 text-h3 text-ink-900">À propos de cette formation</h2>
@@ -105,7 +105,7 @@ const FormationDetailContent: React.FC<FormationDetailContentProps> = (
                     <div className="flex items-center gap-4">
                       <div
                         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-h4 font-semibold ${
-                          isExpanded ? 'bg-sage-200 text-brand-600' : 'bg-brand-100 text-ink-900'
+                          isExpanded ? 'bg-brand-200 text-brand-600' : 'bg-brand-100 text-ink-900'
                         }`}
                       >
                         {index + 1}

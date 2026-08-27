@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Binary, Briefcase, Compass, Sparkles } from 'lucide-react';
+import { ArrowRight, Binary, Briefcase, Compass } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { RevealOnScroll, StaggerReveal } from '../common/RevealOnScroll';
 import ParticlesBackground from '../animations/ParticlesBackground';
@@ -25,7 +25,7 @@ const DOMAINS: DomainItem[] = [
     gradient: 'from-emerald-950/90 to-brand-950/90',
   },
   {
-    icon: <Compass className="size-6 text-sage-300" />,
+    icon: <Compass className="size-6 text-brand-300" />,
     title: 'Géomatique et Applications',
     subtitle: 'Environnement, Agriculture & Territoires',
     description:
@@ -46,44 +46,45 @@ const DOMAINS: DomainItem[] = [
 
 const FormationsDomainSection: React.FC = () => {
   return (
-    <section className="relative overflow-hidden bg-brand-950 py-12 text-white sm:py-18">
+    <section className="relative overflow-hidden bg-brand-950 section-y-tight text-white">
       <ParticlesBackground particleCount={85} />
       {/* Background glow and subtle grid */}
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_30%,rgba(152,192,112,.12),transparent_40%)]" />
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_80%_70%,rgba(46,106,95,.2),transparent_50%)]" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_80%_70%,rgb(84_124_54_/_.2),transparent_50%)]" />
       <div className="absolute inset-0 -z-10 opacity-[0.05] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:48px_48px]" />
       
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <RevealOnScroll variant="fade-up" className="max-w-full">
-            <SectionHeader
-            eyebrow="Des parcours adaptés aux enjeux de demain"
-            title="Nos formations"
-            description="L’ESSG propose des formations d'excellence dans plusieurs domaines clés des sciences géomatiques."
-            />
-          </RevealOnScroll>
+      <div className="section-shell">
+        {/* SectionHeader embarque déjà son animation d'apparition :
+            l'envelopper dans un second RevealOnScroll produisait deux
+            transitions superposées sur le même bloc. */}
+        <SectionHeader
+          eyebrow="Des parcours adaptés aux enjeux de demain"
+          title="Nos formations"
+          description="L’ESSG propose des formations d'excellence dans plusieurs domaines clés des sciences géomatiques."
+        />
 
         {/* 3 Domain Cards */}
         <StaggerReveal step={120} className="mt-12 grid gap-8 md:grid-cols-3">
           {DOMAINS.map((domain, index) => (
             <div
               key={domain.title}
-              className={`group relative flex flex-col justify-between rounded-3xl border border-white/15 bg-gradient-to-b ${domain.gradient} p-8 shadow-2xl backdrop-blur-xl transition-all duration-300 ease-out hover:-translate-y-2.5 hover:border-sage-300/50 hover:shadow-[0_24px_60px_rgba(0,0,0,0.6)]`}
+              className={`group relative flex flex-col justify-between rounded-3xl border border-white/15 bg-gradient-to-b ${domain.gradient} p-8 shadow-2xl backdrop-blur-xl transition-all duration-300 ease-out hover:-translate-y-2.5 hover:border-brand-300/50 hover:shadow-[0_24px_60px_rgba(0,0,0,0.6)]`}
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <div className="grid size-14 place-items-center rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-hover:bg-sage-400 group-hover:text-brand-950">
+                  <div className="grid size-14 place-items-center rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-hover:bg-brand-400 group-hover:text-brand-950">
                     {domain.icon}
                   </div>
-                  <span className="font-tech text-caption font-semibold tracking-wider text-sage-300/80">
+                  <span className="font-tech text-caption font-semibold tracking-wider text-brand-300/80">
                     AXE 0{index + 1}
                   </span>
                 </div>
 
-                <h3 className="mt-6 font-display text-h3 font-bold text-white group-hover:text-sage-200 transition-colors">
+                <h3 className="mt-6 font-display text-h3 font-bold text-white group-hover:text-brand-200 transition-colors">
                   {domain.title}
                 </h3>
-                <span className="mt-1 block font-tech text-[0.7rem] uppercase tracking-wider text-sage-300">
+                <span className="mt-1 block font-tech text-[0.7rem] uppercase tracking-wider text-brand-300">
                   {domain.subtitle}
                 </span>
 
@@ -106,12 +107,12 @@ const FormationsDomainSection: React.FC = () => {
               <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
                 <Link
                   to="/formations"
-                  className="inline-flex items-center gap-1.5 text-small font-semibold text-sage-300 transition-colors hover:text-white"
+                  className="inline-flex items-center gap-1.5 text-small font-semibold text-brand-300 transition-colors hover:text-white"
                 >
                   Voir les parcours
                   <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </Link>
-                <div className="size-2 rounded-full bg-sage-400/60 group-hover:scale-150 transition-transform" />
+                <div className="size-2 rounded-full bg-brand-400/60 group-hover:scale-150 transition-transform" />
               </div>
             </div>
           ))}

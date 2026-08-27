@@ -21,8 +21,7 @@ const PartnerChipCard: React.FC<PartnerChipCardProps> = ({ partenaire }) => {
       type="button"
       onClick={ouvrirFiche}
       aria-label={`Voir la fiche de ${partenaire.nom}`}
-      className="
-        group flex w-[17rem] shrink-0 items-center gap-3.5
+      className=" group flex w-[17rem] shrink-0 items-center gap-3.5
         rounded-2xl border border-ink-100 bg-white px-4 py-3.5 text-left
         shadow-[0_1px_2px_rgb(15_33_30/0.04),0_4px_14px_-6px_rgb(15_33_30/0.10)]
         transition-[transform,box-shadow,border-color] duration-(--duration-hover) ease-out
@@ -40,8 +39,7 @@ const PartnerChipCard: React.FC<PartnerChipCardProps> = ({ partenaire }) => {
             alt=""
             loading="lazy"
             decoding="async"
-            className="
-              max-h-full max-w-full object-contain
+            className=" max-h-full max-w-full object-contain
               transition-transform duration-(--duration-hover) ease-out
               group-hover:scale-[1.04] group-focus-visible:scale-[1.04]
               motion-reduce:transition-none motion-reduce:group-hover:scale-100

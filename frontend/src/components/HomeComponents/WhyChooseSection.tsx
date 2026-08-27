@@ -50,8 +50,8 @@ const SECTORS = [
 
 const WhyChooseSection: React.FC = () => {
   return (
-    <section className="relative overflow-hidden bg-brand-200/80 py-12 sm:py-14">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden bg-brand-200/80 section-y-tight">
+      <div className="section-shell">
         
         {/* Animated Section Header */}
         <SectionHeader
@@ -98,7 +98,7 @@ const WhyChooseSection: React.FC = () => {
 
         {/* Career Sectors Showcase */}
         <RevealOnScroll variant="scale-in" delay={150} className="mt-14">
-          <div className="rounded-3xl border border-brand-200/80 bg-gradient-to-br from-white via-brand-50/20 to-sage-50/30 p-8 shadow-sm sm:p-10">
+          <div className="rounded-3xl border border-brand-200/80 bg-gradient-to-br from-white via-brand-50/20 to-brand-50/30 p-8 shadow-sm sm:p-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-ink-100 pb-6">
               <div>
                 <span className="font-tech text-caption font-bold text-brand-700 uppercase tracking-widest">
