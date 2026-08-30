@@ -68,7 +68,7 @@ const ValuesSection: React.FC = () => {
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <div className="grid size-12 place-items-center rounded-2xl bg-white text-brand-700 shadow-sm ring-1 ring-ink-100 transition-all duration-300 group-hover:scale-110 group-hover:bg-brand-600 group-hover:text-white">
+                  <div className="grid size-12 place-items-center rounded-2xl bg-white text-brand-700 shadow-sm ring-1 ring-ink-100 transition-all duration-300 group-hover:scale-110 group-hover:bg-brand-100 group-hover:text-white">
                     {val.icon}
                   </div>
                   <span className="rounded-full bg-brand-50 px-3 py-1 font-tech text-[0.65rem] font-bold text-brand-700 uppercase tracking-wider transition-colors group-hover:bg-brand-100">

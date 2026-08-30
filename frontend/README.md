@@ -1,73 +1,31 @@
-# React + TypeScript + Vite
+# Frontend public ESSG
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Site vitrine public (React + TypeScript + Vite + Tailwind CSS + React Router + TanStack Query).
+Consomme l'API NestJS `backend-essg` en lecture publique (formations, projets, actualités, partenaires, RH, admissions).
 
-Currently, two official plugins are available:
+## ⚡ Commandes importantes
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```bash
+npm install        # installer les dépendances
+npm run dev        # développement (port 5173 par défaut, HMR)
+npm run build      # typecheck (tsc -b) + build production → dist/
+npm run preview    # prévisualiser le build
+npm run lint       # ESLint avec correction automatique
+npm run lint:sonar # ESLint sans correction (qualimétrie)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🔧 Variables d'environnement
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+Copier `.env.example` → `.env` :
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```bash
+VITE_PORT=5173                          # port du dev server
+VITE_API_BASE_URL=http://localhost:3000 # URL de l'API NestJS
 ```
+
+## 🗒 Notes
+
+- Aucune authentification ici : les routes publiques de l'API sont ouvertes en lecture ; le formulaire d'admission POST vers `/admissions`.
+- L'admin se fait dans **`../back-office`** (compte requis, sessions 15 min).
+- `node_modules` n'est pas persisté dans ce workspace : relancer `npm install` après une restauration.
+- Audit UI/UX et rapports : voir `../AUDIT-UI-UX-QA.md` et `../RAPPORT-VOLET3-SESSIONS.md`.
