@@ -30,12 +30,6 @@ export default defineConfig([
     },
     rules: {
       'prettier/prettier': 'error',
-      // Convention : un identifiant préfixé « _ » est volontairement ignoré
-      // (props avalées par les shims de compat, champs exclus d'un rest-spread).
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', ignoreRestSiblings: true },
-      ],
       // Les classes utilitaires Tailwind se répètent légitimement.
       'sonarjs/no-duplicate-string': ['warn', { threshold: 5 }],
       'sonarjs/cognitive-complexity': ['warn', 20],
