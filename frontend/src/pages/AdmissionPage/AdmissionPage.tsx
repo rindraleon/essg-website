@@ -26,7 +26,7 @@ const AdmissionClosed = () => {
 };
 
 const AdmissionPage: React.FC<AdmissionPageProps> = (props: Readonly<AdmissionPageProps>) => {
-  useTitle('Admission | ESSG');
+  useTitle('Candidature | ESSG');
 
   const { data: settings, isLoading } = useAdmissionsSettings();
   const admissionsOuvertes = settings?.admissionsOuvertes ?? true;
