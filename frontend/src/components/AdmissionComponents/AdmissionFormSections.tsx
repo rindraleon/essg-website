@@ -27,6 +27,7 @@ const Field = ({
   value,
   onChange,
   errors,
+  isValid,
   placeholder = 'Saisir cette information',
   ...props
 }: {
@@ -35,6 +36,7 @@ const Field = ({
   value: string;
   onChange: ChangeHandler;
   errors: Errors;
+  isValid?: boolean;
 } & Omit<React.ComponentProps<'input'>, 'name' | 'value' | 'onChange'>) => (
   <div className="space-y-1.5">
     <Label htmlFor={name}>{label}</Label>
@@ -44,10 +46,16 @@ const Field = ({
       value={value}
       onChange={onChange}
       placeholder={placeholder}
+      className={isValid ? 'border-emerald-400 bg-emerald-50/30 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/15' : undefined}
       {...fieldA11yProps(String(name), errors[name])}
       {...props}
     />
     <ErrorText errors={errors} name={name} />
+    {isValid && (
+      <p className="flex items-center gap-1 text-caption text-emerald-600" aria-live="polite">
+        <span aria-hidden="true">✓</span> Champ valide
+      </p>
+    )}
   </div>
 );
 
@@ -57,6 +65,7 @@ const SelectField = ({
   value,
   onChange,
   errors,
+  isValid,
   children,
   ...props
 }: {
@@ -65,6 +74,7 @@ const SelectField = ({
   value: string;
   onChange: ChangeHandler;
   errors: Errors;
+  isValid?: boolean;
   children: React.ReactNode;
 } & Omit<React.ComponentProps<'select'>, 'name' | 'value' | 'onChange' | 'children'>) => (
   <div>
@@ -74,12 +84,18 @@ const SelectField = ({
       label={label}
       value={value}
       onChange={onChange}
+      className={isValid ? 'border-emerald-400 bg-emerald-50/30 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/15' : undefined}
       {...fieldA11yProps(String(name), errors[name])}
       {...props}
     >
       {children}
     </Select>
     <ErrorText errors={errors} name={name} />
+    {isValid && (
+      <p className="flex items-center gap-1 text-caption text-emerald-600" aria-live="polite">
+        <span aria-hidden="true">✓</span> Champ valide
+      </p>
+    )}
   </div>
 );
 
@@ -105,11 +121,13 @@ export function PersonalInformation({
   errors,
   onChange,
   onDuplicateCheck,
+  isValid,
 }: Readonly<{
   data: AdmissionFormData;
   errors: Errors;
   onChange: ChangeHandler;
   onDuplicateCheck?: (field: 'email' | 'telephone') => void;
+  isValid?: (name: keyof AdmissionFormData) => boolean;
 }>) {
   return (
     <section>
@@ -121,6 +139,7 @@ export function PersonalInformation({
           value={data.nom}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('nom')}
           autoComplete="family-name"
           placeholder="Ex : RAKOTO"
           maxLength={FIELD_LIMITS.nameMaxLength}
@@ -132,6 +151,7 @@ export function PersonalInformation({
           value={data.prenom}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('prenom')}
           autoComplete="given-name"
           placeholder="Ex : Jean Pierre"
           maxLength={FIELD_LIMITS.nameMaxLength}
@@ -139,6 +159,7 @@ export function PersonalInformation({
         <Field
           label="Date de naissance *"
           name="dateNaissance"
+          isValid={isValid?.('dateNaissance')}
           value={data.dateNaissance}
           onChange={onChange}
           errors={errors}
@@ -152,6 +173,7 @@ export function PersonalInformation({
           value={data.lieuNaissance}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('lieuNaissance')}
           placeholder="Ex : Antananarivo"
           maxLength={FIELD_LIMITS.placeMaxLength}
           required
@@ -162,6 +184,7 @@ export function PersonalInformation({
           value={data.nationalite}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('nationalite')}
           autoComplete="country-name"
           maxLength={FIELD_LIMITS.nameMaxLength}
           required
@@ -172,6 +195,7 @@ export function PersonalInformation({
           value={data.genre}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('genre')}
         >
           <option value="">Choisir</option>
           <option value="feminin">Féminin</option>
@@ -185,6 +209,7 @@ export function PersonalInformation({
           onChange={onChange}
           onBlur={() => onDuplicateCheck?.('telephone')}
           errors={errors}
+          isValid={isValid?.('telephone')}
           type="tel"
           inputMode="tel"
           autoComplete="tel"
@@ -199,6 +224,7 @@ export function PersonalInformation({
           onChange={onChange}
           onBlur={() => onDuplicateCheck?.('email')}
           errors={errors}
+          isValid={isValid?.('email')}
           type="email"
           autoComplete="email"
           maxLength={FIELD_LIMITS.emailMaxLength}
@@ -211,6 +237,7 @@ export function PersonalInformation({
             value={data.adresse}
             onChange={onChange}
             errors={errors}
+            isValid={isValid?.('adresse')}
             autoComplete="street-address"
             placeholder="Quartier, ville, région..."
             maxLength={FIELD_LIMITS.addressMaxLength}
@@ -227,11 +254,13 @@ export function BacInformation({
   series,
   errors,
   onChange,
+  isValid,
 }: Readonly<{
   data: AdmissionFormData;
   series: readonly BacSeriesOption[];
   errors: Errors;
   onChange: ChangeHandler;
+  isValid?: (name: keyof AdmissionFormData) => boolean;
 }>) {
   const category = data.bacCategorie
     ? BAC_CATEGORIES[data.bacCategorie as keyof typeof BAC_CATEGORIES]
@@ -246,6 +275,7 @@ export function BacInformation({
           value={data.bacType}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('bacType')}
         >
           <option value="">Choisir un type</option>
           {BAC_TYPES.map((type) => (
@@ -260,6 +290,7 @@ export function BacInformation({
           value={data.bacSerie}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('bacSerie')}
           disabled={!data.bacType}
         >
           <option value="">{data.bacType ? 'Choisir une série' : "Choisir d'abord le type"}</option>
@@ -281,6 +312,7 @@ export function BacInformation({
           value={data.numeroBaccalaureat}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('numeroBaccalaureat')}
           placeholder="Ex : 123456789"
           inputMode="numeric"
           maxLength={FIELD_LIMITS.bacNumberMaxLength}
@@ -292,6 +324,7 @@ export function BacInformation({
           value={data.bacAnneeObtention}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('bacAnneeObtention')}
           inputMode="numeric"
           placeholder="Ex : 2024"
           maxLength={4}
@@ -304,6 +337,7 @@ export function BacInformation({
             value={data.bacCentreExamen}
             onChange={onChange}
             errors={errors}
+            isValid={isValid?.('bacCentreExamen')}
             placeholder="Ex : Lycée Rabearivelo, Antananarivo"
             maxLength={255}
             required
@@ -318,10 +352,12 @@ export function PreviousEducationInformation({
   data,
   errors,
   onChange,
+  isValid,
 }: Readonly<{
   data: AdmissionFormData;
   errors: Errors;
   onChange: ChangeHandler;
+  isValid?: (name: keyof AdmissionFormData) => boolean;
 }>) {
   if (data.niveau !== 'master') return null;
   return (
@@ -334,6 +370,7 @@ export function PreviousEducationInformation({
           value={data.ancienEtablissement}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('ancienEtablissement')}
           maxLength={255}
           required
         />
@@ -343,6 +380,7 @@ export function PreviousEducationInformation({
           value={data.numeroMatricule}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('numeroMatricule')}
           maxLength={10}
           required
         />
@@ -352,6 +390,7 @@ export function PreviousEducationInformation({
           value={data.licenceMention}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('licenceMention')}
           placeholder="Ex : Géographie"
           maxLength={100}
         />
@@ -361,6 +400,7 @@ export function PreviousEducationInformation({
           value={data.licenceAnneeObtention}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('licenceAnneeObtention')}
           inputMode="numeric"
           placeholder="Ex : 2024"
           maxLength={4}
@@ -374,10 +414,12 @@ export function LevelSelection({
   data,
   errors,
   onChange,
+  isValid,
 }: Readonly<{
   data: AdmissionFormData;
   errors: Errors;
   onChange: ChangeHandler;
+  isValid?: (name: keyof AdmissionFormData) => boolean;
 }>) {
   return (
     <section>
@@ -388,6 +430,7 @@ export function LevelSelection({
         value={data.niveau}
         onChange={onChange}
         errors={errors}
+        isValid={isValid?.('niveau')}
       >
         <option value="">Choisir un niveau</option>
         {ADMISSION_LEVELS.map((level) => (
@@ -406,12 +449,14 @@ export function FormationSelection({
   parcours,
   errors,
   onChange,
+  isValid,
 }: Readonly<{
   data: AdmissionFormData;
   mentions: AdmissionProgram[];
   parcours: AdmissionProgram[];
   errors: Errors;
   onChange: ChangeHandler;
+  isValid?: (name: keyof AdmissionFormData) => boolean;
 }>) {
   const hasProfile = Boolean(data.bacSerie && data.niveau);
   return (
@@ -424,6 +469,7 @@ export function FormationSelection({
           value={data.mention}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('mention')}
           disabled={!hasProfile || mentions.length === 0}
         >
           <option value="">
@@ -441,6 +487,7 @@ export function FormationSelection({
           value={data.parcours}
           onChange={onChange}
           errors={errors}
+          isValid={isValid?.('parcours')}
           disabled={!data.mention}
         >
           <option value="">

@@ -91,6 +91,13 @@ const admissionService = {
   }): Promise<AdmissionDuplicateCheck> {
     return apiClient.get<AdmissionDuplicateCheck>(endpoints.admissionsCheckDuplicate, params);
   },
+
+  async checkBordereauUnique(numeroBordereau: string): Promise<boolean> {
+    const res = await apiClient.get<AdmissionDuplicateCheck>(endpoints.admissionsCheckDuplicate, {
+      numeroBordereau,
+    });
+    return res.numeroBordereauDisponible !== false;
+  },
 };
 
 export { admissionService };
