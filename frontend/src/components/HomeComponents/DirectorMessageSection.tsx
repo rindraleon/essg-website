@@ -11,7 +11,7 @@ const DirectorMessageSection = () => {
       <div className="section-shell">
         <RevealOnScroll className="mb-12 max-w-3xl">
           <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-700">
-            Édito
+            La Directrice de l’ESSG
           </span>
           <h2 className="mt-3 min-h-[2.5em] text-h2 text-ink-950 sm:min-h-[1.6em]">
             <TypedText words={typedWords} cursorClassName="bg-brand-600" />
@@ -32,7 +32,7 @@ const DirectorMessageSection = () => {
                 decoding="async"
                 width={720}
                 height={960}
-                className="aspect-[3/4] w-full object-cover object-top transition-transform duration-(--duration-section) group-hover:scale-[1.04] motion-reduce:transform-none"
+                className="aspect-[3/4] w-full object-cover object-top transition-transform duration-(--duration-section) motion-reduce:transform-none"
               />
               <div
                 aria-hidden="true"
