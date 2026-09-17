@@ -46,7 +46,11 @@ const Field = ({
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className={isValid ? 'border-emerald-400 bg-emerald-50/30 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/15' : undefined}
+      className={
+        isValid
+          ? 'border-emerald-400 bg-emerald-50/30 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/15'
+          : undefined
+      }
       {...fieldA11yProps(String(name), errors[name])}
       {...props}
     />
@@ -84,7 +88,11 @@ const SelectField = ({
       label={label}
       value={value}
       onChange={onChange}
-      className={isValid ? 'border-emerald-400 bg-emerald-50/30 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/15' : undefined}
+      className={
+        isValid
+          ? 'border-emerald-400 bg-emerald-50/30 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/15'
+          : undefined
+      }
       {...fieldA11yProps(String(name), errors[name])}
       {...props}
     >

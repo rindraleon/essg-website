@@ -1,17 +1,3 @@
-/**
- * Utilitaire centralisé de gestion des dates en français
- * Fuseau : Indian/Antananarivo (UTC+3) — ESSG
- * Locale : fr-FR — mois français obligatoires
- *
- * Formats :
- * - court  : 09/09/2026
- * - long   : 9 septembre 2026
- * - datetime court : 09/09/2026 14:30
- * - datetime long  : 9 septembre 2026 à 14:30
- *
- * Toutes les dates de l'app doivent passer par ces fonctions
- * pour garantir cohérence (format, langue, timezone).
- */
 
 const TIMEZONE = 'Indian/Antananarivo';
 const LOCALE = 'fr-FR';
@@ -57,7 +43,10 @@ export function formatDateLong(input: DateInput): string {
   const d = parseDate(input);
   if (!d) return '—';
   const day = new Intl.DateTimeFormat(LOCALE, { timeZone: TIMEZONE, day: 'numeric' }).format(d);
-  const monthIndex = parseInt(new Intl.DateTimeFormat('en-US', { timeZone: TIMEZONE, month: 'numeric' }).format(d), 10);
+  const monthIndex = parseInt(
+    new Intl.DateTimeFormat('en-US', { timeZone: TIMEZONE, month: 'numeric' }).format(d),
+    10
+  );
   const year = new Intl.DateTimeFormat(LOCALE, { timeZone: TIMEZONE, year: 'numeric' }).format(d);
   const mois = MOIS_FR[monthIndex - 1] || '';
   return `${day} ${mois} ${year}`;

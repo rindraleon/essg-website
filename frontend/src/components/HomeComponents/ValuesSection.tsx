@@ -157,7 +157,7 @@ const ValuesSection: React.FC = () => {
     (idx: number) => {
       setCurrentIndex(idx % total);
     },
-    [total],
+    [total]
   );
 
   useEffect(() => {
@@ -232,10 +232,16 @@ const ValuesSection: React.FC = () => {
         </RevealOnScroll>
 
         <RevealOnScroll variant="fade-up" delay={100}>
-          <div className="relative w-full h-[380px] flex justify-center items-center mt-2" style={{ perspective: '1400px' }}>
+          <div
+            className="relative w-full h-[380px] flex justify-center items-center mt-2"
+            style={{ perspective: '1400px' }}
+          >
             {VALUES.map((val, idx) => {
               const offset = (idx - currentIndex + total) % total;
-              const { transform, opacity, zIndex, filter, isCenter } = getCoverFlowStyle(offset, total);
+              const { transform, opacity, zIndex, filter, isCenter } = getCoverFlowStyle(
+                offset,
+                total
+              );
 
               return (
                 <button
@@ -285,7 +291,8 @@ const ValuesSection: React.FC = () => {
                       left: '50%',
                       top: '27%',
                       transform: 'translate(-50%, -50%)',
-                      background: 'radial-gradient(circle, rgba(152,192,112,0.18) 0%, transparent 72%)',
+                      background:
+                        'radial-gradient(circle, rgba(152,192,112,0.18) 0%, transparent 72%)',
                       filter: 'blur(18px)',
                       zIndex: 1,
                     }}
@@ -422,7 +429,9 @@ const ValuesSection: React.FC = () => {
                             height: '2px',
                             width: isCenter ? '72px' : '36px',
                             borderRadius: '9999px',
-                            background: isCenter ? 'var(--color-brand-500)' : 'var(--color-ink-200)',
+                            background: isCenter
+                              ? 'var(--color-brand-500)'
+                              : 'var(--color-ink-200)',
                             transition: 'all 600ms cubic-bezier(0.25,1,0.5,1)',
                             display: 'block',
                           }}
@@ -461,7 +470,8 @@ const ValuesSection: React.FC = () => {
                   height: '8px',
                   width: idx === currentIndex ? '28px' : '8px',
                   borderRadius: '9999px',
-                  backgroundColor: idx === currentIndex ? 'var(--color-brand-600)' : 'var(--color-ink-200)',
+                  backgroundColor:
+                    idx === currentIndex ? 'var(--color-brand-600)' : 'var(--color-ink-200)',
                   border: 'none',
                   cursor: 'pointer',
                   boxShadow: idx === currentIndex ? '0 0 0 4px rgba(152,192,112,0.18)' : 'none',

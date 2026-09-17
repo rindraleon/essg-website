@@ -43,7 +43,7 @@ import {
   type FormErrors,
 } from '@/validation';
 import { verifyEmailDomain } from '@/services/contact.service';
-import { toCapitalizedWords, toUpperName , fieldA11yProps } from '@/utils';
+import { toCapitalizedWords, toUpperName, fieldA11yProps } from '@/utils';
 import { admissionService, formatFileSize, isProofFileValid } from '@/services';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
@@ -263,15 +263,18 @@ function loadDraft(): { data: AdmissionFormData; step: AdmissionStep } | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (parsed?.data && typeof parsed.step === 'number') return parsed;
-  } catch {}
+  } catch (error) {
+    console.warn(
+      'Brouillon d’admission illisible — reprise avec un formulaire vierge',
+      error instanceof Error ? error.message : error
+    );
+  }
   return null;
 }
 
 const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
-  const draft = (() => {
-    if (typeof window === 'undefined') return null;
-    return loadDraft();
-  })();
+  // Chargé une seule fois au montage via l'initialiseur paresseux de useState.
+  const [draft] = useState(() => (typeof window === 'undefined' ? null : loadDraft()));
   const [formData, setFormData] = useState<AdmissionFormData>(draft?.data ?? INITIAL_FORM_DATA);
   const [files, setFiles] = useState<AdmissionFiles>({});
 
@@ -299,18 +302,30 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
         if (step >= 1 && step <= 4) setCurrentStep(step);
       }
     }
-  }, []);
+  }, [draft]);
 
   React.useEffect(() => {
     if (submitted) return;
     try {
       localStorage.setItem(DRAFT_KEY, JSON.stringify({ data: formData, step: currentStep }));
-    } catch {}
+    } catch (error) {
+      console.warn(
+        'Sauvegarde du brouillon ignorée (stockage plein ou indisponible)',
+        error instanceof Error ? error.message : error
+      );
+    }
   }, [formData, currentStep, submitted]);
 
   React.useEffect(() => {
     if (submitted) {
-      try { localStorage.removeItem(DRAFT_KEY); } catch {}
+      try {
+        localStorage.removeItem(DRAFT_KEY);
+      } catch (error) {
+        console.warn(
+          'Suppression du brouillon ignorée (best-effort)',
+          error instanceof Error ? error.message : error
+        );
+      }
     }
   }, [submitted]);
 
@@ -458,7 +473,11 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
         return false;
       }
       return true;
-    } catch {
+    } catch (error) {
+      console.warn(
+        'Échec dans checkDuplicate — poursuite en mode dégradé',
+        error instanceof Error ? error.message : error
+      );
       return true;
     }
   };
@@ -570,7 +589,10 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
       toast.success('Candidature soumise avec succès ! Vous recevrez un email de confirmation.');
       setSubmitted(true);
     } catch (error) {
-
+      console.warn(
+        'Échec dans handleSubmit — poursuite en mode dégradé',
+        error instanceof Error ? error.message : error
+      );
       const { fieldErrors: mapped, globalMessage } = mapApiErrorToFormErrors(
         error,
         ADMISSION_FIELD_NAMES
@@ -600,25 +622,44 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
             <strong className="text-ink-900">{formData.email}</strong>.
           </p>
           <div className="rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-small text-brand-900">
-            <strong>Conservez votre n° de dossier : {formData.numeroBordereau}</strong> — c’est votre référence de bordereau. L’équipe vous répond sous <strong>5 à 10 jours ouvrés</strong>.
+            <strong>Conservez votre n° de dossier : {formData.numeroBordereau}</strong> — c’est
+            votre référence de bordereau. L’équipe vous répond sous{' '}
+            <strong>5 à 10 jours ouvrés</strong>.
           </div>
           <div className="w-full max-w-md rounded-xl border border-ink-100 bg-ink-50/70 p-4 text-left">
             <h3 className="text-small font-semibold text-ink-900">Prochaines étapes</h3>
             <ul className="mt-2 list-disc space-y-1 pl-5 text-small text-ink-600">
               <li>Vérification de l'éligibilité de votre baccalauréat et de vos pièces jointes.</li>
-              <li>Analyse des doublons sur le numéro de bordereau (contact email/téléphone non bloquant).</li>
+              <li>
+                Analyse des doublons sur le numéro de bordereau (contact email/téléphone non
+                bloquant).
+              </li>
               <li>Convocation par email/SMS si votre dossier est retenu.</li>
             </ul>
             <p className="mt-3 text-caption text-ink-500">
               Délai indicatif de réponse : 5 à 10 jours ouvrés. En cas de question, contactez la
-              scolarité à <a href="mailto:essg@univ-fianarantsoa.mg" className="font-medium text-brand-700 hover:underline">essg@univ-fianarantsoa.mg</a> en rappelant votre nom et numéro de bordereau.
+              scolarité à{' '}
+              <a
+                href="mailto:essg@univ-fianarantsoa.mg"
+                className="font-medium text-brand-700 hover:underline"
+              >
+                essg@univ-fianarantsoa.mg
+              </a>{' '}
+              en rappelant votre nom et numéro de bordereau.
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button type="button" variant="outline" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
               Retour en haut
             </Button>
-            <a href="mailto:essg@univ-fianarantsoa.mg" className="text-small font-medium text-brand-700 hover:text-brand-800 underline underline-offset-4">
+            <a
+              href="mailto:essg@univ-fianarantsoa.mg"
+              className="text-small font-medium text-brand-700 hover:text-brand-800 underline underline-offset-4"
+            >
               Contacter la scolarité
             </a>
           </div>
@@ -722,7 +763,12 @@ const AdmissionForm = ({ onSubmit }: AdmissionFormProps) => {
 
           {currentStep === 3 && (
             <div className="space-y-8">
-              <LevelSelection data={formData} errors={visibleErrors} onChange={handleChange} isValid={isFieldValid} />
+              <LevelSelection
+                data={formData}
+                errors={visibleErrors}
+                onChange={handleChange}
+                isValid={isFieldValid}
+              />
               <PreviousEducationInformation
                 data={formData}
                 errors={visibleErrors}

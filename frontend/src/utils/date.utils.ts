@@ -1,6 +1,19 @@
 const TIMEZONE = 'Indian/Antananarivo';
 const LOCALE = 'fr-FR';
-const MOIS_FR = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const MOIS_FR = [
+  'janvier',
+  'février',
+  'mars',
+  'avril',
+  'mai',
+  'juin',
+  'juillet',
+  'août',
+  'septembre',
+  'octobre',
+  'novembre',
+  'décembre',
+];
 export type DateInput = string | Date | number | null | undefined;
 function parseDate(input: DateInput): Date | null {
   if (!input) return null;
@@ -11,13 +24,21 @@ function parseDate(input: DateInput): Date | null {
 export function formatDateCourt(input: DateInput): string {
   const d = parseDate(input);
   if (!d) return '—';
-  return new Intl.DateTimeFormat(LOCALE, { timeZone: TIMEZONE, day: '2-digit', month: '2-digit', year: 'numeric' }).format(d);
+  return new Intl.DateTimeFormat(LOCALE, {
+    timeZone: TIMEZONE,
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(d);
 }
 export function formatDateLong(input: DateInput): string {
   const d = parseDate(input);
   if (!d) return '—';
   const day = new Intl.DateTimeFormat(LOCALE, { timeZone: TIMEZONE, day: 'numeric' }).format(d);
-  const monthIndex = parseInt(new Intl.DateTimeFormat('en-US', { timeZone: TIMEZONE, month: 'numeric' }).format(d), 10);
+  const monthIndex = parseInt(
+    new Intl.DateTimeFormat('en-US', { timeZone: TIMEZONE, month: 'numeric' }).format(d),
+    10
+  );
   const year = new Intl.DateTimeFormat(LOCALE, { timeZone: TIMEZONE, year: 'numeric' }).format(d);
   return `${day} ${MOIS_FR[monthIndex - 1] || ''} ${year}`;
 }
@@ -25,7 +46,14 @@ export const formatDate = (date: string): string => formatDateLong(date);
 export function formatDateTimeCourt(input: DateInput): string {
   const d = parseDate(input);
   if (!d) return '—';
-  return new Intl.DateTimeFormat(LOCALE, { timeZone: TIMEZONE, day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(d);
+  return new Intl.DateTimeFormat(LOCALE, {
+    timeZone: TIMEZONE,
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(d);
 }
 export function formatDateTimeLong(input: DateInput): string {
   const d = parseDate(input);

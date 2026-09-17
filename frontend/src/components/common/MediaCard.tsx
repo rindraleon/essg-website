@@ -45,7 +45,10 @@ const dedupeMeta = (
   });
 };
 
-function MetaList({ items, variant }: Readonly<{ items: MediaCardMeta[]; variant: 'home' | 'default' }>) {
+function MetaList({
+  items,
+  variant,
+}: Readonly<{ items: MediaCardMeta[]; variant: 'home' | 'default' }>) {
   if (items.length === 0) {
     return variant === 'home' ? <span aria-hidden="true" className="mt-3 min-h-[1.75rem]" /> : null;
   }

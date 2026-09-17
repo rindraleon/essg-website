@@ -125,6 +125,7 @@ const AdmissionDetailDialog: React.FC<AdmissionDetailDialogProps> = ({
       await verifyMutation.mutateAsync(admission.id);
       toast.success('Vérification des pièces lancée avec succès');
     } catch (error: unknown) {
+      console.warn('Échec dans handleDirectVerify — poursuite en mode dégradé', error instanceof Error ? error.message : error);
       const msg = getVerificationErrorMessage(error);
       toast.error(msg);
     } finally {
@@ -296,9 +297,12 @@ const AdmissionDetailDialog: React.FC<AdmissionDetailDialogProps> = ({
             <div className="mb-4 rounded-xl border border-brand-200 bg-brand-50 p-4">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-ink-900">Contrôle automatique des documents</p>
+                  <p className="text-sm font-semibold text-ink-900">
+                    Contrôle automatique des documents
+                  </p>
                   <p className="text-xs leading-relaxed text-ink-500">
-                    Le système identifie les pièces (diplôme, relevé, bordereau...), extrait le texte (PDF natif → OCR si nécessaire) et compare avec les données saisies.
+                    Le système identifie les pièces (diplôme, relevé, bordereau...), extrait le
+                    texte (PDF natif → OCR si nécessaire) et compare avec les données saisies.
                   </p>
                 </div>
                 <Button
@@ -307,7 +311,11 @@ const AdmissionDetailDialog: React.FC<AdmissionDetailDialogProps> = ({
                   className="shrink-0 gap-2 bg-brand-700 text-white hover:bg-brand-800"
                   size="default"
                 >
-                  {isVerifying ? <LoaderCircle className="size-4 animate-spin" /> : <ScanSearch className="size-4" />}
+                  {isVerifying ? (
+                    <LoaderCircle className="size-4 animate-spin" />
+                  ) : (
+                    <ScanSearch className="size-4" />
+                  )}
                   Vérifier les pièces
                 </Button>
               </div>

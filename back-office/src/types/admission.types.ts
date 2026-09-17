@@ -104,7 +104,8 @@ export const ADMISSION_GENRE_LABELS: Record<string, string> = {
 };
 
 export type VerificationFieldStatus = 'conforme' | 'a_verifier' | 'non_conforme' | 'non_detecte';
-export type VerificationGlobalStatus = 'conforme' | 'verification_manuelle' | 'incompatible' | 'impossible';
+export type VerificationGlobalStatus =
+  'conforme' | 'verification_manuelle' | 'incompatible' | 'impossible';
 
 export interface VerificationFieldResult {
   champ: string;

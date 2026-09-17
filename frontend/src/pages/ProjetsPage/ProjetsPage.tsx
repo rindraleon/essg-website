@@ -1,12 +1,6 @@
 import { cn } from '@/lib';
 import { usePaginatedProjets, useTitle } from '@/hooks';
-import {
-  Pagination,
-  FilterToolbar,
-  PageHero,
-  Breadcrumb,
-  ProjetCard,
-} from '@/components';
+import { Pagination, FilterToolbar, PageHero, Breadcrumb, ProjetCard } from '@/components';
 import HonestEmptyState from '@/components/common/HonestEmptyState';
 import {
   FormControl,

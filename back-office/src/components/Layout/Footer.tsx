@@ -36,7 +36,11 @@ const Footer: React.FC<FooterProps> = (props: Readonly<FooterProps>) => {
         kind: 'linkedin',
         ariaLabel: 'LinkedIn ESSG',
       },
-      { href: 'https://www.facebook.com/profile.php?id=61588935937597', kind: 'facebook', ariaLabel: 'Facebook ESSG' },
+      {
+        href: 'https://www.facebook.com/profile.php?id=61588935937597',
+        kind: 'facebook',
+        ariaLabel: 'Facebook ESSG',
+      },
     ],
   } = props;
 
@@ -98,14 +102,20 @@ const Footer: React.FC<FooterProps> = (props: Readonly<FooterProps>) => {
               <ul className="mt-4 space-y-2 text-sm text-ink-300">
                 {contact.email && (
                   <li>
-                    <a href={`mailto:${contact.email}`} className="hover:text-white transition-colors break-all">
+                    <a
+                      href={`mailto:${contact.email}`}
+                      className="hover:text-white transition-colors break-all"
+                    >
                       {contact.email}
                     </a>
                   </li>
                 )}
                 {contact.phone && (
                   <li>
-                    <a href={`tel:${contact.phone.replaceAll(/\s+/g, '')}`} className="hover:text-white transition-colors">
+                    <a
+                      href={`tel:${contact.phone.replaceAll(/\s+/g, '')}`}
+                      className="hover:text-white transition-colors"
+                    >
                       {contact.phone}
                     </a>
                   </li>
@@ -120,7 +130,9 @@ const Footer: React.FC<FooterProps> = (props: Readonly<FooterProps>) => {
               Université de Fianarantsoa
             </h4>
             <p className="text-sm text-ink-300">
-              Campus Andrainjato, BP 1264<br />Fianarantsoa 301, Madagascar
+              Campus Andrainjato, BP 1264
+              <br />
+              Fianarantsoa 301, Madagascar
             </p>
             <p className="text-xs text-ink-400 mt-4">
               © {new Date().getFullYear()} ESSG. Tous droits réservés.

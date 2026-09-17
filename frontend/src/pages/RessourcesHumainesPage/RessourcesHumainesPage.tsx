@@ -36,7 +36,16 @@ const POSTES = [
   { value: 'Autre', label: 'Autre' },
 ];
 
-const SKELETON_IDS = ['rh-sk-1', 'rh-sk-2', 'rh-sk-3', 'rh-sk-4', 'rh-sk-5', 'rh-sk-6', 'rh-sk-7', 'rh-sk-8'];
+const SKELETON_IDS = [
+  'rh-sk-1',
+  'rh-sk-2',
+  'rh-sk-3',
+  'rh-sk-4',
+  'rh-sk-5',
+  'rh-sk-6',
+  'rh-sk-7',
+  'rh-sk-8',
+];
 
 const RessourcesHumainesPage: React.FC = () => {
   useTitle('Ressources Humaines | ESSG');
@@ -199,7 +208,10 @@ const RessourcesHumainesPage: React.FC = () => {
               <div className="section-shell">
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {SKELETON_IDS.map((id) => (
-                    <div key={id} className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card">
+                    <div
+                      key={id}
+                      className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card"
+                    >
                       <div className="mb-4 flex justify-center">
                         <Skeleton variant="circular" width={80} height={80} />
                       </div>

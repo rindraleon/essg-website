@@ -34,7 +34,8 @@ export const VALIDATION_MESSAGES = {
   prenomInvalid:
     'Le prénom ne peut contenir que des lettres, espaces, apostrophes ou traits d’union.',
   emailInvalid: 'Adresse e-mail invalide.',
-  emailDisposable: 'Le domaine de cette adresse est introuvable ou jetable. Utilisez une adresse e-mail valide.',
+  emailDisposable:
+    'Le domaine de cette adresse est introuvable ou jetable. Utilisez une adresse e-mail valide.',
   emailUndeliverable: 'Cette adresse e-mail ne semble pas pouvoir recevoir de messages.',
   phoneInvalid: 'Veuillez saisir un numéro de téléphone valide.',
   addressInvalid: 'L’adresse contient des caractères non autorisés.',

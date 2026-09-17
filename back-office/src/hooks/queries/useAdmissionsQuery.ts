@@ -102,7 +102,9 @@ export function useVerifyAdmission() {
     mutationFn: (admissionId: number) => verifyAdmissionDocuments(admissionId),
     onSuccess: (_data, admissionId) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.admissions.detail(admissionId) });
-      void queryClient.invalidateQueries({ queryKey: [...queryKeys.admissions.all, 'verification', admissionId] });
+      void queryClient.invalidateQueries({
+        queryKey: [...queryKeys.admissions.all, 'verification', admissionId],
+      });
     },
   });
 }
